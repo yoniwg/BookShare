@@ -1,9 +1,9 @@
-package hgyw.com.bookshare.logicAccess;
+package com.hgyw.bookshare.logicAccess;
 
-import hgyw.com.bookshare.entities.Credentials;
-import hgyw.com.bookshare.entities.User;
-import hgyw.com.bookshare.entities.UserType;
-import hgyw.com.bookshare.exceptions.WrongLoginException;
+import com.hgyw.bookshare.entities.Credentials;
+import com.hgyw.bookshare.entities.User;
+import com.hgyw.bookshare.entities.UserType;
+import com.hgyw.bookshare.exceptions.WrongLoginException;
 
 /**
  * Interface for management of login to application.

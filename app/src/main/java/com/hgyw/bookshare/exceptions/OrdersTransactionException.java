@@ -1,6 +1,6 @@
-package hgyw.com.bookshare.exceptions;
+package com.hgyw.bookshare.exceptions;
 
-import hgyw.com.bookshare.entities.Order;
+import com.hgyw.bookshare.entities.Order;
 
 /**
  * Exception about error in transaction of orders

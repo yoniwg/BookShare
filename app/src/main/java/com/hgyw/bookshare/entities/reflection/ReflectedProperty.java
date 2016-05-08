@@ -1,4 +1,4 @@
-package hgyw.com.bookshare.entities.reflection;
+package com.hgyw.bookshare.entities.reflection;
 
 /**
  * Created by haim7 on 04/05/2016.

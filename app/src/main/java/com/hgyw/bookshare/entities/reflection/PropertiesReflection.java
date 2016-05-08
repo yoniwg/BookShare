@@ -1,4 +1,4 @@
-package hgyw.com.bookshare.entities.reflection;
+package com.hgyw.bookshare.entities.reflection;
 
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Optional;
@@ -18,9 +18,9 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
-import hgyw.com.bookshare.entities.Entity;
-import hgyw.com.bookshare.entities.EntityReference;
-import hgyw.com.bookshare.entities.IdReference;
+import com.hgyw.bookshare.entities.Entity;
+import com.hgyw.bookshare.entities.EntityReference;
+import com.hgyw.bookshare.entities.IdReference;
 
 /**
  * Created by haim7 on 23/03/2016.

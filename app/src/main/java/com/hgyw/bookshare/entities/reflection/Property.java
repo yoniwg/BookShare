@@ -1,4 +1,4 @@
-package hgyw.com.bookshare.entities.reflection;
+package com.hgyw.bookshare.entities.reflection;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;

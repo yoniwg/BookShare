@@ -1,4 +1,4 @@
-package hgyw.com.bookshare.logicAccess;
+package com.hgyw.bookshare.logicAccess;
 
 /**
  * Created by haim7 on 24/03/2016.

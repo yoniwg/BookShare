@@ -1,4 +1,4 @@
-package hgyw.com.bookshare.dataAccess;
+package com.hgyw.bookshare.dataAccess;
 
 /**
  * Created by Yoni on 3/17/2016.

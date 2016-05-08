@@ -1,4 +1,4 @@
-package hgyw.com.bookshare.entities;
+package com.hgyw.bookshare.entities;
 
 import java.util.Comparator;
 

@@ -1,4 +1,4 @@
-package hgyw.com.bookshare.logicAccess;
+package com.hgyw.bookshare.logicAccess;
 
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
@@ -7,15 +7,15 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 
-import hgyw.com.bookshare.dataAccess.DataAccess;
-import hgyw.com.bookshare.entities.Book;
-import hgyw.com.bookshare.entities.BookQuery;
-import hgyw.com.bookshare.entities.BookReview;
-import hgyw.com.bookshare.entities.BookSupplier;
-import hgyw.com.bookshare.entities.Entity;
-import hgyw.com.bookshare.entities.Supplier;
-import hgyw.com.bookshare.entities.User;
-import hgyw.com.bookshare.entities.UserType;
+import com.hgyw.bookshare.dataAccess.DataAccess;
+import com.hgyw.bookshare.entities.Book;
+import com.hgyw.bookshare.entities.BookQuery;
+import com.hgyw.bookshare.entities.BookReview;
+import com.hgyw.bookshare.entities.BookSupplier;
+import com.hgyw.bookshare.entities.Entity;
+import com.hgyw.bookshare.entities.Supplier;
+import com.hgyw.bookshare.entities.User;
+import com.hgyw.bookshare.entities.UserType;
 
 /**
  * Created by Yoni on 3/18/2016.

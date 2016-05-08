@@ -1,4 +1,4 @@
-package hgyw.com.bookshare.dataAccess;
+package com.hgyw.bookshare.dataAccess;
 
 import com.annimon.stream.Stream;
 import com.annimon.stream.function.Function;
@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import hgyw.com.bookshare.entities.Entity;
-import hgyw.com.bookshare.entities.IdReference;
-import hgyw.com.bookshare.entities.reflection.Property;
-import hgyw.com.bookshare.entities.reflection.PropertiesReflection;
+import com.hgyw.bookshare.entities.Entity;
+import com.hgyw.bookshare.entities.IdReference;
+import com.hgyw.bookshare.entities.reflection.Property;
+import com.hgyw.bookshare.entities.reflection.PropertiesReflection;
 
 /**
  * Created by Yoni on 3/17/2016.
@@ -103,7 +103,7 @@ class ListsCrudImpl implements Crud {
     }
 
     @Override
-    public <T extends Entity, R extends Entity> Function<T, R> retriever(Class<R> referredClass, Function<T, Long> referenceFunction) {
+    public <T extends Entity, R extends Entity> Function<T, R> retrieving(Class<R> referredClass, Function<T, Long> referenceFunction) {
         return t -> retrieve(referredClass, referenceFunction.apply(t));
     }
 

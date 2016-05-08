@@ -1,4 +1,4 @@
-package hgyw.com.bookshare.dataAccess;
+package com.hgyw.bookshare.dataAccess;
 
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Optional;
@@ -11,21 +11,20 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
-import hgyw.com.bookshare.entities.Book;
-import hgyw.com.bookshare.entities.BookQuery;
-import hgyw.com.bookshare.entities.BookSupplier;
-import hgyw.com.bookshare.entities.Credentials;
-import hgyw.com.bookshare.entities.Customer;
-import hgyw.com.bookshare.entities.Entity;
-import hgyw.com.bookshare.entities.IdReference;
-import hgyw.com.bookshare.entities.Order;
-import hgyw.com.bookshare.entities.Supplier;
-import hgyw.com.bookshare.entities.Transaction;
-import hgyw.com.bookshare.entities.User;
-import hgyw.com.bookshare.entities.reflection.EntityReflection;
+import com.hgyw.bookshare.entities.Book;
+import com.hgyw.bookshare.entities.BookQuery;
+import com.hgyw.bookshare.entities.BookSupplier;
+import com.hgyw.bookshare.entities.Credentials;
+import com.hgyw.bookshare.entities.Customer;
+import com.hgyw.bookshare.entities.Entity;
+import com.hgyw.bookshare.entities.IdReference;
+import com.hgyw.bookshare.entities.Order;
+import com.hgyw.bookshare.entities.Supplier;
+import com.hgyw.bookshare.entities.Transaction;
+import com.hgyw.bookshare.entities.User;
+import com.hgyw.bookshare.entities.reflection.EntityReflection;
 
 /**
  * Created by haim7 on 23/03/2016.
@@ -52,8 +51,8 @@ class DataAccessListImpl extends ListsCrudImpl implements DataAccess {
     public Collection<Customer> findInterestedInBook(Book book, User userAsked) {
         return streamAllNonDeleted(Order.class)
                 .filter(o -> retrieve(BookSupplier.class, o.getBookSupplierId()).getBookId() == book.getId())
-                .map(retriever(Transaction.class, Order::getTransactionId))
-                .map(retriever(Customer.class, Transaction::getCustomerId))
+                .map(retrieving(Transaction.class, Order::getTransactionId))
+                .map(retrieving(Customer.class, Transaction::getCustomerId))
                 .collect(Collectors.toList());
     }
 
@@ -77,11 +76,11 @@ class DataAccessListImpl extends ListsCrudImpl implements DataAccess {
     @Override
     public List<Book> findSpecialOffers(User user, int limit) {
         List<String> topAuthors = getTopInstances(getDistinctBooksOfUser(user)
-                .map(retriever(Book.class, BookSupplier::getBookId))
+                .map(retrieving(Book.class, BookSupplier::getBookId))
                 .map(Book::getAuthor), limit
         );
         List<Book.Genre> topGenre = getTopInstances(getDistinctBooksOfUser(user)
-                .map(retriever(Book.class, BookSupplier::getBookId))
+                .map(retrieving(Book.class, BookSupplier::getBookId))
                 .map(Book::getGenre), limit
         );
         //find books from top authors and genres
@@ -99,7 +98,7 @@ class DataAccessListImpl extends ListsCrudImpl implements DataAccess {
     private Stream<BookSupplier> getDistinctBooksOfUser(User currentUser) {
         return streamAllNonDeleted(Order.class)
                 .filter(o -> retrieve(Transaction.class, o.getTransactionId()).getCustomerId() == currentUser.getId())
-                .map(retriever(BookSupplier.class, Order::getBookSupplierId))
+                .map(retrieving(BookSupplier.class, Order::getBookSupplierId))
                 .distinct();
     }
 

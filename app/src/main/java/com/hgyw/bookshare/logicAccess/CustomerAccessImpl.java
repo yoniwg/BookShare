@@ -1,22 +1,22 @@
-package hgyw.com.bookshare.logicAccess;
+package com.hgyw.bookshare.logicAccess;
 
 import com.annimon.stream.Stream;
 
 import java.util.Collection;
 import java.util.Date;
 
-import hgyw.com.bookshare.dataAccess.DataAccess;
-import hgyw.com.bookshare.entities.Book;
-import hgyw.com.bookshare.entities.BookReview;
-import hgyw.com.bookshare.entities.BookSupplier;
-import hgyw.com.bookshare.entities.Customer;
-import hgyw.com.bookshare.entities.IdReference;
-import hgyw.com.bookshare.entities.Order;
-import hgyw.com.bookshare.entities.OrderRating;
-import hgyw.com.bookshare.entities.OrderStatus;
-import hgyw.com.bookshare.entities.Transaction;
-import hgyw.com.bookshare.entities.UserType;
-import hgyw.com.bookshare.exceptions.OrdersTransactionException;
+import com.hgyw.bookshare.dataAccess.DataAccess;
+import com.hgyw.bookshare.entities.Book;
+import com.hgyw.bookshare.entities.BookReview;
+import com.hgyw.bookshare.entities.BookSupplier;
+import com.hgyw.bookshare.entities.Customer;
+import com.hgyw.bookshare.entities.IdReference;
+import com.hgyw.bookshare.entities.Order;
+import com.hgyw.bookshare.entities.OrderRating;
+import com.hgyw.bookshare.entities.OrderStatus;
+import com.hgyw.bookshare.entities.Transaction;
+import com.hgyw.bookshare.entities.UserType;
+import com.hgyw.bookshare.exceptions.OrdersTransactionException;
 
 /**
  * Created by haim7 on 20/03/2016.

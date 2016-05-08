@@ -1,9 +1,9 @@
-package hgyw.com.bookshare.entities;
+package com.hgyw.bookshare.entities;
 
 import java.util.Map;
 
-import hgyw.com.bookshare.entities.reflection.Property;
-import hgyw.com.bookshare.entities.reflection.PropertiesReflection;
+import com.hgyw.bookshare.entities.reflection.Property;
+import com.hgyw.bookshare.entities.reflection.PropertiesReflection;
 
 /**
  * Created by Yoni on 3/15/2016.

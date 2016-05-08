@@ -1,4 +1,4 @@
-package hgyw.com.bookshare.exceptions;
+package com.hgyw.bookshare.exceptions;
 
 /**
  * Exception for wrong login.

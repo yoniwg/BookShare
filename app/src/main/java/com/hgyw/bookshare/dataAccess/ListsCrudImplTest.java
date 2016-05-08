@@ -1,4 +1,4 @@
-package hgyw.com.bookshare.dataAccess;
+package com.hgyw.bookshare.dataAccess;
 
 import com.annimon.stream.Collectors;
 
@@ -8,19 +8,19 @@ import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import hgyw.com.bookshare.entities.Book;
-import hgyw.com.bookshare.entities.BookReview;
-import hgyw.com.bookshare.entities.BookSupplier;
-import hgyw.com.bookshare.entities.Credentials;
-import hgyw.com.bookshare.entities.Customer;
-import hgyw.com.bookshare.entities.Entity;
-import hgyw.com.bookshare.entities.Order;
-import hgyw.com.bookshare.entities.OrderRating;
-import hgyw.com.bookshare.entities.OrderStatus;
-import hgyw.com.bookshare.entities.Rating;
-import hgyw.com.bookshare.entities.Supplier;
-import hgyw.com.bookshare.entities.Transaction;
-import hgyw.com.bookshare.entities.User;
+import com.hgyw.bookshare.entities.Book;
+import com.hgyw.bookshare.entities.BookReview;
+import com.hgyw.bookshare.entities.BookSupplier;
+import com.hgyw.bookshare.entities.Credentials;
+import com.hgyw.bookshare.entities.Customer;
+import com.hgyw.bookshare.entities.Entity;
+import com.hgyw.bookshare.entities.Order;
+import com.hgyw.bookshare.entities.OrderRating;
+import com.hgyw.bookshare.entities.OrderStatus;
+import com.hgyw.bookshare.entities.Rating;
+import com.hgyw.bookshare.entities.Supplier;
+import com.hgyw.bookshare.entities.Transaction;
+import com.hgyw.bookshare.entities.User;
 
 /**
  * Created by haim7 on 24/03/2016.

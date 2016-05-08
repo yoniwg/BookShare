@@ -1,16 +1,16 @@
-package hgyw.com.bookshare.logicAccess;
+package com.hgyw.bookshare.logicAccess;
 
 import java.util.Collection;
 import java.util.Date;
 
-import hgyw.com.bookshare.dataAccess.DataAccess;
-import hgyw.com.bookshare.entities.Book;
-import hgyw.com.bookshare.entities.BookSupplier;
-import hgyw.com.bookshare.entities.IdReference;
-import hgyw.com.bookshare.entities.Order;
-import hgyw.com.bookshare.entities.OrderStatus;
-import hgyw.com.bookshare.entities.Supplier;
-import hgyw.com.bookshare.entities.UserType;
+import com.hgyw.bookshare.dataAccess.DataAccess;
+import com.hgyw.bookshare.entities.Book;
+import com.hgyw.bookshare.entities.BookSupplier;
+import com.hgyw.bookshare.entities.IdReference;
+import com.hgyw.bookshare.entities.Order;
+import com.hgyw.bookshare.entities.OrderStatus;
+import com.hgyw.bookshare.entities.Supplier;
+import com.hgyw.bookshare.entities.UserType;
 
 /**
  * Created by haim7 on 26/03/2016.

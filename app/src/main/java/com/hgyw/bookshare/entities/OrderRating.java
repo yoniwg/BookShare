@@ -1,4 +1,4 @@
-package hgyw.com.bookshare.entities;
+package com.hgyw.bookshare.entities;
 
 /**
  * Created by Yoni on 3/20/2016.
