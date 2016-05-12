@@ -16,50 +16,26 @@ public class EnumAdapter<E extends Enum<E>> extends ArrayAdapter<E> {
     {
         strings = new String[getCount()];
         for (int i = 0; i < strings.length; i++) {
-            //strings[i] = generateString(getItem(i));
+            E enumValue = getItem(i);
+            strings[i] = Utility.findStringResourceOfEnum(getContext(), enumValue);
         }
-    }
-    public EnumAdapter(Context context, int resource, int textViewResourceId, List<E> objects) {
-        super(context, resource, textViewResourceId, objects);
-    }
-
-    public EnumAdapter(Context context, int resource, List<E> objects) {
-        super(context, resource, objects);
-    }
-
-    public EnumAdapter(Context context, int resource, int textViewResourceId, E[] objects) {
-        super(context, resource, textViewResourceId, objects);
     }
 
     public EnumAdapter(Context context, int resource, E[] objects) {
         super(context, resource, objects);
     }
 
-    public EnumAdapter(Context context, int resource, int textViewResourceId) {
-        super(context, resource, textViewResourceId);
-    }
-
-    public EnumAdapter(Context context, int resource) {
-        super(context, resource);
-    }
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        return manipulateText(position, super.getView(position, convertView, parent));
+        TextView textView = (TextView) super.getView(position, convertView, parent);
+        textView.setText(strings[position]);
+        return textView;
     }
 
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
-        return manipulateText(position, super.getDropDownView(position, convertView, parent));
-    }
-
-    // update text of enum value to resources string
-    private View manipulateText(int itemPosition, View textViewToSet) {
-        ((TextView) textViewToSet).setText(generateString(getItem(itemPosition)));
-        return textViewToSet;
-    }
-
-    protected String generateString(Enum<E> enumValue) {
-        return Utility.findStringResourceOfEnum(getContext(), enumValue);
+        TextView textView = (TextView) super.getDropDownView(position, convertView, parent);
+        textView.setText(strings[position]);
+        return textView;
     }
 }

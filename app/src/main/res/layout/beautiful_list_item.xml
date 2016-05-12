@@ -1,42 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="wrap_content"
+    android:padding="10dp">
 
     <ImageView
-        android:id="@+id/thumbnail"
+        android:id="@+id/beautifulItemThumbnail"
         android:src="@drawable/image_book"
         android:layout_width="72dip"
         android:layout_height="72dip"
-        android:scaleType="centerCrop"/>
+        android:scaleType="centerCrop"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginRight="10dp" />
 
     <TextView
-        android:id="@+id/title"
+        android:id="@+id/beautifulItemTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Card title"
-        android:layout_toRightOf="@+id/thumbnail"
-        android:layout_toLeftOf="@+id/icon"
-        android:textAppearance="@android:style/TextAppearance.Holo.Medium"
-        android:layout_marginLeft="?android:attr/listPreferredItemPaddingLeft"/>
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/beautifulItemThumbnail" />
 
     <TextView
-        android:id="@+id/description"
+        android:id="@+id/beautifulItemDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Card description"
-        android:layout_toRightOf="@+id/thumbnail"
-        android:layout_below="@+id/title"
-        android:layout_toLeftOf="@+id/icon"
-        android:layout_marginLeft="?android:attr/listPreferredItemPaddingLeft"
-        android:textAppearance="@android:style/TextAppearance.Holo.Small"/>
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_below="@+id/beautifulItemTitle"
+        android:layout_toEndOf="@+id/beautifulItemThumbnail" />
 
-    <ImageView
-        android:id="@+id/icon"
+    <TextView
+        android:id="@+id/beautifulItemMoreText"
+        android:text="More text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_menu_gallery"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"/>
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </RelativeLayout>

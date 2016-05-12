@@ -17,6 +17,7 @@
     <string name="from_price">from price</string>
     <string name="to_price">to price</string>
 
+    <string name="genre_general">general</string>
     <string name="genre_action">action</string>
     <string name="genre_romance">romance</string>
     <string name="genre_science">science</string>

@@ -10,16 +10,17 @@ import android.widget.TextView;
  * TODO: document your custom view class.
  */
 public class BeautifulListItemView extends RelativeLayout {
-    private TextView title;
-    private TextView description;
-    private ImageView thumbnail;
-    private ImageView icon;
+    private final TextView titleView;
+    private final TextView descriptionView;
+    private final ImageView thumbnailView;
+    private final TextView moreTextView;
+
     {
         inflate(getContext(), R.layout.beautiful_list_item, this);
-        this.title = (TextView)findViewById(R.id.title);
-        this.description = (TextView)findViewById(R.id.description);
-        this.thumbnail = (ImageView)findViewById(R.id.thumbnail);
-        this.icon = (ImageView)findViewById(R.id.icon);
+        this.titleView = (TextView)findViewById(R.id.beautifulItemTitle);
+        this.descriptionView = (TextView)findViewById(R.id.beautifulItemDescription);
+        this.thumbnailView = (ImageView)findViewById(R.id.beautifulItemThumbnail);
+        this.moreTextView = (TextView) findViewById(R.id.beautifulItemMoreText);
 
     }
 
@@ -31,19 +32,19 @@ public class BeautifulListItemView extends RelativeLayout {
         super(context, attrs);
     }
 
-    public TextView getTitle() {
-        return title;
+    public TextView getTitleView() {
+        return titleView;
     }
 
-    public TextView getDescription() {
-        return description;
+    public TextView getDescriptionView() {
+        return descriptionView;
     }
 
-    public ImageView getThumbnail() {
-        return thumbnail;
+    public ImageView getThumbnailView() {
+        return thumbnailView;
     }
 
-    public ImageView getIcon() {
-        return icon;
+    public TextView getMoreTextView() {
+        return moreTextView;
     }
 }
