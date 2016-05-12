@@ -116,12 +116,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (id == R.id.nav_camera) {
             // Handle the camera action
         } else if (id == R.id.nav_gallery) {
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra(IntentsFactory.ARG_FRAGMENT_CLASS, BooksListFragment.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            Intent intent = IntentsFactory.newBookListIntent(this,null);
             startActivity(intent);
         } else if (id == R.id.nav_slideshow) {
-
+            Intent intent = IntentsFactory.newCartIntent(this, accessManager.getCustomerAccess().getCart());
+            startActivity(intent);
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {

@@ -112,4 +112,10 @@ public interface CustomerAccess extends GeneralAccess {
      * @throws java.util.NoSuchElementException if the BookReview is not found in database.
      */
     void removeBookReview(BookReview bookReview);
+
+    /**
+     * returns the cart of the customer
+     * @return {@link Cart} - the cart
+     */
+    Cart getCart();
 }
