@@ -158,7 +158,7 @@ class DataAccessListImpl extends ListsCrudImpl implements DataAccess {
         if (price == null) return false;
         return book.getTitle().toLowerCase().contains(bookQuery.getTitleQuery().toLowerCase())
                 && book.getAuthor().toLowerCase().contains(bookQuery.getAuthorQuery().toLowerCase())
-                && (bookQuery.getGenreSet() == null || book.getGenre() == bookQuery.getGenreSet())
+                && (bookQuery.getGenreSet() == null || bookQuery.getGenreSet().contains(book.getGenre()))
                 && isBetween(price, bookQuery.getBeginPrice(), bookQuery.getEndPrice());
     }
 
