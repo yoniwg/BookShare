@@ -7,14 +7,12 @@ import com.annimon.stream.function.Function;
 import com.annimon.stream.function.Predicate;
 
 import java.math.BigDecimal;
-import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookQuery;
@@ -160,7 +158,7 @@ class DataAccessListImpl extends ListsCrudImpl implements DataAccess {
         if (price == null) return false;
         return book.getTitle().toLowerCase().contains(bookQuery.getTitleQuery().toLowerCase())
                 && book.getAuthor().toLowerCase().contains(bookQuery.getAuthorQuery().toLowerCase())
-                && (bookQuery.getGenreQuery() == null || book.getGenre() == bookQuery.getGenreQuery())
+                && (bookQuery.getGenreSet() == null || book.getGenre() == bookQuery.getGenreSet())
                 && isBetween(price, bookQuery.getBeginPrice(), bookQuery.getEndPrice());
     }
 

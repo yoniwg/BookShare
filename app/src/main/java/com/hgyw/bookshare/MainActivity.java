@@ -1,5 +1,6 @@
 package com.hgyw.bookshare;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,9 +22,8 @@ import com.hgyw.bookshare.entities.BookQuery;
 import com.hgyw.bookshare.logicAccess.AccessManager;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    public static final String ARG_FRAGMENT_CLASS = "fragmentClass";
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout drawer;
     private AccessManager accessManager;
@@ -51,6 +51,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         accessManager = AccessManagerFactory.getInstance();
 
+
+
         /*getFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, BooksListFragment.newInstance())
                 .commit();*/
@@ -59,23 +61,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onNewIntent(Intent newIntent) {
         super.onNewIntent(newIntent);
-        Class fragmentClass = (Class) newIntent.getSerializableExtra(ARG_FRAGMENT_CLASS);
-        Bundle argumentsBundle = newIntent.getExtras();
-        Fragment fragment;
-        if (fragmentClass == BooksListFragment.class) {
-            fragment = BooksListFragment.newInstance();
-        } else if (fragmentClass == Void.class) {
-            fragment = null;
-        } else {
-            throw new IllegalArgumentException("Class " + fragmentClass.getSimpleName() + " is not expected as fragment.");
-        }
-        fragment.setArguments(argumentsBundle);
+        Class fragmentClass = (Class) newIntent.getSerializableExtra(IntentsFactory.ARG_FRAGMENT_CLASS);
+        try {
+            Fragment fragment = (Fragment) fragmentClass.newInstance();
+            fragment.setArguments(newIntent.getExtras());
 
-        getFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .commit();
-        //ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        //ft.addToBackStack(null);
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .commit();
+            //ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            //ft.addToBackStack(null);
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
@@ -101,7 +99,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.action_settings:
                 return true;
             case R.id.action_search:
-                DialogsFactory.by(this).newBookQueryDialog(new BookQuery()).show();
+                BookQueryDialogFragment.newInstance(new BookQuery())
+                        .show(getFragmentManager(), "bookQuaryDialog");
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -118,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             // Handle the camera action
         } else if (id == R.id.nav_gallery) {
             Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra(MainActivity.ARG_FRAGMENT_CLASS, BooksListFragment.class);
+            intent.putExtra(IntentsFactory.ARG_FRAGMENT_CLASS, BooksListFragment.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
         } else if (id == R.id.nav_slideshow) {

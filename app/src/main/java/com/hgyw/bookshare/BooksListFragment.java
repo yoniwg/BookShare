@@ -21,8 +21,6 @@ import java.util.List;
 
 public class BooksListFragment extends Fragment {
 
-    public static final String ARG_BOOK_QUERY = "bookQuery";
-
     private GeneralAccess access;
     private BookQuery bookQuery;
     private MainActivity activity;
@@ -30,25 +28,14 @@ public class BooksListFragment extends Fragment {
     protected BooksListFragment() {
     }
 
-    public static BooksListFragment newInstance() {
-        return newInstance(null);
-    }
-
-    public static BooksListFragment newInstance(BookQuery bookQuery) {
-        BooksListFragment fragment = new BooksListFragment();
-        Bundle args = new Bundle();
-        args.putSerializable(ARG_BOOK_QUERY, bookQuery);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         access = AccessManagerFactory.getInstance().getCustomerAccess();
         activity = (MainActivity) getActivity();
-        Bundle arguments = (arguments = getArguments()) == null ? Bundle.EMPTY : arguments;
-        bookQuery = (BookQuery) arguments.getSerializable(ARG_BOOK_QUERY);
+        if (getArguments() != null) {
+            bookQuery = (BookQuery) getArguments().getSerializable(IntentsFactory.ARG_BOOK_QUERY);
+        }
         setHasOptionsMenu(true);
     }
 

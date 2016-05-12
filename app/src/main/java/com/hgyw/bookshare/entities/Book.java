@@ -1,19 +1,20 @@
 package com.hgyw.bookshare.entities;
 
 import java.util.Comparator;
+import java.util.Objects;
 
 /**
  * Created by Yoni on 3/15/2016.
  */
 public final class Book extends Entity {
 
-    public enum Genre {ACTION, ROMANCE, SCIENCE, SCIENCE_FICTION,
+    public enum Genre {GENERAL, ACTION, ROMANCE, SCIENCE, SCIENCE_FICTION,
         DRAMA, SATIRE, CHILDREN, COMICS, BIOGRAPHIES, FANTASY, HEALTH}
 
     private String title;
     private String bookAbstract;
     private String author;
-    private Genre genre;
+    private Genre genre = Genre.GENERAL;
     private byte[] image;
 
     public String getTitle() {
@@ -45,7 +46,7 @@ public final class Book extends Entity {
     }
 
     public void setGenre(Genre genre) {
-        this.genre = genre;
+        this.genre = Objects.requireNonNull(genre);
     }
 
     public byte[] getImage() {

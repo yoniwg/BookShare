@@ -1,12 +1,11 @@
 package com.hgyw.bookshare.entities;
 
-import android.databinding.BindingAdapter;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Yoni on 3/15/2016.
@@ -19,7 +18,7 @@ public class BookQuery implements Serializable {
 
     private String authorQuery = "";
 
-    private Book.Genre genreQuery = null;
+    private final Set<Book.Genre> genreSet = EnumSet.allOf(Book.Genre.class);
 
     private BigDecimal beginPrice = BigDecimal.ZERO;
     private BigDecimal endPrice = new BigDecimal(1000);
@@ -42,12 +41,8 @@ public class BookQuery implements Serializable {
         this.authorQuery = authorQuery;
     }
 
-    public Book.Genre getGenreQuery() {
-        return genreQuery;
-    }
-
-    public void setGenreQuery(Book.Genre genreQuery) {
-        this.genreQuery = genreQuery;
+    public Set<Book.Genre> getGenreSet() {
+        return genreSet;
     }
 
     public BigDecimal getBeginPrice() {
@@ -62,16 +57,8 @@ public class BookQuery implements Serializable {
         this.beginPrice = beginPrice;
     }
 
-    public void setBeginPrice(String beginPrice) {
-        this.beginPrice = new BigDecimal(beginPrice);
-    }
-
     public void setEndPrice(BigDecimal endPrice) {
         this.endPrice = endPrice;
-    }
-
-    public void setEndPrice(String endPrice) {
-        setEndPrice(new BigDecimal(endPrice));
     }
 
     public List<SortByProperty> getSortByPropertyList() {
@@ -87,7 +74,7 @@ public class BookQuery implements Serializable {
         return "BookQuery{" +
                 "endPrice=" + endPrice +
                 ", beginPrice=" + beginPrice +
-                ", genreQuery=" + genreQuery +
+                ", genreSet=" + genreSet +
                 ", authorQuery='" + authorQuery + '\'' +
                 ", titleQuery='" + titleQuery + '\'' +
                 '}';

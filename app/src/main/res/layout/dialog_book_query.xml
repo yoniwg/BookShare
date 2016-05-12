@@ -12,14 +12,14 @@
         <EditText android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/book_title"
-            android:text="@={query.titleQuery}"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:id="@+id/title_query" />
 
         <EditText android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/author_name"
-            android:text="@={query.authorQuery}"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:id="@+id/author_query" />
 
         <Spinner
             android:layout_width="match_parent"
@@ -34,7 +34,6 @@
         <EditText android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/from_price"
-            android:text="\@={query.beginPrice}"
             android:singleLine="true"
             android:inputType="numberDecimal"
             android:id="@+id/from_price" />
@@ -43,9 +42,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/to_price"
-            android:text="@={query.endPrice}"
             android:singleLine="true"
-            android:inputType="numberDecimal" />
+            android:inputType="numberDecimal"
+            android:id="@+id/to_price" />
 
     </LinearLayout>
 </layout>
