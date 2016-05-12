@@ -11,12 +11,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.annimon.stream.Collectors;
-import com.annimon.stream.Stream;
 import com.hgyw.bookshare.logicAccess.Cart;
 import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
-import com.hgyw.bookshare.logicAccess.GeneralAccess;
+import com.hgyw.bookshare.logicAccess.CustomerAccess;
 
 import java.util.List;
 
@@ -26,9 +24,11 @@ import java.util.List;
  */
 public class CartFragment extends Fragment {
 
-    private GeneralAccess access;
+    private CustomerAccess cAccess;
 
     private MainActivity activity;
+
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -36,10 +36,9 @@ public class CartFragment extends Fragment {
     public CartFragment() {
     }
 
-    public static CartFragment newInstance(Cart cart) {
+    public static CartFragment newInstance() {
         CartFragment fragment = new CartFragment();
         Bundle args = new Bundle();
-        args.putSerializable(IntentsFactory.ARG_CART, cart);
         fragment.setArguments(args);
         return fragment;
     }
@@ -47,9 +46,8 @@ public class CartFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        access = AccessManagerFactory.getInstance().getCustomerAccess();
+        cAccess = AccessManagerFactory.getInstance().getCustomerAccess();
         activity = (MainActivity) getActivity();
-
         setHasOptionsMenu(true);
     }
 
@@ -63,7 +61,7 @@ public class CartFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         ListView listView = (ListView) activity.findViewById(R.id.order_list);
-        Cart cart = (Cart) getArguments().get(IntentsFactory.ARG_CART);
+        Cart cart = cAccess.getCart();
         List<Order> ordersList = cart.retrieveCartContent();
         ArrayAdapter<Order> arrayAdapter = new ArrayAdapter<Order>(activity, android.R.layout.simple_list_item_1, ordersList);
 

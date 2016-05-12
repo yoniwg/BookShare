@@ -217,8 +217,8 @@ public class Test {
                     order.setUnitPrice(bs.getPrice());
                     return order;
                 }).collect(Collectors.toList());
-        Stream.of(orders).map(Order::getId).forEach(ord -> finalCAccess.getCart().addToCart(ord));
-        Transaction transaction = new Transaction();
+
+       Transaction transaction = new Transaction();
         transaction.setCreditCard("231972947817861868");
         try {
             cAccess.performNewTransaction(transaction, orders);
@@ -289,6 +289,9 @@ public class Test {
         } catch (WrongLoginException e) {
             e.printStackTrace();
         }
+
+
+
 
         ///////////////////////////////////////////////////
         printWholeDatabase(DataAccessFactory.getInstance());

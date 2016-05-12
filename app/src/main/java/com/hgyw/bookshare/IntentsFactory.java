@@ -25,10 +25,9 @@ public class IntentsFactory {
     }
 
 
-    public static Intent newCartIntent(Activity activity, Cart cart) {
+    public static Intent newCartIntent(Activity activity) {
         Intent intent = new Intent(activity, MainActivity.class);
         intent.putExtra(ARG_FRAGMENT_CLASS, CartFragment.class);
-        intent.putExtra(ARG_CART, cart);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         return intent;
     }

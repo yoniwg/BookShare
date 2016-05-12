@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 return true;
             case R.id.action_buy:
                 List<Order> oList = accessManager.getCustomerAccess().getCart().retrieveCartContent();
-                Toast.makeText(this, "You are going to buy:" + oList.toString(),Toast.LENGTH_SHORT);
+                Toast.makeText(this, "You are going to buy:" + oList.toString(),Toast.LENGTH_SHORT).show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Intent intent = IntentsFactory.newBookListIntent(this,null);
             startActivity(intent);
         } else if (id == R.id.nav_slideshow) {
-            Intent intent = IntentsFactory.newCartIntent(this, accessManager.getCustomerAccess().getCart());
+            Intent intent = IntentsFactory.newCartIntent(this);
             startActivity(intent);
         } else if (id == R.id.nav_manage) {
 

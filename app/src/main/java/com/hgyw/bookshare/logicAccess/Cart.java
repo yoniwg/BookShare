@@ -1,11 +1,8 @@
 package com.hgyw.bookshare.logicAccess;
 
-import com.annimon.stream.Collectors;
-import com.annimon.stream.Stream;
 import com.hgyw.bookshare.entities.Order;
 
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,27 +12,21 @@ import java.util.List;
  */
 public class Cart implements Serializable {
 
-    final private CustomerAccess access;
+    private final List<Order> ordersList = new ArrayList<>();
 
-    private final ArrayList<Long> ordersIdList = new ArrayList<>();
-
-    public Cart(CustomerAccessImpl customerAccess) {
-        access = customerAccess;
+    public void addToCart(Order order){
+        ordersList.add(order);
     }
 
-    public void addToCart(long orderId){
-        ordersIdList.add(orderId);
-    }
-
-    public void removeFromCart(long orderId){
-        ordersIdList.remove(orderId);
+    public void removeFromCart(Order order){
+        ordersList.remove(order);
     }
 
     public List<Order> retrieveCartContent(){
-        return Stream.of(ordersIdList).map(oid -> access.retrieve(Order.class, oid)).collect(Collectors.toList());
+        return ordersList;
     }
 
     public void clearCart(){
-        ordersIdList.clear();
+        ordersList.clear();
     }
 }
