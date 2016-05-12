@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable name="query" type="com.hgyw.bookshare.entities.BookQuery"/>
+    </data>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <EditText android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/book_title"
+            android:text="@={query.titleQuery}"
+            android:singleLine="true" />
+
+        <EditText android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/author_name"
+            android:text="@={query.authorQuery}"
+            android:singleLine="true" />
+
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/genre_spinner"
+            android:layout_gravity="center_horizontal"
+            android:spinnerMode="dropdown"
+            android:touchscreenBlocksFocus="false"
+            android:transitionGroup="false"
+            />
+
+        <EditText android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/from_price"
+            android:text="\@={query.beginPrice}"
+            android:singleLine="true"
+            android:inputType="numberDecimal"
+            android:id="@+id/from_price" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/to_price"
+            android:text="@={query.endPrice}"
+            android:singleLine="true"
+            android:inputType="numberDecimal" />
+
+    </LinearLayout>
+</layout>

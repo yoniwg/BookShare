@@ -1,8 +1,9 @@
 package com.hgyw.bookshare;
 
 import android.app.Fragment;
-import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -13,12 +14,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
+import com.hgyw.bookshare.entities.BookQuery;
 import com.hgyw.bookshare.logicAccess.AccessManager;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+    public static final String ARG_FRAGMENT_CLASS = "fragmentClass";
 
     private DrawerLayout drawer;
     private AccessManager accessManager;
@@ -46,16 +51,32 @@ public class MainActivity extends AppCompatActivity
 
         accessManager = AccessManagerFactory.getInstance();
 
-
+        /*getFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, BooksListFragment.newInstance())
+                .commit();*/
     }
 
-    private void toNewFragment() {
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        Fragment fragment = new BooksListFragment(accessManager.getGeneralAccess());
-        ft.add(R.id.fragment_container, fragment);
+    @Override
+    protected void onNewIntent(Intent newIntent) {
+        super.onNewIntent(newIntent);
+        Class fragmentClass = (Class) newIntent.getSerializableExtra(ARG_FRAGMENT_CLASS);
+        Bundle argumentsBundle = newIntent.getExtras();
+        Fragment fragment;
+        if (fragmentClass == BooksListFragment.class) {
+            fragment = BooksListFragment.newInstance();
+        } else if (fragmentClass == Void.class) {
+            fragment = null;
+        } else {
+            throw new IllegalArgumentException("Class " + fragmentClass.getSimpleName() + " is not expected as fragment.");
+        }
+        fragment.setArguments(argumentsBundle);
+
+        getFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .commit();
         //ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         //ft.addToBackStack(null);
-        ft.commit();
+
     }
 
     @Override
@@ -76,17 +97,15 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                return true;
+            case R.id.action_search:
+                DialogsFactory.by(this).newBookQueryDialog(new BookQuery()).show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -98,7 +117,10 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_camera) {
             // Handle the camera action
         } else if (id == R.id.nav_gallery) {
-            toNewFragment();
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra(MainActivity.ARG_FRAGMENT_CLASS, BooksListFragment.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {

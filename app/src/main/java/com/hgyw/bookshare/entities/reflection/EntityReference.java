@@ -1,4 +1,4 @@
-package com.hgyw.bookshare.entities;
+package com.hgyw.bookshare.entities.reflection;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookQuery;
+import com.hgyw.bookshare.entities.BookSummary;
 import com.hgyw.bookshare.entities.BookSupplier;
 import com.hgyw.bookshare.entities.Credentials;
 import com.hgyw.bookshare.entities.Customer;
@@ -81,5 +82,7 @@ public interface DataAccess extends Crud {
      * @return Collection of referring items.
      * @throws java.util.NoSuchElementException if reffered items are not found.
      */
-    <T extends Entity> Collection<T> findEntityReferTo(Class<T> referringClass, IdReference... referredItems);
+    <T extends Entity> List<T> findEntityReferTo(Class<T> referringClass, IdReference... referredItems);
+
+    BookSummary getBookSummary(Book book);
 }

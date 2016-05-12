@@ -82,15 +82,17 @@ enum AccessManagerImpl implements AccessManager {
 
     @Override
     public CustomerAccess getCustomerAccess() {
-        if (currentAccess instanceof CustomerAccess)
+        if (currentAccess instanceof CustomerAccess) {
             return (CustomerAccess) currentAccess;
+        }
         throw new IllegalStateException("Customer user has not registered.");
     }
 
     @Override
     public SupplierAccess getSupplierAccess() {
-        if (currentAccess instanceof SupplierAccess)
+        if (currentAccess instanceof SupplierAccess) {
             return (SupplierAccess) currentAccess;
+        }
         throw new IllegalStateException("Supplier user has not registered.");
     }
 

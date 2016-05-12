@@ -7,20 +7,26 @@ import com.annimon.stream.function.Function;
 import com.annimon.stream.function.Predicate;
 
 import java.math.BigDecimal;
+import java.util.AbstractMap;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookQuery;
+import com.hgyw.bookshare.entities.BookReview;
+import com.hgyw.bookshare.entities.BookSummary;
 import com.hgyw.bookshare.entities.BookSupplier;
 import com.hgyw.bookshare.entities.Credentials;
 import com.hgyw.bookshare.entities.Customer;
 import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.entities.IdReference;
 import com.hgyw.bookshare.entities.Order;
+import com.hgyw.bookshare.entities.Rating;
 import com.hgyw.bookshare.entities.Supplier;
 import com.hgyw.bookshare.entities.Transaction;
 import com.hgyw.bookshare.entities.User;
@@ -115,10 +121,30 @@ class DataAccessListImpl extends ListsCrudImpl implements DataAccess {
 
 
     @Override
-    public <T extends Entity> Collection<T> findEntityReferTo(Class<T> referringClass, IdReference ... referredItems) {
+    public <T extends Entity> List<T> findEntityReferTo(Class<T> referringClass, IdReference ... referredItems) {
         // TODO CHECKING!
         Predicate<T> predicate = EntityReflection.predicateEntityReferTo(referringClass, referredItems);
         return streamAllNonDeleted(referringClass).filter(predicate).collect(Collectors.toList());
+    }
+
+    @Override
+    public BookSummary getBookSummary(Book book) {
+        BookSummary bookSummary = new BookSummary();
+        Collection<BigDecimal> prices = streamAllNonDeleted(BookSupplier.class)
+                .filter(bs -> bs.getBookId() == book.getId())
+                .map(BookSupplier::getPrice)
+                .collect(Collectors.toList());
+        if (prices.size() != 0) {
+            bookSummary.setMinPrice(Collections.min(prices));
+            bookSummary.setMaxPrice(Collections.max(prices));
+        }
+        Map<Rating, Integer> ratingMap = streamAllNonDeleted(BookReview.class)
+                .filter(review -> review.getBookId() == book.getId())
+                .collect(Collectors.groupingBy(BookReview::getRating,
+                        Collectors.collectingAndThen(Collectors.counting(), Long::intValue)
+                ));
+        bookSummary.setRatingMap(ratingMap);
+        return bookSummary;
     }
 
     public <T extends Entity> Stream<T> streamAllNonDeleted(Class<? extends T> entityType) {

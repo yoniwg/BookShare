@@ -1,5 +1,8 @@
 package com.hgyw.bookshare.entities;
 
+import android.databinding.BindingAdapter;
+
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -8,7 +11,7 @@ import java.util.List;
 /**
  * Created by Yoni on 3/15/2016.
  */
-public class BookQuery{
+public class BookQuery implements Serializable {
 
     public enum SortByProperty{TITLE, AUTHOR, PRICE, POPULARITY}
 
@@ -18,8 +21,8 @@ public class BookQuery{
 
     private Book.Genre genreQuery = null;
 
-    private BigDecimal beginPrice = null;
-    private BigDecimal endPrice = null;
+    private BigDecimal beginPrice = BigDecimal.ZERO;
+    private BigDecimal endPrice = new BigDecimal(1000);
 
     private List<SortByProperty> sortByPropertyList = new LinkedList<>();
 
@@ -59,8 +62,16 @@ public class BookQuery{
         this.beginPrice = beginPrice;
     }
 
+    public void setBeginPrice(String beginPrice) {
+        this.beginPrice = new BigDecimal(beginPrice);
+    }
+
     public void setEndPrice(BigDecimal endPrice) {
         this.endPrice = endPrice;
+    }
+
+    public void setEndPrice(String endPrice) {
+        setEndPrice(new BigDecimal(endPrice));
     }
 
     public List<SortByProperty> getSortByPropertyList() {
@@ -69,5 +80,16 @@ public class BookQuery{
 
     public void addPrioritySortStack(SortByProperty sortByProperty) {
         sortByPropertyList.add(sortByProperty);
+    }
+
+    @Override
+    public String toString() {
+        return "BookQuery{" +
+                "endPrice=" + endPrice +
+                ", beginPrice=" + beginPrice +
+                ", genreQuery=" + genreQuery +
+                ", authorQuery='" + authorQuery + '\'' +
+                ", titleQuery='" + titleQuery + '\'' +
+                '}';
     }
 }

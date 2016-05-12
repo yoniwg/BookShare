@@ -5,11 +5,10 @@ import java.util.Comparator;
 /**
  * Created by Yoni on 3/15/2016.
  */
-public class Book extends Entity {
+public final class Book extends Entity {
 
     public enum Genre {ACTION, ROMANCE, SCIENCE, SCIENCE_FICTION,
         DRAMA, SATIRE, CHILDREN, COMICS, BIOGRAPHIES, FANTASY, HEALTH}
-
 
     private String title;
     private String bookAbstract;

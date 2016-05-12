@@ -6,6 +6,9 @@ package com.hgyw.bookshare.logicAccess;
 public class AccessManagerFactory {
 
     private static final AccessManager instance = AccessManagerImpl.INSTANCE;
+    static {
+        Test.test(instance);
+    }
 
     private AccessManagerFactory() {}
 

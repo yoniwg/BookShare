@@ -1,5 +1,7 @@
 package com.hgyw.bookshare.entities;
 
+import com.hgyw.bookshare.entities.reflection.EntityReference;
+
 /**
  * Created by Yoni on 3/15/2016.
  */

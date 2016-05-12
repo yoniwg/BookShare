@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">שיתוף ספרים</string>
+    <string name="action_settings">הגדרות</string>
+    <string name="author_name">שם המחבר</string>
+    <string name="book_title">שם הספר</string>
+    <string name="dialog_title_book_quary">סנן ספרים</string>
+    <string name="from_price">ממחיר</string>
+    <string name="navigation_drawer_close"></string>
+    <string name="to_price">עד מחיר</string>
+    <string name="genre_action">פעולה</string>
+    <string name="genre_biographies">ביוגרפיה</string>
+    <string name="genre_children">ילדים</string>
+    <string name="genre_comics">קומיקס</string>
+    <string name="genre_drama">דרמה</string>
+    <string name="genre_fantasy">פנטזיה</string>
+    <string name="genre_health">בריאות</string>
+    <string name="genre_romance">רומנטיקה</string>
+    <string name="genre_satire">סאטירה</string>
+    <string name="genre_science">מדע</string>
+    <string name="genre_science_fiction">מדע בדיוני</string>
+    <string name="hello_blank_fragment"></string>
+    <string name="search">חפש</string>
+    <string name="filter">סנן</string>
+</resources>

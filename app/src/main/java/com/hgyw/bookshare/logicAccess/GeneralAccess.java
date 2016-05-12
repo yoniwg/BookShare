@@ -7,6 +7,7 @@ import java.util.List;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookQuery;
 import com.hgyw.bookshare.entities.BookReview;
+import com.hgyw.bookshare.entities.BookSummary;
 import com.hgyw.bookshare.entities.BookSupplier;
 import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.entities.Supplier;
@@ -29,7 +30,7 @@ public interface GeneralAccess {
      * @param book
      * @return
      */
-    BigDecimal[] findBookPricesRange(Book book);
+    BookSummary getBookSummary(Book book);
 
     /**
      * Find special offers for current user.
@@ -43,7 +44,7 @@ public interface GeneralAccess {
      * @param book the book.
      * @return collection of BookReview.
      */
-    Collection<BookReview> getBookReviews(Book book);
+    List<BookReview> findBookReviews(Book book);
 
     /**
      * Retrieve BookSuppliers of book.
@@ -51,7 +52,7 @@ public interface GeneralAccess {
      * @return Collection of BookSuppliers.
      * @throws java.util.NoSuchElementException if the book is not found in database
      */
-    Collection<BookSupplier> retrieveSuppliers(Book book);
+    List<BookSupplier> findBookSuppliers(Book book);
 
     /**
      * Retrieve Books of Suppliers.
@@ -59,7 +60,7 @@ public interface GeneralAccess {
      * @return Collection of BookSuppliers.
      * @throws java.util.NoSuchElementException if the supplier is not found in database
      */
-    Collection<BookSupplier> retrieveBooksOfSuppliers(Supplier supplier);
+    List<BookSupplier> findBooksOfSuppliers(Supplier supplier);
 
 
      <T extends Entity> T retrieve(Class<T> entityClass, long entityId);

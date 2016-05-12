@@ -11,6 +11,7 @@ import com.hgyw.bookshare.dataAccess.DataAccess;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookQuery;
 import com.hgyw.bookshare.entities.BookReview;
+import com.hgyw.bookshare.entities.BookSummary;
 import com.hgyw.bookshare.entities.BookSupplier;
 import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.entities.Supplier;
@@ -42,17 +43,8 @@ class GeneralAccessImpl implements GeneralAccess {
     }
 
     @Override
-    public BigDecimal[] findBookPricesRange(Book book) {
-        Collection<BigDecimal> prices = Stream.of(retrieveSuppliers(book))
-                .map(BookSupplier::getPrice)
-                .collect(Collectors.toList());
-        if (prices.size() == 0) {
-            return new BigDecimal[] {BigDecimal.ZERO, BigDecimal.ZERO};
-        }
-        return new BigDecimal[] {
-                Stream.of(prices).min(BigDecimal::compareTo).get(),
-                Stream.of(prices).max(BigDecimal::compareTo).get()
-        };
+    public BookSummary getBookSummary(Book book) {
+        return dataAccess.getBookSummary(book);
     }
 
     @Override
@@ -61,17 +53,17 @@ class GeneralAccessImpl implements GeneralAccess {
     }
 
     @Override
-    public Collection<BookReview> getBookReviews(Book book) {
+    public List<BookReview> findBookReviews(Book book) {
         return dataAccess.findEntityReferTo(BookReview.class, book);
     }
 
     @Override
-    public Collection<BookSupplier> retrieveSuppliers(Book book) {
+    public List<BookSupplier> findBookSuppliers(Book book) {
         return dataAccess.findEntityReferTo(BookSupplier.class, book);
     }
 
     @Override
-    public Collection<BookSupplier> retrieveBooksOfSuppliers(Supplier supplier) {
+    public List<BookSupplier> findBooksOfSuppliers(Supplier supplier) {
         return dataAccess.findEntityReferTo(BookSupplier.class, supplier);
     }
 

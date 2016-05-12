@@ -1,5 +1,7 @@
 package com.hgyw.bookshare.entities;
 
+import com.hgyw.bookshare.entities.reflection.EntityReference;
+
 import java.util.Date;
 
 /**

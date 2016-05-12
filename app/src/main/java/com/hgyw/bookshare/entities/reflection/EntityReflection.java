@@ -7,7 +7,6 @@ import com.annimon.stream.function.Predicate;
 import java.util.Map;
 
 import com.hgyw.bookshare.entities.Entity;
-import com.hgyw.bookshare.entities.EntityReference;
 import com.hgyw.bookshare.entities.IdReference;
 
 /**
@@ -16,15 +15,30 @@ import com.hgyw.bookshare.entities.IdReference;
 public class EntityReflection {
     private EntityReflection() {}
 
+    /**
+     * Returns predicate that check whether an item of class T refer to all referredItems
+     * @param referringClass
+     * @param referredItems
+     * @param <T>
+     * @return
+     */
     public static <T extends Entity> Predicate<T> predicateEntityReferTo(Class<T> referringClass, IdReference ... referredItems) {
-        Map<Class<T>, Property> properties = Stream.of(PropertiesReflection.getPropertiesMap(referringClass).values())
-                .filter(p -> p.getFieldAnnotation(EntityReference.class) != null)
-                .collect(Collectors.toMap(p -> p.getFieldAnnotation(EntityReference.class).value(), p -> p));
+        Map<Class<? extends Entity>, Property> properties = getReferringProperties(referringClass);
         return item -> Stream.of(referredItems).allMatch(refItem -> {
             Property refTypeProperty = properties.get(refItem.getEntityType());
             return refTypeProperty != null && ((long) refTypeProperty.get(item)) == refItem.getId();
         });
+    }
 
+    /**
+     *
+     * @param referringClass
+     * @return
+     */
+    public static Map<Class<? extends Entity>, Property> getReferringProperties(Class<? extends Entity> referringClass) {
+        return Stream.of(PropertiesReflection.getPropertiesMap(referringClass).values())
+                .filter(p -> p.getFieldAnnotation(EntityReference.class) != null)
+                .collect(Collectors.toMap(p -> p.getFieldAnnotation(EntityReference.class).value(), p -> p));
     }
 
 }

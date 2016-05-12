@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/BookShare.iml" filepath="$PROJECT_DIR$/BookShare.iml" />
       <module fileurl="file://$PROJECT_DIR$/BookSharing.iml" filepath="$PROJECT_DIR$/BookSharing.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>

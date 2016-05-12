@@ -3,7 +3,7 @@ package com.hgyw.bookshare.entities;
 /**
  * Created by haim7 on 04/05/2016.
  */
-public abstract class IdReference {
+public abstract class IdReference<E extends Entity> {
 
     public abstract long getId();
 

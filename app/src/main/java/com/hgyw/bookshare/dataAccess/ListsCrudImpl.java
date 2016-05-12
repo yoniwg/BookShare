@@ -11,8 +11,8 @@ import java.util.NoSuchElementException;
 
 import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.entities.IdReference;
+import com.hgyw.bookshare.entities.reflection.EntityReflection;
 import com.hgyw.bookshare.entities.reflection.Property;
-import com.hgyw.bookshare.entities.reflection.PropertiesReflection;
 
 /**
  * Created by Yoni on 3/17/2016.
@@ -27,6 +27,7 @@ class ListsCrudImpl implements Crud {
     @Override
     public void create(Entity item) {
         item.setDeleted(false);
+        checkAreReferencesLegal(item);
         List<Entity> entityList = getListOrCreate(item.getClass());
 
         if (item.getId() != 0) {
@@ -34,6 +35,15 @@ class ListsCrudImpl implements Crud {
         }
         generateNewId(item);
         entityList.add(item.clone());
+    }
+
+    private void checkAreReferencesLegal(Entity item) {
+        Stream.of(EntityReflection.getReferringProperties(item.getClass()).entrySet())
+                .forEach(keyValue -> {
+                    Class<? extends Entity> referredClass = keyValue.getKey();
+                    Property referredIdProperty = keyValue.getValue();
+                    retrieve(referredClass, (Long) referredIdProperty.get(item)); // Just to throw exception when referred is not found
+                });
     }
 
     private List<Entity> getListOrCreate(Class<? extends Entity> clazz) {
@@ -53,6 +63,7 @@ class ListsCrudImpl implements Crud {
 
     @Override
     public void update(Entity item) {
+        checkAreReferencesLegal(item);
         item.setDeleted(false);
         List<Entity> entityList = entitiesMap.get(item.getClass());
         entityList.remove(item);
