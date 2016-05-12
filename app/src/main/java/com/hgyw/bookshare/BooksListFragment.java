@@ -4,6 +4,8 @@ import android.app.Dialog;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,5 +62,11 @@ public class BooksListFragment extends Fragment {
             Toast.makeText(activity, book.shortDescription(), Toast.LENGTH_SHORT).show();
             EntityActivity.startNewActivity(activity, book.getEntityType(), book.getId());
         });
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_book_list, menu);
     }
 }

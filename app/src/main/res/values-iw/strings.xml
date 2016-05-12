@@ -22,4 +22,8 @@
     <string name="hello_blank_fragment"></string>
     <string name="search">חפש</string>
     <string name="filter">סנן</string>
+    <string name="cancel">ביטול</string>
+    <string name="suppliers">ספקים</string>
+    <string name="suppliers_colon">ספקים:</string>
+    <string name="title_activity_book"></string>
 </resources>

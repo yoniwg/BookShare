@@ -1,16 +1,20 @@
 package com.hgyw.bookshare;
 
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookReview;
+import com.hgyw.bookshare.entities.BookSummary;
 import com.hgyw.bookshare.entities.BookSupplier;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.GeneralAccess;
@@ -34,16 +38,34 @@ public class BookFragment extends EntityFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        Book book = AccessManagerFactory.getInstance().getGeneralAccess().retrieve(Book.class, entityId);
-        TextView bookText = (TextView) getActivity().findViewById(R.id.bookTextView);
-        bookText.setText(book.toString());
-
         GeneralAccess access = AccessManagerFactory.getInstance().getGeneralAccess();
-        ListView supplierListView = (ListView) getActivity().findViewById(R.id.supplierListView);
+        Activity activity = getActivity();
+        Book book = access.retrieve(Book.class, entityId);
+
+        TextView titleView = (TextView) activity.findViewById(R.id.bookTitleTextView);
+        titleView.setText(book.getTitle());
+        TextView authorView = (TextView) activity.findViewById(R.id.bookAuthorTextView);
+        authorView.setText(book.getAuthor());
+        TextView priceView = (TextView) activity.findViewById(R.id.bookPriceTextView);
+        authorView.setText(book.getAuthor());
+        ImageView imageView = (ImageView) activity.findViewById(R.id.bookImageView);
+        Utility.setImageById(imageView, book.getImageId());
+        RatingBar ratingBar = (RatingBar) activity.findViewById(R.id.bookRatingBar);
+
+        BookSummary bookSummary = access.getBookSummary(book);
+        ratingBar.setRating(bookSummary.clacMeanRating());
+        TextView ratingTextView = (TextView) activity.findViewById(R.id.bookRatingTextView);
+        ratingTextView.setText(Utility.moneyRangeToString(bookSummary.getMinPrice(), bookSummary.getMaxPrice()));
+
         ListView reviewsListView = (ListView) getActivity().findViewById(R.id.reviewListView);
-        List<BookSupplier> supplierList = access.findBookSuppliers(book);
         List<BookReview> bookReviewList = access.findBookReviews(book);
+        bookReviewList = bookReviewList.subList(0, Math.min(bookReviewList.size(), 2));
+        reviewsListView.setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, bookReviewList));
+
+        ListView supplierListView = (ListView) getActivity().findViewById(R.id.supplierListView);
+        List<BookSupplier> supplierList = access.findBookSuppliers(book);
         supplierListView.setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, supplierList));
-        supplierListView.setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, bookReviewList));
+
+
     }
 }

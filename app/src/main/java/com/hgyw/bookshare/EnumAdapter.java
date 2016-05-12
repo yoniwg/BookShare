@@ -12,7 +12,13 @@ import java.util.List;
  * Created by haim7 on 11/05/2016.
  */
 public class EnumAdapter<E extends Enum<E>> extends ArrayAdapter<E> {
-
+    String[] strings;
+    {
+        strings = new String[getCount()];
+        for (int i = 0; i < strings.length; i++) {
+            //strings[i] = generateString(getItem(i));
+        }
+    }
     public EnumAdapter(Context context, int resource, int textViewResourceId, List<E> objects) {
         super(context, resource, textViewResourceId, objects);
     }

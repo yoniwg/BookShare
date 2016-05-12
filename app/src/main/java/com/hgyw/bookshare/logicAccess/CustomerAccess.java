@@ -90,24 +90,24 @@ public interface CustomerAccess extends GeneralAccess {
     void updateOrderRating(long orderId, OrderRating orderRating);
 
     /**
-     * Add new review by current user for a book.
+     * Add new beautiful_list_item by current user for a book.
      * The BookReview.customer will set to current user, and id will be generated.
-     * @param bookReview the new book review
-     * @throws IllegalStateException if current user already has review on this book
+     * @param bookReview the new book beautiful_list_item
+     * @throws IllegalStateException if current user already has beautiful_list_item on this book
      */
     void addBookReview(BookReview bookReview);
 
     /**
-     * update exists review.
-     * @param bookReview the book review
-     * @throws IllegalArgumentException if this review is not belong to current user.
-     * @throws java.util.NoSuchElementException if review is not found.
+     * update exists beautiful_list_item.
+     * @param bookReview the book beautiful_list_item
+     * @throws IllegalArgumentException if this beautiful_list_item is not belong to current user.
+     * @throws java.util.NoSuchElementException if beautiful_list_item is not found.
      */
     void updateBookReview(BookReview bookReview); // TODO: Problem with changing the referenced entity
 
     /**
-     * remove a book review
-     * @param bookReview the review with ID to delete
+     * remove a book beautiful_list_item
+     * @param bookReview the beautiful_list_item with ID to delete
      * @throws IllegalArgumentException if the BookReview is not of current user.
      * @throws java.util.NoSuchElementException if the BookReview is not found in database.
      */

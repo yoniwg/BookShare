@@ -15,7 +15,7 @@ public final class Book extends Entity {
     private String bookAbstract;
     private String author;
     private Genre genre = Genre.GENERAL;
-    private byte[] image;
+    private long imageId;
 
     public String getTitle() {
         return title;
@@ -49,16 +49,16 @@ public final class Book extends Entity {
         this.genre = Objects.requireNonNull(genre);
     }
 
-    public byte[] getImage() {
-        return image;
-    }
-
-    public void setImage(byte[] image) {
-        this.image = image;
-    }
-
     @Override
     public String shortDescription() {
         return super.shortDescription() + " '" + getTitle() + "'";
+    }
+
+    public long getImageId() {
+        return imageId;
+    }
+
+    public void setImageId(long imageId) {
+        this.imageId = imageId;
     }
 }

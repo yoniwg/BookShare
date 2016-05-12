@@ -1,5 +1,6 @@
 package com.hgyw.bookshare.logicAccess;
 
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
@@ -64,4 +65,5 @@ public interface GeneralAccess {
 
 
      <T extends Entity> T retrieve(Class<T> entityClass, long entityId);
+
 }

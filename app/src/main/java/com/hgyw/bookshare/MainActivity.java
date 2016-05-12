@@ -50,12 +50,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
 
         accessManager = AccessManagerFactory.getInstance();
-
-
-
-        /*getFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, BooksListFragment.newInstance())
-                .commit();*/
+        if (getIntent() != null) {
+            //onNewIntent(getIntent());
+        }
     }
 
     @Override

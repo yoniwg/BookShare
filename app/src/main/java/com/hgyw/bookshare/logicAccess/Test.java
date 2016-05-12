@@ -247,7 +247,7 @@ public class Test {
         orderRating.setItemAsDescribed(Rating.BAD);
         cAccess.updateOrderRating(Stream.of(orders).skip(1).findFirst().get().getId(), orderRating);
 
-        // book review
+        // book beautiful_list_item
         BookReview bookReview = new BookReview();
         bookReview.setBookId(book.getId());
         bookReview.setTitle("Bad Book");

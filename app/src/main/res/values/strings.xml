@@ -17,8 +17,6 @@
     <string name="from_price">from price</string>
     <string name="to_price">to price</string>
 
-    <string name="action">action</string>
-
     <string name="genre_action">action</string>
     <string name="genre_romance">romance</string>
     <string name="genre_science">science</string>
@@ -33,6 +31,8 @@
     <string name="search">Search</string>
     <string name="filter">Filter</string>
     <string name="cancel">Cancel</string>
+    <string name="suppliers">Suppliers</string>
+    <string name="suppliers_colon">Suppliers:</string>
 
     <string-array name="planets_array">
         <item>Mercury</item>

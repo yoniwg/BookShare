@@ -129,7 +129,7 @@ class CustomerAccessImpl extends GeneralAccessImpl implements CustomerAccess {
         bookReview.setCustomerId(currentUser.getId());
         Book book = retrieve(Book.class, bookReview.getBookId());
         if (dataAccess.findEntityReferTo(BookReview.class, currentUser, book).size() > 0) {
-            throw new IllegalStateException("The user already has review on this book!");
+            throw new IllegalStateException("The user already has beautiful_list_item on this book!");
         }
         dataAccess.create(bookReview);
     }

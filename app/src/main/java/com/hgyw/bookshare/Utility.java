@@ -1,11 +1,21 @@
 package com.hgyw.bookshare;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.widget.ImageView;
 
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
 import com.hgyw.bookshare.entities.Book;
+import com.hgyw.bookshare.entities.ImageEntity;
+import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -37,4 +47,24 @@ public class Utility {
         return string;
     }
 
+    public static boolean setImageById(ImageView imageView, long imageId) {
+        if (imageId == 0) return false;
+        ImageEntity imageEntity = AccessManagerFactory.getInstance().getGeneralAccess().retrieve(ImageEntity.class, imageId);
+        byte[] bytes = imageEntity.getBytes();
+        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        imageView.setImageBitmap(bitmap);
+        return true;
+    }
+
+    public static String moneyToString(BigDecimal minPrice) {
+        final char newShekelSign = '\u20AA';
+        return minPrice.setScale(2).toString() + newShekelSign;
+    }
+
+    public static String moneyRangeToString(BigDecimal minPrice, BigDecimal maxPrice) {
+        String minString = moneyToString(minPrice);
+        String maxString = moneyToString(maxPrice);
+        if (minString.equals(maxString)) return minString;
+        return minString + " \u2014 " + maxString;
+    }
 }

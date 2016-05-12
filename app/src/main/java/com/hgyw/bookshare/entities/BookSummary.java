@@ -4,7 +4,9 @@ import com.annimon.stream.Stream;
 
 import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by haim7 on 10/05/2016.
@@ -32,15 +34,16 @@ public class BookSummary {
     }
 
     public Map<Rating, Integer> getRatingMap() {
-        return ratingMap;
+        return Collections.unmodifiableMap(ratingMap);
     }
 
     public void setRatingMap(Map<Rating, Integer> ratingMap) {
-        this.ratingMap = ratingMap;
+        this.ratingMap = new HashMap<>(ratingMap);
+        this.ratingMap.remove(Rating.EMPTY);
     }
 
-    public float getMeanRating() {
-        if (getRatingMap().isEmpty()) return 0.0f;
+    public float clacMeanRating() {
+        if (ratingMap.isEmpty()) return 0.0f;
         int startsSum =  Stream.of(ratingMap.entrySet())
                 .map(kv -> kv.getKey().getStarts() * kv.getValue())
                 .reduce(0, (i,j) -> i+j);

@@ -14,7 +14,7 @@ public abstract class User extends Entity {
     private String firstName;
     private String lastName;
     private Date birthday;
-    private byte[] image;
+    private long imageId;
 
     public Credentials getCredentials() {
         return credentials;
@@ -72,12 +72,12 @@ public abstract class User extends Entity {
         this.birthday = birthday;
     }
 
-    public byte[] getImage() {
-        return image;
+    public long getImageId() {
+        return imageId;
     }
 
-    public void setImage(byte[] image) {
-        this.image = image;
+    public void setImageId(long imageId) {
+        this.imageId = imageId;
     }
 
     abstract public UserType getUserType();

@@ -3,6 +3,7 @@ package com.hgyw.bookshare.logicAccess;
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
 
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
