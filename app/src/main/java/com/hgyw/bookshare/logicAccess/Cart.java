@@ -17,7 +17,7 @@ public class Cart implements Serializable {
 
     final private CustomerAccess access;
 
-    private ArrayList<Long> ordersIdList = new ArrayList<>();
+    private final ArrayList<Long> ordersIdList = new ArrayList<>();
 
     public Cart(CustomerAccessImpl customerAccess) {
         access = customerAccess;
@@ -28,14 +28,14 @@ public class Cart implements Serializable {
     }
 
     public void removeFromCart(long orderId){
-        ordersIdList = Stream.of(ordersIdList).filter(o -> o != orderId).collect(Collectors.toCollection(ArrayList::new));
+        ordersIdList.remove(orderId);
     }
 
     public List<Order> retrieveCartContent(){
         return Stream.of(ordersIdList).map(oid -> access.retrieve(Order.class, oid)).collect(Collectors.toList());
     }
 
-    public void emptyCart(){
-        ordersIdList = new ArrayList<>();
+    public void clearCart(){
+        ordersIdList.clear();
     }
 }
