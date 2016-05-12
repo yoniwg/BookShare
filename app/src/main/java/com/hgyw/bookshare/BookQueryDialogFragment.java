@@ -2,6 +2,8 @@ package com.hgyw.bookshare;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
@@ -46,13 +48,17 @@ public class BookQueryDialogFragment extends DialogFragment {
         defineSpinner(genreSpinner);
         updateObjectToView(bookQuery, view);
 
+
         // build dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(view)
                 .setTitle(R.string.dialog_title_book_quary)
-                .setNeutralButton(getString(R.string.filter), (dialog1, which) -> {
-                    IntentsFactory.newBookListIntent(getActivity(), bookQuery);
-                    Toast.makeText(BookQueryDialogFragment.this.getActivity(), bookQuery.toString(), Toast.LENGTH_LONG).show();
+                .setNegativeButton(R.string.cancel, (dialog, which) -> onCancel(dialog))
+                .setPositiveButton(getString(R.string.filter), (dialog1, which) -> {
+                    BookQuery resultBookQuery = resultObjectFromView();
+                    Intent intent = IntentsFactory.newBookListIntent(getActivity(), resultBookQuery);
+                    getActivity().startActivity(intent);
+                    Toast.makeText(BookQueryDialogFragment.this.getActivity(), resultBookQuery.toString(), Toast.LENGTH_LONG).show();
                 });
 
         return builder.create();
@@ -61,10 +67,11 @@ public class BookQueryDialogFragment extends DialogFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putSerializable(ARG_DIALOG_BOOK_QUERY, createObjectFromView(getDialog()));
+        outState.putSerializable(ARG_DIALOG_BOOK_QUERY, resultObjectFromView());
     }
 
-    private static <E extends Enum<E>> void updateObjectToView(BookQuery bookQuery, View view) {
+    private static void updateObjectToView(BookQuery bookQuery, View view) {
+
         TextView titleView = (TextView) view.findViewById(R.id.title_query);
         TextView authorView = (TextView) view.findViewById(R.id.author_query);
         // TODO and spinner
@@ -80,7 +87,8 @@ public class BookQueryDialogFragment extends DialogFragment {
         genreSpinner.setSelection(genreSelection.ordinal());
     }
 
-    private static BookQuery createObjectFromView(Dialog dialog) {
+    private BookQuery resultObjectFromView() {
+        Dialog dialog = getDialog();
         BookQuery bookQuery = new BookQuery();
 
         TextView titleView = (TextView) dialog.findViewById(R.id.title_query);
@@ -105,5 +113,6 @@ public class BookQueryDialogFragment extends DialogFragment {
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_list_item_multiple_choice);
         genreSpinner.setAdapter(arrayAdapter);
     }
+
 
 }

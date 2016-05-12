@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 return true;
             case R.id.action_search:
                 BookQueryDialogFragment.newInstance(new BookQuery())
-                        .show(getFragmentManager(), "bookQuaryDialog");
+                        .show(getFragmentManager(), "bookQueryDialog");
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
