@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -20,6 +21,7 @@ import com.hgyw.bookshare.entities.BookReview;
 import com.hgyw.bookshare.entities.BookSummary;
 import com.hgyw.bookshare.entities.BookSupplier;
 import com.hgyw.bookshare.entities.Supplier;
+import com.hgyw.bookshare.logicAccess.AbstractItemAdapter;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.GeneralAccess;
 
@@ -62,51 +64,22 @@ public class BookFragment extends EntityFragment {
         TextView ratingTextView = (TextView) activity.findViewById(R.id.bookRatingTextView);
         ratingTextView.setText(Utility.moneyRangeToString(bookSummary.getMinPrice(), bookSummary.getMaxPrice()));
 
-        ListView reviewsListView = (ListView) getActivity().findViewById(R.id.reviewListView);
+        ListView reviewsListView = (ListView) activity.findViewById(R.id.reviewListView);
         List<BookReview> bookReviewList = access.findBookReviews(book);
         bookReviewList = bookReviewList.subList(0, Math.min(bookReviewList.size(), 2));
-        reviewsListView.setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, bookReviewList));
+        reviewsListView.setAdapter(new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1, bookReviewList));
 
-        ListView supplierListView = (ListView) getActivity().findViewById(R.id.supplierListView);
+        LinearLayout bookMainLayout = (LinearLayout) activity.findViewById(R.id.bookMainLayout);
+        ListView supplierListView = (ListView) activity.findViewById(R.id.supplierListView); supplierListView.setVisibility(View.INVISIBLE);
         List<BookSupplier> bookSupplierList = access.findBookSuppliers(book);
-        supplierListView.setAdapter(new BaseAdapter() {
-            private Supplier suppliers[] = new Supplier[bookSupplierList.size()];
-
-            @Override
-            public int getCount() {
-                return bookSupplierList.size();
-            }
-
-            @Override
-            public Object getItem(int position) {
-                return bookSupplierList.get(position);
-            }
-
-            @Override
-            public long getItemId(int position) {
-                return position;
-            }
-
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                BeautifulListItemView view;
-                Stream.of(3,4,56,3).collect(Collectors.toCollection(ArrayList::new));
-                if (convertView == null) view = new BeautifulListItemView(activity);
-                else view = (BeautifulListItemView) convertView;
-
-                BookSupplier bookSupplier = bookSupplierList.get(position);
-                Supplier supplier;
-                if ((supplier = suppliers[position]) == null) {
-                    supplier = suppliers[position] = access.retrieve(Supplier.class, bookSupplier.getSupplierId());
-                }
-                view.getTitleView().setText(supplier.getFirstName() + " " + supplier.getLastName());
-                view.getDescriptionView().setText(supplier.getAddress());
-                view.getMoreTextView().setText(Utility.moneyToString(bookSupplier.getPrice()));
-                Utility.setImageById(view.getThumbnailView(), supplier.getImageId());
-                return view;
-            }
-        });
-
-
+        for (BookSupplier bookSupplier : bookSupplierList) {
+            Supplier supplier = access.retrieve(Supplier.class, bookSupplier.getSupplierId());
+            BeautifulListItemView view = new BeautifulListItemView(activity);
+            view.findTitleView().setText(supplier.getFirstName() + " " + supplier.getLastName());
+            view.findDescriptionView().setText(supplier.getAddress());
+            view.findMoreTextView().setText(Utility.moneyToString(bookSupplier.getPrice()));
+            Utility.setImageById(view.findThumbnailView(), supplier.getImageId());
+            bookMainLayout.addView(view);
+        }
     }
 }

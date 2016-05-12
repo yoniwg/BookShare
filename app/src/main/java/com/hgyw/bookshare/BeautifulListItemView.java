@@ -32,19 +32,19 @@ public class BeautifulListItemView extends RelativeLayout {
         super(context, attrs);
     }
 
-    public TextView getTitleView() {
+    public TextView findTitleView() {
         return titleView;
     }
 
-    public TextView getDescriptionView() {
+    public TextView findDescriptionView() {
         return descriptionView;
     }
 
-    public ImageView getThumbnailView() {
+    public ImageView findThumbnailView() {
         return thumbnailView;
     }
 
-    public TextView getMoreTextView() {
+    public TextView findMoreTextView() {
         return moreTextView;
     }
 }
