@@ -33,6 +33,7 @@
     <string name="cancel">Cancel</string>
     <string name="suppliers">Suppliers</string>
     <string name="suppliers_colon">Suppliers:</string>
+    <string name="buy">buy</string>
 
     <string-array name="planets_array">
         <item>Mercury</item>

@@ -24,7 +24,7 @@ import com.hgyw.bookshare.exceptions.OrdersTransactionException;
 class CustomerAccessImpl extends GeneralAccessImpl implements CustomerAccess {
 
     final private Customer currentUser;
-    private Cart cart = new Cart();
+    final private Cart cart = new Cart(this);
 
     public CustomerAccessImpl(DataAccess crud, Customer currentUser) {
         super(crud, currentUser);

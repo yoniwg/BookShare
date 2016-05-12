@@ -1,8 +1,10 @@
 package com.hgyw.bookshare;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -61,9 +63,8 @@ public class CartFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         ListView listView = (ListView) activity.findViewById(R.id.order_list);
-
-        List<Long> ordersIdList = (List<Long>) getArguments().get(IntentsFactory.ARG_CART);
-        List<Order> ordersList = Stream.of(ordersIdList).map(oid -> access.retrieve(Order.class, oid)).collect(Collectors.toList());
+        Cart cart = (Cart) getArguments().get(IntentsFactory.ARG_CART);
+        List<Order> ordersList = cart.retrieveCartContent();
         ArrayAdapter<Order> arrayAdapter = new ArrayAdapter<Order>(activity, android.R.layout.simple_list_item_1, ordersList);
 
         listView.setAdapter(arrayAdapter);
@@ -74,5 +75,11 @@ public class CartFragment extends Fragment {
             Toast.makeText(activity, order.shortDescription(), Toast.LENGTH_SHORT).show();
             EntityActivity.startNewActivity(activity, order.getEntityType(), order.getId());
         });
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_cart, menu);
     }
 }

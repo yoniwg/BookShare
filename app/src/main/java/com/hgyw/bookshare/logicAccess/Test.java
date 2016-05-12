@@ -217,6 +217,7 @@ public class Test {
                     order.setUnitPrice(bs.getPrice());
                     return order;
                 }).collect(Collectors.toList());
+        Stream.of(orders).map(Order::getId).forEach(ord -> finalCAccess.getCart().addToCart(ord));
         Transaction transaction = new Transaction();
         transaction.setCreditCard("231972947817861868");
         try {

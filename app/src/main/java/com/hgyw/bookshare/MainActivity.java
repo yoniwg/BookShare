@@ -17,10 +17,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.annimon.stream.Stream;
 import com.hgyw.bookshare.entities.BookQuery;
+import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.logicAccess.AccessManager;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
+
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -98,6 +103,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.action_search:
                 BookQueryDialogFragment.newInstance(new BookQuery())
                         .show(getFragmentManager(), "bookQueryDialog");
+                return true;
+            case R.id.action_buy:
+                List<Order> oList = accessManager.getCustomerAccess().getCart().retrieveCartContent();
+                Toast.makeText(this, "You are going to buy:" + oList.toString(),Toast.LENGTH_SHORT);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
