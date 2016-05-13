@@ -67,7 +67,7 @@ public class BookFragment extends EntityFragment {
         for (BookSupplier bookSupplier : bookSupplierList) {
             Supplier supplier = access.retrieve(Supplier.class, bookSupplier.getSupplierId());
             View view = activity.getLayoutInflater().inflate(R.layout.book_supplier_list_item, null);
-            ObjectToViewAppliers.applyBookSupplier(view, bookSupplier, supplier);
+            ObjectToViewAppliers.applyBookSupplier(view, bookSupplier);
             Button button = (Button) view.findViewById(R.id.button);
             button.setText(R.string.do_order);
             button.findViewById(R.id.button).setOnClickListener(v -> {

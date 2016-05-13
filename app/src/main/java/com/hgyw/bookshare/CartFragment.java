@@ -1,12 +1,17 @@
 package com.hgyw.bookshare;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.text.style.TtsSpan;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -63,16 +68,36 @@ public class CartFragment extends Fragment {
         ListView listView = (ListView) activity.findViewById(R.id.order_list);
         Cart cart = cAccess.getCart();
         List<Order> ordersList = cart.retrieveCartContent();
-        ArrayAdapter<Order> arrayAdapter = new ArrayAdapter<Order>(activity, android.R.layout.simple_list_item_1, ordersList);
 
-        listView.setAdapter(arrayAdapter);
+        ApplyObjectAdapter<Order> adapter = new ApplyObjectAdapter<Order>(activity, R.layout.order_list_item, ordersList) {
+            @Override
+            protected void applyOnView(View view, int position) {
+                Order order = getItem(position);
+                ObjectToViewAppliers.applyOrder(view, order);
+            }
+        };
+        listView.setAdapter(adapter);
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
-            Order order = arrayAdapter.getItem(position);
+            Order order = adapter.getItem(position);
 
             Toast.makeText(activity, order.shortDescription(), Toast.LENGTH_SHORT).show();
             EntityActivity.startNewActivity(activity, order.getEntityType(), order.getId());
         });
+
+        listView.setOnItemLongClickListener((parent, view, position, id)-> {
+                    Order order = adapter.getItem(position);
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                    builder.setView(view)
+                            .setMessage(R.string.delete_order_title)
+                            .setNegativeButton(R.string.yes, (dialog, which) -> cAccess.getCart().removeFromCart(order))
+                            .setPositiveButton(R.string.no, (dialog, which) -> {
+                            });
+                    builder.create().show();
+                    return true;
+                }
+        );
     }
 
     @Override

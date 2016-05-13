@@ -3,6 +3,7 @@ package com.hgyw.bookshare;
 import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.NumberPicker;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -11,7 +12,10 @@ import com.hgyw.bookshare.entities.BookReview;
 import com.hgyw.bookshare.entities.BookSummary;
 import com.hgyw.bookshare.entities.BookSupplier;
 import com.hgyw.bookshare.entities.Customer;
+import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.Supplier;
+import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
+import com.hgyw.bookshare.logicAccess.GeneralAccess;
 
 import java.text.MessageFormat;
 
@@ -19,6 +23,9 @@ import java.text.MessageFormat;
  * Created by haim7 on 13/05/2016.
  */
 public class ObjectToViewAppliers {
+
+    private static GeneralAccess access = AccessManagerFactory.getInstance().getGeneralAccess();
+
     public static void applyBook(View view, Book book, BookSummary summary) {
         Context context = view.getContext();
 
@@ -51,12 +58,34 @@ public class ObjectToViewAppliers {
         if (userImage != null) Utility.setImageById(userImage, reviewer.getImageId());
     }
 
-    public static void applyBookSupplier(View view, BookSupplier bookSupplier, Supplier supplier) {
+    public static void applyBookSupplier(View view, BookSupplier bookSupplier) {
+        Supplier supplier = access.retrieve(Supplier.class, bookSupplier.getSupplierId());
         TextView supplierNameText = (TextView) view.findViewById(R.id.supplierName);
         TextView priceText = (TextView) view.findViewById(R.id.price);
         ImageView userImage = (ImageView) view.findViewById(R.id.userThumbnail);
         if (supplierNameText != null) supplierNameText.setText(Utility.usernameToString(supplier));
         if (bookSupplier != null) priceText.setText(Utility.moneyToString(bookSupplier.getPrice()));
         if (userImage != null) Utility.setImageById(userImage, supplier.getImageId());
+    }
+
+    public static void applyOrder(View view, Order order) {
+        BookSupplier bookSupplier = access.retrieve(BookSupplier.class, order.getBookSupplierId());
+        Book book = access.retrieve(Book.class, bookSupplier.getBookId());
+        Supplier supplier = access.retrieve(Supplier.class, bookSupplier.getSupplierId());
+
+        TextView titleView = (TextView) view.findViewById(R.id.bookTitle);
+        TextView authorView = (TextView) view.findViewById(R.id.bookAuthor);
+        ImageView imageView = (ImageView) view.findViewById(R.id.bookImage);
+        TextView priceText = (TextView) view.findViewById(R.id.price);
+        TextView supplierNameText = (TextView) view.findViewById(R.id.supplierName);
+        NumberPicker amountPicker = (NumberPicker) view.findViewById(R.id.order_amount);
+
+        if (titleView != null) titleView.setText(book.getTitle());
+        if (authorView != null) authorView.setText(book.getAuthor());
+        if (imageView != null) Utility.setImageById(imageView, book.getImageId());
+        if (amountPicker != null) amountPicker.setValue(order.getAmount());
+        if (supplierNameText != null) supplierNameText.setText(Utility.usernameToString(supplier));
+        if (bookSupplier != null) priceText.setText(Utility.moneyToString(bookSupplier.getPrice()));
+
     }
 }
