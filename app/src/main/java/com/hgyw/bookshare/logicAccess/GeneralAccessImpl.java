@@ -26,6 +26,7 @@ class GeneralAccessImpl implements GeneralAccess {
 
     final protected DataAccess dataAccess;
     final private User currentUser;
+    final private Cart cart = new Cart();
 
     protected void requireItsMeForAccess(UserType userType, long userId) {
         if (currentUser.getUserType() != userType || currentUser.getId() != userId) {
@@ -66,6 +67,11 @@ class GeneralAccessImpl implements GeneralAccess {
     @Override
     public List<BookSupplier> findBooksOfSuppliers(Supplier supplier) {
         return dataAccess.findEntityReferTo(BookSupplier.class, supplier);
+    }
+
+    @Override
+    public Cart getCart() {
+        return cart;
     }
 
     @Override

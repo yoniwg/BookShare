@@ -1,28 +1,23 @@
-package com.hgyw.bookshare.logicAccess;
+package com.hgyw.bookshare;
 
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-import com.hgyw.bookshare.BeautifulListItemView;
-import com.hgyw.bookshare.Utility;
-import com.hgyw.bookshare.entities.BookSupplier;
-import com.hgyw.bookshare.entities.Supplier;
-
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by haim7 on 12/05/2016.
  */
-public abstract class AbstractItemAdapter<T,ItemView extends View> extends BaseAdapter {
+public abstract class AbstractItemAdapterXX<T,ItemView extends View> extends BaseAdapter {
 
     protected final Context context;
     protected final List<T> itemsList;
     private final ItemViewSupplier<ItemView> itemViewSupplier;
 
-    protected AbstractItemAdapter(Context context, List<T> itemsList, ItemViewSupplier<ItemView> itemViewSupplier) {
+    protected AbstractItemAdapterXX(Context context, List<T> itemsList, ItemViewSupplier<ItemView> itemViewSupplier) {
         this.itemsList = itemsList;
         this.context = context;
         this.itemViewSupplier = itemViewSupplier;

@@ -26,4 +26,10 @@
     <string name="suppliers">ספקים</string>
     <string name="suppliers_colon">ספקים:</string>
     <string name="title_activity_book"></string>
+    <string name="buy">קנה</string>
+    <string name="do_order">הזמן</string>
+    <string name="genre_general">כללי</string>
+    <string name="num_rates">{0} דירוגים</string>
+    <string name="order_added_to_cart">ההזמנה נוספה לעגלה</string>
+    <string name="reviews_colon">סקירות:</string>
 </resources>

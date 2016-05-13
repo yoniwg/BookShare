@@ -9,7 +9,9 @@ import android.widget.ImageView;
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
 import com.hgyw.bookshare.entities.Book;
+import com.hgyw.bookshare.entities.Customer;
 import com.hgyw.bookshare.entities.ImageEntity;
+import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 
 import java.io.ByteArrayInputStream;
@@ -66,5 +68,9 @@ public class Utility {
         String maxString = moneyToString(maxPrice);
         if (minString.equals(maxString)) return minString;
         return minString + " \u2014 " + maxString;
+    }
+
+    public static String usernameToString(User user) {
+        return user.getFirstName() + " " + user.getLastName();
     }
 }

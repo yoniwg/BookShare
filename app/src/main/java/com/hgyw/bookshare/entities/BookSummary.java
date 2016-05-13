@@ -6,7 +6,6 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by haim7 on 10/05/2016.
@@ -45,8 +44,12 @@ public class BookSummary {
     public float clacMeanRating() {
         if (ratingMap.isEmpty()) return 0.0f;
         int startsSum =  Stream.of(ratingMap.entrySet())
-                .map(kv -> kv.getKey().getStarts() * kv.getValue())
+                .map(kv -> kv.getKey().getStars() * kv.getValue())
                 .reduce(0, (i,j) -> i+j);
         return (float) startsSum / getRatingMap().size();
+    }
+
+    public int sumOfRates() {
+        return Stream.of(ratingMap.values()).reduce(0, (i,j) -> i+j);
     }
 }

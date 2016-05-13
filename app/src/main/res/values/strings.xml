@@ -35,6 +35,10 @@
     <string name="suppliers">Suppliers</string>
     <string name="suppliers_colon">Suppliers:</string>
     <string name="buy">buy</string>
+    <string name="order_added_to_cart">The order have been added to cart.</string>
+    <string name="do_order">Order</string>
+    <string name="num_rates">{0} Rates</string>
+    <string name="reviews_colon">Reviews:</string>
 
     <string-array name="planets_array">
         <item>Mercury</item>

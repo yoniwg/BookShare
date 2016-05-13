@@ -6,7 +6,7 @@ package com.hgyw.bookshare.entities;
 public enum Rating {
     EMPTY ,POOR, BAD, MEDIUM, GOOD, EXCELLENT;
 
-    public int getStarts() {
+    public int getStars() {
         return ordinal();
     }
 }

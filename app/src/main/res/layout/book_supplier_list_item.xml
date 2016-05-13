@@ -18,27 +18,28 @@
         android:id="@+id/supplierName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Card title"
+        android:text="Supplier name"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/userThumbnail" />
 
     <TextView
-        android:id="@+id/description"
+        android:id="@+id/price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Card description"
+        android:text="price"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_below="@+id/supplierName"
         android:layout_toEndOf="@+id/userThumbnail" />
 
-    <TextView
+    <Button
         android:id="@+id/button"
-        android:text="More text"
+        android:text="order button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_alignParentEnd="true"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:clickable="true" />
 
 </RelativeLayout>

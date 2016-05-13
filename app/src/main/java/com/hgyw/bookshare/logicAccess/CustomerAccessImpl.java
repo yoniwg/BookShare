@@ -24,7 +24,6 @@ import com.hgyw.bookshare.exceptions.OrdersTransactionException;
 class CustomerAccessImpl extends GeneralAccessImpl implements CustomerAccess {
 
     final private Customer currentUser;
-    final private Cart cart = new Cart();
 
     public CustomerAccessImpl(DataAccess crud, Customer currentUser) {
         super(crud, currentUser);
@@ -146,11 +145,6 @@ class CustomerAccessImpl extends GeneralAccessImpl implements CustomerAccess {
         BookReview originalBookReview = (BookReview) dataAccess.retrieve(bookReview);
         requireItsMeForAccess(UserType.CUSTOMER, originalBookReview.getCustomerId());
         dataAccess.delete(bookReview);
-    }
-
-    @Override
-    public Cart getCart() {
-        return cart;
     }
 
 }

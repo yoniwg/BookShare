@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="20dp"
+    android:background="#f8eae5"
+    android:id="@+id/bookContainer">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/bookImage"
+        android:src="@drawable/image_book"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:paddingEnd="15dp"
+        android:paddingBottom="10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="title"
+        android:id="@+id/bookTitle"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/bookImage"
+        android:layout_marginTop="34dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="author"
+        android:id="@+id/bookAuthor"
+        android:layout_below="@+id/bookTitle"
+        android:layout_toEndOf="@+id/bookImage" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="price"
+        android:id="@+id/priceRange"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/bookImage" />
+
+    <RatingBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ratingBar"
+        android:layout_gravity="center_vertical"
+        android:isIndicator="true"
+        android:layout_below="@+id/bookImage"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Rating text"
+        android:id="@+id/ratingText"
+        android:textAlignment="viewEnd"
+        android:layout_gravity="center_vertical"
+        android:layout_alignBottom="@+id/ratingBar"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/ratingBar" />
+
+</RelativeLayout>

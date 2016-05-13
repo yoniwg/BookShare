@@ -64,6 +64,12 @@ public interface GeneralAccess {
     List<BookSupplier> findBooksOfSuppliers(Supplier supplier);
 
 
-     <T extends Entity> T retrieve(Class<T> entityClass, long entityId);
+    /**
+     * returns the cart of the customer
+     * @return {@link Cart} - the cart
+     */
+    Cart getCart();
+
+    <T extends Entity> T retrieve(Class<T> entityClass, long entityId);
 
 }

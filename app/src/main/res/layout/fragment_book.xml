@@ -12,80 +12,27 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:id="@+id/bookMainLayout">
+            android:id="@+id/bookFragmentLinearLayout">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:padding="20dp"
-                android:background="#f8eae5">
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:id="@+id/bookImageView"
-                    android:src="@drawable/image_book"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="true" />
+            <include
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                layout="@layout/book_component" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="TitleTextView"
-                    android:id="@+id/bookTitleTextView"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentStart="true" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="AuthorTextView"
-                    android:id="@+id/bookAuthorTextView"
-                    android:layout_centerVertical="true"
-                    android:layout_alignParentStart="true" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="PriceTextView"
-                    android:id="@+id/bookPriceTextView"
-                    android:layout_alignBottom="@+id/bookImageView"
-                    android:layout_alignParentStart="true" />
-
-            </RelativeLayout>
-
-            <LinearLayout
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="5dp"
-                android:orientation="horizontal"
-                android:background="#fef56e">
-
-                <RatingBar
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/bookRatingBar"
-                    android:layout_gravity="center_vertical"
-                    android:isIndicator="true"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="Medium Text"
-                    android:id="@+id/bookRatingTextView"
-                    android:textAlignment="viewEnd"
-                    android:layout_gravity="center_vertical" />
-            </LinearLayout>
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/reviews_colon"
+                android:id="@+id/textView3"
+                android:background="#f8eae5"
+                android:padding="10dp" />
 
             <ListView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/reviewListView"
-                android:layout_gravity="center_horizontal|bottom" />
+                android:id="@+id/reviewListView" />
 
             <TextView
                 android:layout_width="match_parent"

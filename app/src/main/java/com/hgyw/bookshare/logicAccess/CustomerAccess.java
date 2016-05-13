@@ -113,9 +113,4 @@ public interface CustomerAccess extends GeneralAccess {
      */
     void removeBookReview(BookReview bookReview);
 
-    /**
-     * returns the cart of the customer
-     * @return {@link Cart} - the cart
-     */
-    Cart getCart();
 }

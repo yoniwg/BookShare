@@ -1,20 +1,18 @@
 package com.hgyw.bookshare;
 
-import android.app.Dialog;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookQuery;
+import com.hgyw.bookshare.entities.BookSummary;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.GeneralAccess;
 
@@ -53,7 +51,14 @@ public class BooksListFragment extends Fragment {
         ListView listView = (ListView) activity.findViewById(R.id.books_list_view);
 
         List<Book> bookList = bookQuery == null ? access.findSpecialOffers(30) : access.findBooks(bookQuery);
-        ArrayAdapter<Book> adapter = new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1, bookList);
+        ApplyObjectAdapter<Book> adapter = new ApplyObjectAdapter<Book>(activity, R.layout.book_list_item, bookList) {
+            @Override
+            protected void applyOnView(View view, int position) {
+                Book book = getItem(position);
+                BookSummary summary = access.getBookSummary(book);
+                ObjectToViewAppliers.applyBook(view, book, summary);
+            }
+        };
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
