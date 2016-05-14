@@ -11,12 +11,11 @@ import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookReview;
 import com.hgyw.bookshare.entities.BookSummary;
 import com.hgyw.bookshare.entities.BookSupplier;
+import com.hgyw.bookshare.entities.Credentials;
 import com.hgyw.bookshare.entities.Customer;
 import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.Rating;
 import com.hgyw.bookshare.entities.Supplier;
-import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
-import com.hgyw.bookshare.logicAccess.GeneralAccess;
 
 import java.text.MessageFormat;
 
@@ -71,10 +70,10 @@ public class ObjectToViewAppliers {
 
 
     public static void apply(View view, Customer reviewer) {
-        TextView usernameView = (TextView) view.findViewById(R.id.username);
+        TextView customerNameView = (TextView) view.findViewById(R.id.customerName);
         ImageView userImage = (ImageView) view.findViewById(R.id.userThumbnail);
 
-        if (usernameView != null) usernameView.setText(Utility.usernameToString(reviewer));
+        if (customerNameView != null) customerNameView.setText(Utility.userNameToString(reviewer));
         if (userImage != null) Utility.setImageById(userImage, reviewer.getImageId());
     }
 
@@ -84,29 +83,48 @@ public class ObjectToViewAppliers {
     }
 
     public static void apply(View view, Supplier supplier) {
-        TextView supplierNameText = (TextView) view.findViewById(R.id.supplierName);
-        TextView supplierAddress = (TextView) view.findViewById(R.id.supplierAddress);
+        TextView supplierNameView = (TextView) view.findViewById(R.id.supplierName);
+        TextView supplierAddressView = (TextView) view.findViewById(R.id.supplierAddress);
         ImageView userImage = (ImageView) view.findViewById(R.id.userThumbnail);
 
-        if (supplierNameText != null) supplierNameText.setText(Utility.usernameToString(supplier));
-        if (supplierAddress != null) supplierAddress.setText(supplier.getAddress());
+        if (supplierNameView != null) supplierNameView.setText(Utility.userNameToString(supplier));
+        if (supplierAddressView != null) supplierAddressView.setText(supplier.getAddress());
         if (userImage != null) Utility.setImageById(userImage, supplier.getImageId());
     }
 
     public static void apply(View view, Order order) {
-        TextView amountText = (TextView) view.findViewById(R.id.orderAmount);
-        TextView unitPriceText = (TextView) view.findViewById(R.id.orderUnitPrice);
-        TextView totalPriceText = (TextView) view.findViewById(R.id.orderTotalPrice);
+        TextView amountView = (TextView) view.findViewById(R.id.orderAmount);
+        TextView unitPriceView = (TextView) view.findViewById(R.id.orderUnitPrice);
+        TextView totalPriceView = (TextView) view.findViewById(R.id.orderTotalPrice);
         NumberPicker amountPicker = (NumberPicker) view.findViewById(R.id.orderAmountPicker);
 
-        if (amountText != null) amountText.setText(String.valueOf(order.getAmount()));
-        if (unitPriceText != null) unitPriceText.setText(Utility.moneyToString(order.getUnitPrice()));
-        if (totalPriceText != null) totalPriceText.setText(Utility.moneyToString(order.calcTotalPrice()));
+        if (amountView != null) amountView.setText(String.valueOf(order.getAmount()));
+        if (unitPriceView != null) unitPriceView.setText(Utility.moneyToString(order.getUnitPrice()));
+        if (totalPriceView != null) totalPriceView.setText(Utility.moneyToString(order.calcTotalPrice()));
         if (amountPicker != null){
             amountPicker.setMaxValue(100);
             amountPicker.setMinValue(1);
             amountPicker.setValue(order.getAmount());
         }
+    }
+
+    public static void apply(View view, Credentials credentials) {
+        TextView usernameView = (TextView) view.findViewById(R.id.username);
+        TextView passwordView = (TextView) view.findViewById(R.id.password);
+
+        if (usernameView != null) usernameView.setText(credentials.getUsername());
+        if (passwordView != null) passwordView.setText(credentials.getPassword());
+    }
+
+    public static Credentials resultCredentials(View view) {
+        TextView usernameView = (TextView) view.findViewById(R.id.username);
+        TextView passwordView = (TextView) view.findViewById(R.id.password);
+
+        String username = "";
+        String password = "";
+        if (usernameView != null) username = usernameView.getText().toString();
+        if (passwordView != null) password = passwordView.getText().toString();
+        return Credentials.create(username, password);
     }
 
 

@@ -11,7 +11,7 @@
     <string name="title_activity_main2">Main2Activity</string>
     <string name="title_activity_book">BookActivity</string>
     <string name="title_activity_entity">EntityActivity</string>
-    <string name="dialog_title_book_quary">Filter Books</string>
+    <string name="dialog_title_book_query">Filter Books</string>
     <string name="book_title">book title</string>
     <string name="author_name">author name</string>
     <string name="from_price">from price</string>
@@ -45,8 +45,18 @@
     <string name="delete_order_title">Delete Order?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
-    <string name="ratingBoxTitle">Rate The Book</string>
+    <string name="rating_box_title">Rate The Book</string>
     <string name="rate">Rate</string>
+    <string name="password">Password</string>
+    <string name="user_name">User Name</string>
+    <string name="welcome">Welcome</string>
+    <string name="login_dialog_message">Write your\'s user-name and password in order to log in:</string>
+    <string name="log_in">Log In</string>
+    <string name="wrong_log_in_title">Wrong Log In</string>
+    <string name="error_on_login">Error occur when trying login</string>
+    <string name="wrong_username_or_password">Wrong username or password</string>
+    <string name="ok">OK</string>
+    <string name="category">Category</string>
 
     <string-array name="planets_array">
         <item>Mercury</item>

@@ -2,7 +2,6 @@ package com.hgyw.bookshare;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -10,13 +9,11 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookQuery;
 
 import java.math.BigDecimal;
-import java.util.EnumSet;
 
 /**
  * Created by haim7 on 12/05/2016.
@@ -36,8 +33,7 @@ public class BookQueryDialogFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        BookQuery bookQuery = null;
-        if (getArguments() != null) bookQuery = (BookQuery) getArguments().getSerializable(ARG_DIALOG_BOOK_QUERY);
+        BookQuery bookQuery = getArguments() == null ? null : (BookQuery) getArguments().getSerializable(ARG_DIALOG_BOOK_QUERY);
 
         // inflate and set view
         View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_book_query, null);
@@ -49,7 +45,7 @@ public class BookQueryDialogFragment extends DialogFragment {
         // build dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(view)
-                .setTitle(R.string.dialog_title_book_quary)
+                .setTitle(R.string.dialog_title_book_query)
                 .setNegativeButton(R.string.cancel, (dialog, which) -> onCancel(dialog))
                 .setPositiveButton(getString(R.string.filter), (dialog1, which) -> {
                     BookQuery resultBookQuery = resultObjectFromView();
@@ -71,8 +67,8 @@ public class BookQueryDialogFragment extends DialogFragment {
 
         titleView.setText(bookQuery.getTitleQuery());
         authorView.setText(bookQuery.getAuthorQuery());
-        fromPriceView.setText(Utility.moneyToString(bookQuery.getBeginPrice()));
-        toPriceView.setText(Utility.moneyToString(bookQuery.getEndPrice()));
+        fromPriceView.setText(Utility.moneyToNumberString(bookQuery.getBeginPrice()));
+        toPriceView.setText(Utility.moneyToNumberString(bookQuery.getEndPrice()));
         Book.Genre genreSelection = bookQuery.getGenreSet().isEmpty() ? Book.Genre.GENERAL : bookQuery.getGenreSet().iterator().next();
         genreSpinner.setSelection(genreSelection.ordinal());
     }

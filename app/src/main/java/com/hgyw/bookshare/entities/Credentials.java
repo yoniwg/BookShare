@@ -1,11 +1,12 @@
 package com.hgyw.bookshare.entities;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * Immutable class represents username and password.
  */
-public final class Credentials {
+public final class Credentials implements Serializable {
 
     public static final Credentials EMPTY = create("", "");
 

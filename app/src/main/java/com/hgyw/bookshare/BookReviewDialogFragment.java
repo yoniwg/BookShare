@@ -39,7 +39,7 @@ public class BookReviewDialogFragment extends DialogFragment {
         else throw new IllegalArgumentException("The BookReviewDialogFragment should accept not-null bookReview object.");
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        return builder.setTitle(R.string.ratingBoxTitle )
+        return builder.setTitle(R.string.rating_box_title)
                 .setView(view)
                 .setPositiveButton(R.string.rate, (dialog, which) -> {
                     CustomerAccess access = AccessManagerFactory.getInstance().getCustomerAccess();

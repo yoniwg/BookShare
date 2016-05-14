@@ -45,4 +45,7 @@ public class IntentsFactory {
         return intent;
     }
 
+    public static Intent afterLoginIntent(Context context) {
+        return newBookListIntent(context, null);
+    }
 }

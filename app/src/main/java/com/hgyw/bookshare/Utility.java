@@ -82,9 +82,13 @@ public class Utility {
     }
 
 
+    public static String moneyToNumberString(BigDecimal beginPrice) {
+        return beginPrice.setScale(2, BigDecimal.ROUND_CEILING).toString();
+    }
+
     public static String moneyToString(BigDecimal minPrice) {
         final char newShekelSign = '\u20AA';
-        return minPrice.setScale(2).toString() + newShekelSign;
+        return moneyToNumberString(minPrice) + newShekelSign;
     }
 
     public static String moneyRangeToString(BigDecimal minPrice, BigDecimal maxPrice) {
@@ -94,7 +98,8 @@ public class Utility {
         return minString + " \u2014 " + maxString;
     }
 
-    public static String usernameToString(User user) {
+    public static String userNameToString(User user) {
         return user.getFirstName() + " " + user.getLastName();
     }
+
 }

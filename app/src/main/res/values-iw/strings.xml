@@ -4,7 +4,7 @@
     <string name="action_settings">הגדרות</string>
     <string name="author_name">שם המחבר</string>
     <string name="book_title">שם הספר</string>
-    <string name="dialog_title_book_quary">סנן ספרים</string>
+    <string name="dialog_title_book_query">סנן ספרים</string>
     <string name="from_price">ממחיר</string>
     <string name="navigation_drawer_close"></string>
     <string name="to_price">עד מחיר</string>

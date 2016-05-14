@@ -9,42 +9,71 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <EditText android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/book_title"
-            android:singleLine="true"
-            android:id="@+id/title_query" />
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <EditText
+                android:hint="@string/book_title"
+                android:singleLine="true"
+                android:id="@+id/title_query"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent" />
+        </android.support.design.widget.TextInputLayout>
 
-        <EditText android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/author_name"
-            android:singleLine="true"
-            android:id="@+id/author_query" />
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <EditText android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/author_name"
+                android:singleLine="true"
+                android:id="@+id/author_query" />
+        </android.support.design.widget.TextInputLayout>
 
-        <Spinner
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/genre_spinner"
-            android:layout_gravity="center_horizontal"
-            android:spinnerMode="dropdown"
-            android:touchscreenBlocksFocus="false"
-            android:transitionGroup="false"
-            />
+            android:layout_gravity="center_horizontal">
 
-        <EditText android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/from_price"
-            android:singleLine="true"
-            android:inputType="numberDecimal"
-            android:id="@+id/from_price" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/category"
+                android:layout_gravity="center_vertical" />
 
-        <EditText
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/genre_spinner"
+                android:spinnerMode="dropdown"
+                android:touchscreenBlocksFocus="false"
+                android:transitionGroup="false" />
+
+        </LinearLayout>
+
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/to_price"
-            android:singleLine="true"
-            android:inputType="numberDecimal"
-            android:id="@+id/to_price" />
+            android:layout_height="wrap_content">
+            <EditText android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/from_price"
+                android:singleLine="true"
+                android:inputType="numberDecimal"
+                android:id="@+id/from_price" />
+        </android.support.design.widget.TextInputLayout>
 
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/to_price"
+                android:singleLine="true"
+                android:inputType="numberDecimal"
+                android:id="@+id/to_price" />
+        </android.support.design.widget.TextInputLayout>
     </LinearLayout>
 </layout>
