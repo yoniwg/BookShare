@@ -3,7 +3,6 @@ package com.hgyw.bookshare;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -12,14 +11,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hgyw.bookshare.entities.BookQuery;
-import com.hgyw.bookshare.entities.Credentials;
 import com.hgyw.bookshare.entities.Order;
+import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.entities.UserType;
 import com.hgyw.bookshare.logicAccess.AccessManager;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
@@ -49,18 +47,49 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
+        updateDrawerOnLogin();
         accessManager = AccessManagerFactory.getInstance();
 
-        boolean isGuest = accessManager.getCurrentUserType() == UserType.GUEST;
-        navigationView.getMenu().findItem(R.id.nav_login).setVisible(isGuest);
-        navigationView.getMenu().findItem(R.id.nav_logout).setVisible(!isGuest);
+
 
         if (getIntent() != null) {
             //onNewIntent(getIntent());
         }
     }
 
+    protected void updateDrawerOnLogin(){
+        User user = accessManager.getGeneralAccess().retrieveUserDetails();
+        String userName = user.getFirstName() + " " + user.getLastName();
+        ((TextView) this.findViewById(R.id.drawer_user_name)).setText(userName);
+        long userImageId = user.getImageId();
+        Utility.setImageById((ImageView) this.findViewById(R.id.drwer_user_image), userImageId);
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        switch (accessManager.getCurrentUserType()) {
+            case GUEST:
+                ((TextView) this.findViewById(R.id.drawer_user_name)).setText(R.string.guest);
+                ((ImageView) this.findViewById(R.id.drwer_user_image)).setImageResource(R.drawable.image_people);
+                navigationView.getMenu().findItem(R.id.nav_login).setVisible(true);
+                navigationView.getMenu().findItem(R.id.nav_logout).setVisible(false);
+                navigationView.getMenu().findItem(R.id.nav_cart).setVisible(false);
+                navigationView.getMenu().findItem(R.id.nav_my_orders).setVisible(false);
+                break;
+            case CUSTOMER:
+                ((TextView) this.findViewById(R.id.drawer_user_name)).setText(R.string.guest);
+                ((ImageView) this.findViewById(R.id.drwer_user_image)).setImageResource(R.drawable.image_people);
+                navigationView.getMenu().findItem(R.id.nav_login).setVisible(false);
+                navigationView.getMenu().findItem(R.id.nav_logout).setVisible(true);
+                navigationView.getMenu().findItem(R.id.nav_cart).setVisible(true);
+                navigationView.getMenu().findItem(R.id.nav_my_orders).setVisible(true);
+                break;
+            case SUPPLIER:
+                navigationView.getMenu().findItem(R.id.nav_login).setVisible(false);
+                navigationView.getMenu().findItem(R.id.nav_logout).setVisible(true);
+                navigationView.getMenu().findItem(R.id.nav_cart).setVisible(false);
+                navigationView.getMenu().findItem(R.id.nav_my_orders).setVisible(false);
+                break;
+        }
+    }
     @Override
     protected void onNewIntent(Intent newIntent) {
         super.onNewIntent(newIntent);
@@ -123,16 +152,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (id) {
             case R.id.nav_logout:
                 accessManager.signOut();
-                ((TextView) this.findViewById(R.id.drawer_user_name)).setText(R.string.guest);
-                ((ImageView) this.findViewById(R.id.drwer_user_image)).setImageResource(R.drawable.image_people);
-                ((NavigationView) findViewById(R.id.nav_view)).getMenu().findItem(R.id.nav_login).setVisible(true);
-                ((NavigationView) findViewById(R.id.nav_view)).getMenu().findItem(R.id.nav_logout).setVisible(false);
+
+                updateDrawerOnLogin();
                 break;
             case R.id.nav_login:
                 CredentialsDialogFragment.newInstance().show(getFragmentManager(), "CredentialsDialogFragment");
 
                 break;
-            case R.id.nav_gallery: {
+            case R.id.nav_cart: {
                 Intent intent = IntentsFactory.newBookListIntent(this, null);
                 startActivity(intent);
                 break;

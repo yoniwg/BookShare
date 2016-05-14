@@ -11,7 +11,7 @@
             android:icon="@drawable/logout"
             android:title="Logout"/>
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/nav_cart"
             android:icon="@drawable/books_list"
             android:title="Books" />
         <item

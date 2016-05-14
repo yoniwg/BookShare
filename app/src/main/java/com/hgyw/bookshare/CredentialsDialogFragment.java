@@ -51,13 +51,7 @@ public class CredentialsDialogFragment extends DialogFragment {
                     AccessManager accessManager = AccessManagerFactory.getInstance();
                     try {
                         accessManager.signIn(resultCredentials);
-                        String userName = resultCredentials.getUsername();
-                        ((TextView) getActivity().findViewById(R.id.drawer_user_name)).setText(userName);
 
-                        long userImageId = accessManager.getGeneralAccess().retrieveUserDetails().getImageId();
-                        Utility.setImageById((ImageView) getActivity().findViewById(R.id.drwer_user_image), userImageId);
-                        ((NavigationView)getActivity().findViewById(R.id.nav_view)).getMenu().findItem(R.id.nav_login).setVisible(false);
-                        ((NavigationView)getActivity().findViewById(R.id.nav_view)).getMenu().findItem(R.id.nav_logout).setVisible(true);
                         startActivity(IntentsFactory.afterLoginIntent(getActivity()));
                     } catch (WrongLoginException e) {
                         int errorMessage;
