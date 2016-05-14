@@ -3,6 +3,7 @@ package com.hgyw.bookshare;
 import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.NumberPicker;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -14,6 +15,8 @@ import com.hgyw.bookshare.entities.Customer;
 import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.Rating;
 import com.hgyw.bookshare.entities.Supplier;
+import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
+import com.hgyw.bookshare.logicAccess.GeneralAccess;
 
 import java.text.MessageFormat;
 
@@ -21,6 +24,8 @@ import java.text.MessageFormat;
  * Created by haim7 on 13/05/2016.
  */
 public class ObjectToViewAppliers {
+
+
 
     public static void apply(View view, Book book) {
         TextView titleView = (TextView) view.findViewById(R.id.bookTitle);
@@ -92,10 +97,17 @@ public class ObjectToViewAppliers {
         TextView amountText = (TextView) view.findViewById(R.id.orderAmount);
         TextView unitPriceText = (TextView) view.findViewById(R.id.orderUnitPrice);
         TextView totalPriceText = (TextView) view.findViewById(R.id.orderTotalPrice);
+        NumberPicker amountPicker = (NumberPicker) view.findViewById(R.id.orderAmountPicker);
 
         if (amountText != null) amountText.setText(String.valueOf(order.getAmount()));
         if (unitPriceText != null) unitPriceText.setText(Utility.moneyToString(order.getUnitPrice()));
         if (totalPriceText != null) totalPriceText.setText(Utility.moneyToString(order.calcTotalPrice()));
+        if (amountPicker != null){
+            amountPicker.setMaxValue(100);
+            amountPicker.setMinValue(1);
+            amountPicker.setValue(order.getAmount());
+        }
     }
+
 
 }

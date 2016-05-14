@@ -43,6 +43,7 @@
         android:clickable="true"
         android:background="@drawable/shopping_basket_add256"
         android:layout_centerVertical="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:contextClickable="false" />
 
 </RelativeLayout>

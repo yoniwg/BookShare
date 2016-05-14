@@ -1,20 +1,29 @@
 package com.hgyw.bookshare;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.text.style.TtsSpan;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.hgyw.bookshare.entities.Book;
+import com.hgyw.bookshare.entities.BookSupplier;
+import com.hgyw.bookshare.entities.Supplier;
 import com.hgyw.bookshare.logicAccess.Cart;
 import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.CustomerAccess;
+import com.hgyw.bookshare.logicAccess.GeneralAccess;
 
 import java.util.List;
 
@@ -63,21 +72,20 @@ public class CartFragment extends Fragment {
         ListView listView = (ListView) activity.findViewById(R.id.order_list);
         Cart cart = cAccess.getCart();
         List<Order> ordersList = cart.retrieveCartContent();
-        ApplyObjectAdapter<Order> adapter = new ApplyObjectAdapter<Order>(activity, R.layout.order_component, ordersList) {
+
+        ApplyObjectAdapter<Order> adapter = new ApplyObjectAdapter<Order>(activity, R.layout.order_list_item, ordersList) {
             @Override
             protected void applyOnView(View view, int position) {
                 Order order = getItem(position);
-                    ObjectToViewAppliers.apply(view, order);
+                ObjectToViewAppliers.apply(view, order);
                 BookSupplier bookSupplier = cAccess.retrieve(BookSupplier.class, order.getBookSupplierId());
                 Book book = cAccess.retrieve(Book.class, bookSupplier.getBookId());
-                    ObjectToViewAppliers.apply(view, book);
+                ObjectToViewAppliers.apply(view, book);
                 Supplier supplier = cAccess.retrieve(Supplier.class, bookSupplier.getSupplierId());
-                    ObjectToViewAppliers.apply(view, supplier);
+                ObjectToViewAppliers.apply(view, supplier);
             }
         };
         listView.setAdapter(adapter);
-
-        listView.setAdapter(arrayAdapter);
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Order order = adapter.getItem(position);
@@ -86,19 +94,18 @@ public class CartFragment extends Fragment {
             startActivity(IntentsFactory.newEntityIntent(activity, order));
         });
 
-        listView.setOnItemLongClickListener((parent, view, position, id)-> {
+        /*listView.setOnItemLongClickListener((parent, view, position, id)-> {
                     Order order = adapter.getItem(position);
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(activity);
                     builder.setView(view)
                             .setMessage(R.string.delete_order_title)
-                            .setNegativeButton(R.string.yes, (dialog, which) -> cAccess.getCart().removeFromCart(order))
-                            .setPositiveButton(R.string.no, (dialog, which) -> {
-                            });
+                            .setPositiveButton(R.string.yes, (dialog, which) -> cAccess.getCart().removeFromCart(order))
+                            .setNeutralButton(R.string.no, (dialog, which) -> {});
                     builder.create().show();
                     return true;
                 }
-        );
+        );*/
     }
 
     @Override
