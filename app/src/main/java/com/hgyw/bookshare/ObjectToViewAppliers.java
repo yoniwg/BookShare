@@ -55,7 +55,11 @@ public class ObjectToViewAppliers {
 
         if (ratingBar != null) ratingBar.setRating(bookReview.getRating().getStars());
         if (reviewTitleView != null) reviewTitleView.setText(bookReview.getTitle());
-        if (reviewDescriptionView != null) reviewDescriptionView.setText(bookReview.getDescription());
+        if (reviewDescriptionView != null) {
+            String description = bookReview.getDescription();
+            if (description.isEmpty()) reviewDescriptionView.setVisibility(View.INVISIBLE);
+            else reviewDescriptionView.setText(description);
+        }
     }
 
     public static void result(View view, BookReview bookReview) {

@@ -19,6 +19,10 @@ public class CredentialsDialogFragment extends DialogFragment {
 
     View view;
 
+    public static CredentialsDialogFragment newInstance() {
+        return newInstance(Credentials.create("",""));
+    }
+
     public static CredentialsDialogFragment newInstance(Credentials credentials) {
         CredentialsDialogFragment fragment = new CredentialsDialogFragment();
         Bundle args = new Bundle();
