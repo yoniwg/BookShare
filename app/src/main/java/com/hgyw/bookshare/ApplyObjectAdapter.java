@@ -51,7 +51,4 @@ public abstract class ApplyObjectAdapter<T> extends BaseAdapter {
 
     protected abstract void applyOnView(View view, int position);
 
-    public interface ItemViewEditor {
-        void apply(View view);
-    }
 }

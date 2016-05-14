@@ -1,4 +1,4 @@
-package com.hgyw.bookshare.logicAccess;
+package com.hgyw.bookshare;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -8,9 +8,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
-import com.hgyw.bookshare.ObjectToViewAppliers;
-import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.entities.BookReview;
+import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
+import com.hgyw.bookshare.logicAccess.CustomerAccess;
 
 /**
  * Created by haim7 on 13/05/2016.
@@ -20,6 +20,7 @@ public class BookReviewDialogFragment extends DialogFragment {
     private final static String ARG_DIALOG_BOOK_REVIEW = "dialogBookReview";
     public static final int CANCELED = -1;
     private View view;
+    private int result = CANCELED;
 
     public static BookReviewDialogFragment newInstance(BookReview bookReview) {
         Bundle args = new Bundle();
@@ -46,6 +47,7 @@ public class BookReviewDialogFragment extends DialogFragment {
                     resultBookReview.setBookId(bookReview.getBookId());
                     ObjectToViewAppliers.result(view, resultBookReview);
                     access.writeBookReview(resultBookReview);
+                    result = resultBookReview.getRating().getStars();
                     Toast.makeText(getActivity(), "The review was updated.", Toast.LENGTH_LONG);
                 })
                 .create();
@@ -55,7 +57,7 @@ public class BookReviewDialogFragment extends DialogFragment {
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
         if (getTargetFragment() != null) {
-            getTargetFragment().onActivityResult(getTargetRequestCode(), 0/*TODO*/, null);
+            getTargetFragment().onActivityResult(getTargetRequestCode(), result, null);
         }
         Toast.makeText(getActivity(), "dismiss", Toast.LENGTH_SHORT).show();
     }

@@ -23,7 +23,6 @@ import com.hgyw.bookshare.entities.Rating;
 import com.hgyw.bookshare.entities.Supplier;
 import com.hgyw.bookshare.entities.UserType;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
-import com.hgyw.bookshare.logicAccess.BookReviewDialogFragment;
 import com.hgyw.bookshare.logicAccess.GeneralAccess;
 
 import java.util.List;

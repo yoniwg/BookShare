@@ -22,7 +22,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="title"
         android:id="@+id/bookTitle"
-        android:layout_alignTop="@+id/bookImage"
+        android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/bookImage" />
 
     <TextView
@@ -40,9 +40,9 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="price"
         android:id="@+id/price"
-        android:layout_marginLeft="10dp"
         android:layout_toEndOf="@+id/supplierName"
-        android:layout_alignBaseline="@+id/supplierName" />
+        android:layout_alignBaseline="@+id/supplierName"
+        android:paddingStart="10dp" />
 
     <TextView
         android:id="@+id/supplierName"
@@ -59,8 +59,7 @@
         android:id="@+id/orderAmountPicker"
         android:showDividers="middle|beginning|end"
         android:theme="@style/Base.Theme.AppCompat.Light"
-        android:layout_toEndOf="@id/price"
         android:layout_alignTop="@+id/bookTitle"
-        android:layout_marginLeft="40dp" />
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>

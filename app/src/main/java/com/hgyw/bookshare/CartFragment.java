@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.NumberPicker;
 import android.widget.Toast;
 
 import com.hgyw.bookshare.entities.Book;
@@ -79,20 +80,27 @@ public class CartFragment extends Fragment {
                 Order order = getItem(position);
                 ObjectToViewAppliers.apply(view, order);
                 BookSupplier bookSupplier = cAccess.retrieve(BookSupplier.class, order.getBookSupplierId());
+                ObjectToViewAppliers.apply(view, bookSupplier);
                 Book book = cAccess.retrieve(Book.class, bookSupplier.getBookId());
                 ObjectToViewAppliers.apply(view, book);
                 Supplier supplier = cAccess.retrieve(Supplier.class, bookSupplier.getSupplierId());
                 ObjectToViewAppliers.apply(view, supplier);
+
+                NumberPicker orderAmountPicker = (NumberPicker) view.findViewById(R.id.orderAmountPicker);
+                orderAmountPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
+                    order.setAmount(newVal);
+                });
             }
         };
         listView.setAdapter(adapter);
+        //listView.setAdapter(new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1, ordersList));
 
-        listView.setOnItemClickListener((parent, view, position, id) -> {
+        /*listView.setOnItemClickListener((parent, view, position, id) -> {
             Order order = adapter.getItem(position);
 
             Toast.makeText(activity, order.shortDescription(), Toast.LENGTH_SHORT).show();
-            startActivity(IntentsFactory.newEntityIntent(activity, order));
-        });
+            //startActivity(IntentsFactory.newEntityIntent(activity, order));
+        });*/
 
         /*listView.setOnItemLongClickListener((parent, view, position, id)-> {
                     Order order = adapter.getItem(position);
