@@ -38,12 +38,16 @@ class ListsCrudImpl implements Crud {
     }
 
     private void checkAreReferencesLegal(Entity item) {
-        Stream.of(EntityReflection.getReferringProperties(item.getClass()).entrySet())
-                .forEach(keyValue -> {
-                    Class<? extends Entity> referredClass = keyValue.getKey();
-                    Property referredIdProperty = keyValue.getValue();
-                    retrieve(referredClass, (Long) referredIdProperty.get(item)); // Just to throw exception when referred is not found
-                });
+        try {
+            Stream.of(EntityReflection.getReferringProperties(item.getClass()).entrySet())
+                    .forEach(keyValue -> {
+                        Class<? extends Entity> referredClass = keyValue.getKey();
+                        Property referredIdProperty = keyValue.getValue();
+                        retrieve(referredClass, (Long) referredIdProperty.get(item)); // Just to throw exception when referred is not found
+                    });
+        } catch (NoSuchElementException e) {
+            throw new NoSuchElementException("Id reference in " + item.getEntityType().getSimpleName() + " isn't exists: " + e.getMessage());
+        }
     }
 
     private List<Entity> getListOrCreate(Class<? extends Entity> clazz) {

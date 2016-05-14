@@ -48,7 +48,7 @@
     <RatingBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/ratingBar"
+        android:id="@+id/reviewRating"
         android:layout_gravity="center_vertical"
         android:isIndicator="true"
         android:layout_below="@+id/bookImage"
@@ -62,8 +62,8 @@
         android:id="@+id/ratingText"
         android:textAlignment="viewEnd"
         android:layout_gravity="center_vertical"
-        android:layout_alignBottom="@+id/ratingBar"
+        android:layout_alignBottom="@+id/reviewRating"
         android:layout_alignParentEnd="true"
-        android:layout_alignTop="@+id/ratingBar" />
+        android:layout_alignTop="@+id/reviewRating" />
 
 </RelativeLayout>

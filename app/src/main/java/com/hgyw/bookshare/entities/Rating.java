@@ -9,4 +9,8 @@ public enum Rating {
     public int getStars() {
         return ordinal();
     }
+
+    public static Rating ofStars(int stars) {
+        return values()[stars];
+    }
 }

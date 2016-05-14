@@ -1,17 +1,12 @@
 package com.hgyw.bookshare;
 
-import android.app.AlertDialog;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.text.style.TtsSpan;
-import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -68,21 +63,27 @@ public class CartFragment extends Fragment {
         ListView listView = (ListView) activity.findViewById(R.id.order_list);
         Cart cart = cAccess.getCart();
         List<Order> ordersList = cart.retrieveCartContent();
-
-        ApplyObjectAdapter<Order> adapter = new ApplyObjectAdapter<Order>(activity, R.layout.order_list_item, ordersList) {
+        ApplyObjectAdapter<Order> adapter = new ApplyObjectAdapter<Order>(activity, R.layout.order_component, ordersList) {
             @Override
             protected void applyOnView(View view, int position) {
                 Order order = getItem(position);
-                ObjectToViewAppliers.applyOrder(view, order);
+                    ObjectToViewAppliers.apply(view, order);
+                BookSupplier bookSupplier = cAccess.retrieve(BookSupplier.class, order.getBookSupplierId());
+                Book book = cAccess.retrieve(Book.class, bookSupplier.getBookId());
+                    ObjectToViewAppliers.apply(view, book);
+                Supplier supplier = cAccess.retrieve(Supplier.class, bookSupplier.getSupplierId());
+                    ObjectToViewAppliers.apply(view, supplier);
             }
         };
         listView.setAdapter(adapter);
+
+        listView.setAdapter(arrayAdapter);
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Order order = adapter.getItem(position);
 
             Toast.makeText(activity, order.shortDescription(), Toast.LENGTH_SHORT).show();
-            EntityActivity.startNewActivity(activity, order.getEntityType(), order.getId());
+            startActivity(IntentsFactory.newEntityIntent(activity, order));
         });
 
         listView.setOnItemLongClickListener((parent, view, position, id)-> {

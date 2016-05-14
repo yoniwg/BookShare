@@ -1,9 +1,8 @@
 package com.hgyw.bookshare.logicAccess;
 
-import com.annimon.stream.Stream;
-
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import com.hgyw.bookshare.dataAccess.DataAccess;
 import com.hgyw.bookshare.entities.Book;
@@ -123,28 +122,31 @@ class CustomerAccessImpl extends GeneralAccessImpl implements CustomerAccess {
     }
 
     @Override
-    public void addBookReview(BookReview bookReview) {
-        bookReview.setId(0);
-        bookReview.setCustomerId(currentUser.getId());
-        Book book = retrieve(Book.class, bookReview.getBookId());
-        if (dataAccess.findEntityReferTo(BookReview.class, currentUser, book).size() > 0) {
-            throw new IllegalStateException("The user already has beautiful_list_item on this book!");
-        }
-        dataAccess.create(bookReview);
-    }
+    public void writeBookReview(BookReview bookReview) {
 
-    @Override
-    public void updateBookReview(BookReview bookReview) {
-        BookReview originalBookReview = (BookReview) dataAccess.retrieve(bookReview);
-        requireItsMeForAccess(UserType.CUSTOMER, originalBookReview.getCustomerId());
-        dataAccess.update(bookReview);
+        List<BookReview> result = dataAccess.findEntityReferTo(BookReview.class, currentUser, IdReference.of(Book.class, bookReview.getBookId()));
+        bookReview.setCustomerId(currentUser.getId());
+        if (result.isEmpty()) {
+            dataAccess.create(bookReview);
+        } else {
+            BookReview currentBookReview = result.get(0);
+            bookReview.setId(currentBookReview.getId());
+            dataAccess.update(bookReview);
+        }
+
     }
 
     @Override
     public void removeBookReview(BookReview bookReview) {
-        BookReview originalBookReview = (BookReview) dataAccess.retrieve(bookReview);
-        requireItsMeForAccess(UserType.CUSTOMER, originalBookReview.getCustomerId());
+        BookReview currentBookReview = (BookReview) dataAccess.retrieve(bookReview);
+        requireItsMeForAccess(UserType.CUSTOMER, currentBookReview.getCustomerId());
         dataAccess.delete(bookReview);
+    }
+
+    @Override
+    public BookReview retrieveMyReview(Book book) {
+        List<BookReview> result = dataAccess.findEntityReferTo(BookReview.class, currentUser, book);
+        return result.isEmpty() ? null : result.get(0);
     }
 
 }

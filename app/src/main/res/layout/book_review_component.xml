@@ -9,7 +9,9 @@
         android:id="@+id/userThumbnail"
         android:src="@drawable/image_book"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:padding="5dp"
+        android:paddingEnd="10dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -17,27 +19,30 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Large Text"
         android:id="@+id/username"
-        android:layout_above="@+id/ratingBar"
-        android:layout_alignStart="@+id/reviewTitle" />
+        android:layout_above="@+id/reviewRating"
+        android:layout_alignEnd="@+id/reviewRating"
+        android:layout_toEndOf="@+id/userThumbnail"
+        android:textAlignment="viewStart" />
 
     <RatingBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/ratingBar"
+        android:id="@+id/reviewRating"
         android:layout_alignBottom="@+id/userThumbnail"
-        android:layout_toEndOf="@+id/userThumbnail" />
+        android:layout_toEndOf="@+id/userThumbnail"
+        android:isIndicator="true"/>
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Medium Text"
         android:id="@+id/reviewTitle"
-        android:layout_below="@+id/ratingBar"
+        android:layout_below="@+id/reviewRating"
         android:layout_centerHorizontal="true" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Small Text"

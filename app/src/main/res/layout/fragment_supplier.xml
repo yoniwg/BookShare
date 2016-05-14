@@ -1,0 +1,37 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.hgyw.bookshare.SupplierFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/userThumbnail"
+        android:layout_gravity="center_horizontal|top"
+        android:src="@drawable/image_people"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Supplier Name"
+        android:id="@+id/supplierName"
+        android:layout_gravity="center"
+        android:layout_below="@+id/userThumbnail"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Supplier Address"
+        android:id="@+id/supplierAddress"
+        android:layout_below="@+id/supplierName"
+        android:layout_centerHorizontal="true" />
+
+</RelativeLayout>

@@ -248,17 +248,17 @@ public class Test {
         orderRating.setItemAsDescribed(Rating.BAD);
         cAccess.updateOrderRating(Stream.of(orders).skip(1).findFirst().get().getId(), orderRating);
 
-        // book beautiful_list_item
+        // book review
         BookReview bookReview = new BookReview();
         bookReview.setBookId(book.getId());
         bookReview.setTitle("Bad Book");
         bookReview.setDescription("The book is very very boring, and is not interesting at all.");
-        cAccess.addBookReview(bookReview);
+        cAccess.writeBookReview(bookReview);
         bookReview.setRating(Rating.POOR);
-        cAccess.updateBookReview(bookReview);
+        cAccess.writeBookReview(bookReview);
         try {
             System.out.println(" $$$ Negative test: ");
-            cAccess.addBookReview(bookReview);
+            cAccess.writeBookReview(bookReview);
         } catch (Exception e) {
             System.out.println(e.getClass().getSimpleName() + ": " + e.getMessage());
         }

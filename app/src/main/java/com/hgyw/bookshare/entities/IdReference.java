@@ -3,13 +3,13 @@ package com.hgyw.bookshare.entities;
 /**
  * Created by haim7 on 04/05/2016.
  */
-public abstract class IdReference<E extends Entity> {
+public abstract class IdReference {
 
     public abstract long getId();
 
     public abstract Class<? extends Entity> getEntityType();
 
-    public static <E extends Entity> IdReference of(Class<E> entityClass, long id) {
+    public static IdReference of(Class<? extends Entity> entityClass, long id) {
         return new IdReference() {
             @Override
             public long getId() {

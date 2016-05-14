@@ -89,28 +89,28 @@ public interface CustomerAccess extends GeneralAccess {
      */
     void updateOrderRating(long orderId, OrderRating orderRating);
 
-    /**
-     * Add new beautiful_list_item by current user for a book.
-     * The BookReview.customer will set to current user, and id will be generated.
-     * @param bookReview the new book beautiful_list_item
-     * @throws IllegalStateException if current user already has beautiful_list_item on this book
-     */
-    void addBookReview(BookReview bookReview);
 
     /**
-     * update exists beautiful_list_item.
-     * @param bookReview the book beautiful_list_item
-     * @throws IllegalArgumentException if this beautiful_list_item is not belong to current user.
-     * @throws java.util.NoSuchElementException if beautiful_list_item is not found.
+     * update review on book. the method ignores the bookReview.id, and set it to new Id if there is
+     * no review of user and review.bookId, or to exists review if there is. </br>
+     * The customerId will automatically set to the current user. </br>
+     * @param bookReview the book review
+     * @throws java.util.NoSuchElementException if the bookId is not found.
      */
-    void updateBookReview(BookReview bookReview); // TODO: Problem with changing the referenced entity
+    void writeBookReview(BookReview bookReview);
 
     /**
-     * remove a book beautiful_list_item
-     * @param bookReview the beautiful_list_item with ID to delete
-     * @throws IllegalArgumentException if the BookReview is not of current user.
-     * @throws java.util.NoSuchElementException if the BookReview is not found in database.
+     * remove book review.
+     * @param bookReview the book review
+     * @throws java.util.NoSuchElementException if the bookReview is not fount.
+     * @throws IllegalArgumentException if bookReview with such id is not of the current user.
      */
     void removeBookReview(BookReview bookReview);
 
+    /**
+     *
+     * @param book the book
+     * @return null if not fount
+     */
+    BookReview retrieveMyReview(Book book);
 }

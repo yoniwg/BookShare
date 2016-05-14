@@ -16,6 +16,7 @@ import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookQuery;
 
 import java.math.BigDecimal;
+import java.util.EnumSet;
 
 /**
  * Created by haim7 on 12/05/2016.
@@ -35,18 +36,14 @@ public class BookQueryDialogFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Bundle bundle = new Bundle();
-        if (savedInstanceState != null) bundle.putAll(savedInstanceState);
-        if (getArguments() != null) bundle.putAll(getArguments());
-
-        BookQuery bookQuery = (BookQuery) bundle.getSerializable(ARG_DIALOG_BOOK_QUERY);
-        if (bookQuery == null) throw new NullPointerException("the BookQuery should not be null.");
+        BookQuery bookQuery = null;
+        if (getArguments() != null) bookQuery = (BookQuery) getArguments().getSerializable(ARG_DIALOG_BOOK_QUERY);
 
         // inflate and set view
         View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_book_query, null);
         Spinner genreSpinner = (Spinner) view.findViewById(R.id.genre_spinner);
         defineSpinner(genreSpinner);
-        updateObjectToView(bookQuery, view);
+        if (bookQuery != null) updateObjectToView(bookQuery, view);
 
 
         // build dialog
@@ -58,16 +55,9 @@ public class BookQueryDialogFragment extends DialogFragment {
                     BookQuery resultBookQuery = resultObjectFromView();
                     Intent intent = IntentsFactory.newBookListIntent(getActivity(), resultBookQuery);
                     getActivity().startActivity(intent);
-                    Toast.makeText(BookQueryDialogFragment.this.getActivity(), resultBookQuery.toString(), Toast.LENGTH_LONG).show();
                 });
 
         return builder.create();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putSerializable(ARG_DIALOG_BOOK_QUERY, resultObjectFromView());
     }
 
     private static void updateObjectToView(BookQuery bookQuery, View view) {
@@ -81,8 +71,8 @@ public class BookQueryDialogFragment extends DialogFragment {
 
         titleView.setText(bookQuery.getTitleQuery());
         authorView.setText(bookQuery.getAuthorQuery());
-        fromPriceView.setText(bookQuery.getBeginPrice().toString());
-        toPriceView.setText(bookQuery.getEndPrice().toString());
+        fromPriceView.setText(Utility.moneyToString(bookQuery.getBeginPrice()));
+        toPriceView.setText(Utility.moneyToString(bookQuery.getEndPrice()));
         Book.Genre genreSelection = bookQuery.getGenreSet().isEmpty() ? Book.Genre.GENERAL : bookQuery.getGenreSet().iterator().next();
         genreSpinner.setSelection(genreSelection.ordinal());
     }
@@ -100,7 +90,8 @@ public class BookQueryDialogFragment extends DialogFragment {
 
         bookQuery.setTitleQuery(titleView.getText().toString());
         bookQuery.setAuthorQuery(authorView.getText().toString());
-       // bookQuery.setGenreQuery((Book.Genre) genreSpinner.getSelectedItem());
+        bookQuery.getGenreSet().clear();
+        bookQuery.getGenreSet().add((Book.Genre) genreSpinner.getSelectedItem());
         try {
             bookQuery.setBeginPrice(new BigDecimal(fromPriceView.getText().toString()));
             bookQuery.setEndPrice(new BigDecimal(toPriceView.getText().toString()));
@@ -110,9 +101,8 @@ public class BookQueryDialogFragment extends DialogFragment {
 
     private void defineSpinner(Spinner genreSpinner) {
         ArrayAdapter arrayAdapter = new EnumAdapter<>(getActivity(), android.R.layout.simple_spinner_item, Book.Genre.values());
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_list_item_multiple_choice);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         genreSpinner.setAdapter(arrayAdapter);
     }
-
 
 }

@@ -1,6 +1,7 @@
 package com.hgyw.bookshare;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -55,8 +56,9 @@ public class BooksListFragment extends Fragment {
             @Override
             protected void applyOnView(View view, int position) {
                 Book book = getItem(position);
+                ObjectToViewAppliers.apply(view, book);
                 BookSummary summary = access.getBookSummary(book);
-                ObjectToViewAppliers.applyBook(view, book, summary);
+                ObjectToViewAppliers.apply(view, summary);
             }
         };
         listView.setAdapter(adapter);
@@ -65,7 +67,7 @@ public class BooksListFragment extends Fragment {
             Book book = adapter.getItem(position);
 
             Toast.makeText(activity, book.shortDescription(), Toast.LENGTH_SHORT).show();
-            EntityActivity.startNewActivity(activity, book.getEntityType(), book.getId());
+            startActivity(IntentsFactory.newEntityIntent(activity, book));
         });
     }
 

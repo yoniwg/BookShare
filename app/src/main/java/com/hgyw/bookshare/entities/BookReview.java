@@ -2,10 +2,12 @@ package com.hgyw.bookshare.entities;
 
 import com.hgyw.bookshare.entities.reflection.EntityReference;
 
+import java.io.Serializable;
+
 /**
  * Created by Yoni on 3/15/2016.
  */
-public class BookReview extends Entity{
+public class BookReview extends Entity implements Serializable {
     @EntityReference(Customer.class)
     private long customerId;
     @EntityReference(Book.class)

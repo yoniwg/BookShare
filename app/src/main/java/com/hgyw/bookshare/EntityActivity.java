@@ -1,23 +1,25 @@
 package com.hgyw.bookshare;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
 
+import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.Entity;
+import com.hgyw.bookshare.entities.Supplier;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class EntityActivity extends AppCompatActivity {
 
-    public static final String ARG_ENTITY_ID = "id";
-    public static final String ARG_ENTITY_TYPE = "entityType";
+    private static final Map<Class<? extends Entity>, Class<? extends EntityFragment>> entityFragmentMap = new HashMap<>();
+    static {
+        entityFragmentMap.put(Book.class, BookFragment.class);
+        entityFragmentMap.put(Supplier.class, SupplierFragment.class);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,21 +34,23 @@ public class EntityActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
 
-        // get values from intent bundle
-        Bundle intentBundle = getIntent().getExtras();
-        long entityId = intentBundle.getLong(ARG_ENTITY_ID, 0);
-        Class entityType = (Class) intentBundle.getSerializable(ARG_ENTITY_TYPE);
-
-        getFragmentManager().beginTransaction()
-                .replace(R.id.fragment_entity_container, EntityFragment.newInstance(entityType, entityId))
-                .commit();
-    }
-
-    public static void startNewActivity(Activity invokingActivity, Class<? extends Entity> entityType, long entityId) {
-        Intent intent = new Intent(invokingActivity, EntityActivity.class);
-        intent.putExtra(EntityActivity.ARG_ENTITY_TYPE, entityType);
-        intent.putExtra(EntityActivity.ARG_ENTITY_ID, entityId);
-        invokingActivity.startActivity(intent);
+        // Get values from intent and instantiate the fragment accordingly.
+        Bundle intentBundle = getIntent() == null ? null : getIntent().getExtras();
+        Class entityType = intentBundle == null ? null : (Class) intentBundle.getSerializable(IntentsFactory.ARG_ENTITY_TYPE);
+        Class<? extends EntityFragment> fragmentClass = entityFragmentMap.get(entityType);
+        if (fragmentClass == null) {
+            throw new IllegalArgumentException("No EntityFragment for " + entityType);
+        }
+        try {
+            EntityFragment fragment = fragmentClass.newInstance();
+            fragment.setArguments(intentBundle);
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_entity_container, fragment)
+                    .commit();
+        } catch (java.lang.InstantiationException | IllegalAccessException e) {
+            String message = "Cannot instantiate EntityFragment of " + fragmentClass.getSimpleName();
+            throw new IllegalArgumentException(message, e);
+        }
     }
 
     @Override

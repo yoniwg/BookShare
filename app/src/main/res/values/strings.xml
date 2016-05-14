@@ -45,6 +45,8 @@
     <string name="delete_order_title">Delete Order?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="ratingBoxTitle">Rate The Book</string>
+    <string name="rate">Rate</string>
 
     <string-array name="planets_array">
         <item>Mercury</item>
