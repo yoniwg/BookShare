@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RatingBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hgyw.bookshare.entities.Book;
@@ -68,12 +69,16 @@ public class BookFragment extends EntityFragment {
                 Customer customer = access.retrieve(Customer.class, review.getCustomerId());
                 ObjectToViewAppliers.apply(view, review);
                 ObjectToViewAppliers.apply(view, customer);
+                TextView descriptionTextView = (TextView) view.findViewById(R.id.description);
+                String description = review.getDescription();
+                if (description.isEmpty()) descriptionTextView.setVisibility(View.GONE);
+
             }
         });
 
         userRatingBar = (RatingBar) activity.findViewById(R.id.userRatingBar);
         if (AccessManagerFactory.getInstance().getCurrentUserType() != UserType.CUSTOMER) {
-            userRatingBar.setVisibility(View.INVISIBLE);
+            userRatingBar.setVisibility(View.GONE);
         } else {
             BookReview optionalUserBookReview = AccessManagerFactory.getInstance().getCustomerAccess().retrieveMyReview(book);
             final BookReview userBookReview = optionalUserBookReview == null ? new BookReview() : optionalUserBookReview;

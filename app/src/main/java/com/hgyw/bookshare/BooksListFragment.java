@@ -59,6 +59,7 @@ public class BooksListFragment extends Fragment {
                 ObjectToViewAppliers.apply(view, book);
                 BookSummary summary = access.getBookSummary(book);
                 ObjectToViewAppliers.apply(view, summary);
+
             }
         };
         listView.setAdapter(adapter);
