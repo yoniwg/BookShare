@@ -1,15 +1,10 @@
 package com.hgyw.bookshare;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -18,12 +13,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.annimon.stream.Stream;
 import com.hgyw.bookshare.entities.BookQuery;
+import com.hgyw.bookshare.entities.Credentials;
 import com.hgyw.bookshare.entities.Order;
+import com.hgyw.bookshare.entities.UserType;
 import com.hgyw.bookshare.logicAccess.AccessManager;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 
@@ -54,6 +51,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
 
         accessManager = AccessManagerFactory.getInstance();
+
+        boolean isGuest = accessManager.getCurrentUserType() == UserType.GUEST;
+        navigationView.getMenu().findItem(R.id.nav_login).setVisible(isGuest);
+        navigationView.getMenu().findItem(R.id.nav_logout).setVisible(!isGuest);
+
         if (getIntent() != null) {
             //onNewIntent(getIntent());
         }
@@ -118,20 +120,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-            Intent intent = IntentsFactory.newBookListIntent(this,null);
-            startActivity(intent);
-        } else if (id == R.id.nav_slideshow) {
-            Intent intent = IntentsFactory.newCartIntent(this);
-            startActivity(intent);
-        } else if (id == R.id.nav_manage) {
+        switch (id) {
+            case R.id.nav_logout:
+                accessManager.signOut();
+                ((TextView) this.findViewById(R.id.drawer_user_name)).setText(R.string.guest);
+                ((ImageView) this.findViewById(R.id.drwer_user_image)).setImageResource(R.drawable.image_people);
+                ((NavigationView) findViewById(R.id.nav_view)).getMenu().findItem(R.id.nav_login).setVisible(true);
+                ((NavigationView) findViewById(R.id.nav_view)).getMenu().findItem(R.id.nav_logout).setVisible(false);
+                break;
+            case R.id.nav_login:
+                CredentialsDialogFragment.newInstance().show(getFragmentManager(), "CredentialsDialogFragment");
 
-        } else if (id == R.id.nav_share) {
+                break;
+            case R.id.nav_gallery: {
+                Intent intent = IntentsFactory.newBookListIntent(this, null);
+                startActivity(intent);
+                break;
+            }
+            case R.id.nav_slideshow: {
+                Intent intent = IntentsFactory.newCartIntent(this);
+                startActivity(intent);
+                break;
+            }
+            case R.id.nav_my_orders:
 
-        } else if (id == R.id.nav_send) {
-
+                break;
         }
 
         drawer.closeDrawer(GravityCompat.START);

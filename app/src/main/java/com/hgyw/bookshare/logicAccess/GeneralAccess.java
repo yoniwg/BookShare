@@ -72,4 +72,6 @@ public interface GeneralAccess {
 
     <T extends Entity> T retrieve(Class<T> entityClass, long entityId);
 
+    User retrieveUserDetails();
+
 }

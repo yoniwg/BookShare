@@ -34,6 +34,7 @@ public class BookFragment extends EntityFragment {
     private static final int RESULT_CODE_BOOK_REVIEW_DIALOG = 314346537;
     private float oldUserRating;
     private RatingBar userRatingBar;
+    private boolean isCustomer;
 
     public BookFragment() {}
 
@@ -50,6 +51,7 @@ public class BookFragment extends EntityFragment {
         super.onActivityCreated(savedInstanceState);
 
         GeneralAccess access = AccessManagerFactory.getInstance().getGeneralAccess();
+        isCustomer = AccessManagerFactory.getInstance().getCurrentUserType() != UserType.CUSTOMER;
         Activity activity = getActivity();
 
         View bookContainer = activity.findViewById(R.id.bookContainer);
@@ -77,7 +79,7 @@ public class BookFragment extends EntityFragment {
         });
 
         userRatingBar = (RatingBar) activity.findViewById(R.id.userRatingBar);
-        if (AccessManagerFactory.getInstance().getCurrentUserType() != UserType.CUSTOMER) {
+        if (isCustomer) {
             userRatingBar.setVisibility(View.GONE);
         } else {
             BookReview optionalUserBookReview = AccessManagerFactory.getInstance().getCustomerAccess().retrieveMyReview(book);
@@ -102,9 +104,11 @@ public class BookFragment extends EntityFragment {
             supplierView.setOnClickListener(v -> startActivity(IntentsFactory.newEntityIntent(activity, supplier)));
             ObjectToViewAppliers.apply(supplierView, bookSupplier);
             ObjectToViewAppliers.apply(supplierView, supplier);
-            Button button = (Button) supplierView.findViewById(R.id.button);
-            button.setText(R.string.do_order);
-            button.findViewById(R.id.button).setOnClickListener(v -> {
+            Button button = (Button) supplierView.findViewById(R.id.buy_button);
+            if (isCustomer){
+                button.setVisibility(View.GONE);
+            }
+            button.setOnClickListener(v -> {
                 Utility.addBookSupplierToCart(bookSupplier, 1);
                 Toast.makeText(activity, activity.getString(R.string.order_added_to_cart), Toast.LENGTH_LONG).show();
             });
@@ -122,5 +126,10 @@ public class BookFragment extends EntityFragment {
                 oldUserRating = userRatingBar.getRating();
             }
         }
+    }
+
+    @Override
+    public int getTitleResource() {
+        return R.string.book_fragment_title;
     }
 }

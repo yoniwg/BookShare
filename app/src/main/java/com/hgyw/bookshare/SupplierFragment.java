@@ -31,4 +31,9 @@ public class SupplierFragment extends EntityFragment {
         ObjectToViewAppliers.apply(view, supplier);
 
     }
+
+    @Override
+    public int getTitleResource() {
+        return R.string.supplier_fragment_title;
+    }
 }

@@ -14,6 +14,8 @@ import android.widget.Toast;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookQuery;
 import com.hgyw.bookshare.entities.BookSummary;
+import com.hgyw.bookshare.entities.UserType;
+import com.hgyw.bookshare.logicAccess.AccessManager;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.GeneralAccess;
 
@@ -32,7 +34,7 @@ public class BooksListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        access = AccessManagerFactory.getInstance().getCustomerAccess();
+        access = AccessManagerFactory.getInstance().getGeneralAccess();
         activity = (MainActivity) getActivity();
         if (getArguments() != null) {
             bookQuery = (BookQuery) getArguments().getSerializable(IntentsFactory.ARG_BOOK_QUERY);

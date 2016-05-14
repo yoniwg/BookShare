@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class EntityFragment extends Fragment {
+public abstract class EntityFragment extends Fragment {
 
     protected long entityId;
 
@@ -27,4 +27,6 @@ public class EntityFragment extends Fragment {
             throw new IllegalArgumentException("Entity fragment was instantiated with ARG_ENTITY_ID=0 (or null).");
         }
     }
+
+    public abstract int getTitleResource();
 }

@@ -41,7 +41,7 @@ public class SupplierAccessImpl extends GeneralAccessImpl implements SupplierAcc
 
     @Override
     public Supplier retrieveSupplierDetails() {
-        return retrieveUserDetails(currentUser);
+        return (Supplier) retrieveUserDetails();
     }
 
     @Override

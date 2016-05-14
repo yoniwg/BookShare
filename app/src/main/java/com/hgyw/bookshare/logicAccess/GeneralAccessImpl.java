@@ -79,9 +79,11 @@ class GeneralAccessImpl implements GeneralAccess {
         return dataAccess.retrieve(entityClass, entityId);
     }
 
-    public <T extends User> T retrieveUserDetails(T currentUser) {
-        return (T) dataAccess.retrieve(currentUser);
+    @Override
+    public User retrieveUserDetails() {
+        return (User) dataAccess.retrieve(currentUser);
     }
+
 
     public <T extends User> void updateUserDetails(T currentUser, T newDetails) {
         requireItsMeForAccess(newDetails.getUserType(), newDetails.getId());

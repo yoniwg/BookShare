@@ -5,12 +5,18 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.hgyw.bookshare.entities.Credentials;
+import com.hgyw.bookshare.entities.ImageEntity;
 import com.hgyw.bookshare.exceptions.WrongLoginException;
 import com.hgyw.bookshare.logicAccess.AccessManager;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
+
+import org.w3c.dom.Text;
 
 
 public class CredentialsDialogFragment extends DialogFragment {
@@ -45,6 +51,14 @@ public class CredentialsDialogFragment extends DialogFragment {
                     AccessManager accessManager = AccessManagerFactory.getInstance();
                     try {
                         accessManager.signIn(resultCredentials);
+                        String userName = resultCredentials.getUsername();
+                        ((TextView) getActivity().findViewById(R.id.drawer_user_name)).setText(userName);
+
+                        long userImageId = accessManager.getGeneralAccess().retrieveUserDetails().getImageId();
+                        Utility.setImageById((ImageView) getActivity().findViewById(R.id.drwer_user_image), userImageId);
+                        ((NavigationView)getActivity().findViewById(R.id.nav_view)).getMenu().findItem(R.id.nav_login).setVisible(false);
+                        ((NavigationView)getActivity().findViewById(R.id.nav_view)).getMenu().findItem(R.id.nav_logout).setVisible(true);
+                        startActivity(IntentsFactory.afterLoginIntent(getActivity()));
                     } catch (WrongLoginException e) {
                         int errorMessage;
                         switch (e.getIssue()) {
@@ -58,7 +72,6 @@ public class CredentialsDialogFragment extends DialogFragment {
                                 .setMessage(errorMessage)
                                 .setPositiveButton(R.string.ok, null)
                                 .create().show();
-                        startActivity(IntentsFactory.afterLoginIntent(getActivity()));
                     }
                 }).create();
     }

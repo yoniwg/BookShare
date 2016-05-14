@@ -32,4 +32,14 @@
     <string name="num_rates">{0} דירוגים</string>
     <string name="order_added_to_cart">ההזמנה נוספה לעגלה</string>
     <string name="reviews_colon">סקירות:</string>
+    <string name="delete_order_title">למחוק הזמנה?</string>
+    <string name="deselect_all">בטל כל הבחירה</string>
+    <string name="hello">שלום</string>
+    <string name="no">לא</string>
+    <string name="rate">דרג</string>
+    <string name="ratingBoxTitle">דרג את הספר</string>
+    <string name="remove">הסר</string>
+    <string name="select_all">בחר הכל</string>
+    <string name="yes">כן</string>
+    <string name="guest">אורח</string>
 </resources>

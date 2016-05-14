@@ -31,7 +31,7 @@ class CustomerAccessImpl extends GeneralAccessImpl implements CustomerAccess {
 
     @Override
     public Customer retrieveCustomerDetails() {
-        return retrieveUserDetails(currentUser);
+        return (Customer) retrieveUserDetails();
     }
 
     @Override

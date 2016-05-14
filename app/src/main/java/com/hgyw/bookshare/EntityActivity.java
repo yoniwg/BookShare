@@ -44,6 +44,7 @@ public class EntityActivity extends AppCompatActivity {
         try {
             EntityFragment fragment = fragmentClass.newInstance();
             fragment.setArguments(intentBundle);
+            this.setTitle(fragment.getTitleResource());
             getFragmentManager().beginTransaction()
                     .replace(R.id.fragment_entity_container, fragment)
                     .commit();
