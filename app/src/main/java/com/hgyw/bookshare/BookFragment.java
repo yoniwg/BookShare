@@ -79,7 +79,7 @@ public class BookFragment extends EntityFragment {
         });
 
         userRatingBar = (RatingBar) activity.findViewById(R.id.userRatingBar);
-        if (isCustomer) {
+        if (!isCustomer) {
             userRatingBar.setVisibility(View.GONE);
         } else {
             BookReview optionalUserBookReview = AccessManagerFactory.getInstance().getCustomerAccess().retrieveMyReview(book);
