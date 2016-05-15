@@ -72,6 +72,10 @@ public interface GeneralAccess {
 
     <T extends Entity> T retrieve(Class<T> entityClass, long entityId);
 
+    /**
+     * If userType is guest then return internal object of guest. Don't change it!
+     * @return
+     */
     User retrieveUserDetails();
 
 }

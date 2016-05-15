@@ -3,6 +3,7 @@ package com.hgyw.bookshare;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -37,8 +38,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
-
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -47,36 +46,43 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        updateDrawerOnLogin();
         accessManager = AccessManagerFactory.getInstance();
 
-
-
-        if (getIntent() != null) {
-            //onNewIntent(getIntent());
-        }
     }
 
-    protected void updateDrawerOnLogin(){
-        User user = accessManager.getGeneralAccess().retrieveUserDetails();
-        String userName = user.getFirstName() + " " + user.getLastName();
-        ((TextView) this.findViewById(R.id.drawer_user_name)).setText(userName);
-        long userImageId = user.getImageId();
-        Utility.setImageById((ImageView) this.findViewById(R.id.drwer_user_image), userImageId);
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        updateDrawerOnLogin();
+    }
 
+    public void updateDrawerOnLogin(){
+
+        User user = accessManager.getGeneralAccess().retrieveUserDetails();
+        String userName = Utility.userNameToString(user);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        TextView navUserName = (TextView) navigationView.getHeaderView(0).findViewById(R.id.drawer_user_name);
+        ImageView navUserImage = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.drwer_user_image);
+
+        if (userName.trim().isEmpty()){
+            navUserName.setText(R.string.anonymous);
+        }else {
+            navUserName.setText(userName);
+        }
+
+        long userImageId = user.getImageId();
+        Utility.setImageById(navUserImage, userImageId);
+
+
         switch (accessManager.getCurrentUserType()) {
             case GUEST:
-                ((TextView) this.findViewById(R.id.drawer_user_name)).setText(R.string.guest);
-                ((ImageView) this.findViewById(R.id.drwer_user_image)).setImageResource(R.drawable.image_people);
+                navUserName.setText(R.string.guest);
                 navigationView.getMenu().findItem(R.id.nav_login).setVisible(true);
                 navigationView.getMenu().findItem(R.id.nav_logout).setVisible(false);
                 navigationView.getMenu().findItem(R.id.nav_cart).setVisible(false);
                 navigationView.getMenu().findItem(R.id.nav_my_orders).setVisible(false);
                 break;
             case CUSTOMER:
-                ((TextView) this.findViewById(R.id.drawer_user_name)).setText(R.string.guest);
-                ((ImageView) this.findViewById(R.id.drwer_user_image)).setImageResource(R.drawable.image_people);
                 navigationView.getMenu().findItem(R.id.nav_login).setVisible(false);
                 navigationView.getMenu().findItem(R.id.nav_logout).setVisible(true);
                 navigationView.getMenu().findItem(R.id.nav_cart).setVisible(true);
@@ -90,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
         }
     }
+
     @Override
     protected void onNewIntent(Intent newIntent) {
         super.onNewIntent(newIntent);
@@ -152,19 +159,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (id) {
             case R.id.nav_logout:
                 accessManager.signOut();
-
                 updateDrawerOnLogin();
                 break;
             case R.id.nav_login:
                 CredentialsDialogFragment.newInstance().show(getFragmentManager(), "CredentialsDialogFragment");
 
                 break;
-            case R.id.nav_cart: {
+            case R.id.nav_books: {
                 Intent intent = IntentsFactory.newBookListIntent(this, null);
                 startActivity(intent);
                 break;
             }
-            case R.id.nav_slideshow: {
+            case R.id.nav_cart: {
                 Intent intent = IntentsFactory.newCartIntent(this);
                 startActivity(intent);
                 break;

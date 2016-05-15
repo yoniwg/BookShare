@@ -5,24 +5,24 @@
         <item
             android:id="@+id/nav_login"
             android:icon="@drawable/login"
-            android:title="Login" />
+            android:title="@string/login" />
         <item
             android:id="@+id/nav_logout"
             android:icon="@drawable/logout"
-            android:title="Logout"/>
+            android:title="@string/logout"/>
+        <item
+            android:id="@+id/nav_books"
+            android:icon="@drawable/books_list"
+            android:title="@string/books" />
         <item
             android:id="@+id/nav_cart"
-            android:icon="@drawable/books_list"
-            android:title="Books" />
-        <item
-            android:id="@+id/nav_slideshow"
             android:icon="@drawable/cart"
-            android:title="Cart"
+            android:title="@string/cart"
             android:visible="false"/>
         <item
             android:id="@+id/nav_my_orders"
             android:icon="@drawable/my_orders"
-            android:title="My Orders"
+            android:title="@string/my_orders"
             android:visible="false"/>
     </group>
 

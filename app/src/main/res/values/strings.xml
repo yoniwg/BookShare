@@ -61,7 +61,12 @@
     <string name="guest">Guest</string>
     <string name="book_fragment_title">Book Details</string>
     <string name="supplier_fragment_title">Supplier Details</string>
+    <string name="anonymous">Anonymous</string>
+    <string name="logout">Logout</string>
+    <string name="books">Books</string>
     <string name="cart">Cart</string>
+    <string name="my_orders">My Orders</string>
+    <string name="login">Login</string>
 
     <string-array name="planets_array">
         <item>Mercury</item>

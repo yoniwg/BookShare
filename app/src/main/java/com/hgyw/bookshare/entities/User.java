@@ -11,8 +11,8 @@ public abstract class User extends Entity {
     private String email;
     private String address;
     private String phoneNumber;
-    private String firstName;
-    private String lastName;
+    private String firstName = "";
+    private String lastName = "";
     private Date birthday;
     private long imageId;
 

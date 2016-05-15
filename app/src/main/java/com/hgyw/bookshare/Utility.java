@@ -99,7 +99,9 @@ public class Utility {
     }
 
     public static String userNameToString(User user) {
-        return user.getFirstName() + " " + user.getLastName();
+        String firstName = user.getFirstName() == null ? "" : user.getFirstName();
+        String lastName = user.getLastName() == null ? "" : user.getLastName();
+        return firstName + " " + lastName;
     }
 
 }

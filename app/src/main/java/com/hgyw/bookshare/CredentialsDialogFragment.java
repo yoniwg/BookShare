@@ -51,7 +51,7 @@ public class CredentialsDialogFragment extends DialogFragment {
                     AccessManager accessManager = AccessManagerFactory.getInstance();
                     try {
                         accessManager.signIn(resultCredentials);
-
+                        ((MainActivity)getActivity()).updateDrawerOnLogin();
                         startActivity(IntentsFactory.afterLoginIntent(getActivity()));
                     } catch (WrongLoginException e) {
                         int errorMessage;

@@ -14,6 +14,7 @@ import com.hgyw.bookshare.entities.BookQuery;
 import com.hgyw.bookshare.entities.BookReview;
 import com.hgyw.bookshare.entities.BookSummary;
 import com.hgyw.bookshare.entities.BookSupplier;
+import com.hgyw.bookshare.entities.Customer;
 import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.entities.Supplier;
 import com.hgyw.bookshare.entities.User;
@@ -81,7 +82,10 @@ class GeneralAccessImpl implements GeneralAccess {
 
     @Override
     public User retrieveUserDetails() {
-        return (User) dataAccess.retrieve(currentUser);
+        if (currentUser instanceof Customer || currentUser instanceof Supplier){
+            return (User) dataAccess.retrieve(currentUser);
+        }
+        return currentUser;
     }
 
 
