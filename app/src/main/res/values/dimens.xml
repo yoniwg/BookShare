@@ -8,4 +8,5 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="text_margin">16dp</dimen>
     <dimen name="frame_margin">10dp</dimen>
+    <dimen name="default_vertical_seperate">10dp</dimen>
 </resources>

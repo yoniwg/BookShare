@@ -37,9 +37,7 @@ public class BooksListFragment extends Fragment {
         super.onCreate(savedInstanceState);
         access = AccessManagerFactory.getInstance().getGeneralAccess();
         activity = (MainActivity) getActivity();
-        if (getArguments() != null) {
-            bookQuery = (BookQuery) getArguments().getSerializable(IntentsFactory.ARG_BOOK_QUERY);
-        }
+        bookQuery = getArguments() == null ? null : (BookQuery) getArguments().getSerializable(IntentsFactory.ARG_BOOK_QUERY);
         setHasOptionsMenu(true);
     }
 

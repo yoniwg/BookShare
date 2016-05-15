@@ -81,6 +81,8 @@
     <string name="delete">Delete</string>
     <string name="toast_order_deleted">Order has been deleted</string>
     <string name="confirm">Confirm</string>
+    <string name="choose">Choose</string>
+    <string name="registration_Succeed">Registration succeed.</string>
 
     <string-array name="planets_array">
         <item>Mercury</item>

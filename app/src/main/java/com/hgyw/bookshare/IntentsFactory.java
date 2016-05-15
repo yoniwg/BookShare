@@ -7,6 +7,7 @@ import android.content.Intent;
 import com.hgyw.bookshare.entities.BookQuery;
 import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.entities.IdReference;
+import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.logicAccess.Cart;
 
 /**
@@ -19,6 +20,7 @@ public class IntentsFactory {
     // public static final String ARG_CART = "argCart";
     public static final String ARG_ENTITY_ID = "id";
     public static final String ARG_ENTITY_TYPE = "entityType";
+    public static final String ARG_USER_DETAILS = "userDetails";
 
 
     public static Intent newBookListIntent(Context context, BookQuery bookQuery) {
@@ -46,7 +48,7 @@ public class IntentsFactory {
         return intent;
     }
 
-    public static Intent afterLoginIntent(Context context) {
+    public static Intent homeIntent(Context context) {
         return newBookListIntent(context, null);
     }
 
@@ -54,6 +56,12 @@ public class IntentsFactory {
         Intent intent = new Intent(context, MainActivity.class);
         intent.putExtra(ARG_FRAGMENT_CLASS, TransactionFragment.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        return intent;
+    }
+
+    public static Intent newRegistrationIntent(Context context, User user) {
+        Intent intent = new Intent(context, RegistrationActivity.class);
+        intent.putExtra(ARG_USER_DETAILS, user);
         return intent;
     }
 }

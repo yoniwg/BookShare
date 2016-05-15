@@ -1,5 +1,6 @@
 package com.hgyw.bookshare.entities;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import com.hgyw.bookshare.entities.reflection.Property;
@@ -8,7 +9,7 @@ import com.hgyw.bookshare.entities.reflection.PropertiesReflection;
 /**
  * Created by Yoni on 3/15/2016.
  */
-public abstract class Entity extends IdReference implements Cloneable
+public abstract class Entity extends IdReference implements Cloneable, Serializable
 {
     private long id;
     private boolean isDeleted;

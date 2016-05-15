@@ -53,12 +53,14 @@
                 android:text="@string/reviews_colon"
                 android:id="@+id/textView3"
                 android:background="@color/colorBackground2"
-                android:padding="10dp" />
+                android:padding="10dp"
+                android:layout_marginTop="@dimen/default_vertical_seperate" />
 
             <ListView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/reviewListView" />
+                android:id="@+id/reviewListView"
+                android:layout_marginTop="10dp" />
 
             <Button
                 style="?android:attr/buttonStyleSmall"
@@ -75,7 +77,8 @@
                 android:text="@string/suppliers_colon"
                 android:id="@+id/textView2"
                 android:background="@color/colorBackground2"
-                android:padding="10dp" />
+                android:padding="10dp"
+                android:layout_marginTop="@dimen/default_vertical_seperate" />
 
             <ListView
                 android:layout_width="wrap_content"

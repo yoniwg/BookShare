@@ -121,6 +121,11 @@ public class ObjectToViewAppliers {
         if (passwordView != null) passwordView.setText(credentials.getPassword());
     }
 
+    /**
+     * If the username and  password view was not found, the it will be wmpty string.
+     * @param view
+     * @return
+     */
     public static Credentials resultCredentials(View view) {
         TextView usernameView = (TextView) view.findViewById(R.id.username);
         TextView passwordView = (TextView) view.findViewById(R.id.password);
@@ -150,7 +155,6 @@ public class ObjectToViewAppliers {
     }
 
     public static void result(View view, User user) {
-        apply(view, user.getCredentials());
         TextView firstNameView = (TextView) view.findViewById(R.id.userFirstName);
         TextView lastNameView = (TextView) view.findViewById(R.id.userLastName);
         TextView addressView = (TextView) view.findViewById(R.id.userAddress);
@@ -158,6 +162,7 @@ public class ObjectToViewAppliers {
         DatePicker birthdayView = (DatePicker) view.findViewById(R.id.userBirthday);
         ImageView imageView = (ImageView) view.findViewById(R.id.userThumbnail);
 
+        user.setCredentials(resultCredentials(view));
         if (firstNameView!= null) user.setFirstName(firstNameView.getText().toString());
         if (lastNameView!= null) user.setLastName(lastNameView.getText().toString());
         if (addressView!= null) user.setAddress(addressView.getText().toString());

@@ -14,7 +14,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.User;
@@ -46,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
         accessManager = AccessManagerFactory.getInstance();
 
+        onNewIntent(IntentsFactory.homeIntent(this));
     }
 
     @Override
@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_logout:
                 accessManager.signOut();
                 updateDrawerOnLogin();
-                startActivity(IntentsFactory.afterLoginIntent(this));
+                startActivity(IntentsFactory.homeIntent(this));
                 break;
             case R.id.nav_login:
                 LoginDialogFragment.newInstance().show(getFragmentManager(), "LoginDialogFragment");
