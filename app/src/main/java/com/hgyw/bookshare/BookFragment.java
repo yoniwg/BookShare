@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -110,6 +111,7 @@ public class BookFragment extends EntityFragment {
                 button.setVisibility(View.GONE);
             }
             button.setOnClickListener(v -> {
+                v.startAnimation(AnimationUtils.loadAnimation(v.getContext(), R.anim.image_click_anim));
                 Utility.addBookSupplierToCart(bookSupplier, 1);
                 Toast.makeText(activity, activity.getString(R.string.order_added_to_cart), Toast.LENGTH_LONG).show();
             });

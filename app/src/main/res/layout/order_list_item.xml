@@ -3,55 +3,74 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="20dp"
+    android:padding="10dp"
     android:background="#f8eae5"
+    android:descendantFocusability="blocksDescendants"
     android:id="@+id/orderContainer">
 
     <ImageView
-        android:layout_width="65dp"
-        android:layout_height="65dp"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
         android:id="@+id/bookImage"
         android:src="@drawable/image_book"
         android:paddingEnd="10dp"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="title"
-        android:id="@+id/bookTitle"
-        android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/bookImage" />
+        android:layout_alignParentStart="true"
+        android:layout_alignBaseline="@+id/bookTitle"
+        android:layout_alignBottom="@+id/supplierName" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="This can be a long title of a book"
+        android:id="@+id/bookTitle"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/bookImage"
+        android:singleLine="false"
+        android:layout_toStartOf="@+id/amount_label"
+        android:paddingEnd="10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="author"
         android:id="@+id/bookAuthor"
         android:layout_below="@+id/bookTitle"
-        android:layout_toEndOf="@+id/bookImage" />
+        android:layout_toEndOf="@+id/bookImage"
+        android:layout_toStartOf="@id/orderAmount" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="price"
         android:id="@+id/price"
-        android:layout_toEndOf="@+id/supplierName"
-        android:layout_alignBaseline="@+id/supplierName"
-        android:paddingStart="10dp" />
+        android:layout_below="@+id/supplierName"
+        android:layout_toEndOf="@+id/bookImage"
+        android:textAlignment="viewStart"
+        android:layout_alignLeft="@+id/supplierName" />
 
     <TextView
         android:id="@+id/supplierName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Supplier name"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_below="@+id/bookAuthor"
         android:layout_toEndOf="@+id/bookImage" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/amount"
+        android:id="@+id/amount_label"
+        android:layout_alignLeft="@+id/orderAmountPicker"
+        android:layout_alignRight="@+id/orderAmountPicker"
+        android:textAlignment="center"
+        android:layout_alignTop="@+id/bookTitle" />
 
     <NumberPicker
         android:layout_width="50dp"
@@ -59,7 +78,8 @@
         android:id="@+id/orderAmountPicker"
         android:showDividers="middle|beginning|end"
         android:theme="@style/Base.Theme.AppCompat.Light"
-        android:layout_alignTop="@+id/bookTitle"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/amount_label"
+        android:layout_alignBottom="@+id/price" />
 
 </RelativeLayout>

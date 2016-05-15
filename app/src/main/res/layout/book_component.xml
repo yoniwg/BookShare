@@ -25,7 +25,8 @@
         android:id="@+id/bookTitle"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/bookImage"
-        android:layout_marginTop="34dp" />
+        android:layout_alignBaseline="@+id/bookImage"
+        android:layout_marginTop="15dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -42,28 +43,27 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="price"
         android:id="@+id/priceRange"
-        android:layout_centerVertical="true"
+        android:layout_below="@+id/bookAuthor"
         android:layout_toEndOf="@+id/bookImage" />
 
     <RatingBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/reviewRating"
-        android:layout_gravity="center_vertical"
         android:isIndicator="true"
-        android:layout_below="@+id/bookImage"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/bookImage" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Rating text"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Number of Ratings"
         android:id="@+id/ratingText"
-        android:textAlignment="viewEnd"
-        android:layout_gravity="center_vertical"
-        android:layout_alignBottom="@+id/reviewRating"
-        android:layout_alignParentEnd="true"
-        android:layout_alignTop="@+id/reviewRating" />
+        android:layout_alignTop="@+id/reviewRating"
+        android:layout_alignParentStart="false"
+        android:layout_toStartOf="@+id/reviewRating"
+        android:labelFor="@+id/reviewRating"
+        android:gravity="start" />
 
 </RelativeLayout>

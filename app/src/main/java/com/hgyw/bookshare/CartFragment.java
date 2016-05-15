@@ -95,14 +95,14 @@ public class CartFragment extends Fragment {
         listView.setAdapter(adapter);
         //listView.setAdapter(new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1, ordersList));
 
-        /*listView.setOnItemClickListener((parent, view, position, id) -> {
+        listView.setOnItemClickListener((parent, view, position, id) -> {
             Order order = adapter.getItem(position);
 
             Toast.makeText(activity, order.shortDescription(), Toast.LENGTH_SHORT).show();
             //startActivity(IntentsFactory.newEntityIntent(activity, order));
-        });*/
+        });
 
-        /*listView.setOnItemLongClickListener((parent, view, position, id)-> {
+        listView.setOnItemLongClickListener((parent, view, position, id)-> {
                     Order order = adapter.getItem(position);
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(activity);
@@ -113,7 +113,7 @@ public class CartFragment extends Fragment {
                     builder.create().show();
                     return true;
                 }
-        );*/
+        );
     }
 
     @Override

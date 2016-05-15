@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".BookFragment"
+    android:padding="@dimen/frame_margin"
     android:orientation="vertical">
 
     <ScrollView
@@ -23,30 +24,33 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/userReviewContainer">
+                android:id="@+id/userReviewContainer"
+                android:layout_marginLeft="7dp"
+                android:layout_marginRight="7dp">
 
                 <RatingBar
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/userRatingBar"
+                    android:stepSize="1"
                     android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="true"
-                    android:stepSize="1" />
+                    android:layout_alignParentEnd="true" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="Yours rate:"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/yours_rate"
                     android:id="@+id/textView8"
                     android:layout_centerVertical="true"
-                    android:layout_alignParentStart="true" />
+                    android:layout_alignParentStart="true"
+                    android:paddingStart="5dp" />
             </RelativeLayout>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="@string/reviews_colon"
                 android:id="@+id/textView3"
                 android:background="#f8eae5"
@@ -60,7 +64,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="@string/suppliers_colon"
                 android:id="@+id/textView2"
                 android:background="#f8eae5"
