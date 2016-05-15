@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +27,8 @@ public class UserEditActivity extends RegistrationActivity {
         EditText passwordView = (EditText) findViewById(R.id.password);
         usernameView.setKeyListener(null);
         passwordView.setKeyListener(null);
+        Spinner customerSupplierSpinner = (Spinner) findViewById(R.id.customerSupplierSpinner);
+        customerSupplierSpinner.setVisibility(View.GONE);
     }
 
     @Override

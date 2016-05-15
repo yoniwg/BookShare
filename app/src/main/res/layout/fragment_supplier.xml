@@ -15,7 +15,7 @@
         android:src="@drawable/image_user"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:scaleType="fitCenter" />
+        android:scaleType="centerCrop" />
 
     <TextView
         android:layout_width="wrap_content"

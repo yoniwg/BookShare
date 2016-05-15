@@ -143,6 +143,7 @@ public class ObjectToViewAppliers {
         apply(view, user.getCredentials());
         TextView firstNameView = (TextView) view.findViewById(R.id.userFirstName);
         TextView lastNameView = (TextView) view.findViewById(R.id.userLastName);
+        TextView emailView = (TextView) view.findViewById(R.id.userEmail);
         TextView addressView = (TextView) view.findViewById(R.id.userAddress);
         TextView phoneView = (TextView) view.findViewById(R.id.userPhone);
         DatePicker birthdayView = null;//(DatePicker) view.findViewById(R.id.userBirthday);  // TODO
@@ -151,8 +152,9 @@ public class ObjectToViewAppliers {
 
         if (firstNameView!= null) firstNameView.setText(user.getFirstName());
         if (lastNameView!= null) lastNameView.setText(user.getLastName());
-        if (addressView!= null) lastNameView.setText(user.getAddress());
-        if (phoneView!= null) lastNameView.setText(user.getPhoneNumber());
+        if (emailView!= null) emailView.setText(user.getEmail());
+        if (addressView!= null) addressView.setText(user.getAddress());
+        if (phoneView!= null) phoneView.setText(user.getPhoneNumber());
         if (birthdayView!= null) {} // TODO
         if (imageView != null) Utility.setImageById(imageView, user.getImageId(), R.drawable.image_user);
         if (customerSupplierSpinner != null) customerSupplierSpinner.setSelection(user.getUserType() == UserType.CUSTOMER ? 0 : 1);
@@ -173,6 +175,7 @@ public class ObjectToViewAppliers {
     public static void result(View view, User user) {
         TextView firstNameView = (TextView) view.findViewById(R.id.userFirstName);
         TextView lastNameView = (TextView) view.findViewById(R.id.userLastName);
+        TextView emailView = (TextView) view.findViewById(R.id.userEmail);
         TextView addressView = (TextView) view.findViewById(R.id.userAddress);
         TextView phoneView = (TextView) view.findViewById(R.id.userPhone);
         DatePicker birthdayView = null;//(DatePicker) view.findViewById(R.id.userBirthday);  // TODO
@@ -181,6 +184,8 @@ public class ObjectToViewAppliers {
         user.setCredentials(resultCredentials(view));
         if (firstNameView!= null) user.setFirstName(firstNameView.getText().toString());
         if (lastNameView!= null) user.setLastName(lastNameView.getText().toString());
+        if (emailView!= null) user.setEmail(
+                emailView.getText().toString());
         if (addressView!= null) user.setAddress(addressView.getText().toString());
         if (phoneView!= null) user.setPhoneNumber(phoneView.getText().toString());
         if (birthdayView!= null) {} // TODO
