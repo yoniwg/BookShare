@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_logout:
                 accessManager.signOut();
                 updateDrawerOnLogin();
-                startActivity(IntentsFactory.afterLoginIntent(this));
+                startActivity(IntentsFactory.homeIntent(this));
                 break;
             case R.id.nav_login:
                 LoginDialogFragment.newInstance().show(getFragmentManager(), "LoginDialogFragment");
