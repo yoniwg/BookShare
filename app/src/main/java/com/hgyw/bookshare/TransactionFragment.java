@@ -3,6 +3,8 @@ package com.hgyw.bookshare;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,6 +15,8 @@ import android.widget.TextView;
 
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.CustomerAccess;
+
+import org.w3c.dom.Text;
 
 
 /**
@@ -71,15 +75,19 @@ public class TransactionFragment extends Fragment {
 
         //set listeners to address and credit number
         ((EditText)(getActivity().findViewById(R.id.shipping_address)))
-                .setOnEditorActionListener((v, actionId, event) -> {
-                    cAccess.getCart().getTransaction().setShippingAddress(v.getText().toString());
-                    return true;
+                .addTextChangedListener(new SimpleTextWatcher() {
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        cAccess.getCart().getTransaction().setShippingAddress(s.toString());
+                    }
                 });
 
         ((EditText)(getActivity().findViewById(R.id.credit_number)))
-                .setOnEditorActionListener((v, actionId, event) -> {
-                    cAccess.getCart().getTransaction().setCreditCard(v.getText().toString());
-                    return true;
+                .addTextChangedListener(new SimpleTextWatcher() {
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        cAccess.getCart().getTransaction().setCreditCard(s.toString());
+                    }
                 });
     }
 

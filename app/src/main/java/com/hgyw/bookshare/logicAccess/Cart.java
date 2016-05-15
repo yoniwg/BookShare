@@ -20,6 +20,10 @@ public class Cart implements Serializable {
     private final List<Order> ordersList = new ArrayList<>();
 
     private final Transaction transaction = new Transaction();
+
+    public Cart(){
+        restartCart();
+    }
     /**
      *
      * @param order
@@ -63,6 +67,10 @@ public class Cart implements Serializable {
         ordersList.clear();
     }
 
+    public boolean isEmpty(){
+        return ordersList.isEmpty();
+    }
+
     public Transaction getTransaction() {
         return transaction;
     }
@@ -74,7 +82,7 @@ public class Cart implements Serializable {
 
     public void restartCart(){
         clear();
-        setTransactionDetails(null,null);
+        setTransactionDetails(new String(), new String());
     }
 
     public BigDecimal calculateTotalSum(){

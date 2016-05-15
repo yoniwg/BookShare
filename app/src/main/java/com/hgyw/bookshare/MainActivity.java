@@ -139,13 +139,61 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.action_settings:
                 return true;
             case R.id.action_buy:
-                List<Order> oList = accessManager.getCustomerAccess().getCart().retrieveCartContent();
-                Intent transactionIntent = IntentsFactory.newTransactionIntent(this);
-                startActivity(transactionIntent);
-                return true;
+                return proceedOrder();
+            case R.id.action_confirm:
+                return confirmTransaction();
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private boolean proceedOrder() {
+        if (accessManager.getCustomerAccess().getCart().isEmpty()){
+            new AlertDialog.Builder(this)
+                    .setMessage(R.string.cart_empty__message)
+                    .setNeutralButton(R.string.ok,(d,w)->{}).create().show();
+            return true;
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.transaction_message)
+                .setPositiveButton(R.string.yes, (dialog, which) -> {
+                    Intent transactionIntent = IntentsFactory.newTransactionIntent(this);
+                    startActivity(transactionIntent);
+                })
+                .setNeutralButton(R.string.no, (dialog, which) -> {
+                });
+        builder.create().show();
+        return true;
+    }
+
+    private boolean confirmTransaction() {
+        Transaction transaction = accessManager.getCustomerAccess().getCart().getTransaction();
+        boolean wrongCreditCard = transaction.getCreditCard().trim().length() < 8;
+        boolean wrongAddress = transaction.getShippingAddress().trim().isEmpty();
+        if (wrongCreditCard || wrongAddress){
+            new AlertDialog.Builder(this)
+                    .setMessage(wrongAddress ? R.string.wrong_address_message : R.string.wrong_credit_message)
+                    .setNeutralButton(R.string.ok,(d,w)->{}).create().show();
+            return true;
+        }
+        AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
+        builder2.setMessage(R.string.confirm_order_message)
+                .setPositiveButton(R.string.yes, (dialog, which) -> {
+                    try {
+                        accessManager.getCustomerAccess().performNewTransaction();
+                        Toast.makeText(this,R.string.toast_transaction_ok, Toast.LENGTH_SHORT).show();
+                        Intent transactionIntent = IntentsFactory.newBookListIntent(this,null);
+                        startActivity(transactionIntent);
+                    } catch (OrdersTransactionException e) {
+                        new AlertDialog.Builder(this)
+                                .setMessage(R.string.transaction_error_message)
+                                .setNeutralButton(R.string.ok,(d,w)->{}).create().show();
+                    }
+                })
+                .setNeutralButton(R.string.no, (dialog, which) -> {
+                });
+        builder2.create().show();
+        return true;
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -156,9 +204,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         switch (id) {
             case R.id.nav_logout:
-                accessManager.signOut();
-                updateDrawerOnLogin();
-                startActivity(IntentsFactory.homeIntent(this));
+                //show yes/no alert dialog
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage(R.string.logout_message)
+                        .setPositiveButton(R.string.yes, (dialog, which) -> {
+                            accessManager.signOut();
+                            updateDrawerOnLogin();
+                            startActivity(IntentsFactory.homeIntent(this));
+                            Toast.makeText(this,R.string.toast_loged_out, Toast.LENGTH_SHORT).show();
+                        })
+                        .setNeutralButton(R.string.no, (dialog, which) -> {
+                        });
+                builder.create().show();
+
                 break;
             case R.id.nav_login:
                 LoginDialogFragment.newInstance().show(getFragmentManager(), "LoginDialogFragment");

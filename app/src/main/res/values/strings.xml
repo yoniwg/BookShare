@@ -42,7 +42,7 @@
     <string name="remove">Remove</string>
     <string name="select_all">Select All</string>
     <string name="deselect_all">Deselect All</string>
-    <string name="delete_order_title">Delete Order?</string>
+    <string name="delete_order_message">Delete Order?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="rating_box_title">Rate The Book</string>
@@ -91,6 +91,11 @@
     <string name="toast_transaction_ok">Order has been confirmed and will be shipped soon</string>
     <string name="total_sum">Total Sum</string>
     <string name="upload_image_failed">Upload image failed.</string>
+    <string name="wrong_address_message">Please provide valid address</string>
+    <string name="wrong_credit_message">Credit card must contain at least 8 digits.</string>
+    <string name="cart_empty__message">The cart is empty</string>
+    <string name="shipping_address">Shipping Address</string>
+    <string name="credit_number">Credit Number</string>
 
     <string-array name="customerSupplierItems">
         <item>Customer</item>
