@@ -47,15 +47,6 @@ public class Utility {
         }
     }
 
-    public static void addBookSupplierToCart(BookSupplier bookSupplier, int amount) {
-        Order order = new Order();
-        order.setBookSupplierId(bookSupplier.getSupplierId());
-        order.setAmount(1);
-        order.setUnitPrice(bookSupplier.getPrice());
-        CustomerAccess access = AccessManagerFactory.getInstance().getCustomerAccess();
-        access.getCart().add(order);
-    }
-
     /**
      * Set ImageView to imageId of entities.
      * @param imageView

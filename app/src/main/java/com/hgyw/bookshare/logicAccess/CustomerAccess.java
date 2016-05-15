@@ -5,6 +5,7 @@ import java.util.Date;
 
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookReview;
+import com.hgyw.bookshare.entities.BookSupplier;
 import com.hgyw.bookshare.entities.Customer;
 import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.OrderRating;
@@ -124,4 +125,11 @@ public interface CustomerAccess extends GeneralAccess {
      * @return {@link Cart} - the cart
      */
     Cart getCart();
+
+    /**
+     * add book to cart by book supplier
+     * @param bookSupplier
+     * @param amount
+     */
+    void addBookSupplierToCart(BookSupplier bookSupplier, int amount);
 }

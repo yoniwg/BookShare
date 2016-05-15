@@ -32,7 +32,6 @@ import com.hgyw.bookshare.logicAccess.CustomerAccess;
 import com.hgyw.bookshare.logicAccess.GeneralAccess;
 
 import java.util.List;
-import java.util.ListIterator;
 
 public class BookFragment extends EntityFragment {
 
@@ -122,7 +121,7 @@ public class BookFragment extends EntityFragment {
             if (!isCustomer){buyButton.setVisibility(View.GONE);}
             buyButton.setOnClickListener(v -> {
                 v.startAnimation(AnimationUtils.loadAnimation(v.getContext(), R.anim.image_click_anim));
-                Utility.addBookSupplierToCart(bookSupplier, 1);
+                AccessManagerFactory.getInstance().getCustomerAccess().addBookSupplierToCart(bookSupplier, 1);
                 Toast.makeText(activity, activity.getString(R.string.order_added_to_cart), Toast.LENGTH_LONG).show();
             });
             bookMainLayout.addView(supplierView);

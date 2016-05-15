@@ -30,6 +30,14 @@ class CustomerAccessImpl extends GeneralAccessImpl implements CustomerAccess {
         this.currentUser = currentUser;
     }
 
+    public void addBookSupplierToCart(BookSupplier bookSupplier, int amount) {
+        Order order = new Order();
+        order.setBookSupplierId(bookSupplier.getId());
+        order.setAmount(amount);
+        order.setUnitPrice(bookSupplier.getPrice());
+        getCart().add(order);
+    }
+
     @Override
     public Customer retrieveCustomerDetails() {
         return (Customer) retrieveUserDetails();

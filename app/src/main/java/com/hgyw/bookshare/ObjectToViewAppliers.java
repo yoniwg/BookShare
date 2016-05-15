@@ -82,7 +82,7 @@ public class ObjectToViewAppliers {
     }
 
     public static void apply(View view, BookSupplier bookSupplier) {
-        TextView priceText = (TextView) view.findViewById(R.id.price);
+        TextView priceText = (TextView) view.findViewById(R.id.orderUnitPrice);
         if (bookSupplier != null) priceText.setText(Utility.moneyToString(bookSupplier.getPrice()));
     }
 

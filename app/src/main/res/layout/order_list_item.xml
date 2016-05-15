@@ -45,7 +45,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="price"
-        android:id="@+id/price"
+        android:id="@+id/orderUnitPrice"
         android:layout_below="@+id/supplierName"
         android:layout_toEndOf="@+id/bookImage"
         android:textAlignment="viewStart"
@@ -79,7 +79,7 @@
         android:theme="@style/Base.Theme.AppCompat.Light"
         android:layout_alignParentEnd="true"
         android:layout_below="@+id/amount_label"
-        android:layout_alignBottom="@+id/price" />
+        android:layout_alignBottom="@+id/orderUnitPrice" />
 
     <TextView
         android:layout_width="wrap_content"
