@@ -156,7 +156,7 @@ public class BookFragment extends EntityFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RESULT_CODE_BOOK_REVIEW_DIALOG) {
             onBookReviewResult(
-                    resultCode != BookReviewDialogFragment.CANCELED,
+                    resultCode == BookReviewDialogFragment.CANCELED,
                     (BookReview) data.getSerializableExtra(BookReviewDialogFragment.ARG_RESULT_OBJECT)
             );
         }
@@ -169,6 +169,7 @@ public class BookFragment extends EntityFragment {
         } else {
             CustomerAccess access = AccessManagerFactory.getInstance().getCustomerAccess();
             access.writeBookReview(bookReview);
+            oldUserRating = userRatingBar.getRating();
         }
         // message
         Toast.makeText(getActivity(), "The review was updated.", Toast.LENGTH_LONG).show();

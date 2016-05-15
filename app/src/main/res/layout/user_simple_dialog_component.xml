@@ -7,7 +7,7 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:id="@+id/userThumbnail"
-        android:src="@drawable/image_people"
+        android:src="@drawable/image_user"
         android:layout_gravity="center_horizontal" />
 
     <android.support.design.widget.TextInputLayout
@@ -54,7 +54,7 @@
             android:inputType="phone" />
     </android.support.design.widget.TextInputLayout>
 
-    <TimePicker
+    <DatePicker
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/userBirthday"

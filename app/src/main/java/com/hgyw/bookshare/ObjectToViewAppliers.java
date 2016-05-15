@@ -35,7 +35,7 @@ public class ObjectToViewAppliers {
 
         if (titleView != null) titleView.setText(book.getTitle());
         if (authorView != null) authorView.setText(book.getAuthor());
-        if (imageView != null) Utility.setImageById(imageView, book.getImageId());
+        if (imageView != null) Utility.setImageById(imageView, book.getImageId(), R.drawable.image_book);
     }
 
     public static void apply(View view, BookSummary summary) {
@@ -76,7 +76,7 @@ public class ObjectToViewAppliers {
         ImageView userImage = (ImageView) view.findViewById(R.id.userThumbnail);
 
         if (customerNameView != null) customerNameView.setText(Utility.userNameToString(reviewer));
-        if (userImage != null) Utility.setImageById(userImage, reviewer.getImageId());
+        if (userImage != null) Utility.setImageById(userImage, reviewer.getImageId(), R.drawable.image_user);
     }
 
     public static void apply(View view, BookSupplier bookSupplier) {
@@ -91,7 +91,7 @@ public class ObjectToViewAppliers {
 
         if (supplierNameView != null) supplierNameView.setText(Utility.userNameToString(supplier));
         if (supplierAddressView != null) supplierAddressView.setText(supplier.getAddress());
-        if (userImage != null) Utility.setImageById(userImage, supplier.getImageId());
+        if (userImage != null) Utility.setImageById(userImage, supplier.getImageId(), R.drawable.image_user);
     }
 
     public static void apply(View view, Order order) {
@@ -146,7 +146,7 @@ public class ObjectToViewAppliers {
         if (addressView!= null) lastNameView.setText(user.getAddress());
         if (phoneView!= null) lastNameView.setText(user.getPhoneNumber());
         if (birthdayView!= null) {} // TODO
-        if (imageView != null) Utility.setImageById(imageView, user.getImageId());
+        if (imageView != null) Utility.setImageById(imageView, user.getImageId(), R.drawable.image_user);
     }
 
     public static void result(View view, User user) {

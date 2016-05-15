@@ -58,7 +58,7 @@ public class Utility {
      * @param entityImageId
      * @return
      */
-    public static boolean setImageById(ImageView imageView, long entityImageId) {
+    private static boolean setImageById(ImageView imageView, long entityImageId) {
         return setImageById(imageView, entityImageId, 0);
     }
 

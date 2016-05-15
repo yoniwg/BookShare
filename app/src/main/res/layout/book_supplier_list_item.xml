@@ -6,7 +6,7 @@
 
     <ImageView
         android:id="@+id/userThumbnail"
-        android:src="@drawable/image_people"
+        android:src="@drawable/image_user"
         android:layout_width="72dip"
         android:layout_height="72dip"
         android:scaleType="centerCrop"

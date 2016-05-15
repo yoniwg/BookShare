@@ -15,7 +15,7 @@
         android:id="@+id/drwer_user_image"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:src="@drawable/image_people"
+        android:src="@drawable/image_user"
         android:textAlignment="viewStart" />
 
     <TextView

@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/userThumbnail"
         android:layout_gravity="center_horizontal|top"
-        android:src="@drawable/image_people"
+        android:src="@drawable/image_user"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 

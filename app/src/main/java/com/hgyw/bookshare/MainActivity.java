@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         long userImageId = user.getImageId();
-        Utility.setImageById(navUserImage, userImageId);
+        Utility.setImageById(navUserImage, userImageId, R.drawable.image_user);
 
 
         switch (accessManager.getCurrentUserType()) {
