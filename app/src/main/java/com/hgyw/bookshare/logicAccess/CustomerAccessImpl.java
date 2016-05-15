@@ -23,6 +23,7 @@ import com.hgyw.bookshare.exceptions.OrdersTransactionException;
 class CustomerAccessImpl extends GeneralAccessImpl implements CustomerAccess {
 
     final private Customer currentUser;
+    final private Cart cart = new Cart();
 
     public CustomerAccessImpl(DataAccess crud, Customer currentUser) {
         super(crud, currentUser);
@@ -83,6 +84,12 @@ class CustomerAccessImpl extends GeneralAccessImpl implements CustomerAccess {
             bookSupplier.setAmountAvailable(bookSupplier.getAmountAvailable());
             dataAccess.update(bookSupplier);
         }
+    }
+
+    @Override
+    public void performNewTransaction() throws OrdersTransactionException {
+        performNewTransaction(getCart().getTransaction(),getCart().retrieveCartContent());
+        getCart().restartCart();
     }
 
     private void validateOrdersTransaction(Collection<Order> orders) throws OrdersTransactionException {
@@ -149,4 +156,8 @@ class CustomerAccessImpl extends GeneralAccessImpl implements CustomerAccess {
         return result.isEmpty() ? null : result.get(0);
     }
 
+    @Override
+    public Cart getCart() {
+        return cart;
+    }
 }

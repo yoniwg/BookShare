@@ -74,6 +74,11 @@ public interface CustomerAccess extends GeneralAccess {
     void performNewTransaction(Transaction transaction, Collection<Order> orders) throws OrdersTransactionException;
 
     /**
+     * default call using cart
+     */
+    void performNewTransaction() throws OrdersTransactionException;
+
+    /**
      * request to cancel the order
      * @param orderId the order id to cancel
      * @throws java.util.NoSuchElementException if the order with id orderId is not found.
@@ -113,4 +118,10 @@ public interface CustomerAccess extends GeneralAccess {
      * @return null if not fount
      */
     BookReview retrieveMyReview(Book book);
+
+    /**
+     * returns the cart of the customer
+     * @return {@link Cart} - the cart
+     */
+    Cart getCart();
 }

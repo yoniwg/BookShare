@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.NumberPicker;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hgyw.bookshare.entities.Book;
@@ -110,7 +109,7 @@ public class CartFragment extends Fragment {
 
                 //show yes/no alert dialog
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                builder.setMessage(R.string.delete_order_title)
+                builder.setMessage(R.string.delete_order_message)
                         .setPositiveButton(R.string.yes, (dialog, which) -> {
                             cAccess.getCart().remove(order.getBookSupplierId());
                             adapter.notifyDataSetChanged();

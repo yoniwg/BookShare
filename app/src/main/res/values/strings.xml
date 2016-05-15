@@ -42,7 +42,7 @@
     <string name="remove">Remove</string>
     <string name="select_all">Select All</string>
     <string name="deselect_all">Deselect All</string>
-    <string name="delete_order_title">Delete Order?</string>
+    <string name="delete_order_message">Delete Order?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="rating_box_title">Rate The Book</string>
@@ -81,6 +81,13 @@
     <string name="delete">Delete</string>
     <string name="toast_order_deleted">Order has been deleted</string>
     <string name="confirm">Confirm</string>
+    <string name="toast_loged_out">You have been loged out</string>
+    <string name="logout_message">Are you sure you want to log out?</string>
+    <string name="transaction_message">Do you want to procceed ordering?</string>
+    <string name="confirm_order_message">Are you sure you want to confirm this order?</string>
+    <string name="transaction_error_message">Something got wrong with the transaction...</string>
+    <string name="toast_transaction_ok">Order has been confirmed and will be shipped soon</string>
+    <string name="total_sum">Total Sum</string>
 
     <string-array name="planets_array">
         <item>Mercury</item>
