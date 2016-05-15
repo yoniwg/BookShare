@@ -70,6 +70,8 @@
     <string name="amount">Amount</string>
     <string name="rating">Rating:</string>
     <string name="yours_rate">Yours rate:</string>
+    <string name="delete">Delete</string>
+    <string name="toast_order_deleted">Order has been deleted</string>
 
     <string-array name="planets_array">
         <item>Mercury</item>
