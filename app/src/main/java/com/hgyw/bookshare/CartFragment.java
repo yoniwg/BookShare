@@ -98,7 +98,7 @@ public class CartFragment extends Fragment {
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Order order = adapter.getItem(position);
 
-            Toast.makeText(activity, order.shortDescription(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, order.shortDescription(), Toast.LENGTH_SHORT).show(); //TODO - delete this toast
             //startActivity(IntentsFactory.newEntityIntent(activity, order));
         });
 
@@ -108,7 +108,7 @@ public class CartFragment extends Fragment {
                     AlertDialog.Builder builder = new AlertDialog.Builder(activity);
                     builder.setView(view)
                             .setMessage(R.string.delete_order_title)
-                            .setPositiveButton(R.string.yes, (dialog, which) -> cAccess.getCart().removeFromCart(order))
+                            .setPositiveButton(R.string.yes, (dialog, which) -> cAccess.getCart().remove(order.getBookSupplierId()))
                             .setNeutralButton(R.string.no, (dialog, which) -> {});
                     builder.create().show();
                     return true;

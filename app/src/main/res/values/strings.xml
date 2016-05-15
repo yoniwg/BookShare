@@ -70,6 +70,14 @@
     <string name="amount">Amount</string>
     <string name="rating">Rating:</string>
     <string name="yours_rate">Yours rate:</string>
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="show_all_reviews">Show all reviews</string>
+    <string name="first_name">First name</string>
+    <string name="last_name">Last name</string>
+    <string name="address">Address</string>
+    <string name="phone">Phone</string>
+    <string name="register">Register</string>
 
     <string-array name="planets_array">
         <item>Mercury</item>
