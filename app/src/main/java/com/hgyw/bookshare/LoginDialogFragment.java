@@ -51,7 +51,6 @@ public class LoginDialogFragment extends DialogFragment {
                         AccessManager accessManager = AccessManagerFactory.getInstance();
                         try {
                             accessManager.signUp(customer);
-                            accessManager.signIn(credentials);
                             IntentsFactory.afterLoginIntent(getActivity());
                         } catch (WrongLoginException e) {
                             Toast.makeText(getActivity(), "Login eas not succes: " + e.getIssue(), Toast.LENGTH_LONG).show(); // TODO

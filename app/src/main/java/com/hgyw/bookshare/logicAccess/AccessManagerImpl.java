@@ -43,6 +43,7 @@ enum AccessManagerImpl implements AccessManager {
             throw new WrongLoginException(WrongLoginException.Issue.USERNAME_TAKEN);
         }
         crud.create(user);
+        signIn(user.getCredentials());
     }
 
     @Override

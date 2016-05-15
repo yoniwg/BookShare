@@ -138,9 +138,7 @@ public class BookFragment extends EntityFragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_book, menu);
-        if (AccessManagerFactory.getInstance().getCurrentUserType() != UserType.CUSTOMER) {
-            menu.findItem(R.id.action_cart).setVisible(false)
-        }
+        menu.findItem(R.id.action_cart).setVisible(isCustomer);
     }
 
     @Override
