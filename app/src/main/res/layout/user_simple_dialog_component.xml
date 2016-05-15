@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/first_name"
             android:singleLine="true"
-            android:inputType="textPersonName|numberDecimal"
+            android:inputType="textPersonName"
             android:id="@+id/userFirstName" />
     </android.support.design.widget.TextInputLayout>
 
