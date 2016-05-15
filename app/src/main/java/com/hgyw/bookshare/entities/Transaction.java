@@ -13,6 +13,7 @@ public class Transaction extends Entity {
     private long customerId;
     private Date date = new Date();
     private String creditCard = "";
+    private String shippingAddress;
 
     public Date getDate() {
         return date;
@@ -36,5 +37,13 @@ public class Transaction extends Entity {
 
     public void setCreditCard(String creditCard) {
         this.creditCard = creditCard;
+    }
+
+    public String getShippingAddress() {
+        return shippingAddress;
+    }
+
+    public void setShippingAddress(String shippingAddress) {
+        this.shippingAddress = shippingAddress;
     }
 }

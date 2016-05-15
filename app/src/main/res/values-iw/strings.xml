@@ -63,4 +63,7 @@
     <string name="amount">כמות</string>
     <string name="rating">דירוג:</string>
     <string name="yours_rate">הדירוג שלך:</string>
+    <string name="confirm">אשר</string>
+    <string name="delete">מחק</string>
+    <string name="toast_order_deleted">ההזמנה נמחקה</string>
 </resources>

@@ -82,4 +82,20 @@
         android:layout_below="@+id/amount_label"
         android:layout_alignBottom="@+id/price" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="0"
+        android:id="@+id/final_amount"
+        android:layout_alignParentEnd="true"
+        android:layout_alignStart="@+id/orderAmountPicker"
+        android:layout_alignBottom="@+id/orderAmountPicker"
+        android:layout_alignLeft="@+id/orderAmountPicker"
+        android:layout_alignTop="@+id/orderAmountPicker"
+        android:textAlignment="center"
+        android:paddingTop="27dp"
+        android:layout_alignRight="@+id/orderAmountPicker"
+        android:visibility="invisible" />
+
 </RelativeLayout>

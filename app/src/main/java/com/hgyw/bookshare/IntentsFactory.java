@@ -33,6 +33,7 @@ public class IntentsFactory {
     public static Intent newCartIntent(Context context) {
         Intent intent = new Intent(context, MainActivity.class);
         intent.putExtra(ARG_FRAGMENT_CLASS, CartFragment.class);
+        intent.putExtra(CartFragment.IS_AMOUNT_CAN_MODIFY, true);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         return intent;
     }
@@ -47,5 +48,12 @@ public class IntentsFactory {
 
     public static Intent afterLoginIntent(Context context) {
         return newBookListIntent(context, null);
+    }
+
+    public static Intent newTransactionIntent(Context context) {
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.putExtra(ARG_FRAGMENT_CLASS, TransactionFragment.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        return intent;
     }
 }

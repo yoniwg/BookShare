@@ -94,10 +94,12 @@ public class ObjectToViewAppliers {
 
     public static void apply(View view, Order order) {
         TextView amountView = (TextView) view.findViewById(R.id.orderAmount);
+        TextView finalAmount = (TextView) view.findViewById(R.id.final_amount);
         TextView unitPriceView = (TextView) view.findViewById(R.id.orderUnitPrice);
         TextView totalPriceView = (TextView) view.findViewById(R.id.orderTotalPrice);
         NumberPicker amountPicker = (NumberPicker) view.findViewById(R.id.orderAmountPicker);
 
+        if (finalAmount != null) finalAmount.setText(String.valueOf(order.getAmount()));
         if (amountView != null) amountView.setText(String.valueOf(order.getAmount()));
         if (unitPriceView != null) unitPriceView.setText(Utility.moneyToString(order.getUnitPrice()));
         if (totalPriceView != null) totalPriceView.setText(Utility.moneyToString(order.calcTotalPrice()));
@@ -106,6 +108,7 @@ public class ObjectToViewAppliers {
             amountPicker.setMinValue(1);
             amountPicker.setValue(order.getAmount());
         }
+
     }
 
     public static void apply(View view, Credentials credentials) {

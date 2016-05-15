@@ -143,7 +143,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 return true;
             case R.id.action_buy:
                 List<Order> oList = accessManager.getCustomerAccess().getCart().retrieveCartContent();
-                Toast.makeText(this, "You are going to buy:" + oList.toString(),Toast.LENGTH_SHORT).show();
+                Intent transactionIntent = IntentsFactory.newTransactionIntent(this);
+                startActivity(transactionIntent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

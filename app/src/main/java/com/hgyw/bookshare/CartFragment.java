@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.NumberPicker;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hgyw.bookshare.entities.Book;
@@ -29,6 +30,7 @@ import java.util.List;
  */
 public class CartFragment extends Fragment {
 
+    public static final String IS_AMOUNT_CAN_MODIFY = "is_amount_can_modify";
     private CustomerAccess cAccess;
 
     private MainActivity activity;
@@ -41,9 +43,14 @@ public class CartFragment extends Fragment {
     public CartFragment() {
     }
 
-    public static CartFragment newInstance() {
+    public static CartFragment newInstance(){
+        return newInstance(true);
+    }
+
+    public static CartFragment newInstance(boolean isAmountCanModify) {
         CartFragment fragment = new CartFragment();
         Bundle args = new Bundle();
+        args.putBoolean(IS_AMOUNT_CAN_MODIFY, isAmountCanModify);
         fragment.setArguments(args);
         return fragment;
     }
@@ -65,7 +72,7 @@ public class CartFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        ListView listView = (ListView) activity.findViewById(R.id.order_list);
+        ListView listView = (ListView) activity.findViewById(R.id.cart_list);
         Cart cart = cAccess.getCart();
         List<Order> ordersList = cart.retrieveCartContent();
 
@@ -80,11 +87,15 @@ public class CartFragment extends Fragment {
                 ObjectToViewAppliers.apply(view, book);
                 Supplier supplier = cAccess.retrieve(Supplier.class, bookSupplier.getSupplierId());
                 ObjectToViewAppliers.apply(view, supplier);
-
                 NumberPicker orderAmountPicker = (NumberPicker) view.findViewById(R.id.orderAmountPicker);
-                orderAmountPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
-                    order.setAmount(newVal);
-                });
+                if (getArguments().getBoolean(IS_AMOUNT_CAN_MODIFY)) {
+                    orderAmountPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
+                        order.setAmount(newVal);
+                    });
+                }else {
+                    orderAmountPicker.setVisibility(View.INVISIBLE);
+                    view.findViewById(R.id.final_amount).setVisibility(View.VISIBLE);
+                }
             }
         };
         listView.setAdapter(adapter);
