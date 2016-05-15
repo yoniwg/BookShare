@@ -66,4 +66,25 @@
     <string name="confirm">אשר</string>
     <string name="delete">מחק</string>
     <string name="toast_order_deleted">ההזמנה נמחקה</string>
+    <string name="cart_empty__message">העגלה ריקה</string>
+    <string name="choose">בחר</string>
+    <string name="description">תיאור</string>
+    <string name="first_name">שם פרטי</string>
+    <string name="last_name">שם משפחה</string>
+    <string name="logout_message">האם אתה בטוח שברצונך להתנתק?</string>
+    <string name="order_details">פרטי ההזמנה</string>
+    <string name="orders">הזמנות</string>
+    <string name="phone">טלפון</string>
+    <string name="register">התחבר</string>
+    <string name="registration_Succeed">התחברות הצליחה</string>
+    <string name="shipping_address">כתובת משלוח</string>
+    <string name="show_all_reviews">הראה את כל הסקירות</string>
+    <string name="title">כותר</string>
+    <string name="toast_loged_out">התנתקות בוצעה</string>
+    <string name="toast_transaction_ok">ההזמנה אושרה והיא תשלח בקרוב</string>
+    <string name="total_sum">סכום כללי</string>
+    <string name="transaction_error_message">אופס... משהו התרחש בעת ביצוע העסקה.</string>
+    <string name="transaction_message">האם ברצונך להמשיך בביצוע ההזמנה?</string>
+    <string name="upload_image_failed">העלאת תמונה נכשלה</string>
+    <string name="credit_number">מספר אשראי</string>
 </resources>

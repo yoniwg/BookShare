@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hgyw.bookshare.entities.Order;
+import com.hgyw.bookshare.entities.Transaction;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.exceptions.OrdersTransactionException;
 import com.hgyw.bookshare.logicAccess.AccessManager;
