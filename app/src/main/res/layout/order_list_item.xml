@@ -16,7 +16,8 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:layout_alignBaseline="@+id/bookTitle"
-        android:layout_alignBottom="@+id/supplierName" />
+        android:layout_alignBottom="@+id/supplierName"
+        android:scaleType="fitCenter" />
 
     <TextView
         android:layout_width="wrap_content"

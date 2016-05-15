@@ -54,9 +54,8 @@ public class LoginDialogFragment extends DialogFragment {
                     Credentials resultCredentials = ObjectToViewAppliers.resultCredentials(view);
                     AccessManager accessManager = AccessManagerFactory.getInstance();
                     try {
-                        accessManager.signIn(resultCredentials);
-                        ((MainActivity)getActivity()).updateDrawerOnLogin();
-                        startActivity(IntentsFactory.homeIntent(getActivity()));
+                        accessManager.signIn(resultCredentials);;
+                        startActivity(IntentsFactory.homeIntent(getActivity(), true));
                     } catch (WrongLoginException e) {
                         int errorMessage;
                         switch (e.getIssue()) {

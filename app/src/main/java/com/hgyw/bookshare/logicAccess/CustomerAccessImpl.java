@@ -22,12 +22,10 @@ import com.hgyw.bookshare.exceptions.OrdersTransactionException;
  */
 class CustomerAccessImpl extends GeneralAccessImpl implements CustomerAccess {
 
-    final private Customer currentUser;
     final private Cart cart = new Cart();
 
     public CustomerAccessImpl(DataAccess crud, Customer currentUser) {
         super(crud, currentUser);
-        this.currentUser = currentUser;
     }
 
     public void addBookSupplierToCart(BookSupplier bookSupplier, int amount) {
@@ -45,7 +43,7 @@ class CustomerAccessImpl extends GeneralAccessImpl implements CustomerAccess {
 
     @Override
     public void updateCustomerDetails(Customer newDetails) {
-        updateUserDetails(currentUser, newDetails);
+        updateUserDetails(newDetails);
     }
 
     @Override
@@ -60,12 +58,12 @@ class CustomerAccessImpl extends GeneralAccessImpl implements CustomerAccess {
 
     @Override
     public Collection<Order> retrieveOrders(Date fromDate, Date toDate) {
-        return dataAccess.retrieveOrders(currentUser, null, fromDate, toDate, false);
+        return dataAccess.retrieveOrders((Customer)currentUser, null, fromDate, toDate, false);
     }
 
     @Override
     public Collection<Order> retrieveActiveOrders() {
-        return dataAccess.retrieveOrders(currentUser, null, null, null, true);
+        return dataAccess.retrieveOrders((Customer)currentUser, null, null, null, true);
     }
 
     @Override

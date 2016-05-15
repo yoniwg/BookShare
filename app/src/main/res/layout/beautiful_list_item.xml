@@ -9,7 +9,7 @@
         android:src="@drawable/image_book"
         android:layout_width="72dip"
         android:layout_height="72dip"
-        android:scaleType="centerCrop"
+        android:scaleType="fitCenter"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:layout_marginRight="10dp" />
@@ -33,7 +33,7 @@
         android:layout_toEndOf="@+id/userThumbnail" />
 
     <TextView
-        android:id="@+id/button"
+        android:id="@+id/okButton"
         android:text="More text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

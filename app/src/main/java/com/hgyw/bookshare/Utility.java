@@ -1,12 +1,18 @@
 package com.hgyw.bookshare;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.annotation.DrawableRes;
+import android.view.ContextThemeWrapper;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
@@ -34,7 +40,6 @@ import java.util.List;
 public class Utility {
 
     /**
-     *
      * @param idsClass
      * @param idString
      * @return 0 if not fount.
@@ -49,6 +54,7 @@ public class Utility {
 
     /**
      * Set ImageView to imageId of entities.
+     *
      * @param imageView
      * @param entityImageId
      * @return
@@ -65,7 +71,9 @@ public class Utility {
             imageView.setImageResource(defaultImageResId);
         }
         // end if no new image
-        if (entityImageId == 0) {return true;}
+        if (entityImageId == 0) {
+            return true;
+        }
         // else set the image
         ImageEntity imageEntity = AccessManagerFactory.getInstance().getGeneralAccess().retrieve(ImageEntity.class, entityImageId);
         byte[] bytes = imageEntity.getBytes();
@@ -146,5 +154,20 @@ public class Utility {
         } catch (IOException e) {
             imageEntity.setId(0);
         }
+    }
+
+    public static void startGetImage(Activity activity) {
+        new AlertDialog.Builder(activity)
+                .setTitle(R.string.choose)
+                .setMessage(R.string.camera_galery_choose_message)
+                .setPositiveButton(R.string.camera, (dialog, which) -> {
+                    Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    activity.startActivityForResult(takePicture, IntentsFactory.GET_IMAGE_CODE);
+                })
+                .setNegativeButton(R.string.gallery, (dialog, which) -> {
+                    Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    activity.startActivityForResult(pickPhoto, IntentsFactory.GET_IMAGE_CODE);
+                })
+                .create().show();
     }
 }

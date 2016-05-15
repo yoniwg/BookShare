@@ -1,105 +1,84 @@
 package com.hgyw.bookshare;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.provider.MediaStore;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.hgyw.bookshare.entities.Book;
-import com.hgyw.bookshare.entities.Credentials;
-import com.hgyw.bookshare.entities.Customer;
 import com.hgyw.bookshare.entities.ImageEntity;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.exceptions.WrongLoginException;
 import com.hgyw.bookshare.logicAccess.AccessManager;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
-public class RegistrationActivity extends AppCompatActivity {
+public class RegistrationActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final int ACTION_IMAGE_CAPTURE_CODE = 0;
     private static final int ACTION_PICK_CODE = 1;
     ImageView userThumbnailImageView;
-    long imageId;
+    User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        User user = getIntent() == null ? null : (User) getIntent().getSerializableExtra(IntentsFactory.ARG_USER_DETAILS);
-        if (user == null) throw new IllegalArgumentException("The RegistrationActivity should accept non-null user.");
+        user = getIntent() == null ? null : (User) getIntent().getSerializableExtra(IntentsFactory.ARG_USER_DETAILS);
+        if (user == null)
+            throw new IllegalArgumentException("The RegistrationActivity should accept non-null user.");
 
         View rootView = findViewById(android.R.id.content);
         ObjectToViewAppliers.apply(rootView, user);
         assert rootView != null;
-        rootView.findViewById(R.id.registrationButton).setOnClickListener(v -> this.onRegistration());
+        rootView.findViewById(R.id.okButton).setOnClickListener((View.OnClickListener) this);
         userThumbnailImageView = (ImageView) rootView.findViewById(R.id.userThumbnail);
-        userThumbnailImageView.setOnClickListener(v -> startGetImage());
+        userThumbnailImageView.setOnClickListener(v -> Utility.startGetImage(this));
     }
 
-    private void onRegistration() {
+    // register new user
+    public void onClick(View v) {
         View rootView = findViewById(android.R.id.content);
-        Context context = this;
-
-        User user = ObjectToViewAppliers.resultUser(rootView);
-        user.setImageId(imageId);
+        ObjectToViewAppliers.result(rootView, user);
         AccessManager accessManager = AccessManagerFactory.getInstance();
         try {
             accessManager.signUp(user);
             Toast.makeText(this, R.string.registration_Succeed, Toast.LENGTH_SHORT).show();
-            startActivity(IntentsFactory.homeIntent(context));
+            startActivity(IntentsFactory.homeIntent(this, true));
         } catch (WrongLoginException e) {
-            Toast.makeText(context, "Registration was not succeed: " + e.getIssue(), Toast.LENGTH_LONG).show(); // TODO
+            Toast.makeText(this, "Registration was not succeed: " + e.getIssue(), Toast.LENGTH_LONG).show(); // TODO
         }
-    }
-
-    private void startGetImage() {
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.choose)
-                .setMessage("Check way to bring image.")
-                .setPositiveButton("CAPTURE", (dialog, which) -> {
-                    Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(takePicture, ACTION_IMAGE_CAPTURE_CODE);
-                })
-                .setNegativeButton("PICK", (dialog, which) -> {
-                    Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(pickPhoto , ACTION_PICK_CODE);
-                })
-                .create().show();
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
-        switch(requestCode) {
-            case ACTION_IMAGE_CAPTURE_CODE:
-            case ACTION_PICK_CODE:
-                if(resultCode == RESULT_OK){
-                    Uri selectedImage = imageReturnedIntent.getData();
-                    ImageEntity imageEntity = new ImageEntity();
-                    Utility.uploadImageURI(this, selectedImage, imageEntity, userThumbnailImageView);
-                    if (imageEntity.getId() == 0) {
-                        Toast.makeText(this, R.string.upload_image_failed, Toast.LENGTH_SHORT).show();
-                    } else {
-                        imageId = imageEntity.getId();
-                    }
-                }
-                break;
+        if (requestCode == IntentsFactory.GET_IMAGE_CODE && resultCode == RESULT_OK) {
+            ImageEntity imageEntity = new ImageEntity();
+            Utility.uploadImageURI(this, imageReturnedIntent.getData(), imageEntity, userThumbnailImageView);
+            if (imageEntity.getId() == 0) {
+                Toast.makeText(this, R.string.upload_image_failed, Toast.LENGTH_SHORT).show();
+            } else {
+                user.setImageId(imageEntity.getId());
+            }
         }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed(); return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
 
-
+    }
 }
+
+
+

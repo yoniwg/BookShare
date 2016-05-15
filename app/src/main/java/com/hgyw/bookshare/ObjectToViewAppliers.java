@@ -145,7 +145,7 @@ public class ObjectToViewAppliers {
         TextView lastNameView = (TextView) view.findViewById(R.id.userLastName);
         TextView addressView = (TextView) view.findViewById(R.id.userAddress);
         TextView phoneView = (TextView) view.findViewById(R.id.userPhone);
-        DatePicker birthdayView = (DatePicker) view.findViewById(R.id.userBirthday);
+        DatePicker birthdayView = null;//(DatePicker) view.findViewById(R.id.userBirthday);  // TODO
         ImageView imageView = (ImageView) view.findViewById(R.id.userThumbnail);
         Spinner customerSupplierSpinner = (Spinner) view.findViewById(R.id.customerSupplierSpinner);
 
@@ -159,20 +159,24 @@ public class ObjectToViewAppliers {
     }
 
     public static User resultUser(View view) {
-        TextView firstNameView = (TextView) view.findViewById(R.id.userFirstName);
-        TextView lastNameView = (TextView) view.findViewById(R.id.userLastName);
-        TextView addressView = (TextView) view.findViewById(R.id.userAddress);
-        TextView phoneView = (TextView) view.findViewById(R.id.userPhone);
-        DatePicker birthdayView = (DatePicker) view.findViewById(R.id.userBirthday);
-        ImageView imageView = (ImageView) view.findViewById(R.id.userThumbnail);
-        Spinner customerSupplierSpinner = (Spinner) view.findViewById(R.id.customerSupplierSpinner);
-
         User user;
+        Spinner customerSupplierSpinner = (Spinner) view.findViewById(R.id.customerSupplierSpinner);
         if (customerSupplierSpinner != null) {
             user = customerSupplierSpinner.getSelectedItemPosition() == 0 ? new Customer() : new Supplier();
         } else {
             user = new Customer();
         }
+        result(view, user);
+        return user;
+    }
+
+    public static void result(View view, User user) {
+        TextView firstNameView = (TextView) view.findViewById(R.id.userFirstName);
+        TextView lastNameView = (TextView) view.findViewById(R.id.userLastName);
+        TextView addressView = (TextView) view.findViewById(R.id.userAddress);
+        TextView phoneView = (TextView) view.findViewById(R.id.userPhone);
+        DatePicker birthdayView = null;//(DatePicker) view.findViewById(R.id.userBirthday);  // TODO
+        ImageView imageView = (ImageView) view.findViewById(R.id.userThumbnail);
 
         user.setCredentials(resultCredentials(view));
         if (firstNameView!= null) user.setFirstName(firstNameView.getText().toString());
@@ -181,8 +185,6 @@ public class ObjectToViewAppliers {
         if (phoneView!= null) user.setPhoneNumber(phoneView.getText().toString());
         if (birthdayView!= null) {} // TODO
         if (imageView != null) {}// TODO
-
-        return user;
     }
 
 

@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
         accessManager = AccessManagerFactory.getInstance();
 
-        onNewIntent(IntentsFactory.homeIntent(this));
+        onNewIntent(getIntent());
     }
 
     @Override
@@ -102,7 +102,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onNewIntent(Intent newIntent) {
         super.onNewIntent(newIntent);
-        Class fragmentClass = (Class) newIntent.getSerializableExtra(IntentsFactory.ARG_FRAGMENT_CLASS);
+        Class fragmentClass = newIntent == null ? null : (Class) newIntent.getSerializableExtra(IntentsFactory.ARG_FRAGMENT_CLASS);
+        if (fragmentClass == null) {
+            startActivity(IntentsFactory.homeIntent(this));
+            return;
+        }
+        boolean refreshLogin = newIntent.getBooleanExtra(IntentsFactory.ARG_REFRESH_LOGIN, false);
+        if (refreshLogin) updateDrawerOnLogin();
         try {
             Fragment fragment = (Fragment) fragmentClass.newInstance();
             fragment.setArguments(newIntent.getExtras());
@@ -110,6 +116,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             getFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)
                     .commit();
+            setIntent(newIntent);
             //ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
             //ft.addToBackStack(null);
         } catch (InstantiationException | IllegalAccessException e) {
@@ -210,8 +217,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 builder.setMessage(R.string.logout_message)
                         .setPositiveButton(R.string.yes, (dialog, which) -> {
                             accessManager.signOut();
-                            updateDrawerOnLogin();
-                            startActivity(IntentsFactory.homeIntent(this));
+                            startActivity(IntentsFactory.homeIntent(this, true));
                             Toast.makeText(this,R.string.toast_loged_out, Toast.LENGTH_SHORT).show();
                         })
                         .setNeutralButton(R.string.no, (dialog, which) -> {
@@ -235,6 +241,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             case R.id.nav_my_orders:
 
+                break;
+            case R.id.nav_user_details:
+                startActivity(IntentsFactory.userDetailsIntent(this));
                 break;
         }
 

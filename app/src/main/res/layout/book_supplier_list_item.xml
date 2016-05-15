@@ -9,7 +9,7 @@
         android:src="@drawable/image_user"
         android:layout_width="72dip"
         android:layout_height="72dip"
-        android:scaleType="centerCrop"
+        android:scaleType="fitCenter"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="false"
@@ -32,7 +32,7 @@
         android:text="price"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:layout_centerVertical="true"
-        android:layout_toStartOf="@+id/button"
+        android:layout_toStartOf="@+id/okButton"
         android:layout_marginEnd="18dp"
         android:layout_toEndOf="@id/userThumbnail" />
 

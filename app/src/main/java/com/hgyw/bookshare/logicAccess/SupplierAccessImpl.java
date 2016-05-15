@@ -17,11 +17,8 @@ import com.hgyw.bookshare.entities.UserType;
  */
 public class SupplierAccessImpl extends GeneralAccessImpl implements SupplierAccess {
 
-    private final Supplier currentUser;
-
     public SupplierAccessImpl(DataAccess crud, Supplier currentUser) {
         super(crud, currentUser);
-        this.currentUser = currentUser;
     }
 
     @Override
@@ -46,17 +43,17 @@ public class SupplierAccessImpl extends GeneralAccessImpl implements SupplierAcc
 
     @Override
     public void updateSupplierDetails(Supplier newDetails) {
-        updateUserDetails(currentUser, newDetails);
+        updateUserDetails(newDetails);
     }
 
     @Override
     public Collection<Order> retrieveOrders(Date fromDate, Date toDate) {
-        return dataAccess.retrieveOrders(null, currentUser, fromDate, toDate, false);
+        return dataAccess.retrieveOrders(null, (Supplier)currentUser, fromDate, toDate, false);
     }
 
     @Override
     public Collection<Order> retrieveActiveOrders(Date fromDate, Date toDate) {
-        return dataAccess.retrieveOrders(null, currentUser, fromDate, toDate, true);
+        return dataAccess.retrieveOrders(null, (Supplier)currentUser, fromDate, toDate, true);
     }
 
     @Override

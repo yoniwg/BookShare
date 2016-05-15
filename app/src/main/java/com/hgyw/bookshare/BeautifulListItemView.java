@@ -20,7 +20,7 @@ public class BeautifulListItemView extends RelativeLayout {
         this.titleView = (TextView)findViewById(R.id.supplierName);
         this.descriptionView = (TextView)findViewById(R.id.description);
         this.thumbnailView = (ImageView)findViewById(R.id.userThumbnail);
-        this.moreTextView = (TextView) findViewById(R.id.button);
+        this.moreTextView = (TextView) findViewById(R.id.okButton);
 
     }
 

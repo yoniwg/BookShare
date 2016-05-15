@@ -30,7 +30,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.hgyw.bookshare.MainActivity" />
         </activity>
-        <activity android:name=".RegistrationActivity"></activity>
+        <activity android:name=".RegistrationActivity"/>
+        <activity android:name=".UserEditActivity"/>
     </application>
 
 </manifest>

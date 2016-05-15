@@ -2,6 +2,7 @@ package com.hgyw.bookshare;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,5 +29,5 @@ public abstract class EntityFragment extends Fragment {
         }
     }
 
-    public abstract int getTitleResource();
+    public abstract @StringRes int getTitleResource();
 }

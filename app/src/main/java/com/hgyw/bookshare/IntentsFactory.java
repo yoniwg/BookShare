@@ -8,6 +8,7 @@ import com.hgyw.bookshare.entities.BookQuery;
 import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.entities.IdReference;
 import com.hgyw.bookshare.entities.User;
+import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.Cart;
 
 /**
@@ -21,6 +22,8 @@ public class IntentsFactory {
     public static final String ARG_ENTITY_ID = "id";
     public static final String ARG_ENTITY_TYPE = "entityType";
     public static final String ARG_USER_DETAILS = "userDetails";
+    public static final String ARG_REFRESH_LOGIN = "refreshLogin";
+    public static final int GET_IMAGE_CODE = 0x44;
 
 
     public static Intent newBookListIntent(Context context, BookQuery bookQuery) {
@@ -48,8 +51,17 @@ public class IntentsFactory {
         return intent;
     }
 
+    public static Intent homeIntent(Context context, boolean refreshLogin) {
+        Intent intent = newBookListIntent(context, null);
+        if (refreshLogin) {
+            intent.putExtra(ARG_REFRESH_LOGIN, true);
+        }
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+        return intent;
+    }
+
     public static Intent homeIntent(Context context) {
-        return newBookListIntent(context, null);
+        return homeIntent(context, false);
     }
 
     public static Intent newTransactionIntent(Context context) {
@@ -61,6 +73,13 @@ public class IntentsFactory {
 
     public static Intent newRegistrationIntent(Context context, User user) {
         Intent intent = new Intent(context, RegistrationActivity.class);
+        intent.putExtra(ARG_USER_DETAILS, user);
+        return intent;
+    }
+
+    public static Intent userDetailsIntent(Context context) {
+        Intent intent = new Intent(context, UserEditActivity.class);
+        User user = AccessManagerFactory.getInstance().getGeneralAccess().retrieveUserDetails();
         intent.putExtra(ARG_USER_DETAILS, user);
         return intent;
     }

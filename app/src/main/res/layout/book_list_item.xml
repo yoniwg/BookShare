@@ -13,7 +13,8 @@
         android:src="@drawable/image_book"
         android:paddingEnd="10dp"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:scaleType="fitCenter" />
 
     <TextView
         android:layout_width="wrap_content"

@@ -74,4 +74,7 @@ public interface GeneralAccess {
     User retrieveUserDetails();
 
     long upload(ImageEntity imageEntity);
+
+    void updateUserDetails(User user);
 }
+

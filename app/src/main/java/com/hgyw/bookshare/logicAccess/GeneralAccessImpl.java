@@ -1,5 +1,6 @@
 package com.hgyw.bookshare.logicAccess;
 
+import java.text.MessageFormat;
 import java.util.List;
 
 import com.hgyw.bookshare.dataAccess.DataAccess;
@@ -21,12 +22,14 @@ import com.hgyw.bookshare.entities.UserType;
 class GeneralAccessImpl implements GeneralAccess {
 
     final protected DataAccess dataAccess;
-    final private User currentUser;
+    final protected User currentUser;
 
 
     protected void requireItsMeForAccess(UserType userType, long userId) {
         if (currentUser.getUserType() != userType || currentUser.getId() != userId) {
-            throw new IllegalArgumentException("The current user has not access to manipulate other users.");
+            String messageText = "The current user ({0} {1}) has not access to manipulate other users ({2} {3}).";
+            String message = MessageFormat.format(messageText, currentUser.getUserType(), currentUser.getId(), userType, userId);
+            throw new IllegalArgumentException(message);
         }
     }
 
@@ -87,8 +90,8 @@ class GeneralAccessImpl implements GeneralAccess {
         return imageEntity.getId();
     }
 
-
-    public <T extends User> void updateUserDetails(T currentUser, T newDetails) {
+    @Override
+    public void updateUserDetails(User newDetails) {
         requireItsMeForAccess(newDetails.getUserType(), newDetails.getId());
         newDetails.setCredentials(((User) dataAccess.retrieve(currentUser)).getCredentials()); // Avoid change credentials by this method.
         dataAccess.update(newDetails);
