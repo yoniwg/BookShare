@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="New account"
-        android:id="@+id/newAccountButton"
+        android:id="@+id/newAccountView"
         android:layout_gravity="center_horizontal"
         android:textColor="@color/linkColor" />
 </LinearLayout>

@@ -39,9 +39,9 @@ public class LoginDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Credentials credentials = getArguments() == null ? null : (Credentials) getArguments().getSerializable(ARG_DIALOG_CREDENTIALS_OBJECT);
 
-        view = getActivity().getLayoutInflater().inflate(R.layout.dialog_credentials, null);
+        view = getActivity().getLayoutInflater().inflate(R.layout.dialog_login, null);
         if (credentials != null) ObjectToViewAppliers.apply(view, credentials);
-        Button newAccountButton = (Button) view.findViewById(R.id.newAccountButton);
+        View newAccountButton = view.findViewById(R.id.newAccountView);
         if (newAccountButton != null) newAccountButton.setOnClickListener(v -> {
             View newAccountView = getActivity().getLayoutInflater().inflate(R.layout.user_simple_dialog_component, null);
             new AlertDialog.Builder(getActivity()).setView(newAccountView)
