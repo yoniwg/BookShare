@@ -90,7 +90,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     Uri selectedImage = imageReturnedIntent.getData();
                     ImageEntity imageEntity = new ImageEntity();
                     Utility.uploadImageURI(this, selectedImage, imageEntity, userThumbnailImageView);
-                    if (imageId == 0) {
+                    if (imageEntity.getId() == 0) {
                         Toast.makeText(this, R.string.upload_image_failed, Toast.LENGTH_SHORT).show();
                     } else {
                         imageId = imageEntity.getId();
