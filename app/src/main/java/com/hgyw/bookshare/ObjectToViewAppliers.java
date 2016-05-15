@@ -2,6 +2,7 @@ package com.hgyw.bookshare;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.RatingBar;
@@ -16,6 +17,7 @@ import com.hgyw.bookshare.entities.Customer;
 import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.Rating;
 import com.hgyw.bookshare.entities.Supplier;
+import com.hgyw.bookshare.entities.User;
 
 import java.text.MessageFormat;
 
@@ -130,5 +132,40 @@ public class ObjectToViewAppliers {
         return Credentials.create(username, password);
     }
 
+    public static void apply(View view, User user) {
+        apply(view, user.getCredentials());
+        TextView firstNameView = (TextView) view.findViewById(R.id.userFirstName);
+        TextView lastNameView = (TextView) view.findViewById(R.id.userLastName);
+        TextView addressView = (TextView) view.findViewById(R.id.userAddress);
+        TextView phoneView = (TextView) view.findViewById(R.id.userPhone);
+        DatePicker birthdayView = (DatePicker) view.findViewById(R.id.userBirthday);
+        ImageView imageView = (ImageView) view.findViewById(R.id.userThumbnail);
 
-}
+        if (firstNameView!= null) firstNameView.setText(user.getFirstName());
+        if (lastNameView!= null) lastNameView.setText(user.getLastName());
+        if (addressView!= null) lastNameView.setText(user.getAddress());
+        if (phoneView!= null) lastNameView.setText(user.getPhoneNumber());
+        if (birthdayView!= null) {} // TODO
+        if (imageView != null) Utility.setImageById(imageView, user.getImageId());
+    }
+
+    public static void result(View view, User user) {
+        apply(view, user.getCredentials());
+        TextView firstNameView = (TextView) view.findViewById(R.id.userFirstName);
+        TextView lastNameView = (TextView) view.findViewById(R.id.userLastName);
+        TextView addressView = (TextView) view.findViewById(R.id.userAddress);
+        TextView phoneView = (TextView) view.findViewById(R.id.userPhone);
+        DatePicker birthdayView = (DatePicker) view.findViewById(R.id.userBirthday);
+        ImageView imageView = (ImageView) view.findViewById(R.id.userThumbnail);
+
+        if (firstNameView!= null) user.setFirstName(firstNameView.getText().toString());
+        if (lastNameView!= null) user.setLastName(lastNameView.getText().toString());
+        if (addressView!= null) user.setAddress(addressView.getText().toString());
+        if (phoneView!= null) user.setPhoneNumber(phoneView.getText().toString());
+        if (birthdayView!= null) {} // TODO
+        if (imageView != null) {}// TODO
+
+    }
+
+
+    }

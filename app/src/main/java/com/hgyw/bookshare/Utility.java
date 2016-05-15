@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.annotation.DrawableRes;
 import android.widget.ImageView;
 
 import com.annimon.stream.Collectors;
@@ -54,12 +55,24 @@ public class Utility {
     /**
      * Set ImageView to imageId of entities.
      * @param imageView
-     * @param imageId
+     * @param entityImageId
      * @return
      */
-    public static boolean setImageById(ImageView imageView, long imageId) {
-        if (imageId == 0) return false;
-        ImageEntity imageEntity = AccessManagerFactory.getInstance().getGeneralAccess().retrieve(ImageEntity.class, imageId);
+    public static boolean setImageById(ImageView imageView, long entityImageId) {
+        return setImageById(imageView, entityImageId, 0);
+    }
+
+    public static boolean setImageById(ImageView imageView, long entityImageId, @DrawableRes int defaultImageResId) {
+        // first remove the current image
+        if (defaultImageResId == 0) {
+            imageView.setImageDrawable(null);
+        } else {
+            imageView.setImageResource(defaultImageResId);
+        }
+        // end if no new image
+        if (entityImageId == 0) {return true;}
+        // else set the image
+        ImageEntity imageEntity = AccessManagerFactory.getInstance().getGeneralAccess().retrieve(ImageEntity.class, entityImageId);
         byte[] bytes = imageEntity.getBytes();
         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
         imageView.setImageBitmap(bitmap);

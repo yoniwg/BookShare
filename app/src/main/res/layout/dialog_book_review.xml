@@ -12,22 +12,22 @@
         android:layout_centerHorizontal="true" />
 
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:hint="Review Title"
+        android:hint="@string/title"
         android:id="@+id/reviewTitle"
         android:layout_below="@+id/reviewRating"
         android:layout_centerHorizontal="true"
         android:singleLine="true" />
 
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:hint="Review Description"
+        android:hint="@string/description"
         android:id="@+id/reviewDescription"
-        android:minLines="3"
         android:layout_below="@+id/reviewTitle"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:lines="4" />
 </RelativeLayout>

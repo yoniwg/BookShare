@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -68,8 +69,6 @@ public class BooksListFragment extends Fragment {
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Book book = adapter.getItem(position);
-
-            Toast.makeText(activity, book.shortDescription(), Toast.LENGTH_SHORT).show();
             startActivity(IntentsFactory.newEntityIntent(activity, book));
         });
     }
@@ -79,4 +78,16 @@ public class BooksListFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_book_list, menu);
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_search:
+                BookQueryDialogFragment.newInstance(bookQuery).show(getFragmentManager(), "BookQueryDialogFragment");
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
 }

@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".BookFragment"
-    android:padding="@dimen/frame_margin"
     android:orientation="vertical">
 
     <ScrollView
@@ -53,7 +52,7 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="@string/reviews_colon"
                 android:id="@+id/textView3"
-                android:background="#f8eae5"
+                android:background="@color/colorBackground2"
                 android:padding="10dp" />
 
             <ListView
@@ -61,13 +60,21 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/reviewListView" />
 
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/show_all_reviews"
+                android:id="@+id/all_reviews_button"
+                android:layout_gravity="center_horizontal" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="@string/suppliers_colon"
                 android:id="@+id/textView2"
-                android:background="#f8eae5"
+                android:background="@color/colorBackground2"
                 android:padding="10dp" />
 
             <ListView

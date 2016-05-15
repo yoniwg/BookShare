@@ -16,10 +16,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hgyw.bookshare.entities.BookQuery;
 import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.User;
-import com.hgyw.bookshare.entities.UserType;
 import com.hgyw.bookshare.logicAccess.AccessManager;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 
@@ -137,10 +135,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (item.getItemId()) {
             case R.id.action_settings:
                 return true;
-            case R.id.action_search:
-                BookQueryDialogFragment.newInstance(new BookQuery())
-                        .show(getFragmentManager(), "bookQueryDialog");
-                return true;
             case R.id.action_buy:
                 List<Order> oList = accessManager.getCustomerAccess().getCart().retrieveCartContent();
                 Intent transactionIntent = IntentsFactory.newTransactionIntent(this);
@@ -161,9 +155,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_logout:
                 accessManager.signOut();
                 updateDrawerOnLogin();
+                startActivity(IntentsFactory.afterLoginIntent(this));
                 break;
             case R.id.nav_login:
-                CredentialsDialogFragment.newInstance().show(getFragmentManager(), "CredentialsDialogFragment");
+                LoginDialogFragment.newInstance().show(getFragmentManager(), "LoginDialogFragment");
 
                 break;
             case R.id.nav_books: {
