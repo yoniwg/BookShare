@@ -78,6 +78,8 @@
     <string name="address">Address</string>
     <string name="phone">Phone</string>
     <string name="register">Register</string>
+    <string name="delete">Delete</string>
+    <string name="toast_order_deleted">Order has been deleted</string>
 
     <string-array name="planets_array">
         <item>Mercury</item>

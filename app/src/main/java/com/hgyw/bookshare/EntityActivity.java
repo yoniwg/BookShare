@@ -8,6 +8,7 @@ import android.view.MenuItem;
 
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.Entity;
+import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.Supplier;
 
 import java.util.HashMap;
@@ -19,6 +20,7 @@ public class EntityActivity extends AppCompatActivity {
     static {
         entityFragmentMap.put(Book.class, BookFragment.class);
         entityFragmentMap.put(Supplier.class, SupplierFragment.class);
+        //TODO entityFragmentMap.put(Order.class, OrderFragment.class);
     }
 
     @Override

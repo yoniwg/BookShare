@@ -3,16 +3,12 @@ package com.hgyw.bookshare;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.text.style.TtsSpan;
-import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.Toast;
@@ -24,7 +20,6 @@ import com.hgyw.bookshare.logicAccess.Cart;
 import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.CustomerAccess;
-import com.hgyw.bookshare.logicAccess.GeneralAccess;
 
 import java.util.List;
 
@@ -93,27 +88,29 @@ public class CartFragment extends Fragment {
             }
         };
         listView.setAdapter(adapter);
-        //listView.setAdapter(new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1, ordersList));
 
-        listView.setOnItemClickListener((parent, view, position, id) -> {
-            Order order = adapter.getItem(position);
+        //setting delete context menu
+        listView.setOnCreateContextMenuListener((menu, v, menuInfo) -> {
+            menu.add(R.string.delete);
 
-            Toast.makeText(activity, order.shortDescription(), Toast.LENGTH_SHORT).show(); //TODO - delete this toast
-            //startActivity(IntentsFactory.newEntityIntent(activity, order));
+            menu.getItem(0).setOnMenuItemClickListener(item -> {
+                AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+                Order order = (Order) adapter.getItem(info.position);
+
+                //show yes/no alert dialog
+                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                builder.setMessage(R.string.delete_order_title)
+                        .setPositiveButton(R.string.yes, (dialog, which) -> {
+                            cAccess.getCart().remove(order.getBookSupplierId());
+                            adapter.notifyDataSetChanged();
+                            Toast.makeText(v.getContext(),R.string.toast_order_deleted, Toast.LENGTH_SHORT).show();
+                        })
+                        .setNeutralButton(R.string.no, (dialog, which) -> {
+                        });
+                builder.create().show();
+                return true;
+            });
         });
-
-        listView.setOnItemLongClickListener((parent, view, position, id)-> {
-                    Order order = adapter.getItem(position);
-
-                    AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                    builder.setView(view)
-                            .setMessage(R.string.delete_order_title)
-                            .setPositiveButton(R.string.yes, (dialog, which) -> cAccess.getCart().remove(order.getBookSupplierId()))
-                            .setNeutralButton(R.string.no, (dialog, which) -> {});
-                    builder.create().show();
-                    return true;
-                }
-        );
     }
 
     @Override
