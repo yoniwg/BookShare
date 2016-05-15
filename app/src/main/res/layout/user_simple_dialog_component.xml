@@ -33,6 +33,13 @@
             android:inputType="textPassword" />
     </android.support.design.widget.TextInputLayout>
 
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/customerSupplierSpinner"
+        android:layout_gravity="center_horizontal"
+        android:entries="@array/customerSupplierItems"/>
+
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

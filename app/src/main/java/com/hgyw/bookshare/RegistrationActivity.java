@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
@@ -22,11 +23,16 @@ import com.hgyw.bookshare.exceptions.WrongLoginException;
 import com.hgyw.bookshare.logicAccess.AccessManager;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 public class RegistrationActivity extends AppCompatActivity {
 
     private static final int ACTION_IMAGE_CAPTURE_CODE = 0;
     private static final int ACTION_PICK_CODE = 1;
     ImageView userThumbnailImageView;
+    long imageId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,10 +52,10 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private void onRegistration() {
         View rootView = findViewById(android.R.id.content);
-        User user = new Customer(); //TODO
         Context context = this;
 
-        ObjectToViewAppliers.result(rootView, user);
+        User user = ObjectToViewAppliers.resultUser(rootView);
+        user.setImageId(imageId);
         AccessManager accessManager = AccessManagerFactory.getInstance();
         try {
             accessManager.signUp(user);
@@ -79,18 +85,21 @@ public class RegistrationActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
         switch(requestCode) {
             case ACTION_IMAGE_CAPTURE_CODE:
-                if(resultCode == RESULT_OK){
-                    Uri selectedImage = imageReturnedIntent.getData();
-                    userThumbnailImageView.setImageURI(selectedImage);
-                }
-                break;
             case ACTION_PICK_CODE:
                 if(resultCode == RESULT_OK){
                     Uri selectedImage = imageReturnedIntent.getData();
-                    userThumbnailImageView.setImageURI(selectedImage);
+                    ImageEntity imageEntity = new ImageEntity();
+                    Utility.uploadImageURI(this, selectedImage, imageEntity, userThumbnailImageView);
+                    if (imageId == 0) {
+                        Toast.makeText(this, R.string.upload_image_failed, Toast.LENGTH_SHORT).show();
+                    } else {
+                        imageId = imageEntity.getId();
+                    }
                 }
                 break;
         }
     }
+
+
 
 }

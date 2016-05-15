@@ -39,6 +39,9 @@ enum AccessManagerImpl implements AccessManager {
         if (user.getId() != 0) {
             throw new IllegalArgumentException("New item should have id 0.");
         }
+        if (user.getCredentials().getUsername().trim().isEmpty()) {
+            throw new WrongLoginException(WrongLoginException.Issue.USERNAME_EMPTY);
+        }
         if (crud.isUsernameTaken(user.getCredentials().getUsername())) {
             throw new WrongLoginException(WrongLoginException.Issue.USERNAME_TAKEN);
         }

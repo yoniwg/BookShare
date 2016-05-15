@@ -1,11 +1,5 @@
 package com.hgyw.bookshare.logicAccess;
 
-import com.annimon.stream.Collectors;
-import com.annimon.stream.Stream;
-
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.util.Collection;
 import java.util.List;
 
 import com.hgyw.bookshare.dataAccess.DataAccess;
@@ -16,6 +10,7 @@ import com.hgyw.bookshare.entities.BookSummary;
 import com.hgyw.bookshare.entities.BookSupplier;
 import com.hgyw.bookshare.entities.Customer;
 import com.hgyw.bookshare.entities.Entity;
+import com.hgyw.bookshare.entities.ImageEntity;
 import com.hgyw.bookshare.entities.Supplier;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.entities.UserType;
@@ -83,6 +78,13 @@ class GeneralAccessImpl implements GeneralAccess {
             return (User) dataAccess.retrieve(currentUser);
         }
         return currentUser;
+    }
+
+    @Override
+    public long upload(ImageEntity imageEntity) {
+        imageEntity.setId(0);
+        dataAccess.create(imageEntity);
+        return imageEntity.getId();
     }
 
 

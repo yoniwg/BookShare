@@ -11,6 +11,7 @@ import com.hgyw.bookshare.entities.BookReview;
 import com.hgyw.bookshare.entities.BookSummary;
 import com.hgyw.bookshare.entities.BookSupplier;
 import com.hgyw.bookshare.entities.Entity;
+import com.hgyw.bookshare.entities.ImageEntity;
 import com.hgyw.bookshare.entities.Supplier;
 import com.hgyw.bookshare.entities.User;
 
@@ -72,4 +73,5 @@ public interface GeneralAccess {
      */
     User retrieveUserDetails();
 
+    long upload(ImageEntity imageEntity);
 }

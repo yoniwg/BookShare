@@ -6,6 +6,7 @@ import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.RatingBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.hgyw.bookshare.entities.Book;
@@ -18,6 +19,7 @@ import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.Rating;
 import com.hgyw.bookshare.entities.Supplier;
 import com.hgyw.bookshare.entities.User;
+import com.hgyw.bookshare.entities.UserType;
 
 import java.text.MessageFormat;
 
@@ -145,6 +147,7 @@ public class ObjectToViewAppliers {
         TextView phoneView = (TextView) view.findViewById(R.id.userPhone);
         DatePicker birthdayView = (DatePicker) view.findViewById(R.id.userBirthday);
         ImageView imageView = (ImageView) view.findViewById(R.id.userThumbnail);
+        Spinner customerSupplierSpinner = (Spinner) view.findViewById(R.id.customerSupplierSpinner);
 
         if (firstNameView!= null) firstNameView.setText(user.getFirstName());
         if (lastNameView!= null) lastNameView.setText(user.getLastName());
@@ -152,15 +155,24 @@ public class ObjectToViewAppliers {
         if (phoneView!= null) lastNameView.setText(user.getPhoneNumber());
         if (birthdayView!= null) {} // TODO
         if (imageView != null) Utility.setImageById(imageView, user.getImageId(), R.drawable.image_user);
+        if (customerSupplierSpinner != null) customerSupplierSpinner.setSelection(user.getUserType() == UserType.CUSTOMER ? 0 : 1);
     }
 
-    public static void result(View view, User user) {
+    public static User resultUser(View view) {
         TextView firstNameView = (TextView) view.findViewById(R.id.userFirstName);
         TextView lastNameView = (TextView) view.findViewById(R.id.userLastName);
         TextView addressView = (TextView) view.findViewById(R.id.userAddress);
         TextView phoneView = (TextView) view.findViewById(R.id.userPhone);
         DatePicker birthdayView = (DatePicker) view.findViewById(R.id.userBirthday);
         ImageView imageView = (ImageView) view.findViewById(R.id.userThumbnail);
+        Spinner customerSupplierSpinner = (Spinner) view.findViewById(R.id.customerSupplierSpinner);
+
+        User user;
+        if (customerSupplierSpinner != null) {
+            user = customerSupplierSpinner.getSelectedItemPosition() == 0 ? new Customer() : new Supplier();
+        } else {
+            user = new Customer();
+        }
 
         user.setCredentials(resultCredentials(view));
         if (firstNameView!= null) user.setFirstName(firstNameView.getText().toString());
@@ -170,7 +182,8 @@ public class ObjectToViewAppliers {
         if (birthdayView!= null) {} // TODO
         if (imageView != null) {}// TODO
 
+        return user;
     }
 
 
-    }
+}
