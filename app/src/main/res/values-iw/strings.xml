@@ -88,4 +88,7 @@
     <string name="upload_image_failed">העלאת תמונה נכשלה</string>
     <string name="credit_number">מספר אשראי</string>
     <string name="confirm_order_message">האם אתה בטוח שברצונך לאשר את ההזמנה?</string>
+    <string name="address">כתובת</string>
+    <string name="wrong_address_message">נא לספק כתובת תקינה</string>
+    <string name="wrong_credit_message">מספר אשראי חייב להכיל לפחות 8 ספרות</string>
 </resources>
