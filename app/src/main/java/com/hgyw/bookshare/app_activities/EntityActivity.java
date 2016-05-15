@@ -1,4 +1,4 @@
-package com.hgyw.bookshare;
+package com.hgyw.bookshare.app_activities;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -6,9 +6,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.hgyw.bookshare.app_fragments.BookFragment;
+import com.hgyw.bookshare.app_fragments.EntityFragment;
+import com.hgyw.bookshare.app_fragments.IntentsFactory;
+import com.hgyw.bookshare.R;
+import com.hgyw.bookshare.app_fragments.SupplierFragment;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.Entity;
-import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.Supplier;
 
 import java.util.HashMap;

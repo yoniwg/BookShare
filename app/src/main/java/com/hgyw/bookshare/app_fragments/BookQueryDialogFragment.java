@@ -1,4 +1,4 @@
-package com.hgyw.bookshare;
+package com.hgyw.bookshare.app_fragments;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -10,6 +10,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.hgyw.bookshare.EnumAdapter;
+import com.hgyw.bookshare.R;
+import com.hgyw.bookshare.Utility;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookQuery;
 

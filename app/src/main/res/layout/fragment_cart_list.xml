@@ -7,5 +7,5 @@
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
     app:layoutManager="LinearLayoutManager"
-    tools:context=".CartFragment"
+    tools:context=".app_fragments.CartFragment"
     tools:listitem="@layout/order_list_item" />

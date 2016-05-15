@@ -1,4 +1,4 @@
-package com.hgyw.bookshare;
+package com.hgyw.bookshare.app_fragments;
 
 
 import android.os.Bundle;
@@ -6,12 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.hgyw.bookshare.entities.BookSupplier;
+import com.hgyw.bookshare.ObjectToViewAppliers;
+import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.entities.Supplier;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.GeneralAccess;
-
-import java.util.List;
 
 
 public class SupplierFragment extends EntityFragment {

@@ -1,4 +1,4 @@
-package com.hgyw.bookshare;
+package com.hgyw.bookshare.app_fragments;
 
 
 import android.app.Activity;
@@ -7,8 +7,9 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
+import com.hgyw.bookshare.ObjectToViewAppliers;
+import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.entities.Credentials;
 import com.hgyw.bookshare.entities.Customer;
 import com.hgyw.bookshare.exceptions.WrongLoginException;

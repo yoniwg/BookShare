@@ -1,17 +1,8 @@
-package com.hgyw.bookshare;
+package com.hgyw.bookshare.app_fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import com.hgyw.bookshare.entities.Book;
-import com.hgyw.bookshare.entities.Entity;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A placeholder fragment containing a simple view.

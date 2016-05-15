@@ -1,4 +1,4 @@
-package com.hgyw.bookshare;
+package com.hgyw.bookshare.app_fragments;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
@@ -13,6 +13,10 @@ import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.Toast;
 
+import com.hgyw.bookshare.ApplyObjectAdapter;
+import com.hgyw.bookshare.ObjectToViewAppliers;
+import com.hgyw.bookshare.R;
+import com.hgyw.bookshare.app_activities.MainActivity;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookSupplier;
 import com.hgyw.bookshare.entities.Supplier;

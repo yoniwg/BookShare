@@ -1,15 +1,17 @@
-package com.hgyw.bookshare;
+package com.hgyw.bookshare.app_activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.hgyw.bookshare.app_fragments.IntentsFactory;
+import com.hgyw.bookshare.ObjectToViewAppliers;
+import com.hgyw.bookshare.R;
+import com.hgyw.bookshare.Utility;
 import com.hgyw.bookshare.entities.ImageEntity;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.exceptions.WrongLoginException;

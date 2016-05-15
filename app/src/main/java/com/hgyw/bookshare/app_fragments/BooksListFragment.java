@@ -1,7 +1,6 @@
-package com.hgyw.bookshare;
+package com.hgyw.bookshare.app_fragments;
 
 import android.app.Fragment;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -10,13 +9,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.Toast;
 
+import com.hgyw.bookshare.ApplyObjectAdapter;
+import com.hgyw.bookshare.ObjectToViewAppliers;
+import com.hgyw.bookshare.R;
+import com.hgyw.bookshare.app_activities.MainActivity;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookQuery;
 import com.hgyw.bookshare.entities.BookSummary;
-import com.hgyw.bookshare.entities.UserType;
-import com.hgyw.bookshare.logicAccess.AccessManager;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.GeneralAccess;
 

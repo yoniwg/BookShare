@@ -1,15 +1,16 @@
-package com.hgyw.bookshare;
+package com.hgyw.bookshare.app_fragments;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
+import com.hgyw.bookshare.app_activities.EntityActivity;
+import com.hgyw.bookshare.app_activities.MainActivity;
+import com.hgyw.bookshare.app_activities.RegistrationActivity;
+import com.hgyw.bookshare.app_activities.UserEditActivity;
 import com.hgyw.bookshare.entities.BookQuery;
-import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.entities.IdReference;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
-import com.hgyw.bookshare.logicAccess.Cart;
 
 /**
  * Created by haim7 on 12/05/2016.

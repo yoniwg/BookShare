@@ -1,10 +1,8 @@
-package com.hgyw.bookshare;
+package com.hgyw.bookshare.app_fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.app.Fragment;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,10 +11,11 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.hgyw.bookshare.R;
+import com.hgyw.bookshare.SimpleTextWatcher;
+import com.hgyw.bookshare.Utility;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.CustomerAccess;
-
-import org.w3c.dom.Text;
 
 
 /**

@@ -1,15 +1,16 @@
-package com.hgyw.bookshare;
+package com.hgyw.bookshare.app_activities;
 
 
 import android.os.Bundle;
-import android.support.design.widget.TextInputEditText;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hgyw.bookshare.entities.User;
+import com.hgyw.bookshare.app_fragments.IntentsFactory;
+import com.hgyw.bookshare.ObjectToViewAppliers;
+import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 
 public class UserEditActivity extends RegistrationActivity {

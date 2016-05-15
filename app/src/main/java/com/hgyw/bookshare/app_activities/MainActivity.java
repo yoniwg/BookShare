@@ -1,4 +1,4 @@
-package com.hgyw.bookshare;
+package com.hgyw.bookshare.app_activities;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -17,14 +17,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hgyw.bookshare.entities.Order;
+import com.hgyw.bookshare.app_fragments.IntentsFactory;
+import com.hgyw.bookshare.app_fragments.LoginDialogFragment;
+import com.hgyw.bookshare.R;
+import com.hgyw.bookshare.Utility;
 import com.hgyw.bookshare.entities.Transaction;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.exceptions.OrdersTransactionException;
 import com.hgyw.bookshare.logicAccess.AccessManager;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
-
-import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {

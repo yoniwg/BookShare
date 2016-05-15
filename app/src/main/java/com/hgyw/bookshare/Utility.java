@@ -4,35 +4,22 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.DrawableRes;
-import android.view.ContextThemeWrapper;
 import android.widget.ImageView;
-import android.widget.Toast;
 
-import com.annimon.stream.Collectors;
-import com.annimon.stream.Stream;
-import com.hgyw.bookshare.entities.Book;
-import com.hgyw.bookshare.entities.BookSupplier;
-import com.hgyw.bookshare.entities.Customer;
+import com.hgyw.bookshare.app_fragments.IntentsFactory;
 import com.hgyw.bookshare.entities.ImageEntity;
-import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.User;
-import com.hgyw.bookshare.logicAccess.AccessManager;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
-import com.hgyw.bookshare.logicAccess.CustomerAccess;
-import com.hgyw.bookshare.logicAccess.GeneralAccess;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.util.List;
 
 /**
  * Created by haim7 on 11/05/2016.

@@ -1,8 +1,7 @@
-package com.hgyw.bookshare;
+package com.hgyw.bookshare.app_fragments;
 
 
 import android.app.Activity;
-import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -19,6 +18,12 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hgyw.bookshare.ApplyObjectAdapter;
+import com.hgyw.bookshare.ObjectToViewAppliers;
+import com.hgyw.bookshare.R;
+import com.hgyw.bookshare.app_fragments.BookReviewDialogFragment;
+import com.hgyw.bookshare.app_fragments.EntityFragment;
+import com.hgyw.bookshare.app_fragments.IntentsFactory;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookReview;
 import com.hgyw.bookshare.entities.BookSummary;
@@ -82,7 +87,7 @@ public class BookFragment extends EntityFragment {
                 if (fromUser) {
                     finalUserBookReview.setRating(Rating.ofStars((int) rating));
                     BookReviewDialogFragment dialogFragment = BookReviewDialogFragment.newInstance(finalUserBookReview);
-                    dialogFragment.setTargetFragment(this, RESULT_CODE_BOOK_REVIEW_DIALOG); // TODO - Problem with targetFragmen - we can do simple dialog without fragment
+                    dialogFragment.setTargetFragment(this, RESULT_CODE_BOOK_REVIEW_DIALOG); // TODO - Problem with targetFragment - we can do simple dialog without fragment
                     dialogFragment.show(getFragmentManager(), "BookReviewDialog");
                 }
             });
