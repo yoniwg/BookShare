@@ -16,6 +16,7 @@ import com.hgyw.bookshare.entities.ImageEntity;
 import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
+import com.hgyw.bookshare.logicAccess.CustomerAccess;
 import com.hgyw.bookshare.logicAccess.GeneralAccess;
 
 import java.io.ByteArrayInputStream;
@@ -48,7 +49,7 @@ public class Utility {
         order.setBookSupplierId(bookSupplier.getSupplierId());
         order.setAmount(1);
         order.setUnitPrice(bookSupplier.getPrice());
-        GeneralAccess access = AccessManagerFactory.getInstance().getGeneralAccess();
+        CustomerAccess access = AccessManagerFactory.getInstance().getCustomerAccess();
         access.getCart().add(order);
     }
 

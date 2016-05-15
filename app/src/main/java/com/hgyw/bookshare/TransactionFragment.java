@@ -8,7 +8,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
+import android.widget.EditText;
+import android.widget.TextView;
+
+import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
+import com.hgyw.bookshare.logicAccess.CustomerAccess;
 
 
 /**
@@ -19,6 +23,8 @@ import android.widget.ListView;
  */
 public class TransactionFragment extends Fragment {
 
+
+    private CustomerAccess cAccess;
 
     public TransactionFragment() {
         // Required empty public constructor
@@ -40,6 +46,7 @@ public class TransactionFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        cAccess = AccessManagerFactory.getInstance().getCustomerAccess();
         setHasOptionsMenu(true);
 
     }
@@ -58,7 +65,22 @@ public class TransactionFragment extends Fragment {
         getFragmentManager().beginTransaction()
                 .replace(R.id.cart_container, cartFragment)
                 .commit();
+        //set total sum
+        String totalSum = Utility.moneyToNumberString(cAccess.getCart().calculateTotalSum());
+        ((TextView)getActivity().findViewById(R.id.total_sum)).setText(totalSum);
 
+        //set listeners to address and credit number
+        ((EditText)(getActivity().findViewById(R.id.shipping_address)))
+                .setOnEditorActionListener((v, actionId, event) -> {
+                    cAccess.getCart().getTransaction().setShippingAddress(v.getText().toString());
+                    return true;
+                });
+
+        ((EditText)(getActivity().findViewById(R.id.credit_number)))
+                .setOnEditorActionListener((v, actionId, event) -> {
+                    cAccess.getCart().getTransaction().setCreditCard(v.getText().toString());
+                    return true;
+                });
     }
 
     @Override

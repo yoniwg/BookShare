@@ -1,5 +1,6 @@
 package com.hgyw.bookshare;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,9 +15,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.User;
+import com.hgyw.bookshare.exceptions.OrdersTransactionException;
 import com.hgyw.bookshare.logicAccess.AccessManager;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 
@@ -155,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_logout:
                 accessManager.signOut();
                 updateDrawerOnLogin();
-                startActivity(IntentsFactory.homeIntent(this));
+                startActivity(IntentsFactory.afterLoginIntent(this));
                 break;
             case R.id.nav_login:
                 LoginDialogFragment.newInstance().show(getFragmentManager(), "LoginDialogFragment");
