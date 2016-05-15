@@ -87,4 +87,5 @@
     <string name="transaction_message">האם ברצונך להמשיך בביצוע ההזמנה?</string>
     <string name="upload_image_failed">העלאת תמונה נכשלה</string>
     <string name="credit_number">מספר אשראי</string>
+    <string name="confirm_order_message">האם אתה בטוח שברצונך לאשר את ההזמנה?</string>
 </resources>
