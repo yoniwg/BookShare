@@ -61,6 +61,7 @@
     <string name="guest">Guest</string>
     <string name="book_fragment_title">Book Details</string>
     <string name="supplier_fragment_title">Supplier Details</string>
+    <string name="cart">Cart</string>
 
     <string-array name="planets_array">
         <item>Mercury</item>

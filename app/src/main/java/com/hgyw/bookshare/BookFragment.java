@@ -78,10 +78,11 @@ public class BookFragment extends EntityFragment {
             }
         });
 
-        userRatingBar = (RatingBar) activity.findViewById(R.id.userRatingBar);
+        View userReviewContainer = activity.findViewById(R.id.userReviewContainer);
         if (!isCustomer) {
-            userRatingBar.setVisibility(View.GONE);
+            userReviewContainer.setVisibility(View.GONE);
         } else {
+            userRatingBar = (RatingBar) userReviewContainer.findViewById(R.id.userRatingBar);
             BookReview optionalUserBookReview = AccessManagerFactory.getInstance().getCustomerAccess().retrieveMyReview(book);
             final BookReview userBookReview = optionalUserBookReview == null ? new BookReview() : optionalUserBookReview;
             userRatingBar.setRating(userBookReview.getRating().getStars());
