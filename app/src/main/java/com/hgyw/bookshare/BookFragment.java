@@ -81,8 +81,8 @@ public class BookFragment extends EntityFragment {
             userRatingBar.setOnRatingBarChangeListener((RatingBar ratingBar, float rating, boolean fromUser) -> {
                 if (fromUser) {
                     finalUserBookReview.setRating(Rating.ofStars((int) rating));
-                    DialogFragment dialogFragment = BookReviewDialogFragment.newInstance(finalUserBookReview);
-                    dialogFragment.setTargetFragment(this, RESULT_CODE_BOOK_REVIEW_DIALOG);
+                    BookReviewDialogFragment dialogFragment = BookReviewDialogFragment.newInstance(finalUserBookReview);
+                    dialogFragment.setTargetFragment(this, RESULT_CODE_BOOK_REVIEW_DIALOG); // TODO - Problem with targetFragmen - we can do simple dialog without fragment
                     dialogFragment.show(getFragmentManager(), "BookReviewDialog");
                 }
             });

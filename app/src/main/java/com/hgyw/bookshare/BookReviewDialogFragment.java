@@ -48,7 +48,7 @@ public class BookReviewDialogFragment extends DialogFragment {
                 .setPositiveButton(R.string.rate, (dialog, which) -> {
                     ObjectToViewAppliers.result(view, bookReview);
                     Intent resultIntent = new Intent(); resultIntent.putExtra(ARG_RESULT_OBJECT, bookReview);
-                    getTargetFragment().onActivityResult(getTargetRequestCode(), 0, resultIntent);
+                    sendResult(0);
                 })
                 .create();
     }
