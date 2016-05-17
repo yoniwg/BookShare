@@ -1,13 +1,12 @@
 package com.hgyw.bookshare.app_fragments;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
-import android.app.Fragment;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.NumberPicker;
@@ -16,13 +15,11 @@ import android.widget.Toast;
 import com.hgyw.bookshare.ApplyObjectAdapter;
 import com.hgyw.bookshare.ObjectToViewAppliers;
 import com.hgyw.bookshare.R;
-import com.hgyw.bookshare.app_activities.MainActivity;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookSupplier;
 import com.hgyw.bookshare.entities.Supplier;
 import com.hgyw.bookshare.logicAccess.Cart;
 import com.hgyw.bookshare.entities.Order;
-import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.CustomerAccess;
 
 import java.util.List;
@@ -31,13 +28,9 @@ import java.util.List;
  * A fragment representing the cart.
  * <p>
  */
-public class CartFragment extends Fragment {
+public class CartFragment extends AbstractFragment<CustomerAccess> {
 
-    public static final String IS_AMOUNT_CAN_MODIFY = "is_amount_can_modify";
-    private CustomerAccess cAccess;
-
-    private MainActivity activity;
-
+    public static final String IS_MAIN_FRAGMENT = "is_amount_can_modify";
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -50,48 +43,35 @@ public class CartFragment extends Fragment {
         return newInstance(true);
     }
 
-    public static CartFragment newInstance(boolean isAmountCanModify) {
+    public static CartFragment newInstance(boolean isMainFragment) {
         CartFragment fragment = new CartFragment();
         Bundle args = new Bundle();
-        args.putBoolean(IS_AMOUNT_CAN_MODIFY, isAmountCanModify);
+        args.putBoolean(IS_MAIN_FRAGMENT, isMainFragment);
         fragment.setArguments(args);
         return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        cAccess = AccessManagerFactory.getInstance().getCustomerAccess();
-        activity = (MainActivity) getActivity();
-        setHasOptionsMenu(true);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_cart_list, container, false);
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        ListView listView = (ListView) activity.findViewById(R.id.cart_list);
-        Cart cart = cAccess.getCart();
+        ListView listView = (ListView) getActivity().findViewById(R.id.cart_list);
+        Cart cart = access.getCart();
         List<Order> ordersList = cart.retrieveCartContent();
 
-        ApplyObjectAdapter<Order> adapter = new ApplyObjectAdapter<Order>(activity, R.layout.order_list_item, ordersList) {
+        ApplyObjectAdapter<Order> adapter = new ApplyObjectAdapter<Order>(getActivity(), R.layout.order_list_item, ordersList) {
             @Override
             protected void applyOnView(View view, int position) {
                 Order order = getItem(position);
                 ObjectToViewAppliers.apply(view, order);
-                BookSupplier bookSupplier = cAccess.retrieve(BookSupplier.class, order.getBookSupplierId());
+                BookSupplier bookSupplier = access.retrieve(BookSupplier.class, order.getBookSupplierId());
                 ObjectToViewAppliers.apply(view, bookSupplier);
-                Book book = cAccess.retrieve(Book.class, bookSupplier.getBookId());
+                Book book = access.retrieve(Book.class, bookSupplier.getBookId());
                 ObjectToViewAppliers.apply(view, book);
-                Supplier supplier = cAccess.retrieve(Supplier.class, bookSupplier.getSupplierId());
+                Supplier supplier = access.retrieve(Supplier.class, bookSupplier.getSupplierId());
                 ObjectToViewAppliers.apply(view, supplier);
                 NumberPicker orderAmountPicker = (NumberPicker) view.findViewById(R.id.orderAmountPicker);
-                if (getArguments().getBoolean(IS_AMOUNT_CAN_MODIFY)) {
+                if (getArguments().getBoolean(IS_MAIN_FRAGMENT)) {
                     orderAmountPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
                         order.setAmount(newVal);
                     });
@@ -112,10 +92,10 @@ public class CartFragment extends Fragment {
                 Order order = (Order) adapter.getItem(info.position);
 
                 //show yes/no alert dialog
-                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setMessage(R.string.delete_order_message)
                         .setPositiveButton(R.string.yes, (dialog, which) -> {
-                            cAccess.getCart().remove(order.getBookSupplierId());
+                            access.getCart().remove(order.getBookSupplierId());
                             adapter.notifyDataSetChanged();
                             Toast.makeText(v.getContext(),R.string.toast_order_deleted, Toast.LENGTH_SHORT).show();
                         })
@@ -129,7 +109,47 @@ public class CartFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_cart, menu);
+        if (getArguments().getBoolean(IS_MAIN_FRAGMENT)) {
+            super.onCreateOptionsMenu(menu, inflater);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_buy:
+                return proceedOrder();
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private boolean proceedOrder() {
+        if (access.getCart().isEmpty()){
+            new AlertDialog.Builder(getActivity())
+                    .setMessage(R.string.cart_empty_message)
+                    .setNeutralButton(R.string.ok,(d,w)->{}).create().show();
+            return true;
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage(R.string.transaction_message)
+                .setPositiveButton(R.string.yes, (dialog, which) -> {
+                    Intent transactionIntent = IntentsFactory.newTransactionIntent(getActivity());
+                    startActivity(transactionIntent);
+                })
+                .setNeutralButton(R.string.no, (dialog, which) -> {
+                });
+        builder.create().show();
+        return true;
+    }
+
+    @Override
+    int getFragmentId() {
+        return R.layout.fragment_cart_list;
+    }
+
+    @Override
+    int getMenuId() {
+        return R.menu.menu_cart;
     }
 }

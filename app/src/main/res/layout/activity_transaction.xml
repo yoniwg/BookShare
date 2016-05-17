@@ -1,0 +1,87 @@
+<LinearLayout android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/highlighted_text_material_dark"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/order_details"
+        android:id="@+id/order_details_label"
+        android:textAlignment="center"
+        android:background="@color/colorPrimaryDark"
+        android:textColor="#ffffff"
+        android:singleLine="true"
+        android:paddingTop="10dp"
+        android:layout_gravity="center_horizontal" />
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp">
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/shipping_address"
+            android:hint="@string/shipping_address"
+            android:singleLine="true" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:ems="10"
+            android:id="@+id/credit_number"
+            android:hint="@string/credit_number"
+            android:singleLine="true"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/books_chosen"
+        android:id="@+id/orders_label"
+        android:textAlignment="center"
+        android:background="@color/colorPrimaryDark"
+        android:textColor="#ffffff"
+        android:singleLine="true"
+        android:paddingTop="10dp" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="30dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/total_sum"
+        android:id="@+id/total_amount_label"
+        android:textAlignment="center"
+        android:background="@color/material_deep_teal_500"
+        android:textColor="#ffffff"
+        android:singleLine="true"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="0"
+        android:id="@+id/total_sum"
+        android:textAlignment="center"
+        android:background="@color/material_deep_teal_500"
+        android:textColor="#ffffff"
+        android:singleLine="true"
+        android:layout_gravity="center_horizontal" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/cart_container"></FrameLayout>
+
+</LinearLayout>
+

@@ -23,37 +23,25 @@ import com.hgyw.bookshare.logicAccess.GeneralAccess;
 import java.util.List;
 
 
-public class BooksListFragment extends Fragment {
+public class BooksListFragment extends AbstractFragment<GeneralAccess> {
 
-    private GeneralAccess access;
     private BookQuery bookQuery;
-    private MainActivity activity;
 
     protected BooksListFragment() {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        access = AccessManagerFactory.getInstance().getGeneralAccess();
-        activity = (MainActivity) getActivity();
-        bookQuery = getArguments() == null ? null : (BookQuery) getArguments().getSerializable(IntentsFactory.ARG_BOOK_QUERY);
-        setHasOptionsMenu(true);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_books_list, container, false);
-    }
-
-    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ListView listView = (ListView) activity.findViewById(R.id.books_list_view);
+        bookQuery = getArguments() == null ? null
+                : (BookQuery) getArguments().getSerializable(IntentsFactory.ARG_BOOK_QUERY);
 
-        List<Book> bookList = bookQuery == null ? access.findSpecialOffers(30) : access.findBooks(bookQuery);
-        ApplyObjectAdapter<Book> adapter = new ApplyObjectAdapter<Book>(activity, R.layout.book_list_item, bookList) {
+        ListView listView = (ListView) getActivity().findViewById(R.id.books_list_view);
+
+        List<Book> bookList = bookQuery == null ? access.findSpecialOffers(30)
+                : access.findBooks(bookQuery);
+
+        ApplyObjectAdapter<Book> adapter = new ApplyObjectAdapter<Book>(getActivity(), R.layout.book_list_item, bookList) {
             @Override
             protected void applyOnView(View view, int position) {
                 Book book = getItem(position);
@@ -67,14 +55,8 @@ public class BooksListFragment extends Fragment {
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Book book = adapter.getItem(position);
-            startActivity(IntentsFactory.newEntityIntent(activity, book));
+            startActivity(IntentsFactory.newEntityIntent(getActivity(), book));
         });
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_book_list, menu);
     }
 
     @Override
@@ -88,4 +70,13 @@ public class BooksListFragment extends Fragment {
         }
     }
 
+    @Override
+    int getFragmentId() {
+        return R.layout.fragment_books_list;
+    }
+
+    @Override
+    int getMenuId() {
+        return R.menu.menu_book_list;
+    }
 }

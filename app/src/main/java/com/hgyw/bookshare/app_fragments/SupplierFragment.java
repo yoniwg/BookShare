@@ -15,12 +15,6 @@ import com.hgyw.bookshare.logicAccess.GeneralAccess;
 
 public class SupplierFragment extends EntityFragment {
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_supplier, container, false);
-    }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -34,5 +28,15 @@ public class SupplierFragment extends EntityFragment {
     @Override
     public int getTitleResource() {
         return R.string.supplier_fragment_title;
+    }
+
+    @Override
+    int getFragmentId() {
+        return R.layout.fragment_supplier;
+    }
+
+    @Override
+    int getMenuId() {
+        return 0;
     }
 }

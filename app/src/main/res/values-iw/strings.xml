@@ -80,7 +80,7 @@
     <string name="wrong_credit_message">מספר אשראי חייב להכיל לפחות 8 ספרות</string>
     <string name="camera">מצלמה</string>
     <string name="camera_galery_choose_message">בחר איך לקחת תמונה</string>
-    <string name="cart_empty__message">העגלה ריקה</string>
+    <string name="cart_empty_message">העגלה ריקה</string>
     <string name="choose">בחר</string>
     <string name="description">תיאור</string>
     <string name="email">דוא״ל</string>
@@ -98,4 +98,6 @@
     <string name="title">כותרת</string>
     <string name="user_details">פרטי המשתמש</string>
     <string name="user_details_updated">פרטי המשתמש עודכנו.</string>
+    <string name="books_chosen">ספרים שנבחרו</string>
+    <string name="transaction_title">אישור הזמנה</string>
 </resources>

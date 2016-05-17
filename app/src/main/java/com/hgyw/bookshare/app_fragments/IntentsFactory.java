@@ -6,6 +6,7 @@ import android.content.Intent;
 import com.hgyw.bookshare.app_activities.EntityActivity;
 import com.hgyw.bookshare.app_activities.MainActivity;
 import com.hgyw.bookshare.app_activities.RegistrationActivity;
+import com.hgyw.bookshare.app_activities.TransactionActivity;
 import com.hgyw.bookshare.app_activities.UserEditActivity;
 import com.hgyw.bookshare.entities.BookQuery;
 import com.hgyw.bookshare.entities.IdReference;
@@ -39,7 +40,7 @@ public class IntentsFactory {
     public static Intent newCartIntent(Context context) {
         Intent intent = new Intent(context, MainActivity.class);
         intent.putExtra(ARG_FRAGMENT_CLASS, CartFragment.class);
-        intent.putExtra(CartFragment.IS_AMOUNT_CAN_MODIFY, true);
+        intent.putExtra(CartFragment.IS_MAIN_FRAGMENT, true);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         return intent;
     }
@@ -66,9 +67,7 @@ public class IntentsFactory {
     }
 
     public static Intent newTransactionIntent(Context context) {
-        Intent intent = new Intent(context, MainActivity.class);
-        intent.putExtra(ARG_FRAGMENT_CLASS, TransactionFragment.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        Intent intent = new Intent(context, TransactionActivity.class);
         return intent;
     }
 

@@ -48,20 +48,12 @@ public class BookFragment extends EntityFragment {
 
     public BookFragment() {}
 
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_book, container, false);
-    }
-
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
 
-        GeneralAccess access = AccessManagerFactory.getInstance().getGeneralAccess();
+
         isCustomer = AccessManagerFactory.getInstance().getCurrentUserType() == UserType.CUSTOMER;
         Activity activity = getActivity();
 
@@ -141,7 +133,6 @@ public class BookFragment extends EntityFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_book, menu);
         menu.findItem(R.id.action_cart).setVisible(isCustomer);
     }
 
@@ -178,5 +169,15 @@ public class BookFragment extends EntityFragment {
         // message
         Toast.makeText(getActivity(), "The review was updated.", Toast.LENGTH_LONG).show();
 
+    }
+
+    @Override
+    int getFragmentId() {
+        return R.layout.fragment_book;
+    }
+
+    @Override
+    int getMenuId() {
+        return R.menu.menu_book;
     }
 }

@@ -4,10 +4,12 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 
+import com.hgyw.bookshare.logicAccess.GeneralAccess;
+
 /**
  * A placeholder fragment containing a simple view.
  */
-public abstract class EntityFragment extends Fragment {
+public abstract class EntityFragment extends AbstractFragment<GeneralAccess> {
 
     protected long entityId;
 
