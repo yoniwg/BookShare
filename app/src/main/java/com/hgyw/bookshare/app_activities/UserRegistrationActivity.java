@@ -6,6 +6,7 @@ import android.widget.Toast;
 import com.hgyw.bookshare.app_fragments.IntentsFactory;
 import com.hgyw.bookshare.ObjectToViewAppliers;
 import com.hgyw.bookshare.R;
+import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.exceptions.WrongLoginException;
 import com.hgyw.bookshare.logicAccess.AccessManager;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
@@ -17,7 +18,7 @@ public class UserRegistrationActivity extends UserAbstractActivity {
     }
 
     // register new user
-    public void onOkButton() {
+    public void onOkButton(User user) {
         View rootView = findViewById(android.R.id.content);
         ObjectToViewAppliers.result(rootView, user);
         AccessManager accessManager = AccessManagerFactory.getInstance();

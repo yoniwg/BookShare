@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -23,15 +22,15 @@ import com.hgyw.bookshare.entities.BookReview;
 public class BookReviewDialogFragment extends DialogFragment {
 
     private final static String ARG_DIALOG_BOOK_REVIEW = "dialogBookReview";
-    public static final int CANCELED = -1;
-    public static final String ARG_RESULT_OBJECT = "resultObject";
+    private final static String ARG_DIALOG_OLD_VIEW_RATING = "dialogOldViewRating";
     private View view;
     private BookReview bookReview;
+    private float oldViewRating;
 
-    public static BookReviewDialogFragment newInstance(BookReview bookReview) {
+    public static BookReviewDialogFragment newInstance(BookReview bookReview, float oldViewRating) {
         Bundle args = new Bundle();
         args.putSerializable(ARG_DIALOG_BOOK_REVIEW, bookReview);
-
+        args.putFloat(ARG_DIALOG_OLD_VIEW_RATING, oldViewRating);
         BookReviewDialogFragment fragment = new BookReviewDialogFragment();
         fragment.setArguments(args);
         return fragment;
@@ -47,22 +46,22 @@ public class BookReviewDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         return builder.setTitle(R.string.rating_box_title)
                 .setView(view)
-                .setPositiveButton(R.string.rate, (dialog, which) -> {
-                    ObjectToViewAppliers.result(view, bookReview);
-                    Intent resultIntent = new Intent(); resultIntent.putExtra(ARG_RESULT_OBJECT, bookReview);
-                    sendResult(0);
-                })
+                .setPositiveButton(R.string.rate, (dialog, which) -> sendResult(true))
                 .create();
     }
 
     @Override
     public void onCancel(DialogInterface dialog) {
         super.onCancel(dialog);
-        sendResult(CANCELED);
+        sendResult(false);
     }
 
-    private void sendResult(int resultCode) {
-        Intent resultIntent = new Intent(); resultIntent.putExtra(ARG_RESULT_OBJECT, bookReview);
-        getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, resultIntent);
+    private void sendResult(boolean okResult) {
+        reviewResultListener reviewResultListener = null; // TODO
+        reviewResultListener.onResult(okResult, bookReview, oldViewRating);
+    }
+
+    public interface reviewResultListener {
+        void onResult(boolean okResult, BookReview bookReview, float oldViewRating);
     }
 }

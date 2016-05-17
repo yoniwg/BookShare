@@ -89,7 +89,6 @@ public abstract class UserAbstractActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
         if (requestCode == IntentsFactory.GET_IMAGE_CODE && resultCode == RESULT_OK) {
-            ImageEntity imageEntity = new ImageEntity();
             newImage = Utility.readImageFromURI(this, imageReturnedIntent.getData(), userThumbnailImageView);
         }
     }
