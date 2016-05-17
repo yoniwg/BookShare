@@ -84,10 +84,13 @@ class GeneralAccessImpl implements GeneralAccess {
     }
 
     @Override
-    public long upload(ImageEntity imageEntity) {
-        imageEntity.setId(0);
-        dataAccess.create(imageEntity);
-        return imageEntity.getId();
+    public void upload(ImageEntity imageEntity) {
+        if (imageEntity.getId() == 0) {
+            imageEntity.setId(0);
+            dataAccess.create(imageEntity);
+        } else {
+            dataAccess.update(imageEntity);
+        }
     }
 
     @Override

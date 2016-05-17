@@ -88,7 +88,7 @@ public abstract class UserAbstractActivity extends AppCompatActivity {
             case android.R.id.home:
                 onBackPressed(); return true;
             case R.id.okButton:
-                onOkButton();
+                onOkButton(); return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
