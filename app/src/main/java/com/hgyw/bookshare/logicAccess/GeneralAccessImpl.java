@@ -86,6 +86,7 @@ class GeneralAccessImpl implements GeneralAccess {
     @Override
     public long upload(byte[] bytes) {
         ImageEntity imageEntity = new ImageEntity();
+        imageEntity.setBytes(bytes);
         dataAccess.create(imageEntity);
         return imageEntity.getId();
     }
@@ -95,6 +96,11 @@ class GeneralAccessImpl implements GeneralAccess {
         requireItsMeForAccess(newDetails.getUserType(), newDetails.getId());
         newDetails.setCredentials(((User) dataAccess.retrieve(currentUser)).getCredentials()); // Avoid change credentials by this method.
         dataAccess.update(newDetails);
+    }
+
+    @Override
+    public UserType getUserType() {
+        return currentUser.getUserType();
     }
 
 }

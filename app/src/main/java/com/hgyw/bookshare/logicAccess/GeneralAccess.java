@@ -14,6 +14,7 @@ import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.entities.ImageEntity;
 import com.hgyw.bookshare.entities.Supplier;
 import com.hgyw.bookshare.entities.User;
+import com.hgyw.bookshare.entities.UserType;
 
 /**
  * Created by Yoni on 3/13/2016.
@@ -76,5 +77,7 @@ public interface GeneralAccess {
     long upload(byte[] bytes);
 
     void updateUserDetails(User user);
+
+    UserType getUserType();
 }
 

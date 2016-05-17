@@ -80,12 +80,6 @@
                 android:padding="10dp"
                 android:layout_marginTop="@dimen/default_vertical_seperate" />
 
-            <ListView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:id="@+id/supplierListView"
-                android:layout_gravity="center_horizontal|bottom" />
-
         </LinearLayout>
     </ScrollView>
 
