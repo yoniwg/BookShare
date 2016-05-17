@@ -4,6 +4,8 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.MenuRes;
+import android.support.annotation.StringDef;
+import android.support.annotation.StringRes;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,19 +27,22 @@ public abstract class AbstractFragment<T extends GeneralAccess> extends Fragment
 
     private final @MenuRes int menuId;
 
+    private final @StringRes int titleId;
+
     protected T access;
 
-    protected AbstractFragment(@LayoutRes int fragmentLayoutId, @MenuRes int menuId) {
+    protected AbstractFragment(@LayoutRes int fragmentLayoutId, @MenuRes int menuId, @StringRes int titleId) {
         this.fragmentLayoutId = fragmentLayoutId;
         this.menuId = menuId;
+        this.titleId = titleId;
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         access = (T) AccessManagerFactory.getInstance().getGeneralAccess();
+        getActivity().setTitle(titleId);
     }
 
     @Override

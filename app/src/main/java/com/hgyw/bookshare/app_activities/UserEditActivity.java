@@ -1,6 +1,7 @@
 package com.hgyw.bookshare.app_activities;
 
 
+import android.view.View;
 import android.widget.Toast;
 
 import com.hgyw.bookshare.R;
@@ -11,7 +12,7 @@ import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 public class UserEditActivity extends UserAbstractActivity {
 
     public UserEditActivity() {
-        super(R.string.save, false);
+        super(R.string.save, false, R.string.user_details_title);
     }
 
     @Override

@@ -21,7 +21,7 @@ public class BooksListFragment extends AbstractFragment<GeneralAccess> {
     private BookQuery bookQuery;
 
     public BooksListFragment() {
-        super(R.layout.fragment_books_list, R.menu.menu_book_list);
+        super(R.layout.fragment_standard_list, R.menu.menu_book_list, R.string.book_list_fragment_title);
     }
 
     @Override
@@ -30,7 +30,7 @@ public class BooksListFragment extends AbstractFragment<GeneralAccess> {
         bookQuery = getArguments() == null ? null
                 : (BookQuery) getArguments().getSerializable(IntentsFactory.ARG_BOOK_QUERY);
 
-        ListView listView = (ListView) getActivity().findViewById(R.id.books_list_view);
+        ListView listView = (ListView) getActivity().findViewById(R.id.list_container);
 
         List<Book> bookList = bookQuery == null ? access.findSpecialOffers(30)
                 : access.findBooks(bookQuery);

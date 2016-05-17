@@ -39,7 +39,7 @@ public class CartFragment extends AbstractFragment<CustomerAccess> {
      * fragment (e.g. upon screen orientation changes).
      */
     public CartFragment() {
-        super(R.layout.fragment_cart_list, R.menu.menu_cart);
+        super(R.layout.fragment_standard_list, R.menu.menu_cart, R.string.cart_fragment_title);
     }
 
     public static CartFragment newInstance(){
@@ -58,7 +58,7 @@ public class CartFragment extends AbstractFragment<CustomerAccess> {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        ListView listView = (ListView) getActivity().findViewById(R.id.cart_list);
+        ListView listView = (ListView) getActivity().findViewById(R.id.list_container);
         Cart cart = access.getCart();
         List<Order> ordersList = cart.retrieveCartContent();
 

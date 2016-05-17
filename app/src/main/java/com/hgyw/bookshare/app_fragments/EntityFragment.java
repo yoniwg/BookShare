@@ -15,8 +15,8 @@ public abstract class EntityFragment extends AbstractFragment<GeneralAccess> {
     protected long entityId;
     private static final String ARG_ENTITY_ID = "entityId";
 
-    public EntityFragment(@LayoutRes int fragmentLayoutId, @MenuRes int menuId) {
-        super(fragmentLayoutId, menuId);
+    public EntityFragment(@LayoutRes int fragmentLayoutId, @MenuRes int menuId, @StringRes int titleId) {
+        super(fragmentLayoutId, menuId, titleId);
     }
 
     public static <T extends EntityFragment> T newInstance(Class<T> fragmentClass, long entityId) {
@@ -41,6 +41,4 @@ public abstract class EntityFragment extends AbstractFragment<GeneralAccess> {
             throw new IllegalArgumentException("Entity fragment was instantiated with ARG_ENTITY_ID=0 (or null).");
         }
     }
-
-    public abstract @StringRes int getTitleResource();
 }

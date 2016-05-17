@@ -18,7 +18,7 @@ import com.hgyw.bookshare.logicAccess.GeneralAccess;
 public class SupplierFragment extends EntityFragment {
 
     public SupplierFragment() {
-        super(R.layout.fragment_supplier, 0);
+        super(R.layout.fragment_supplier, 0, R.string.supplier_fragment_title);
     }
 
     @Override
@@ -28,11 +28,6 @@ public class SupplierFragment extends EntityFragment {
         Supplier supplier = access.retrieve(Supplier.class, entityId);
         ObjectToViewAppliers.apply(view, supplier);
 
-    }
-
-    @Override
-    public int getTitleResource() {
-        return R.string.supplier_fragment_title;
     }
 
 }

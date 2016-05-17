@@ -38,7 +38,6 @@ public class EntityActivity extends AppCompatActivity {
         IdReference entityReference = IntentsFactory.idReferenceFrom(getIntent().getData());
         Class<? extends EntityFragment> fragmentClass = IntentsFactory.getEntityFragment(entityReference.getEntityType());
         EntityFragment fragment = EntityFragment.newInstance(fragmentClass, entityReference.getId());
-        this.setTitle(fragment.getTitleResource());
         getFragmentManager().beginTransaction()
                 .replace(R.id.fragment_entity_container, fragment)
                 .commit();

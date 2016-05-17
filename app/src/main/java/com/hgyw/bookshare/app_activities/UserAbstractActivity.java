@@ -29,10 +29,12 @@ public abstract class UserAbstractActivity extends AppCompatActivity {
     private final @StringRes int buttonStringId;
     private final boolean isRegistration;
     private byte[] newImage = null;
+    private final @StringRes int titleId;
 
-    protected UserAbstractActivity(@StringRes int buttonStringId, boolean isRegistration) {
+    protected UserAbstractActivity(@StringRes int buttonStringId, boolean isRegistration, int titleId) {
         this.buttonStringId = buttonStringId;
         this.isRegistration = isRegistration;
+        this.titleId = titleId;
     }
 
     @Override
@@ -40,7 +42,7 @@ public abstract class UserAbstractActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        setTitle(titleId);
         user = getIntent() == null ? new Customer() : (User) getIntent().getSerializableExtra(IntentsFactory.ARG_USER_DETAILS);
 
         View rootView = findViewById(android.R.id.content);
@@ -97,7 +99,7 @@ public abstract class UserAbstractActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed(); return true;
-            case R.id.okButton:
+            case R.id.action_ok:
                 onOkButton(); return true;
             default:
                 return super.onOptionsItemSelected(item);

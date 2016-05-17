@@ -49,7 +49,7 @@ public class BookFragment extends EntityFragment {
     private boolean isCustomer;
 
     public BookFragment() {
-        super(R.layout.fragment_book, R.menu.menu_book);
+        super(R.layout.fragment_book, R.menu.menu_book, R.string.book_fragment_title);
     }
 
     @Override
@@ -134,11 +134,6 @@ public class BookFragment extends EntityFragment {
             });
             bookMainLayout.addView(supplierView);
         }
-    }
-
-    @Override
-    public int getTitleResource() {
-        return R.string.book_fragment_title;
     }
 
     @Override

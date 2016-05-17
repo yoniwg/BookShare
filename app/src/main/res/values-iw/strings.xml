@@ -100,4 +100,10 @@
     <string name="user_details_updated">פרטי המשתמש עודכנו.</string>
     <string name="books_chosen">ספרים שנבחרו</string>
     <string name="transaction_title">אישור הזמנה</string>
+    <string name="clear_cart">רוקן עגלה</string>
+    <string name="clear_cart_message">האם אתה בטוח שברצונך לרוקן את העגלה?</string>
+    <string name="book_list_fragment_title">ספרים בחנות</string>
+    <string name="cart_fragment_title">עגלה</string>
+    <string name="registration_title">הרשמה</string>
+    <string name="user_details_title">פרטי המשתמש</string>
 </resources>

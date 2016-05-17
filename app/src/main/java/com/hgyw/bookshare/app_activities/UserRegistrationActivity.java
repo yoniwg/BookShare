@@ -13,7 +13,7 @@ import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 public class UserRegistrationActivity extends UserAbstractActivity {
 
     public UserRegistrationActivity() {
-        super(R.string.register, true);
+        super(R.string.register, true, R.string.registration_title);
     }
 
     // register new user

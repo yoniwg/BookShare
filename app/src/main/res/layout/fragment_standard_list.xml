@@ -2,10 +2,9 @@
 <android.widget.ListView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/cart_list"
+    android:id="@+id/list_container"
     android:name="com.hgyw.bookshare.OrderFragment"
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
     app:layoutManager="LinearLayoutManager"
-    tools:context=".app_fragments.CartFragment"
-    tools:listitem="@layout/order_list_item" />
+    tools:context=".app_fragments.CartFragment" />
