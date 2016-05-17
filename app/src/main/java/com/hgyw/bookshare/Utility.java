@@ -117,7 +117,7 @@ public class Utility {
         byte[] buffer = new byte[bufferSize];
 
         // we need to know how may bytes were read to write them to the byteBuffer
-        int len = 0;
+        int len;
         while ((len = inputStream.read(buffer)) != -1) {
             byteBuffer.write(buffer, 0, len);
         }
@@ -127,19 +127,21 @@ public class Utility {
     }
 
     /**
-     * targetImageView can be null, and dosnte change in failed.
+     * Set image from selectedImage to targetImageView. return the byte[] that contains the image.
+     * TargetImageView can be null.
      */
-    public static void uploadImageURI(Context context, Uri selectedImage, ImageEntity imageEntity, ImageView targetImageView) {
+    public static byte[] readImageFromURI(Context context, Uri selectedImage, ImageView targetImageView) {
         try {
-            imageEntity.setBytes(readBytesFromURI(context, selectedImage));
-            AccessManagerFactory.getInstance().getGeneralAccess().upload(imageEntity);
-            if (imageEntity.getId() == 0) return;
+            ImageEntity imageEntity = new ImageEntity();
+            byte[] bytes = readBytesFromURI(context, selectedImage);
+            imageEntity.setBytes(bytes);
             if (targetImageView != null) {
                 Bitmap bmp = BitmapFactory.decodeByteArray(imageEntity.getBytes(), 0, imageEntity.getBytes().length);
                 targetImageView.setImageBitmap(bmp);
             }
+            return bytes;
         } catch (IOException e) {
-            imageEntity.setId(0);
+            return null;
         }
     }
 

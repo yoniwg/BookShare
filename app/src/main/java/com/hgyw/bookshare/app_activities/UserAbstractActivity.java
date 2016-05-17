@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hgyw.bookshare.ObjectToViewAppliers;
@@ -20,14 +19,16 @@ import com.hgyw.bookshare.app_fragments.IntentsFactory;
 import com.hgyw.bookshare.entities.Customer;
 import com.hgyw.bookshare.entities.ImageEntity;
 import com.hgyw.bookshare.entities.User;
+import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 
 public abstract class UserAbstractActivity extends AppCompatActivity {
 
     //private static final String ARG_USER_DETAILS = "userDetails";
-    ImageView userThumbnailImageView;
-    User user;
+    private ImageView userThumbnailImageView;
+    private User user;
     private final @StringRes int buttonStringId;
     private final boolean isRegistration;
+    private byte[] newImage = null;
 
     protected UserAbstractActivity(@StringRes int buttonStringId, boolean isRegistration) {
         this.buttonStringId = buttonStringId;
@@ -67,18 +68,27 @@ public abstract class UserAbstractActivity extends AppCompatActivity {
         return true;
     }
 
-    public abstract void onOkButton();
+    private void onOkButton() {
+        if (newImage != null) {
+            long imageId = AccessManagerFactory.getInstance().getGeneralAccess().upload(newImage);
+            if (imageId != 0) {
+                user.setImageId(imageId);
+            } else {
+                Toast.makeText(this, R.string.upload_image_failed, Toast.LENGTH_SHORT).show();
+            }
+        }
+        View rootView = findViewById(android.R.id.content);
+        ObjectToViewAppliers.result(rootView, user);
+        onOkButton(user);
+    }
+
+    protected abstract void onOkButton(User user);
 
     protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
         if (requestCode == IntentsFactory.GET_IMAGE_CODE && resultCode == RESULT_OK) {
             ImageEntity imageEntity = new ImageEntity();
-            Utility.uploadImageURI(this, imageReturnedIntent.getData(), imageEntity, userThumbnailImageView);
-            if (imageEntity.getId() == 0) {
-                Toast.makeText(this, R.string.upload_image_failed, Toast.LENGTH_SHORT).show();
-            } else {
-                user.setImageId(imageEntity.getId());
-            }
+            newImage = Utility.readImageFromURI(this, imageReturnedIntent.getData(), userThumbnailImageView);
         }
     }
 

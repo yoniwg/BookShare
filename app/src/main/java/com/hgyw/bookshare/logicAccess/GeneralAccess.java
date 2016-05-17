@@ -73,7 +73,7 @@ public interface GeneralAccess {
      */
     User retrieveUserDetails();
 
-    void upload(ImageEntity imageEntity);
+    long upload(byte[] bytes);
 
     void updateUserDetails(User user);
 }
