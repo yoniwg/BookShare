@@ -115,9 +115,8 @@ public class IntentsFactory {
         return intent;
     }
 
-    public static Intent newRegistrationIntent(Context context, User user) {
+    public static Intent newRegistrationIntent(Context context) {
         Intent intent = new Intent(context, UserRegistrationActivity.class);
-        intent.putExtra(ARG_USER_DETAILS, user);
         return intent;
     }
 

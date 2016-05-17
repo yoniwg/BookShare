@@ -2,6 +2,8 @@ package com.hgyw.bookshare.app_fragments;
 
 
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.MenuRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,9 @@ import com.hgyw.bookshare.logicAccess.GeneralAccess;
 
 public class SupplierFragment extends EntityFragment {
 
+    public SupplierFragment() {
+        super(R.layout.fragment_supplier, 0);
+    }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -30,13 +35,4 @@ public class SupplierFragment extends EntityFragment {
         return R.string.supplier_fragment_title;
     }
 
-    @Override
-    int getFragmentLayoutId() {
-        return R.layout.fragment_supplier;
-    }
-
-    @Override
-    int getMenuId() {
-        return 0;
-    }
 }

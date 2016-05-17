@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 navigationView.getMenu().findItem(R.id.nav_logout).setVisible(false);
                 navigationView.getMenu().findItem(R.id.nav_cart).setVisible(false);
                 navigationView.getMenu().findItem(R.id.nav_my_orders).setVisible(false);
+                navigationView.getMenu().findItem(R.id.nav_user_details).setVisible(false);
                 break;
             case CUSTOMER:
                 navigationView.getMenu().findItem(R.id.nav_login).setVisible(false);

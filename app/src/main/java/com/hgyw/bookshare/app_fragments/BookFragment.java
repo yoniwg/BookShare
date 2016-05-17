@@ -48,7 +48,9 @@ public class BookFragment extends EntityFragment {
     private RatingBar userRatingBar;
     private boolean isCustomer;
 
-    public BookFragment() {}
+    public BookFragment() {
+        super(R.layout.fragment_book, R.menu.menu_book);
+    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -128,7 +130,7 @@ public class BookFragment extends EntityFragment {
             buyButton.setOnClickListener(v -> {
                 v.startAnimation(AnimationUtils.loadAnimation(v.getContext(), R.anim.image_click_anim));
                 AccessManagerFactory.getInstance().getCustomerAccess().addBookSupplierToCart(bookSupplier, 1);
-                Toast.makeText(activity, activity.getString(R.string.order_added_to_cart), Toast.LENGTH_LONG).show();
+                Toast.makeText(activity, activity.getString(R.string.order_added_to_cart), Toast.LENGTH_SHORT).show();
             });
             bookMainLayout.addView(supplierView);
         }
@@ -167,6 +169,7 @@ public class BookFragment extends EntityFragment {
     }
 
     private void onBookReviewResult(boolean canceled, BookReview bookReview) {
+        // apply the customer details
         if (canceled) {
             userRatingBar.setRating(oldUserRating);
         } else {
@@ -180,13 +183,4 @@ public class BookFragment extends EntityFragment {
 
     }
 
-    @Override
-    int getFragmentLayoutId() {
-        return R.layout.fragment_book;
-    }
-
-    @Override
-    int getMenuId() {
-        return R.menu.menu_book;
-    }
 }

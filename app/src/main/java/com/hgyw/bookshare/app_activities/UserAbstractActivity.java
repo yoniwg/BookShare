@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -16,10 +17,11 @@ import com.hgyw.bookshare.ObjectToViewAppliers;
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.Utility;
 import com.hgyw.bookshare.app_fragments.IntentsFactory;
+import com.hgyw.bookshare.entities.Customer;
 import com.hgyw.bookshare.entities.ImageEntity;
 import com.hgyw.bookshare.entities.User;
 
-public abstract class UserAbstractActivity extends AppCompatActivity implements View.OnClickListener {
+public abstract class UserAbstractActivity extends AppCompatActivity {
 
     //private static final String ARG_USER_DETAILS = "userDetails";
     ImageView userThumbnailImageView;
@@ -38,9 +40,7 @@ public abstract class UserAbstractActivity extends AppCompatActivity implements 
         setContentView(R.layout.activity_registration);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        user = getIntent() == null ? null : (User) getIntent().getSerializableExtra(IntentsFactory.ARG_USER_DETAILS);
-        if (user == null)
-            throw new IllegalArgumentException("The UserAbstractActivity should accept non-null user.");
+        user = getIntent() == null ? new Customer() : (User) getIntent().getSerializableExtra(IntentsFactory.ARG_USER_DETAILS);
 
         View rootView = findViewById(android.R.id.content);
         assert rootView != null;
@@ -48,22 +48,26 @@ public abstract class UserAbstractActivity extends AppCompatActivity implements 
         userThumbnailImageView = (ImageView) rootView.findViewById(R.id.userThumbnail);
         userThumbnailImageView.setOnClickListener(v -> Utility.startGetImage(this));
 
-        TextView button = (TextView) rootView.findViewById(R.id.okButton);
-        button.setText(buttonStringId);
-        button.setOnClickListener((View.OnClickListener) this);
         // set username and password not editable
         if (!isRegistration) {
             EditText usernameView = (EditText) findViewById(R.id.username);
             EditText passwordView = (EditText) findViewById(R.id.password);
-            if (usernameView != null) usernameView.setKeyListener(null);
-            if (passwordView != null) passwordView.setKeyListener(null);
             Spinner customerSupplierSpinner = (Spinner) findViewById(R.id.customerSupplierSpinner);
+            if (usernameView != null) usernameView.setVisibility(View.GONE);
+            if (passwordView != null) passwordView.setVisibility(View.GONE);
             if (customerSupplierSpinner != null) customerSupplierSpinner.setVisibility(View.GONE);
         }
 
     }
 
-    public abstract void onClick(View v);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_user_details, menu);
+        menu.findItem(R.id.action_ok).setTitle(buttonStringId);
+        return true;
+    }
+
+    public abstract void onOkButton();
 
     protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
@@ -83,6 +87,8 @@ public abstract class UserAbstractActivity extends AppCompatActivity implements 
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed(); return true;
+            case R.id.okButton:
+                onOkButton();
             default:
                 return super.onOptionsItemSelected(item);
         }

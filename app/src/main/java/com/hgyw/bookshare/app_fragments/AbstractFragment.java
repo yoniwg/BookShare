@@ -21,18 +21,23 @@ import com.hgyw.bookshare.logicAccess.GeneralAccess;
 @SuppressWarnings("unchecked")
 public abstract class AbstractFragment<T extends GeneralAccess> extends Fragment {
 
-    private @LayoutRes int fragmentLayoutId = getFragmentLayoutId();
+    private final @LayoutRes int fragmentLayoutId;
 
-    private @MenuRes int menuId = getMenuId();
+    private final @MenuRes int menuId;
 
     protected T access;
+
+    protected AbstractFragment(@LayoutRes int fragmentLayoutId, @MenuRes int menuId) {
+        this.fragmentLayoutId = fragmentLayoutId;
+        this.menuId = menuId;
+    }
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        access = (T) AccessManagerFactory.getInstance().getFullAccess();
+        access = (T) AccessManagerFactory.getInstance().getGeneralAccess();
     }
 
     @Override
@@ -49,16 +54,4 @@ public abstract class AbstractFragment<T extends GeneralAccess> extends Fragment
         inflater.inflate(menuId, menu);
     }
 
-    /**
-     * should return the fragment resource ID.
-     * @return
-     */
-    abstract @LayoutRes int getFragmentLayoutId();
-
-    /**
-     * should return the menu resource ID.
-     * if no menu is supported - return 0
-     * @return
-     */
-    abstract @MenuRes int getMenuId();
 }

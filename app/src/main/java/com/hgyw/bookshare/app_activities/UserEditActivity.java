@@ -17,7 +17,7 @@ public class UserEditActivity extends UserAbstractActivity {
     }
 
     @Override
-    public void onClick(View v) {
+    public void onOkButton() {
         View rootView = findViewById(android.R.id.content);
         ObjectToViewAppliers.result(rootView, user);
         AccessManagerFactory.getInstance().getGeneralAccess().updateUserDetails(user);

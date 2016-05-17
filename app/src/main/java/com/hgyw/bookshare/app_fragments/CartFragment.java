@@ -32,6 +32,15 @@ public class CartFragment extends AbstractFragment<CustomerAccess> {
 
     public static final String IS_MAIN_FRAGMENT = "is_amount_can_modify";
 
+    ApplyObjectAdapter<Order> adapter;
+
+    /**
+     * Mandatory empty constructor for the fragment manager to instantiate the
+     * fragment (e.g. upon screen orientation changes).
+     */
+    public CartFragment() {
+        super(R.layout.fragment_cart_list, R.menu.menu_cart);
+    }
 
     public static CartFragment newInstance(){
         return newInstance(true);
@@ -53,7 +62,7 @@ public class CartFragment extends AbstractFragment<CustomerAccess> {
         Cart cart = access.getCart();
         List<Order> ordersList = cart.retrieveCartContent();
 
-        ApplyObjectAdapter<Order> adapter = new ApplyObjectAdapter<Order>(getActivity(), R.layout.order_list_item, ordersList) {
+        adapter = new ApplyObjectAdapter<Order>(getActivity(), R.layout.order_list_item, ordersList) {
             @Override
             protected void applyOnView(View view, int position) {
                 Order order = getItem(position);
@@ -113,6 +122,8 @@ public class CartFragment extends AbstractFragment<CustomerAccess> {
         switch (item.getItemId()){
             case R.id.action_buy:
                 return proceedOrder();
+            case R.id.action_clear_cart:
+                return clearCart();
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -137,13 +148,22 @@ public class CartFragment extends AbstractFragment<CustomerAccess> {
         return true;
     }
 
-    @Override
-    int getFragmentLayoutId() {
-        return R.layout.fragment_cart_list;
-    }
-
-    @Override
-    int getMenuId() {
-        return R.menu.menu_cart;
+    private boolean clearCart() {
+        if (access.getCart().isEmpty()){
+            new AlertDialog.Builder(getActivity())
+                    .setMessage(R.string.cart_empty_message)
+                    .setNeutralButton(R.string.ok,(d,w)->{}).create().show();
+            return true;
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage(R.string.clear_cart_message)
+                .setPositiveButton(R.string.yes, (dialog, which) -> {
+                    access.getCart().clear();
+                    adapter.notifyDataSetChanged();
+                })
+                .setNeutralButton(R.string.no, (dialog, which) -> {
+                });
+        builder.create().show();
+        return true;
     }
 }

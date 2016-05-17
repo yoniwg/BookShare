@@ -4,6 +4,6 @@
     <item
         android:id="@+id/action_confirm"
         android:title="@string/confirm"
-        app:showAsAction="ifRoom|withText"/>
+        app:showAsAction="always"/>
 
 </menu>

@@ -44,8 +44,7 @@ public class LoginDialogFragment extends DialogFragment {
         if (credentials != null) ObjectToViewAppliers.apply(view, credentials);
         View newAccountButton = view.findViewById(R.id.newAccountView);
         if (newAccountButton != null) newAccountButton.setOnClickListener(v -> {
-            View newAccountView = activity.getLayoutInflater().inflate(R.layout.user_simple_dialog_component, null);
-                startActivity(IntentsFactory.newRegistrationIntent(activity, new Customer()/*TODO - Customer*/));
+            startActivity(IntentsFactory.newRegistrationIntent(activity));
             dismiss();
         });
 

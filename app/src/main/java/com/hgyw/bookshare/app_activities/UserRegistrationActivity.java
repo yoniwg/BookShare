@@ -17,7 +17,7 @@ public class UserRegistrationActivity extends UserAbstractActivity {
     }
 
     // register new user
-    public void onClick(View v) {
+    public void onOkButton() {
         View rootView = findViewById(android.R.id.content);
         ObjectToViewAppliers.result(rootView, user);
         AccessManager accessManager = AccessManagerFactory.getInstance();

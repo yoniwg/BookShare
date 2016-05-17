@@ -20,6 +20,10 @@ public class BooksListFragment extends AbstractFragment<GeneralAccess> {
 
     private BookQuery bookQuery;
 
+    public BooksListFragment() {
+        super(R.layout.fragment_books_list, R.menu.menu_book_list);
+    }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -60,13 +64,4 @@ public class BooksListFragment extends AbstractFragment<GeneralAccess> {
         }
     }
 
-    @Override
-    int getFragmentLayoutId() {
-        return R.layout.fragment_books_list;
-    }
-
-    @Override
-    int getMenuId() {
-        return R.menu.menu_book_list;
-    }
 }

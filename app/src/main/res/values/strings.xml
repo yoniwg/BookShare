@@ -107,6 +107,8 @@
     <string name="email">e-mail</string>
     <string name="transaction_title">Confirm Order</string>
     <string name="books_chosen">Chosen Books</string>
+    <string name="clear_cart">Clear Cart</string>
+    <string name="clear_cart_message">Are you sure you want to clear the cart?</string>
 
     <string-array name="customerSupplierItems">
         <item>Customer</item>

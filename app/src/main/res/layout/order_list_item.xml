@@ -4,15 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="10dp"
+    android:clickable="false"
     android:descendantFocusability="blocksDescendants"
     android:id="@+id/orderContainer">
 
     <ImageView
-        android:layout_width="75dp"
-        android:layout_height="75dp"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
         android:id="@+id/bookImage"
         android:src="@drawable/image_book"
-        android:paddingEnd="10dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:layout_alignBaseline="@+id/bookTitle"
@@ -29,7 +29,9 @@
         android:layout_toEndOf="@+id/bookImage"
         android:singleLine="false"
         android:layout_toStartOf="@+id/amount_label"
-        android:paddingEnd="10dp" />
+        android:paddingEnd="10dp"
+        android:paddingStart="10dp"
+        android:textAlignment="viewStart" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -39,7 +41,8 @@
         android:id="@+id/bookAuthor"
         android:layout_below="@+id/bookTitle"
         android:layout_toEndOf="@+id/bookImage"
-        android:layout_toStartOf="@id/orderAmount" />
+        android:layout_toStartOf="@id/orderAmount"
+        android:paddingStart="10dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -50,7 +53,8 @@
         android:layout_below="@+id/supplierName"
         android:layout_toEndOf="@+id/bookImage"
         android:textAlignment="viewStart"
-        android:layout_alignLeft="@+id/supplierName" />
+        android:layout_alignLeft="@+id/supplierName"
+        android:paddingStart="10dp" />
 
     <TextView
         android:id="@+id/supplierName"
@@ -59,7 +63,8 @@
         android:text="Supplier name"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_below="@+id/bookAuthor"
-        android:layout_toEndOf="@+id/bookImage" />
+        android:layout_toEndOf="@+id/bookImage"
+        android:paddingStart="10dp" />
 
     <TextView
         android:layout_width="wrap_content"

@@ -1,6 +1,8 @@
 package com.hgyw.bookshare.app_fragments;
 
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.MenuRes;
 import android.support.annotation.StringRes;
 
 import com.hgyw.bookshare.logicAccess.GeneralAccess;
@@ -12,6 +14,10 @@ public abstract class EntityFragment extends AbstractFragment<GeneralAccess> {
 
     protected long entityId;
     private static final String ARG_ENTITY_ID = "entityId";
+
+    public EntityFragment(@LayoutRes int fragmentLayoutId, @MenuRes int menuId) {
+        super(fragmentLayoutId, menuId);
+    }
 
     public static <T extends EntityFragment> T newInstance(Class<T> fragmentClass, long entityId) {
         Bundle args = new Bundle();
