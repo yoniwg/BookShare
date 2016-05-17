@@ -153,16 +153,6 @@ public class BookFragment extends EntityFragment {
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == RESULT_CODE_BOOK_REVIEW_DIALOG) {
-            onBookReviewResult(
-                    resultCode == BookReviewDialogFragment.CANCELED,
-                    (BookReview) data.getSerializableExtra(BookReviewDialogFragment.ARG_RESULT_OBJECT)
-            );
-        }
-    }
-
     private void onBookReviewResult(boolean canceled, BookReview bookReview) {
         // apply the customer details
         if (canceled) {
