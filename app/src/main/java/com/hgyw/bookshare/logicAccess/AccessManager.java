@@ -42,6 +42,8 @@ public interface AccessManager {
 
     /**
      * get general access for current user signed in.
+     * The access object is the same in getCustomerAccess() and getSupplierAccess(), so you can call
+     * this method with cast, instead calling them directly
      * @return GeneralAccess instance.
      */
     GeneralAccess getGeneralAccess();
@@ -65,4 +67,6 @@ public interface AccessManager {
      * @return the type of the current user.
      */
     UserType getCurrentUserType();
+
+    GeneralAccess getFullAccess();
 }

@@ -32,12 +32,6 @@ public class CartFragment extends AbstractFragment<CustomerAccess> {
 
     public static final String IS_MAIN_FRAGMENT = "is_amount_can_modify";
 
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
-    public CartFragment() {
-    }
 
     public static CartFragment newInstance(){
         return newInstance(true);
@@ -144,7 +138,7 @@ public class CartFragment extends AbstractFragment<CustomerAccess> {
     }
 
     @Override
-    int getFragmentId() {
+    int getFragmentLayoutId() {
         return R.layout.fragment_cart_list;
     }
 

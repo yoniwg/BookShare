@@ -104,4 +104,19 @@ enum AccessManagerImpl implements AccessManager {
         return currentUser.getUserType();
     }
 
+    @Override
+    public GeneralAccess getFullAccess() {
+        UserType userType = getCurrentUserType();
+        switch (userType) {
+            case CUSTOMER:
+                return getCustomerAccess();
+            case SUPPLIER:
+                return getSupplierAccess();
+            case GUEST:
+                return getGeneralAccess();
+            default:
+                throw new IllegalArgumentException("Unexpected UserType: " + userType);
+        }
+    }
+
 }

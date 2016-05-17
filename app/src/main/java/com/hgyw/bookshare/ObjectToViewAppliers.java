@@ -10,6 +10,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.hgyw.bookshare.entities.Book;
+import com.hgyw.bookshare.entities.BookQuery;
 import com.hgyw.bookshare.entities.BookReview;
 import com.hgyw.bookshare.entities.BookSummary;
 import com.hgyw.bookshare.entities.BookSupplier;
@@ -21,6 +22,7 @@ import com.hgyw.bookshare.entities.Supplier;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.entities.UserType;
 
+import java.math.BigDecimal;
 import java.text.MessageFormat;
 
 /**
@@ -38,6 +40,18 @@ public class ObjectToViewAppliers {
         if (titleView != null) titleView.setText(book.getTitle());
         if (authorView != null) authorView.setText(book.getAuthor());
         if (imageView != null) Utility.setImageById(imageView, book.getImageId(), R.drawable.image_book);
+    }
+
+    public static void result(View view, Book book) {
+        TextView titleView = (TextView) view.findViewById(R.id.bookTitle);
+        TextView authorView = (TextView) view.findViewById(R.id.bookAuthor);
+        ImageView imageView = (ImageView) view.findViewById(R.id.bookImage); //TODO
+
+        //imageView.getDrawable()
+
+        if (titleView != null) book.setTitle(titleView.getText().toString());
+        if (authorView != null) book.setAuthor(authorView.getText().toString());
+        //if (imageView != null) Utility.setImageById(imageView, book.getImageId(), R.drawable.image_book);
     }
 
     public static void apply(View view, BookSummary summary) {
@@ -191,6 +205,43 @@ public class ObjectToViewAppliers {
         if (birthdayView!= null) {} // TODO
         if (imageView != null) {}// TODO
     }
+
+    public static void apply(View view, BookQuery bookQuery) {
+
+        TextView titleView = (TextView) view.findViewById(R.id.title_query);
+        TextView authorView = (TextView) view.findViewById(R.id.author_query);
+        // TODO and spinner
+        Spinner genreSpinner = (Spinner) view.findViewById(R.id.genre_spinner);
+        TextView fromPriceView = (TextView) view.findViewById(R.id.from_price);
+        TextView toPriceView = (TextView) view.findViewById(R.id.to_price);
+
+        titleView.setText(bookQuery.getTitleQuery());
+        authorView.setText(bookQuery.getAuthorQuery());
+        fromPriceView.setText(Utility.moneyToNumberString(bookQuery.getBeginPrice()));
+        toPriceView.setText(Utility.moneyToNumberString(bookQuery.getEndPrice()));
+        Book.Genre genreSelection = bookQuery.getGenreSet().isEmpty() ? Book.Genre.GENERAL : bookQuery.getGenreSet().iterator().next();
+        genreSpinner.setSelection(genreSelection.ordinal());
+    }
+
+    public static BookQuery result(View view, BookQuery bookQuery) {
+        TextView titleView = (TextView) view.findViewById(R.id.title_query);
+        TextView authorView = (TextView) view.findViewById(R.id.author_query);
+        // TODO and spinner
+        Spinner genreSpinner = (Spinner) view.findViewById(R.id.genre_spinner);
+        TextView fromPriceView = (TextView) view.findViewById(R.id.from_price);
+        TextView toPriceView = (TextView) view.findViewById(R.id.to_price);
+
+        bookQuery.setTitleQuery(titleView.getText().toString());
+        bookQuery.setAuthorQuery(authorView.getText().toString());
+        bookQuery.getGenreSet().clear();
+        bookQuery.getGenreSet().add((Book.Genre) genreSpinner.getSelectedItem());
+        try {
+            bookQuery.setBeginPrice(new BigDecimal(fromPriceView.getText().toString()));
+            bookQuery.setEndPrice(new BigDecimal(toPriceView.getText().toString()));
+        } catch (NumberFormatException ignored) {}
+        return bookQuery;
+    }
+
 
 
 }

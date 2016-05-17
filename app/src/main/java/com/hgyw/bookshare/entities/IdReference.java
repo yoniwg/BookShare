@@ -1,5 +1,7 @@
 package com.hgyw.bookshare.entities;
 
+import java.util.Objects;
+
 /**
  * Created by haim7 on 04/05/2016.
  */
@@ -9,7 +11,13 @@ public abstract class IdReference {
 
     public abstract Class<? extends Entity> getEntityType();
 
+    /**
+     * @param entityClass not null class of <? extends Entity>
+     * @param id entityId
+     * @return IdReference
+     */
     public static IdReference of(Class<? extends Entity> entityClass, long id) {
+        Objects.requireNonNull(entityClass);
         return new IdReference() {
             @Override
             public long getId() {

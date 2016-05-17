@@ -11,19 +11,19 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
-import com.hgyw.bookshare.logicAccess.CustomerAccess;
 import com.hgyw.bookshare.logicAccess.GeneralAccess;
 
 
 /**
- * An abstract {@link Fragment} to use for {@link CustomerAccess} fragments subclass.
  *
+ * @param <T> unchecked cast of the access.
  */
+@SuppressWarnings("unchecked")
 public abstract class AbstractFragment<T extends GeneralAccess> extends Fragment {
 
-    private int fragmentId = getFragmentId();
+    private @LayoutRes int fragmentLayoutId = getFragmentLayoutId();
 
-    private int menuId = getMenuId();
+    private @MenuRes int menuId = getMenuId();
 
     protected T access;
 
@@ -31,16 +31,15 @@ public abstract class AbstractFragment<T extends GeneralAccess> extends Fragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        access = (T) AccessManagerFactory.getInstance().getGeneralAccess();
         setHasOptionsMenu(true);
-
+        access = (T) AccessManagerFactory.getInstance().getFullAccess();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(fragmentId, container, false);
+        return inflater.inflate(fragmentLayoutId, container, false);
     }
 
     @Override
@@ -54,7 +53,7 @@ public abstract class AbstractFragment<T extends GeneralAccess> extends Fragment
      * should return the fragment resource ID.
      * @return
      */
-    abstract @LayoutRes int getFragmentId();
+    abstract @LayoutRes int getFragmentLayoutId();
 
     /**
      * should return the menu resource ID.

@@ -31,7 +31,7 @@ public class SupplierFragment extends EntityFragment {
     }
 
     @Override
-    int getFragmentId() {
+    int getFragmentLayoutId() {
         return R.layout.fragment_supplier;
     }
 

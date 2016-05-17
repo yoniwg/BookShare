@@ -2,6 +2,8 @@ package com.hgyw.bookshare.app_fragments;
 
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -69,8 +71,9 @@ public class BookFragment extends EntityFragment {
         if (!isCustomer) {
             userReviewContainer.setVisibility(View.GONE);
         } else {
+            CustomerAccess cAccess = (CustomerAccess) access;
             userRatingBar = (RatingBar) userReviewContainer.findViewById(R.id.userRatingBar);
-            userBookReview = AccessManagerFactory.getInstance().getCustomerAccess().retrieveMyReview(book);
+            userBookReview = cAccess.retrieveMyReview(book);
             final BookReview finalUserBookReview = userBookReview == null ? new BookReview() : userBookReview;
             finalUserBookReview.setBookId(book.getId());
             userRatingBar.setRating(finalUserBookReview.getRating().getStars());
@@ -78,9 +81,15 @@ public class BookFragment extends EntityFragment {
             userRatingBar.setOnRatingBarChangeListener((RatingBar ratingBar, float rating, boolean fromUser) -> {
                 if (fromUser) {
                     finalUserBookReview.setRating(Rating.ofStars((int) rating));
-                    BookReviewDialogFragment dialogFragment = BookReviewDialogFragment.newInstance(finalUserBookReview);
-                    dialogFragment.setTargetFragment(this, RESULT_CODE_BOOK_REVIEW_DIALOG); // TODO - Problem with targetFragment - we can do simple dialog without fragment
-                    dialogFragment.show(getFragmentManager(), "BookReviewDialog");
+                    /* BookReviewDialogFragment dialogFragment = BookReviewDialogFragment.newInstance(finalUserBookReview);
+                    dialogFragment.setTargetFragment(this, RESULT_CODE_BOOK_REVIEW_DIALOG); // Problem with targetFragment - we can do simple dialog without fragment
+                    dialogFragment.show(getFragmentManager(), "BookReviewDialog");*/
+                    new AlertDialog.Builder(getActivity()).setTitle(R.string.rate)
+                            .setView(activity.getLayoutInflater().inflate(R.layout.dialog_book_review, null, false))
+                            .setPositiveButton(R.string.rate, (dialog, which) -> onBookReviewResult(false, finalUserBookReview))
+                            .setNegativeButton(R.string.cancel, (dialog, which) -> onBookReviewResult(true, finalUserBookReview))
+                            .setOnCancelListener(dialog -> onBookReviewResult(true, finalUserBookReview))
+                            .create().show();
                 }
             });
         }
@@ -158,21 +167,21 @@ public class BookFragment extends EntityFragment {
     }
 
     private void onBookReviewResult(boolean canceled, BookReview bookReview) {
-        // apply the customer details
         if (canceled) {
             userRatingBar.setRating(oldUserRating);
         } else {
+            // apply the customer details
             CustomerAccess access = AccessManagerFactory.getInstance().getCustomerAccess();
             access.writeBookReview(bookReview);
             oldUserRating = userRatingBar.getRating();
+            // message
+            Toast.makeText(getActivity(), "The review was updated.", Toast.LENGTH_LONG).show();
         }
-        // message
-        Toast.makeText(getActivity(), "The review was updated.", Toast.LENGTH_LONG).show();
 
     }
 
     @Override
-    int getFragmentId() {
+    int getFragmentLayoutId() {
         return R.layout.fragment_book;
     }
 

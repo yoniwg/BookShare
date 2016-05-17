@@ -1,11 +1,8 @@
 package com.hgyw.bookshare.app_activities;
 
 
-import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hgyw.bookshare.app_fragments.IntentsFactory;
@@ -13,23 +10,10 @@ import com.hgyw.bookshare.ObjectToViewAppliers;
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 
-public class UserEditActivity extends RegistrationActivity {
+public class UserEditActivity extends UserAbstractActivity {
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        View rootView = findViewById(android.R.id.content);
-        TextView button = (TextView) rootView.findViewById(R.id.okButton);
-        button.setText(R.string.save);
-        button.setOnClickListener((View.OnClickListener) this);
-        // set username and password not editable
-        EditText usernameView = (EditText) findViewById(R.id.username);
-        EditText passwordView = (EditText) findViewById(R.id.password);
-        usernameView.setKeyListener(null);
-        passwordView.setKeyListener(null);
-        Spinner customerSupplierSpinner = (Spinner) findViewById(R.id.customerSupplierSpinner);
-        customerSupplierSpinner.setVisibility(View.GONE);
+    public UserEditActivity() {
+        super(R.string.save, false);
     }
 
     @Override

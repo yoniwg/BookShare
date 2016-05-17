@@ -31,7 +31,7 @@
                 android:value=".app_activities.MainActivity" />
         </activity>
         <activity android:name=".app_activities.TransactionActivity"/>
-        <activity android:name=".app_activities.RegistrationActivity"/>
+        <activity android:name=".app_activities.UserRegistrationActivity"/>
         <activity android:name=".app_activities.UserEditActivity"/>
     </application>
 

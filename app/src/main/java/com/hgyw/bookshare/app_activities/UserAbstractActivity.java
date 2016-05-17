@@ -2,28 +2,35 @@ package com.hgyw.bookshare.app_activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hgyw.bookshare.app_fragments.IntentsFactory;
 import com.hgyw.bookshare.ObjectToViewAppliers;
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.Utility;
+import com.hgyw.bookshare.app_fragments.IntentsFactory;
 import com.hgyw.bookshare.entities.ImageEntity;
 import com.hgyw.bookshare.entities.User;
-import com.hgyw.bookshare.exceptions.WrongLoginException;
-import com.hgyw.bookshare.logicAccess.AccessManager;
-import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 
-public class RegistrationActivity extends AppCompatActivity implements View.OnClickListener {
+public abstract class UserAbstractActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final int ACTION_IMAGE_CAPTURE_CODE = 0;
-    private static final int ACTION_PICK_CODE = 1;
+    //private static final String ARG_USER_DETAILS = "userDetails";
     ImageView userThumbnailImageView;
     User user;
+    private final @StringRes int buttonStringId;
+    private final boolean isRegistration;
+
+    protected UserAbstractActivity(@StringRes int buttonStringId, boolean isRegistration) {
+        this.buttonStringId = buttonStringId;
+        this.isRegistration = isRegistration;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,29 +40,30 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
 
         user = getIntent() == null ? null : (User) getIntent().getSerializableExtra(IntentsFactory.ARG_USER_DETAILS);
         if (user == null)
-            throw new IllegalArgumentException("The RegistrationActivity should accept non-null user.");
+            throw new IllegalArgumentException("The UserAbstractActivity should accept non-null user.");
 
         View rootView = findViewById(android.R.id.content);
-        ObjectToViewAppliers.apply(rootView, user);
         assert rootView != null;
-        rootView.findViewById(R.id.okButton).setOnClickListener((View.OnClickListener) this);
+        ObjectToViewAppliers.apply(rootView, user);
         userThumbnailImageView = (ImageView) rootView.findViewById(R.id.userThumbnail);
         userThumbnailImageView.setOnClickListener(v -> Utility.startGetImage(this));
+
+        TextView button = (TextView) rootView.findViewById(R.id.okButton);
+        button.setText(buttonStringId);
+        button.setOnClickListener((View.OnClickListener) this);
+        // set username and password not editable
+        if (!isRegistration) {
+            EditText usernameView = (EditText) findViewById(R.id.username);
+            EditText passwordView = (EditText) findViewById(R.id.password);
+            if (usernameView != null) usernameView.setKeyListener(null);
+            if (passwordView != null) passwordView.setKeyListener(null);
+            Spinner customerSupplierSpinner = (Spinner) findViewById(R.id.customerSupplierSpinner);
+            if (customerSupplierSpinner != null) customerSupplierSpinner.setVisibility(View.GONE);
+        }
+
     }
 
-    // register new user
-    public void onClick(View v) {
-        View rootView = findViewById(android.R.id.content);
-        ObjectToViewAppliers.result(rootView, user);
-        AccessManager accessManager = AccessManagerFactory.getInstance();
-        try {
-            accessManager.signUp(user);
-            Toast.makeText(this, R.string.registration_Succeed, Toast.LENGTH_SHORT).show();
-            startActivity(IntentsFactory.homeIntent(this, true));
-        } catch (WrongLoginException e) {
-            Toast.makeText(this, "Registration was not succeed: " + e.getIssue(), Toast.LENGTH_LONG).show(); // TODO
-        }
-    }
+    public abstract void onClick(View v);
 
     protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
@@ -78,7 +86,6 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
             default:
                 return super.onOptionsItemSelected(item);
         }
-
     }
 }
 
