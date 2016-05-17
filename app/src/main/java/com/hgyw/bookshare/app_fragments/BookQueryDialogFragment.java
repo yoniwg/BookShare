@@ -41,7 +41,6 @@ public class BookQueryDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         BookQuery bookQuery = getArguments() == null ? null : (BookQuery) getArguments().getSerializable(ARG_DIALOG_BOOK_QUERY);
-
         // inflate and set view
         View view = onCreateView(getActivity().getLayoutInflater(), null, savedInstanceState);
         if (bookQuery != null) ObjectToViewAppliers.apply(view, bookQuery);

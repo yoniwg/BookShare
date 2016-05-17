@@ -203,7 +203,7 @@ public class ObjectToViewAppliers {
         if (addressView!= null) user.setAddress(addressView.getText().toString());
         if (phoneView!= null) user.setPhoneNumber(phoneView.getText().toString());
         if (birthdayView!= null) {} // TODO
-        if (imageView != null) {}// TODO
+        if (imageView != null) {}// Do nothing
     }
 
     public static void apply(View view, BookQuery bookQuery) {

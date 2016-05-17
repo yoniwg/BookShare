@@ -43,7 +43,8 @@ public abstract class UserAbstractActivity extends AppCompatActivity {
         setContentView(R.layout.activity_registration);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle(titleId);
-        user = getIntent() == null ? new Customer() : (User) getIntent().getSerializableExtra(IntentsFactory.ARG_USER_DETAILS);
+        user = getIntent() == null ? null : (User) getIntent().getSerializableExtra(IntentsFactory.ARG_USER_DETAILS);
+        if (user == null) user = new Customer();
 
         View rootView = findViewById(android.R.id.content);
         assert rootView != null;

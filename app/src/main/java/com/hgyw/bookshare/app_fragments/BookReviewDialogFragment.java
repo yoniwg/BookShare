@@ -6,10 +6,12 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.RatingBar;
 
 import com.hgyw.bookshare.ObjectToViewAppliers;
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.entities.BookReview;
+import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 
 /**
  * Created by haim7 on 13/05/2016.
@@ -57,11 +59,12 @@ public class BookReviewDialogFragment extends DialogFragment {
     }
 
     private void sendResult(boolean okResult) {
-        reviewResultListener reviewResultListener = null; // TODO
-        reviewResultListener.onResult(okResult, bookReview, oldViewRating);
+        if (!okResult) {
+            ((RatingBar) getActivity().findViewById(R.id.userRatingBar)).setRating(bookReview.getRating().getStars());
+        } else {
+            ObjectToViewAppliers.apply(view, bookReview);
+            AccessManagerFactory.getInstance().getCustomerAccess().writeBookReview(bookReview);
+        }
     }
 
-    public interface reviewResultListener {
-        void onResult(boolean okResult, BookReview bookReview, float oldViewRating);
-    }
 }

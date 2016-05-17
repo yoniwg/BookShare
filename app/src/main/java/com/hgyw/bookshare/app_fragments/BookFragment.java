@@ -47,6 +47,7 @@ public class BookFragment extends EntityFragment {
     private float oldUserRating;
     private RatingBar userRatingBar;
     private boolean isCustomer;
+    private BookReview userBookReview;
 
     public BookFragment() {
         super(R.layout.fragment_book, R.menu.menu_book, R.string.book_fragment_title);
@@ -69,28 +70,34 @@ public class BookFragment extends EntityFragment {
 
 
         View userReviewContainer = activity.findViewById(R.id.userReviewContainer);
-        BookReview userBookReview = null;
         if (!isCustomer) {
             userReviewContainer.setVisibility(View.GONE);
         } else {
             CustomerAccess cAccess = (CustomerAccess) access;
             userRatingBar = (RatingBar) userReviewContainer.findViewById(R.id.userRatingBar);
             userBookReview = cAccess.retrieveMyReview(book);
-            final BookReview finalUserBookReview = userBookReview == null ? new BookReview() : userBookReview;
-            finalUserBookReview.setBookId(book.getId());
-            userRatingBar.setRating(finalUserBookReview.getRating().getStars());
+            userBookReview = userBookReview == null ? new BookReview() : userBookReview;
+            userBookReview.setBookId(book.getId());
+            userRatingBar.setRating(userBookReview.getRating().getStars());
             oldUserRating = userRatingBar.getRating();
             userRatingBar.setOnRatingBarChangeListener((RatingBar ratingBar, float rating, boolean fromUser) -> {
                 if (fromUser) {
-                    finalUserBookReview.setRating(Rating.ofStars((int) rating));
+                    userBookReview.setRating(Rating.ofStars((int) rating));
                     /* BookReviewDialogFragment dialogFragment = BookReviewDialogFragment.newInstance(finalUserBookReview);
                     dialogFragment.setTargetFragment(this, RESULT_CODE_BOOK_REVIEW_DIALOG); // Problem with targetFragment - we can do simple dialog without fragment
                     dialogFragment.show(getFragmentManager(), "BookReviewDialog");*/
+                    View dialogView = activity.getLayoutInflater().inflate(R.layout.dialog_book_review, null, false);
+                    ObjectToViewAppliers.apply(dialogView, userBookReview);
                     new AlertDialog.Builder(getActivity()).setTitle(R.string.rate)
-                            .setView(activity.getLayoutInflater().inflate(R.layout.dialog_book_review, null, false))
-                            .setPositiveButton(R.string.rate, (dialog, which) -> onBookReviewResult(false, finalUserBookReview))
-                            .setNegativeButton(R.string.cancel, (dialog, which) -> onBookReviewResult(true, finalUserBookReview))
-                            .setOnCancelListener(dialog -> onBookReviewResult(true, finalUserBookReview))
+                            .setView(dialogView)
+                            .setPositiveButton(R.string.rate, (dialog, which) -> {
+                                ObjectToViewAppliers.result(dialogView, userBookReview);
+                                onBookReviewResult(false, userBookReview);
+                            })
+                            .setNegativeButton(R.string.cancel, (dialog, which) -> {
+                                onBookReviewResult(true, userBookReview);
+                            })
+                            .setOnCancelListener(dialog -> onBookReviewResult(true, userBookReview))
                             .create().show();
                 }
             });
@@ -161,6 +168,7 @@ public class BookFragment extends EntityFragment {
             // apply the customer details
             CustomerAccess access = AccessManagerFactory.getInstance().getCustomerAccess();
             access.writeBookReview(bookReview);
+            this.userBookReview = bookReview;
             oldUserRating = userRatingBar.getRating();
             // message
             Toast.makeText(getActivity(), "The review was updated.", Toast.LENGTH_LONG).show();

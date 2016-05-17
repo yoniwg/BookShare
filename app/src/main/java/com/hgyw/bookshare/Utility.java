@@ -127,16 +127,18 @@ public class Utility {
     }
 
     /**
+     * /**
      * Set image from selectedImage to targetImageView. return the byte[] that contains the image.
-     * TargetImageView can be null.
+     * @param context
+     * @param selectedImage
+     * @param targetImageView can be null
+     * @return null if reading has failed.
      */
     public static byte[] readImageFromURI(Context context, Uri selectedImage, ImageView targetImageView) {
         try {
-            ImageEntity imageEntity = new ImageEntity();
             byte[] bytes = readBytesFromURI(context, selectedImage);
-            imageEntity.setBytes(bytes);
             if (targetImageView != null) {
-                Bitmap bmp = BitmapFactory.decodeByteArray(imageEntity.getBytes(), 0, imageEntity.getBytes().length);
+                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                 targetImageView.setImageBitmap(bmp);
             }
             return bytes;
