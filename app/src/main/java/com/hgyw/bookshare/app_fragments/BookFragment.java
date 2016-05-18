@@ -74,7 +74,6 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
             userBookReview = cAccess.retrieveMyReview(book);
             if (userBookReview == null) {
                 userBookReview = new BookReview();
-                userBookReview.setBookId(access.retrieveUserDetails().getId());
                 userBookReview.setBookId(book.getId());
             }
             updateUserReviewView();
@@ -153,7 +152,6 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
 
     @Override
     public void onBookReviewResult(boolean canceled, BookReview bookReview, Rating oldUserRating) {
-        // apply the customer details
         if (canceled) {
             userRatingBar.setRating(oldUserRating.getStars());
         } else {

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,21 +18,33 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hgyw.bookshare.app_fragments.BooksListFragment;
+import com.hgyw.bookshare.app_fragments.CartFragment;
 import com.hgyw.bookshare.app_fragments.IntentsFactory;
 import com.hgyw.bookshare.app_fragments.LoginDialogFragment;
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.Utility;
-import com.hgyw.bookshare.entities.Transaction;
 import com.hgyw.bookshare.entities.User;
-import com.hgyw.bookshare.exceptions.OrdersTransactionException;
 import com.hgyw.bookshare.logicAccess.AccessManager;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    public static final String MAIN_FRAGMENT_TAG = "mainFragmentTag";
     private DrawerLayout drawer;
     private AccessManager accessManager;
+    private Class fragmentClass;
+    private static final Map<Class<? extends Fragment>, Integer> fragmentNavMap = new HashMap<>();
+    static {
+        fragmentNavMap.put(BooksListFragment.class, R.id.nav_books);
+        fragmentNavMap.put(CartFragment.class, R.id.nav_cart);
+        fragmentNavMap.put(CartFragment.class, R.id.nav_cart);
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +52,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        onNewIntent(getIntent()); // updates the fragmentClass field
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -48,9 +63,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        accessManager = AccessManagerFactory.getInstance();
+        Integer navItemId = fragmentNavMap.get(fragmentClass);
+        navigationView.setCheckedItem(navItemId == null ? 0 : navItemId);
 
-        onNewIntent(getIntent());
+        accessManager = AccessManagerFactory.getInstance();
     }
 
     @Override
@@ -104,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onNewIntent(Intent newIntent) {
         super.onNewIntent(newIntent);
-        Class fragmentClass = newIntent == null ? null : (Class) newIntent.getSerializableExtra(IntentsFactory.ARG_FRAGMENT_CLASS);
+        fragmentClass = newIntent == null ? null : (Class) newIntent.getSerializableExtra(IntentsFactory.ARG_FRAGMENT_CLASS);
         if (fragmentClass == null) {
             startActivity(IntentsFactory.homeIntent(this));
             return;
@@ -114,9 +130,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         try {
             Fragment fragment = (Fragment) fragmentClass.newInstance();
             fragment.setArguments(newIntent.getExtras());
-
             getFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, fragment)
+                    .replace(R.id.fragment_container, fragment, MAIN_FRAGMENT_TAG)
                     .commit();
             setIntent(newIntent);
             //ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);

@@ -22,6 +22,8 @@ import java.util.Map;
 
 public class EntityActivity extends AppCompatActivity {
 
+    public static final String ENTITY_FRAGMENT_TAG = "entityFragmentTag";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +41,7 @@ public class EntityActivity extends AppCompatActivity {
         Class<? extends EntityFragment> fragmentClass = IntentsFactory.getEntityFragment(entityReference.getEntityType());
         EntityFragment fragment = EntityFragment.newInstance(fragmentClass, entityReference.getId());
         getFragmentManager().beginTransaction()
-                .replace(R.id.fragment_entity_container, fragment)
+                .replace(R.id.fragment_entity_container, fragment, ENTITY_FRAGMENT_TAG)
                 .commit();
     }
 

@@ -81,7 +81,7 @@ public class ObjectToViewAppliers {
         TextView reviewTitleView = (TextView) view.findViewById(R.id.reviewTitle);
         TextView reviewDescriptionView = (TextView) view.findViewById(R.id.reviewDescription);
 
-        if (ratingBar != null) bookReview.setRating(Rating.ofStars((int) ratingBar.getRating()));
+        if (ratingBar != null) bookReview.setRating(Rating.of((int) ratingBar.getRating()));
         if (reviewTitleView != null) bookReview.setTitle(reviewTitleView.getText().toString());
         if (reviewDescriptionView != null) bookReview.setDescription(reviewDescriptionView.getText().toString());
     }

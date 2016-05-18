@@ -10,7 +10,10 @@ public enum Rating {
         return ordinal();
     }
 
-    public static Rating ofStars(int stars) {
+    public static Rating of(int stars) {
         return values()[stars];
+    }
+    public static Rating of(float rating) {
+        return of((int) rating);
     }
 }
