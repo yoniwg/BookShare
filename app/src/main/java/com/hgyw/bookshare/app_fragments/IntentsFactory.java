@@ -126,4 +126,11 @@ public class IntentsFactory {
         intent.putExtra(ARG_USER_DETAILS, user);
         return intent;
     }
+
+    public static Intent newOldOrderIntent(Context context) {
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.putExtra(ARG_FRAGMENT_CLASS, OldOrdersFragment.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        return intent;
+    }
 }

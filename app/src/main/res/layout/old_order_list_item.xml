@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:clickable="false"
+    android:descendantFocusability="blocksDescendants"
+    android:id="@+id/orderContainer">
+
+    <ImageView
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:id="@+id/bookImage"
+        android:src="@drawable/image_book"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignBaseline="@+id/bookTitle"
+        android:layout_alignBottom="@+id/supplierName"
+        android:scaleType="centerCrop" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="This can be a long title of a book"
+        android:id="@+id/bookTitle"
+        android:singleLine="false"
+        android:paddingEnd="10dp"
+        android:paddingStart="10dp"
+        android:textAlignment="viewStart"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/bookAuthor" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="author"
+        android:id="@+id/bookAuthor"
+        android:layout_below="@+id/bookTitle"
+        android:layout_toEndOf="@+id/bookImage"
+        android:paddingStart="10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="price"
+        android:id="@+id/orderUnitPrice"
+        android:layout_below="@+id/supplierName"
+        android:layout_toEndOf="@+id/bookImage"
+        android:textAlignment="viewStart"
+        android:layout_alignLeft="@+id/supplierName"
+        android:paddingStart="10dp" />
+
+    <TextView
+        android:id="@+id/supplierName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Supplier name"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_below="@+id/bookAuthor"
+        android:layout_toEndOf="@+id/bookImage"
+        android:paddingStart="10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/books"
+        android:id="@+id/amount_label"
+        android:textAlignment="center"
+        android:paddingStart="10dp"
+        android:layout_below="@+id/orderUnitPrice"
+        android:layout_centerHorizontal="true"
+        android:layout_toEndOf="@+id/final_amount" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="0"
+        android:id="@+id/final_amount"
+        android:textAlignment="center"
+        android:visibility="visible"
+        android:paddingStart="10dp"
+        android:layout_below="@+id/orderUnitPrice"
+        android:layout_toEndOf="@id/bookImage" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="01/01/2001"
+        android:id="@+id/order_date"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBottom="@+id/amount_label"
+        android:layout_alignTop="@+id/amount_label" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Order Status"
+        android:id="@+id/order_status"
+        android:textColor="@color/design_textinput_error_color_dark"
+        android:layout_alignBottom="@+id/supplierName"
+        android:layout_alignParentEnd="true" />
+
+</RelativeLayout>

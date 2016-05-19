@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public static final String MAIN_FRAGMENT_TAG = "mainFragmentTag";
     private DrawerLayout drawer;
-    private AccessManager accessManager;
+    final private AccessManager accessManager = AccessManagerFactory.getInstance();
     private Class fragmentClass;
     private static final Map<Class<? extends Fragment>, Integer> fragmentNavMap = new HashMap<>();
     static {
@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -65,8 +66,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
         Integer navItemId = fragmentNavMap.get(fragmentClass);
         navigationView.setCheckedItem(navItemId == null ? 0 : navItemId);
-
-        accessManager = AccessManagerFactory.getInstance();
     }
 
     @Override
@@ -204,7 +203,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             }
             case R.id.nav_my_orders:
-
+                Intent intent = IntentsFactory.newOldOrderIntent(this);
+                startActivity(intent);
                 break;
             case R.id.nav_user_details:
                 startActivity(IntentsFactory.userDetailsIntent(this));

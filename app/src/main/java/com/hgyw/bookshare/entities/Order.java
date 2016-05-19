@@ -13,7 +13,7 @@ public class Order extends Entity {
     private int amount = 1;
     private BigDecimal unitPrice = BigDecimal.ZERO;
     private OrderRating orderRating = new OrderRating();
-    private OrderStatus orderStatus = OrderStatus.NEW;
+    private OrderStatus orderStatus = OrderStatus.NEW_ORDER;
     @EntityReference(Transaction.class)
     private long transactionId;
 

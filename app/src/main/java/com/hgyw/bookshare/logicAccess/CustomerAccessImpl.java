@@ -82,7 +82,7 @@ class CustomerAccessImpl extends GeneralAccessImpl implements CustomerAccess {
         // create orders
         for (Order o : orders) {
             o.setId(0);
-            o.setOrderStatus(OrderStatus.NEW);
+            o.setOrderStatus(OrderStatus.NEW_ORDER);
             o.setTransactionId(transaction.getId());
             dataAccess.create(o);
             // decrease amount available
@@ -117,9 +117,9 @@ class CustomerAccessImpl extends GeneralAccessImpl implements CustomerAccess {
         Order order = dataAccess.retrieve(Order.class, orderId);
         Transaction transaction = retrieve(Transaction.class, order.getTransactionId());
         requireItsMeForAccess(UserType.CUSTOMER, transaction.getCustomerId());
-        if (!(order.getOrderStatus() == OrderStatus.NEW
+        if (!(order.getOrderStatus() == OrderStatus.NEW_ORDER
                 || order.getOrderStatus() == OrderStatus.WAITING_FOR_PAYING)){
-            throw new IllegalStateException("tc cancel the status must be " + OrderStatus.NEW + " or " + OrderStatus.WAITING_FOR_PAYING + ".");
+            throw new IllegalStateException("tc cancel the status must be " + OrderStatus.NEW_ORDER + " or " + OrderStatus.WAITING_FOR_PAYING + ".");
         }
         order.setOrderStatus(OrderStatus.WAITING_FOR_CANCEL);
         dataAccess.update(order);

@@ -1,6 +1,7 @@
 package com.hgyw.bookshare;
 
 import android.content.Context;
+import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.ImageView;
@@ -19,6 +20,7 @@ import com.hgyw.bookshare.entities.Customer;
 import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.Rating;
 import com.hgyw.bookshare.entities.Supplier;
+import com.hgyw.bookshare.entities.Transaction;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.entities.UserType;
 
@@ -110,17 +112,31 @@ public class ObjectToViewAppliers {
         if (userImage != null) Utility.setImageById(userImage, supplier.getImageId(), R.drawable.image_user);
     }
 
+    public static void apply(View view, Transaction transaction) {
+        TextView shippingAddress = (TextView) view.findViewById(R.id.shipping_address);
+        TextView creditNumber = (TextView) view.findViewById(R.id.credit_number);
+        TextView orderDate = (TextView) view.findViewById(R.id.order_date);
+
+        if (shippingAddress != null) shippingAddress.setText(transaction.getShippingAddress());
+        if (creditNumber != null) creditNumber.setText(transaction.getCreditCard());
+        if (orderDate != null) orderDate.setText(DateUtils.formatDateTime(null,transaction.getDate().getTime(),
+                DateUtils.FORMAT_NUMERIC_DATE | DateUtils.FORMAT_SHOW_YEAR));
+    }
+
     public static void apply(View view, Order order) {
         TextView amountView = (TextView) view.findViewById(R.id.orderAmount);
         TextView finalAmount = (TextView) view.findViewById(R.id.final_amount);
         TextView unitPriceView = (TextView) view.findViewById(R.id.orderUnitPrice);
         TextView totalPriceView = (TextView) view.findViewById(R.id.orderTotalPrice);
+        TextView orderStatus = (TextView) view.findViewById(R.id.order_status);
         NumberPicker amountPicker = (NumberPicker) view.findViewById(R.id.orderAmountPicker);
 
         if (finalAmount != null) finalAmount.setText(String.valueOf(order.getAmount()));
         if (amountView != null) amountView.setText(String.valueOf(order.getAmount()));
         if (unitPriceView != null) unitPriceView.setText(Utility.moneyToString(order.getUnitPrice()));
         if (totalPriceView != null) totalPriceView.setText(Utility.moneyToString(order.calcTotalPrice()));
+        if (orderStatus != null) orderStatus.setText(
+                Utility.findStringResourceOfEnum(view.getContext(), order.getOrderStatus()) );
         if (amountPicker != null){
             amountPicker.setMaxValue(100);
             amountPicker.setMinValue(1);

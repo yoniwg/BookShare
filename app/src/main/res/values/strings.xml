@@ -113,9 +113,16 @@
     <string name="cart_fragment_title">Cart</string>
     <string name="user_details_title">User Details</string>
     <string name="registration_title">Registration</string>
+    <string name="old_orders_fragment_title">My Orders</string>
 
     <string-array name="customerSupplierItems">
         <item>Customer</item>
         <item>Supplier</item>
     </string-array>
+    <string name="orderstatus_new_order">New Order</string>
+    <string name="orderstatus_waiting_for_paying">Waiting for Paying</string>
+    <string name="orderstatus_sent">Sent</string>
+    <string name="orderstatus_closed">Closed</string>
+    <string name="orderstatus_waiting_for_cancel">Waiting for Cancel</string>
+    <string name="orderstatus_canceled">Canceled</string>
 </resources>
