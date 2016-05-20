@@ -8,7 +8,7 @@ import java.io.Serializable;
  * Created by Yoni on 3/15/2016.
  */
 public class BookReview extends Entity implements Serializable {
-    @EntityReference(Customer.class)
+    @EntityReference(User.class)
     private long customerId;
     @EntityReference(Book.class)
     private long bookId;

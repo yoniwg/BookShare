@@ -1,23 +1,17 @@
 package com.hgyw.bookshare.dataAccess;
 
 import com.annimon.stream.Optional;
-import com.annimon.stream.function.Function;
-
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookQuery;
 import com.hgyw.bookshare.entities.BookSummary;
-import com.hgyw.bookshare.entities.BookSupplier;
 import com.hgyw.bookshare.entities.Credentials;
-import com.hgyw.bookshare.entities.Customer;
 import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.entities.IdReference;
 import com.hgyw.bookshare.entities.Order;
-import com.hgyw.bookshare.entities.Supplier;
 import com.hgyw.bookshare.entities.User;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by haim7 on 24/03/2016.
@@ -45,7 +39,7 @@ public interface DataAccess extends Crud {
      * @param userAsked the user asked.
      * @return Collection of the interested.
      */
-    Collection<Customer> findInterestedInBook(Book book, User userAsked);
+    List<User> findInterestedInBook(Book book, User userAsked);
 
     /**
      * Retrieve orders according to parameters are provided.
@@ -56,7 +50,7 @@ public interface DataAccess extends Crud {
      * @param onlyOpen boolean value that indicates whether to retrieve only open orders.
      * @return Collection of the results.
      */
-    Collection<Order> retrieveOrders(Customer customer, Supplier supplier, Date fromDate, Date toDate, boolean onlyOpen);
+    List<Order> retrieveOrders(User customer, User supplier, Date fromDate, Date toDate, boolean onlyOpen);
 
     /**
      * Find books by book query.

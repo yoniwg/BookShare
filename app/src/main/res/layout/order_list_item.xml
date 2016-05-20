@@ -92,7 +92,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="0"
-        android:id="@+id/final_amount"
+        android:id="@+id/orderAmountFinal"
         android:layout_alignParentEnd="true"
         android:layout_alignStart="@+id/orderAmountPicker"
         android:layout_alignBottom="@+id/orderAmountPicker"

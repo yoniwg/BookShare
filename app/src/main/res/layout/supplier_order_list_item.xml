@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:clickable="false"
+    android:descendantFocusability="blocksDescendants"
+    android:id="@+id/orderContainer">
+
+    <ImageView
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:id="@+id/bookImage"
+        android:src="@drawable/image_book"
+        android:scaleType="centerCrop"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="This can be a long title of a book"
+        android:id="@+id/bookTitle"
+        android:singleLine="false"
+        android:textAlignment="viewStart"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:paddingStart="@dimen/defaultHoriozintalNextSpace" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="userFullName"
+        android:id="@+id/userFullName"
+        android:layout_centerVertical="true"
+        android:layout_alignStart="@+id/bookTitle"
+        android:paddingStart="@dimen/defaultHoriozintalNextSpace" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="price"
+        android:id="@+id/orderUnitPrice"
+        android:textAlignment="viewStart"
+        android:layout_alignTop="@+id/amountTextView"
+        android:layout_toEndOf="@+id/amountTextView"
+        android:paddingStart="@dimen/defaultHoriozintalNextSpace" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/amount"
+        android:id="@+id/amount_label"
+        android:textAlignment="center"
+        android:layout_alignBottom="@+id/bookImage"
+        android:layout_alignStart="@+id/userFullName"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/defaultHoriozintalNextSpace" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="0"
+        android:id="@+id/amountTextView"
+        android:layout_alignBottom="@+id/bookImage"
+        android:layout_toEndOf="@+id/amount_label"
+        android:paddingStart="@dimen/defaultHoriozintalNextSpace" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="transaction Address"
+        android:id="@+id/transactionAddress"
+        android:layout_alignTop="@+id/orderUnitPrice"
+        android:layout_toEndOf="@+id/orderUnitPrice"
+        android:paddingStart="@dimen/defaultHoriozintalNextSpace" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="order-status"
+        android:id="@+id/orderStatus"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:paddingStart="@dimen/defaultHoriozintalNextSpace" />
+
+</RelativeLayout>

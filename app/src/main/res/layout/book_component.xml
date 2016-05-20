@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="author"
-        android:id="@+id/bookAuthor"
+        android:id="@+id/userFullName"
         android:layout_below="@+id/bookTitle"
         android:layout_toEndOf="@+id/bookImage" />
 
@@ -44,7 +44,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="price"
         android:id="@+id/priceRange"
-        android:layout_below="@+id/bookAuthor"
+        android:layout_below="@+id/userFullName"
         android:layout_toEndOf="@+id/bookImage" />
 
     <RatingBar

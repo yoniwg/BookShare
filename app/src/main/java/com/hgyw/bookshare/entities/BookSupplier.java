@@ -10,7 +10,7 @@ import java.math.RoundingMode;
  */
 public class BookSupplier extends Entity  {
 
-    @EntityReference(Supplier.class)
+    @EntityReference(User.class)
     private long supplierId;
     @EntityReference(Book.class)
     private long bookId;

@@ -74,14 +74,14 @@
         android:paddingStart="10dp"
         android:layout_below="@+id/order_unit_price"
         android:layout_centerHorizontal="true"
-        android:layout_toEndOf="@+id/final_amount" />
+        android:layout_toEndOf="@+id/orderAmountFinal" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="0"
-        android:id="@+id/final_amount"
+        android:id="@+id/orderAmountFinal"
         android:textAlignment="center"
         android:visibility="visible"
         android:paddingStart="10dp"

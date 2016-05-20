@@ -9,10 +9,8 @@ import com.hgyw.bookshare.entities.BookQuery;
 import com.hgyw.bookshare.entities.BookReview;
 import com.hgyw.bookshare.entities.BookSummary;
 import com.hgyw.bookshare.entities.BookSupplier;
-import com.hgyw.bookshare.entities.Customer;
 import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.entities.ImageEntity;
-import com.hgyw.bookshare.entities.Supplier;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.entities.UserType;
 
@@ -64,7 +62,7 @@ class GeneralAccessImpl implements GeneralAccess {
     }
 
     @Override
-    public List<BookSupplier> findBooksOfSuppliers(Supplier supplier) {
+    public List<BookSupplier> findBooksOfSuppliers(User supplier) {
         return dataAccess.findEntityReferTo(BookSupplier.class, supplier);
     }
 
@@ -77,10 +75,11 @@ class GeneralAccessImpl implements GeneralAccess {
 
     @Override
     public User retrieveUserDetails() {
-        if (currentUser instanceof Customer || currentUser instanceof Supplier){
+        if (currentUser.getUserType() != UserType.GUEST){
             return (User) dataAccess.retrieve(currentUser);
+        } else {
+            return (User) currentUser.clone();
         }
-        return currentUser;
     }
 
     @Override

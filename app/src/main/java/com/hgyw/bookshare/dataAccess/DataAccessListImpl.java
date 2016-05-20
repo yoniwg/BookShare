@@ -20,12 +20,10 @@ import com.hgyw.bookshare.entities.BookReview;
 import com.hgyw.bookshare.entities.BookSummary;
 import com.hgyw.bookshare.entities.BookSupplier;
 import com.hgyw.bookshare.entities.Credentials;
-import com.hgyw.bookshare.entities.Customer;
 import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.entities.IdReference;
 import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.Rating;
-import com.hgyw.bookshare.entities.Supplier;
 import com.hgyw.bookshare.entities.Transaction;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.entities.reflection.EntityReflection;
@@ -48,20 +46,20 @@ class DataAccessListImpl extends ListsCrudImpl implements DataAccess {
     }
 
     private Stream<User> streamAllUsers() {
-        return Stream.concat(streamAllNonDeleted(Customer.class), streamAllNonDeleted(Supplier.class));
+        return streamAllNonDeleted(User.class);
     }
 
     @Override
-    public Collection<Customer> findInterestedInBook(Book book, User userAsked) {
+    public List<User> findInterestedInBook(Book book, User userAsked) {
         return streamAllNonDeleted(Order.class)
                 .filter(o -> retrieve(BookSupplier.class, o.getBookSupplierId()).getBookId() == book.getId())
                 .map(retrieving(Transaction.class, Order::getTransactionId))
-                .map(retrieving(Customer.class, Transaction::getCustomerId))
+                .map(retrieving(User.class, Transaction::getCustomerId))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Collection<Order> retrieveOrders(Customer customer, Supplier supplier, Date fromDate, Date toDate, boolean onlyOpen) {
+    public List<Order> retrieveOrders(User customer, User supplier, Date fromDate, Date toDate, boolean onlyOpen) {
         return streamAllNonDeleted(Order.class)
                 .filter(o -> (customer == null || retrieve(Transaction.class, o.getTransactionId()).getCustomerId() == customer.getId())
                                 && (supplier == null || o.getBookSupplierId() == supplier.getId())

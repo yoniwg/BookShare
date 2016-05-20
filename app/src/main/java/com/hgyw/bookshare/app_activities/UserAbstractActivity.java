@@ -12,11 +12,10 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
 import com.hgyw.bookshare.R;
+import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
 import com.hgyw.bookshare.app_drivers.Utility;
 import com.hgyw.bookshare.app_fragments.IntentsFactory;
-import com.hgyw.bookshare.entities.Customer;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 
@@ -43,12 +42,12 @@ public abstract class UserAbstractActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle(titleId);
         user = getIntent() == null ? null : (User) getIntent().getSerializableExtra(IntentsFactory.ARG_USER_DETAILS);
-        if (user == null) user = new Customer();
+        if (user == null) user = new User();
 
         View rootView = findViewById(android.R.id.content);
         assert rootView != null;
         ObjectToViewAppliers.apply(rootView, user);
-        userThumbnailImageView = (ImageView) rootView.findViewById(R.id.user_thumbnail);
+        userThumbnailImageView = (ImageView) rootView.findViewById(R.id.userThumbnail);
         userThumbnailImageView.setOnClickListener(v -> Utility.startGetImage(this));
 
         // set username and password not editable

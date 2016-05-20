@@ -10,7 +10,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/user_thumbnail"
+        android:id="@+id/userThumbnail"
         android:layout_gravity="center_horizontal|top"
         android:src="@drawable/image_user"
         android:layout_alignParentTop="true"
@@ -22,9 +22,9 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Supplier Name"
-        android:id="@+id/supplierName"
+        android:id="@+id/userFullName"
         android:layout_gravity="center"
-        android:layout_below="@+id/user_thumbnail"
+        android:layout_below="@+id/userThumbnail"
         android:layout_centerHorizontal="true" />
 
     <TextView
@@ -32,8 +32,8 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Supplier Address"
-        android:id="@+id/supplierAddress"
-        android:layout_below="@+id/supplierName"
+        android:id="@+id/userAddress"
+        android:layout_below="@+id/userFullName"
         android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

@@ -9,11 +9,11 @@ import java.util.Date;
  */
 public class Transaction extends Entity {
 
-    @EntityReference(Customer.class)
+    @EntityReference(User.class)
     private long customerId;
     private Date date = new Date();
     private String creditCard = "";
-    private String shippingAddress;
+    private String shippingAddress = "";
 
     public Date getDate() {
         return date;

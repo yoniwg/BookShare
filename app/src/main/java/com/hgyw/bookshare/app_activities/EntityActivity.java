@@ -15,7 +15,6 @@ import com.hgyw.bookshare.app_fragments.SupplierFragment;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.entities.IdReference;
-import com.hgyw.bookshare.entities.Supplier;
 
 import java.util.HashMap;
 import java.util.Map;

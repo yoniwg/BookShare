@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="author"
-        android:id="@+id/bookAuthor"
+        android:id="@+id/userFullName"
         android:layout_below="@+id/bookTitle"
         android:layout_toEndOf="@+id/bookImage" />
 

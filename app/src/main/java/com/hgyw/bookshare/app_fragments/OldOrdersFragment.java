@@ -10,8 +10,8 @@ import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookSupplier;
 import com.hgyw.bookshare.entities.Order;
-import com.hgyw.bookshare.entities.Supplier;
 import com.hgyw.bookshare.entities.Transaction;
+import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.logicAccess.CustomerAccess;
 
 import java.util.ArrayList;
@@ -47,7 +47,7 @@ public class OldOrdersFragment extends AbstractFragment<CustomerAccess> {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        ListView listView = (ListView) getActivity().findViewById(R.id.list_container);
+        ListView listView = (ListView) getActivity().findViewById(R.id.mainListView);
 
         Date yearBefore = new Date();
         yearBefore.setYear(yearBefore.getYear() - 1);
@@ -62,7 +62,7 @@ public class OldOrdersFragment extends AbstractFragment<CustomerAccess> {
                 ObjectToViewAppliers.apply(view, bookSupplier);
                 Book book = access.retrieve(Book.class, bookSupplier.getBookId());
                 ObjectToViewAppliers.apply(view, book);
-                Supplier supplier = access.retrieve(Supplier.class, bookSupplier.getSupplierId());
+                User supplier = access.retrieve(User.class, bookSupplier.getSupplierId());
                 ObjectToViewAppliers.apply(view, supplier);
                 Transaction transaction= access.retrieve(Transaction.class, order.getTransactionId());
                 ObjectToViewAppliers.apply(view, transaction);

@@ -1,7 +1,6 @@
 package com.hgyw.bookshare.app_drivers;
 
-import android.support.annotation.IdRes;
-import android.text.format.DateUtils;
+import android.content.Context;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.ImageView;
@@ -17,10 +16,8 @@ import com.hgyw.bookshare.entities.BookReview;
 import com.hgyw.bookshare.entities.BookSummary;
 import com.hgyw.bookshare.entities.BookSupplier;
 import com.hgyw.bookshare.entities.Credentials;
-import com.hgyw.bookshare.entities.Customer;
 import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.Rating;
-import com.hgyw.bookshare.entities.Supplier;
 import com.hgyw.bookshare.entities.Transaction;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.entities.UserType;
@@ -33,23 +30,19 @@ import java.text.MessageFormat;
  */
 public class ObjectToViewAppliers {
 
-    public static void setTo(View parent, @IdRes int target, String source) {
-        TextView textView = (TextView) parent.findViewById(target);
-        if (textView != null) textView.setText(source);
-    }
-
     public static void apply(View view, Book book) {
-        setTo(view, R.id.bookTitle, book.getTitle());
-        setTo(view, R.id.bookAuthor, book.getAuthor());
-
+        TextView titleView = (TextView) view.findViewById(R.id.bookTitle);
+        TextView authorView = (TextView) view.findViewById(R.id.userFullName);
         ImageView imageView = (ImageView) view.findViewById(R.id.bookImage);
+
+        if (titleView != null) titleView.setText(book.getTitle());
+        if (authorView != null) authorView.setText(book.getAuthor());
         if (imageView != null) Utility.setImageById(imageView, book.getImageId(), R.drawable.image_book);
     }
 
     public static void result(View view, Book book) {
-
         TextView titleView = (TextView) view.findViewById(R.id.bookTitle);
-        TextView authorView = (TextView) view.findViewById(R.id.bookAuthor);
+        TextView authorView = (TextView) view.findViewById(R.id.userFullName);
         ImageView imageView = (ImageView) view.findViewById(R.id.bookImage); //TODO
 
         //imageView.getDrawable()
@@ -60,21 +53,25 @@ public class ObjectToViewAppliers {
     }
 
     public static void apply(View view, BookSummary summary) {
-        setTo(view, R.id.priceRange,
-                Utility.moneyRangeToString(summary.getMinPrice(), summary.getMaxPrice()));
-        setTo(view, R.id.ratingText,
-                MessageFormat.format(view.getContext().getString(R.string.num_rates), summary.sumOfRates()));
+        Context context = view.getContext();
 
         RatingBar ratingBar = (RatingBar) view.findViewById(R.id.reviewRating);
+        TextView priceView = (TextView) view.findViewById(R.id.priceRange);
+        TextView ratingTextView = (TextView) view.findViewById(R.id.ratingText);
+
         if (ratingBar != null) ratingBar.setRating(summary.clacMeanRating());
+        if (priceView != null) priceView.setText(Utility.moneyRangeToString(summary.getMinPrice(), summary.getMaxPrice()));
+        if (ratingTextView != null) ratingTextView.setText(MessageFormat.format(context.getString(R.string.num_rates), summary.sumOfRates()));
     }
 
     public static void apply(View view, BookReview bookReview) {
-        setTo(view, R.id.reviewTitle, bookReview.getTitle());
-        setTo(view, R.id.reviewDescription, bookReview.getDescription());
-
         RatingBar ratingBar = (RatingBar) view.findViewById(R.id.reviewRating);
+        TextView reviewTitleView = (TextView) view.findViewById(R.id.reviewTitle);
+        TextView reviewDescriptionView = (TextView) view.findViewById(R.id.reviewDescription);
+
         if (ratingBar != null) ratingBar.setRating(bookReview.getRating().getStars());
+        if (reviewTitleView != null) reviewTitleView.setText(bookReview.getTitle());
+        if (reviewDescriptionView != null) reviewDescriptionView.setText(bookReview.getDescription());
     }
 
     public static void result(View view, BookReview bookReview) {
@@ -88,52 +85,39 @@ public class ObjectToViewAppliers {
     }
 
 
-    public static void apply(View view, Customer reviewer) {
-        setTo(view, R.id.customerName, Utility.userNameToString(reviewer));
-
-        ImageView userImage = (ImageView) view.findViewById(R.id.user_thumbnail);
-        if (userImage != null) Utility.setImageById(userImage, reviewer.getImageId(), R.drawable.image_user);
-    }
 
     public static void apply(View view, BookSupplier bookSupplier) {
-        setTo(view, R.id.order_unit_price, Utility.moneyToString(bookSupplier.getPrice()));
-    }
-
-    public static void apply(View view, Supplier supplier) {
-        setTo(view, R.id.supplierName, Utility.userNameToString(supplier));
-        setTo(view, R.id.supplierAddress, supplier.getAddress());
-
-        ImageView userImage = (ImageView) view.findViewById(R.id.user_thumbnail);
-        if (userImage != null) Utility.setImageById(userImage, supplier.getImageId(), R.drawable.image_user);
-    }
-
-    public static void apply(View view, Transaction transaction) {
-        setTo(view, R.id.shipping_address, transaction.getShippingAddress());
-        setTo(view, R.id.credit_number, transaction.getCreditCard());
-        setTo(view, R.id.order_date, DateUtils.formatDateTime(null,transaction.getDate().getTime(),
-                DateUtils.FORMAT_NUMERIC_DATE | DateUtils.FORMAT_SHOW_YEAR));
+        TextView priceText = (TextView) view.findViewById(R.id.orderUnitPrice);
+        if (priceText != null) priceText.setText(Utility.moneyToString(bookSupplier.getPrice()));
     }
 
     public static void apply(View view, Order order) {
-        setTo(view, R.id.order_amount, String.valueOf(order.getAmount()));
-        setTo(view, R.id.final_amount, String.valueOf(order.getAmount()));
-        setTo(view, R.id.order_unit_price, String.valueOf(Utility.moneyToString(order.getUnitPrice())) );
-        setTo(view, R.id.orderTotalPrice, Utility.moneyToString(order.calcTotalPrice()));
-        setTo(view, R.id.order_status, String.valueOf(
-                Utility.findStringResourceOfEnum(view.getContext(), order.getOrderStatus())) );
-
+        TextView finalAmountView = (TextView) view.findViewById(R.id.orderAmountFinal);
+        TextView unitPriceView = (TextView) view.findViewById(R.id.orderUnitPrice);
+        TextView totalPriceView = (TextView) view.findViewById(R.id.orderTotalPrice);
         NumberPicker amountPicker = (NumberPicker) view.findViewById(R.id.orderAmountPicker);
+        TextView amountTextView = (TextView) view.findViewById(R.id.amountTextView);
+        TextView orderStatus = (TextView) view.findViewById(R.id.orderStatus);
+
+        if (finalAmountView != null) finalAmountView.setText(String.valueOf(order.getAmount()));
+        if (unitPriceView != null) unitPriceView.setText(Utility.moneyToString(order.getUnitPrice()));
+        if (totalPriceView != null) totalPriceView.setText(Utility.moneyToString(order.calcTotalPrice()));
         if (amountPicker != null){
             amountPicker.setMaxValue(100);
             amountPicker.setMinValue(1);
             amountPicker.setValue(order.getAmount());
         }
+        if (amountTextView != null) amountTextView.setText(String.valueOf(order.getAmount()));
+        if (orderStatus != null) orderStatus.setText(Utility.findStringResourceOfEnum(view.getContext(), order.getOrderStatus()));
 
     }
 
     public static void apply(View view, Credentials credentials) {
-        setTo(view, R.id.username, credentials.getUsername());
-        setTo(view, R.id.password, credentials.getPassword());
+        TextView usernameView = (TextView) view.findViewById(R.id.username);
+        TextView passwordView = (TextView) view.findViewById(R.id.password);
+
+        if (usernameView != null) usernameView.setText(credentials.getUsername());
+        if (passwordView != null) passwordView.setText(credentials.getPassword());
     }
 
     /**
@@ -152,32 +136,28 @@ public class ObjectToViewAppliers {
         return Credentials.create(username, password);
     }
 
+
     public static void apply(View view, User user) {
         apply(view, user.getCredentials());
-        setTo(view, R.id.userFirstName, user.getFirstName());
-        setTo(view, R.id.userLastName, user.getLastName());
-        setTo(view, R.id.userEmail, user.getEmail());
-        setTo(view, R.id.userAddress, user.getAddress());
-        setTo(view, R.id.userPhone, user.getPhoneNumber());
-
+        TextView firstNameView = (TextView) view.findViewById(R.id.userFirstName);
+        TextView lastNameView = (TextView) view.findViewById(R.id.userLastName);
+        TextView fullNameView = (TextView) view.findViewById(R.id.userFullName);
+        TextView emailView = (TextView) view.findViewById(R.id.userEmail);
+        TextView addressView = (TextView) view.findViewById(R.id.userAddress);
+        TextView phoneView = (TextView) view.findViewById(R.id.userPhone);
         DatePicker birthdayView = null;//(DatePicker) view.findViewById(R.id.userBirthday);  // TODO
-        ImageView imageView = (ImageView) view.findViewById(R.id.user_thumbnail);
+        ImageView userImage = (ImageView) view.findViewById(R.id.userThumbnail);
         Spinner customerSupplierSpinner = (Spinner) view.findViewById(R.id.customerSupplierSpinner);
-        if (birthdayView!= null) {} // TODO
-        if (imageView != null) Utility.setImageById(imageView, user.getImageId(), R.drawable.image_user);
-        if (customerSupplierSpinner != null) customerSupplierSpinner.setSelection(user.getUserType() == UserType.CUSTOMER ? 0 : 1);
-    }
 
-    public static User resultUser(View view) {
-        User user;
-        Spinner customerSupplierSpinner = (Spinner) view.findViewById(R.id.customerSupplierSpinner);
-        if (customerSupplierSpinner != null) {
-            user = customerSupplierSpinner.getSelectedItemPosition() == 0 ? new Customer() : new Supplier();
-        } else {
-            user = new Customer();
-        }
-        result(view, user);
-        return user;
+        if (firstNameView!= null) firstNameView.setText(user.getFirstName());
+        if (lastNameView!= null) lastNameView.setText(user.getLastName());
+        if (fullNameView != null) fullNameView.setText(Utility.userNameToString(user));
+        if (emailView!= null) emailView.setText(user.getEmail());
+        if (addressView!= null) addressView.setText(user.getAddress());
+        if (phoneView!= null) phoneView.setText(user.getPhoneNumber());
+        if (birthdayView!= null) {} // TODO
+        if (userImage != null) Utility.setImageById(userImage, user.getImageId(), R.drawable.image_user);
+        if (customerSupplierSpinner != null) customerSupplierSpinner.setSelection(user.getUserType() == UserType.CUSTOMER ? 0 : 1);
     }
 
     public static void result(View view, User user) {
@@ -187,7 +167,8 @@ public class ObjectToViewAppliers {
         TextView addressView = (TextView) view.findViewById(R.id.userAddress);
         TextView phoneView = (TextView) view.findViewById(R.id.userPhone);
         DatePicker birthdayView = null;//(DatePicker) view.findViewById(R.id.userBirthday);  // TODO
-        ImageView imageView = (ImageView) view.findViewById(R.id.user_thumbnail);
+        ImageView imageView = (ImageView) view.findViewById(R.id.userThumbnail);
+        Spinner customerSupplierSpinner = (Spinner) view.findViewById(R.id.customerSupplierSpinner);
 
         user.setCredentials(resultCredentials(view));
         if (firstNameView!= null) user.setFirstName(firstNameView.getText().toString());
@@ -198,21 +179,29 @@ public class ObjectToViewAppliers {
         if (phoneView!= null) user.setPhoneNumber(phoneView.getText().toString());
         if (birthdayView!= null) {} // TODO
         if (imageView != null) {}// Do nothing
+        if (customerSupplierSpinner != null) {
+            user.setUserType(customerSupplierSpinner.getSelectedItemPosition() == 0 ? UserType.CUSTOMER : UserType.SUPPLIER);
+        }
     }
 
     public static void apply(View view, BookQuery bookQuery) {
-        setTo(view, R.id.title_query, bookQuery.getTitleQuery());
-        setTo(view, R.id.author_query, bookQuery.getAuthorQuery());
-        setTo(view, R.id.from_price, Utility.moneyToNumberString(bookQuery.getBeginPrice()));
-        setTo(view, R.id.to_price, Utility.moneyToNumberString(bookQuery.getEndPrice()));
+        TextView titleView = (TextView) view.findViewById(R.id.title_query);
+        TextView authorView = (TextView) view.findViewById(R.id.author_query);
+        Spinner genreSpinner = (Spinner) view.findViewById(R.id.genre_spinner); // TODO spinner can select only one category
+        TextView fromPriceView = (TextView) view.findViewById(R.id.from_price);
+        TextView toPriceView = (TextView) view.findViewById(R.id.to_price);
 
-        // TODO and spinner
-        Spinner genreSpinner = (Spinner) view.findViewById(R.id.genre_spinner);
-        Book.Genre genreSelection = bookQuery.getGenreSet().isEmpty() ? Book.Genre.GENERAL : bookQuery.getGenreSet().iterator().next();
-        genreSpinner.setSelection(genreSelection.ordinal());
+        if (titleView != null) titleView.setText(bookQuery.getTitleQuery());
+        if (authorView != null) authorView.setText(bookQuery.getAuthorQuery());
+        if (fromPriceView != null) fromPriceView.setText(bookQuery.getBeginPrice().setScale(0).toString());
+        if (toPriceView != null) toPriceView.setText(bookQuery.getEndPrice().setScale(0).toString());
+        if (genreSpinner != null){
+            Book.Genre genreSelection = bookQuery.getGenreSet().isEmpty() ? Book.Genre.GENERAL : bookQuery.getGenreSet().iterator().next();
+            genreSpinner.setSelection(genreSelection.ordinal());
+        }
     }
 
-    public static BookQuery result(View view, BookQuery bookQuery) {
+    public static void result(View view, BookQuery bookQuery) {
         TextView titleView = (TextView) view.findViewById(R.id.title_query);
         TextView authorView = (TextView) view.findViewById(R.id.author_query);
         // TODO and spinner
@@ -220,17 +209,49 @@ public class ObjectToViewAppliers {
         TextView fromPriceView = (TextView) view.findViewById(R.id.from_price);
         TextView toPriceView = (TextView) view.findViewById(R.id.to_price);
 
-        bookQuery.setTitleQuery(titleView.getText().toString());
-        bookQuery.setAuthorQuery(authorView.getText().toString());
-        bookQuery.getGenreSet().clear();
-        bookQuery.getGenreSet().add((Book.Genre) genreSpinner.getSelectedItem());
-        try {
-            bookQuery.setBeginPrice(new BigDecimal(fromPriceView.getText().toString()));
-            bookQuery.setEndPrice(new BigDecimal(toPriceView.getText().toString()));
-        } catch (NumberFormatException ignored) {}
-        return bookQuery;
+        if (titleView != null) bookQuery.setTitleQuery(titleView.getText().toString());
+        if (authorView != null) bookQuery.setAuthorQuery(authorView.getText().toString());
+        if (genreSpinner != null) {
+            bookQuery.getGenreSet().clear();
+            bookQuery.getGenreSet().add((Book.Genre) genreSpinner.getSelectedItem());
+        }
+        if (fromPriceView != null && toPriceView != null) {
+            try {
+                bookQuery.setBeginPrice(new BigDecimal(fromPriceView.getText().toString()));
+                bookQuery.setEndPrice(new BigDecimal(toPriceView.getText().toString()));
+            } catch (NumberFormatException ignored) {
+            }
+        }
     }
 
+    public static void apply(View view, Transaction transaction) {
+        // TODO
+        TextView transactionAddtessView = (TextView) view.findViewById(R.id.transactionAddress);
 
+        if (transactionAddtessView != null) transactionAddtessView.setText(transaction.getShippingAddress());
+    }
 
+    public interface Applier<T> {
+        void apply(T object);
+        T result(T object);
+    }
+
+    public static Applier<Book> book(View view) {
+        return new Applier<Book>() {
+            TextView titleView = (TextView) view.findViewById(R.id.bookTitle);
+            TextView authorView = (TextView) view.findViewById(R.id.userFullName);
+            ImageView imageView = (ImageView) view.findViewById(R.id.bookImage);
+            public void apply(Book book) {
+                if (titleView != null) titleView.setText(book.getTitle());
+                if (authorView != null) authorView.setText(book.getAuthor());
+                if (imageView != null)
+                    Utility.setImageById(imageView, book.getImageId(), R.drawable.image_book);
+            }
+            public Book result(Book book) {
+                if (titleView != null) book.setTitle(titleView.getText().toString());
+                if (authorView != null) book.setAuthor(authorView.getText().toString());
+                return book;
+            }
+        };
+    }
 }

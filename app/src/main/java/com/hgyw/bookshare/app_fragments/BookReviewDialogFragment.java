@@ -5,13 +5,18 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.app_activities.EntityActivity;
 import com.hgyw.bookshare.entities.BookReview;
 import com.hgyw.bookshare.entities.Rating;
+
+import java.util.Objects;
 
 /**
  * Created by haim7 on 13/05/2016.
@@ -25,9 +30,9 @@ public class BookReviewDialogFragment extends DialogFragment {
 
     private final static String ARG_DIALOG_OLD_BOOK_REVIEW = "dialogOldBookReview";
     private final static String ARG_DIALOG_NEW_RATING = "dialogOldViewRating";
-    private View view;
     private BookReview bookReview;
     private Rating oldRating;
+    private BookReviewResultListener resultListener;
 
     /**
      * Factory method for this fragment class.
@@ -45,43 +50,49 @@ public class BookReviewDialogFragment extends DialogFragment {
     }
 
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        view = getActivity().getLayoutInflater().inflate(R.layout.dialog_book_review, null);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        try {
+            resultListener =
+                    (BookReviewResultListener) getFragmentManager().findFragmentByTag(EntityActivity.ENTITY_FRAGMENT_TAG);
+            Objects.requireNonNull(resultListener);
+        } catch (NullPointerException | ClassCastException e) {
+            throw new RuntimeException("Cannot find the target fragment and cast it to BookReviewResultListener.", e);
+        }
+    }
+
+    public View onCreateView2(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.dialog_book_review, container, false);
+    }
+
+    public void onViewCreated2(View view, Bundle savedInstanceState) {
         bookReview = getArguments() == null ? null : (BookReview) getArguments().getSerializable(ARG_DIALOG_OLD_BOOK_REVIEW);
         if (bookReview == null) throw new IllegalArgumentException("The BookReviewDialogFragment should accept not-null bookReview object.");;
         float newViewRating = getArguments().getFloat(ARG_DIALOG_NEW_RATING, 0);
         oldRating = bookReview.getRating();
         bookReview.setRating(Rating.of(newViewRating));
-
         ObjectToViewAppliers.apply(view, bookReview);
+    }
+
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        View view = onCreateView2(getActivity().getLayoutInflater(), null, savedInstanceState);
+        onViewCreated2(view, savedInstanceState);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         return builder.setTitle(R.string.rating_box_title)
                 .setView(view)
-                .setPositiveButton(R.string.rate, (dialog, which) -> sendResult(false))
+                .setPositiveButton(R.string.rate, (dialog, which) -> {
+                    ObjectToViewAppliers.result(view, bookReview);
+                    resultListener.onBookReviewResult(false, bookReview, oldRating);
+                })
                 .create();
     }
 
     @Override
     public void onCancel(DialogInterface dialog) {
         super.onCancel(dialog);
-        sendResult(true);
-    }
-
-    private void sendResult(boolean isCancel) {
-        if (isCancel) {
-            bookReview = null;
-        } else {
-            ObjectToViewAppliers.result(view, bookReview);
-        }
-        try {
-            BookReviewResultListener resultListener =
-                    (BookReviewResultListener) getFragmentManager().findFragmentByTag(EntityActivity.ENTITY_FRAGMENT_TAG);
-            resultListener.onBookReviewResult(isCancel, bookReview, oldRating);
-        } catch (NullPointerException | ClassCastException e) {
-            throw new RuntimeException("Cannot find the target fragment and cast it to BookReviewResultListener.", e);
-        }
-
+        resultListener.onBookReviewResult(true, null, oldRating);
     }
 
     public interface BookReviewResultListener {

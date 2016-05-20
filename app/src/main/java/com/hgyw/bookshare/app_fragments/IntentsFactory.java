@@ -14,7 +14,6 @@ import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookQuery;
 import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.entities.IdReference;
-import com.hgyw.bookshare.entities.Supplier;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 
@@ -37,7 +36,7 @@ public class IntentsFactory {
     private static final Map<Class<? extends Entity>, Class<? extends EntityFragment>> entityFragmentMap = new HashMap<>();
     static {
         entityFragmentMap.put(Book.class, BookFragment.class);
-        entityFragmentMap.put(Supplier.class, SupplierFragment.class);
+        entityFragmentMap.put(User.class, SupplierFragment.class);
         //TODO entityFragmentMap.put(Order.class, OrderFragment.class);
     }
 
@@ -124,6 +123,13 @@ public class IntentsFactory {
         Intent intent = new Intent(context, UserEditActivity.class);
         User user = AccessManagerFactory.getInstance().getGeneralAccess().retrieveUserDetails();
         intent.putExtra(ARG_USER_DETAILS, user);
+        return intent;
+    }
+
+    public static Intent supplierOrdersIntent(Context context) {
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.putExtra(ARG_FRAGMENT_CLASS, SupplierOrdersFragment.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         return intent;
     }
 

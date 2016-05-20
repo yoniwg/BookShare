@@ -113,6 +113,7 @@
     <string name="cart_fragment_title">Cart</string>
     <string name="user_details_title">User Details</string>
     <string name="registration_title">Registration</string>
+    <string name="supplier_orders_title">My Orders</string>
     <string name="old_orders_fragment_title">My Orders</string>
 
     <string-array name="customerSupplierItems">

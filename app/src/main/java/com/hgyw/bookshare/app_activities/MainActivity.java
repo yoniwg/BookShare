@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -24,6 +25,7 @@ import com.hgyw.bookshare.app_fragments.LoginDialogFragment;
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.app_drivers.Utility;
 import com.hgyw.bookshare.entities.User;
+import com.hgyw.bookshare.entities.UserType;
 import com.hgyw.bookshare.logicAccess.AccessManager;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 
@@ -35,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public static final String MAIN_FRAGMENT_TAG = "mainFragmentTag";
     private DrawerLayout drawer;
-    final private AccessManager accessManager = AccessManagerFactory.getInstance();
+    private AccessManager accessManager;
     private Class fragmentClass;
     private static final Map<Class<? extends Fragment>, Integer> fragmentNavMap = new HashMap<>();
     static {
@@ -47,8 +49,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
+        accessManager = AccessManagerFactory.getInstance();
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -65,6 +68,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
         Integer navItemId = fragmentNavMap.get(fragmentClass);
         navigationView.setCheckedItem(navItemId == null ? 0 : navItemId);
+
+        accessManager = AccessManagerFactory.getInstance();
     }
 
     @Override
@@ -204,6 +209,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_my_orders:
                 Intent intent = IntentsFactory.newOldOrderIntent(this);
                 startActivity(intent);
+                break;
+            case R.id.nav_supplier_orders:
+                if (accessManager.getCurrentUserType() != UserType.SUPPLIER) {
+                    Toast.makeText(this, "You are not supplier.", Toast.LENGTH_SHORT).show();
+                } else {
+                    startActivity(IntentsFactory.supplierOrdersIntent(this));
+                }
                 break;
             case R.id.nav_user_details:
                 startActivity(IntentsFactory.userDetailsIntent(this));

@@ -1,11 +1,12 @@
 package com.hgyw.bookshare.entities;
 
 import java.sql.Date;
+import java.util.Objects;
 
 /**
  * Created by Yoni on 3/15/2016.
  */
-public abstract class User extends Entity {
+public class User extends Entity {
 
     private Credentials credentials = Credentials.EMPTY;
     private String email;
@@ -15,6 +16,7 @@ public abstract class User extends Entity {
     private String lastName = "";
     private Date birthday;
     private long imageId;
+    private UserType userType = UserType.CUSTOMER;
 
     public Credentials getCredentials() {
         return credentials;
@@ -80,6 +82,11 @@ public abstract class User extends Entity {
         this.imageId = imageId;
     }
 
-    abstract public UserType getUserType();
+    public UserType getUserType() {
+        return userType;
+    }
 
+    public void setUserType(UserType userType) {
+        this.userType = Objects.requireNonNull(userType);
+    }
 }

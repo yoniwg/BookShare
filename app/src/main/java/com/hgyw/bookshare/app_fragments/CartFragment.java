@@ -17,7 +17,7 @@ import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookSupplier;
-import com.hgyw.bookshare.entities.Supplier;
+import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.logicAccess.Cart;
 import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.logicAccess.CustomerAccess;
@@ -58,7 +58,7 @@ public class CartFragment extends AbstractFragment<CustomerAccess> {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        ListView listView = (ListView) getActivity().findViewById(R.id.list_container);
+        ListView listView = (ListView) getActivity().findViewById(R.id.mainListView);
         Cart cart = access.getCart();
         List<Order> ordersList = cart.retrieveCartContent();
 
@@ -71,7 +71,7 @@ public class CartFragment extends AbstractFragment<CustomerAccess> {
                 ObjectToViewAppliers.apply(view, bookSupplier);
                 Book book = access.retrieve(Book.class, bookSupplier.getBookId());
                 ObjectToViewAppliers.apply(view, book);
-                Supplier supplier = access.retrieve(Supplier.class, bookSupplier.getSupplierId());
+                User supplier = access.retrieve(User.class, bookSupplier.getSupplierId());
                 ObjectToViewAppliers.apply(view, supplier);
                 NumberPicker orderAmountPicker = (NumberPicker) view.findViewById(R.id.orderAmountPicker);
                 if (getArguments().getBoolean(IS_MAIN_FRAGMENT)) {
@@ -80,7 +80,7 @@ public class CartFragment extends AbstractFragment<CustomerAccess> {
                     });
                 }else {
                     orderAmountPicker.setVisibility(View.INVISIBLE);
-                    view.findViewById(R.id.final_amount).setVisibility(View.VISIBLE);
+                    view.findViewById(R.id.orderAmountFinal).setVisibility(View.VISIBLE);
                 }
             }
         };

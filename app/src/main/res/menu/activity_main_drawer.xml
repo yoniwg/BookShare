@@ -17,6 +17,11 @@
             android:icon="@drawable/my_orders"
             android:title="@string/my_orders"
             android:visible="false"/>
+        <item
+            android:id="@+id/nav_supplier_orders"
+            android:icon="@drawable/my_orders"
+            android:title="@string/orders"
+            android:visible="true"/>
     </group>
     <group android:checkableBehavior="single"
         android:id="@+id/nav_group_management">

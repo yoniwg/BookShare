@@ -8,12 +8,12 @@ import com.hgyw.bookshare.dataAccess.DataAccess;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookReview;
 import com.hgyw.bookshare.entities.BookSupplier;
-import com.hgyw.bookshare.entities.Customer;
 import com.hgyw.bookshare.entities.IdReference;
 import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.OrderRating;
 import com.hgyw.bookshare.entities.OrderStatus;
 import com.hgyw.bookshare.entities.Transaction;
+import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.entities.UserType;
 import com.hgyw.bookshare.exceptions.OrdersTransactionException;
 
@@ -24,7 +24,7 @@ class CustomerAccessImpl extends GeneralAccessImpl implements CustomerAccess {
 
     final private Cart cart = new Cart();
 
-    public CustomerAccessImpl(DataAccess crud, Customer currentUser) {
+    public CustomerAccessImpl(DataAccess crud, User currentUser) {
         super(crud, currentUser);
     }
 
@@ -37,33 +37,23 @@ class CustomerAccessImpl extends GeneralAccessImpl implements CustomerAccess {
     }
 
     @Override
-    public Customer retrieveCustomerDetails() {
-        return (Customer) retrieveUserDetails();
-    }
-
-    @Override
-    public void updateCustomerDetails(Customer newDetails) {
-        updateUserDetails(newDetails);
-    }
-
-    @Override
-    public Collection<BookReview> getCustomerReviews() {
+    public List<BookReview> getCustomerReviews() {
         return dataAccess.findEntityReferTo(BookReview.class, currentUser);
     }
 
     @Override
-    public Collection<Customer> findInterestedInBook(Book book) {
+    public List<User> findInterestedInBook(Book book) {
         return dataAccess.findInterestedInBook(book, currentUser);
     }
 
     @Override
-    public Collection<Order> retrieveOrders(Date fromDate, Date toDate) {
-        return dataAccess.retrieveOrders((Customer)currentUser, null, fromDate, toDate, false);
+    public List<Order> retrieveOrders(Date fromDate, Date toDate) {
+        return dataAccess.retrieveOrders(currentUser, null, fromDate, toDate, false);
     }
 
     @Override
-    public Collection<Order> retrieveActiveOrders() {
-        return dataAccess.retrieveOrders((Customer)currentUser, null, null, null, true);
+    public List<Order> retrieveActiveOrders() {
+        return dataAccess.retrieveOrders(currentUser, null, null, null, true);
     }
 
     @Override
@@ -77,7 +67,7 @@ class CustomerAccessImpl extends GeneralAccessImpl implements CustomerAccess {
         // create transaction
         transaction.setId(0);
         transaction.setDate(new Date());
-        transaction.setCustomerId(retrieveCustomerDetails().getId());
+        transaction.setCustomerId(retrieveUserDetails().getId());
         dataAccess.create(transaction);
         // create orders
         for (Order o : orders) {

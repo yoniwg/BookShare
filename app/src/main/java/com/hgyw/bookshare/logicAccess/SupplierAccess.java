@@ -3,13 +3,13 @@ package com.hgyw.bookshare.logicAccess;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookReview;
 import com.hgyw.bookshare.entities.BookSupplier;
 import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.OrderStatus;
-import com.hgyw.bookshare.entities.Supplier;
 import com.hgyw.bookshare.entities.User;
 
 /**
@@ -38,31 +38,18 @@ public interface SupplierAccess extends GeneralAccess {
     void updateBook(Book book);
 
     /**
-     * retrieve the supplier's details
-     * @return the details
-     */
-    Supplier retrieveSupplierDetails();
-
-    /**
-     * replace the current supplier's details with the provided details
-     * @param newDetails the new details
-     * @throws IllegalArgumentException if the customer id does not match the current user.
-     */
-    void updateSupplierDetails(Supplier newDetails);
-
-    /**
      * retrieve all orders from current supplier in a provided period
      * @param fromDate begin of period
      * @param toDate end of period
      * @return collection of orders
      */
-    Collection<Order> retrieveOrders(Date fromDate, Date toDate);
+    List<Order> retrieveOrders(Date fromDate, Date toDate);
 
     /**
      * retrieve all active orders from current supplier (not closed or canceled)
      * @return collection of orders
      */
-    Collection<Order> retrieveActiveOrders(Date fromDate, Date toDate);
+    List<Order> retrieveActiveOrders(Date fromDate, Date toDate);
 
     /**
      * update the order status

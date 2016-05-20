@@ -22,9 +22,8 @@ import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookReview;
 import com.hgyw.bookshare.entities.BookSummary;
 import com.hgyw.bookshare.entities.BookSupplier;
-import com.hgyw.bookshare.entities.Customer;
 import com.hgyw.bookshare.entities.Rating;
-import com.hgyw.bookshare.entities.Supplier;
+import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.entities.UserType;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.CustomerAccess;
@@ -97,7 +96,7 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
             @Override
             protected void applyOnView(View view, int position) {
                 BookReview review = getItem(position);
-                Customer customer = access.retrieve(Customer.class, review.getCustomerId());
+                User customer = access.retrieve(User.class, review.getCustomerId());
                 ObjectToViewAppliers.apply(view, review);
                 ObjectToViewAppliers.apply(view, customer);
                 TextView descriptionTextView = (TextView) view.findViewById(R.id.description);
@@ -118,7 +117,7 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
 
     @NonNull
     private View createBookSupplierView(BookSupplier bookSupplier) {
-        Supplier supplier = access.retrieve(Supplier.class, bookSupplier.getSupplierId());
+        User supplier = access.retrieve(User.class, bookSupplier.getSupplierId());
         View supplierView = getActivity().getLayoutInflater().inflate(R.layout.book_supplier_list_item, null);
         supplierView.setOnClickListener(v -> startActivity(IntentsFactory.newEntityIntent(getActivity(), supplier)));
         ObjectToViewAppliers.apply(supplierView, bookSupplier);

@@ -89,7 +89,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Supplier Name"
-        android:id="@+id/supplierName"
+        android:id="@+id/userFullName"
         android:layout_alignTop="@+id/textView9"
         android:layout_alignStart="@+id/bookTitle" />
 

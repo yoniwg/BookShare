@@ -30,7 +30,7 @@ public class BooksListFragment extends AbstractFragment<GeneralAccess> {
         bookQuery = getArguments() == null ? null
                 : (BookQuery) getArguments().getSerializable(IntentsFactory.ARG_BOOK_QUERY);
 
-        ListView listView = (ListView) getActivity().findViewById(R.id.list_container);
+        ListView listView = (ListView) getActivity().findViewById(R.id.mainListView);
 
         List<Book> bookList = bookQuery == null ? access.findSpecialOffers(30)
                 : access.findBooks(bookQuery);

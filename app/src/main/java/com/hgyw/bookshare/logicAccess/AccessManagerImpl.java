@@ -1,11 +1,9 @@
 package com.hgyw.bookshare.logicAccess;
 
-import com.hgyw.bookshare.dataAccess.DataAccessFactory;
 import com.hgyw.bookshare.dataAccess.DataAccess;
+import com.hgyw.bookshare.dataAccess.DataAccessFactory;
 import com.hgyw.bookshare.entities.Credentials;
-import com.hgyw.bookshare.entities.Customer;
 import com.hgyw.bookshare.entities.Guest;
-import com.hgyw.bookshare.entities.Supplier;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.entities.UserType;
 import com.hgyw.bookshare.exceptions.WrongLoginException;
@@ -32,7 +30,7 @@ enum AccessManagerImpl implements AccessManager {
     }
 
     @Override
-    public void signUp(User user) throws WrongLoginException {
+    public synchronized void  signUp(User user) throws WrongLoginException {
         if (!(user.getUserType() == UserType.CUSTOMER || user.getUserType() == UserType.SUPPLIER)) {
             throw new IllegalArgumentException("The user should be instance of Customer or Supplier.");
         }
@@ -50,7 +48,7 @@ enum AccessManagerImpl implements AccessManager {
     }
 
     @Override
-    public void signIn(Credentials credentials) throws WrongLoginException {
+    public synchronized void signIn(Credentials credentials) throws WrongLoginException {
         if (currentUser != guest) throw new IllegalStateException("There is a user that has already been signed in.");
         User newUser = crud.retrieveUserWithCredentials(credentials).orElseThrow(()->
             new WrongLoginException(WrongLoginException.Issue.WRONG_USERNAME_OR_PASSWORD)
@@ -58,33 +56,33 @@ enum AccessManagerImpl implements AccessManager {
         switchAccess(newUser);
     }
 
-    private void switchAccess(User newUser) {
+    private synchronized void switchAccess(User newUser) {
         switch (newUser.getUserType()) {
             case GUEST:
                 currentAccess = new GeneralAccessImpl(crud, newUser);
                 break;
             case CUSTOMER:
-                currentAccess = new CustomerAccessImpl(crud, (Customer) newUser);
+                currentAccess = new CustomerAccessImpl(crud, newUser);
                 break;
             case SUPPLIER:
-                currentAccess = new SupplierAccessImpl(crud, (Supplier) newUser);
+                currentAccess = new SupplierAccessImpl(crud, newUser);
                 break;
         }
         currentUser = newUser;
     }
 
     @Override
-    public void signOut() {
+    public synchronized void signOut() {
         if (currentAccess != guest) switchAccess(guest);
     }
 
     @Override
-    public GeneralAccess getGeneralAccess() {
+    public synchronized GeneralAccess getGeneralAccess() {
         return currentAccess;
     }
 
     @Override
-    public CustomerAccess getCustomerAccess() {
+    public synchronized CustomerAccess getCustomerAccess() {
         if (currentAccess instanceof CustomerAccess) {
             return (CustomerAccess) currentAccess;
         }
@@ -92,7 +90,7 @@ enum AccessManagerImpl implements AccessManager {
     }
 
     @Override
-    public SupplierAccess getSupplierAccess() {
+    public synchronized SupplierAccess getSupplierAccess() {
         if (currentAccess instanceof SupplierAccess) {
             return (SupplierAccess) currentAccess;
         }
@@ -100,23 +98,8 @@ enum AccessManagerImpl implements AccessManager {
     }
 
     @Override
-    public UserType getCurrentUserType() {
+    public synchronized UserType getCurrentUserType() {
         return currentUser.getUserType();
-    }
-
-    @Override
-    public GeneralAccess getFullAccess() {
-        UserType userType = getCurrentUserType();
-        switch (userType) {
-            case CUSTOMER:
-                return getCustomerAccess();
-            case SUPPLIER:
-                return getSupplierAccess();
-            case GUEST:
-                return getGeneralAccess();
-            default:
-                throw new IllegalArgumentException("Unexpected UserType: " + userType);
-        }
     }
 
 }

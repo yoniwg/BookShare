@@ -24,34 +24,19 @@ public class BookQueryDialogFragment extends DialogFragment {
 
     private static final String ARG_DIALOG_BOOK_QUERY = "dialogBookQuery";
 
+    /**
+     *
+     * @param bookQuery - will take new bookQuery if bookQuery==null.
+     * @return
+     */
     public static BookQueryDialogFragment newInstance(BookQuery bookQuery) {
         Bundle args = new Bundle();
+        if (bookQuery == null) bookQuery = new BookQuery();
         args.putSerializable(ARG_DIALOG_BOOK_QUERY, bookQuery);
 
         BookQueryDialogFragment fragment = new BookQueryDialogFragment();
         fragment.setArguments(args);
         return fragment;
-    }
-
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        BookQuery bookQuery = getArguments() == null ? null : (BookQuery) getArguments().getSerializable(ARG_DIALOG_BOOK_QUERY);
-        // inflate and set view
-        View view = onCreateView(getActivity().getLayoutInflater(), null, savedInstanceState);
-        if (bookQuery != null) ObjectToViewAppliers.apply(view, bookQuery);
-
-        // build dialog
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setView(view)
-                .setTitle(R.string.dialog_title_book_query)
-                .setPositiveButton(getString(R.string.filter), (dialog1, which) -> {
-                    ObjectToViewAppliers.result(view, bookQuery);
-                    Intent intent = IntentsFactory.newBookListIntent(getActivity(), bookQuery);
-                    getActivity().startActivity(intent);
-                })
-                .setNegativeButton(R.string.cancel, (dialog, which) -> onCancel(dialog));
-
-        return builder.create();
     }
 
     @Override
@@ -63,4 +48,28 @@ public class BookQueryDialogFragment extends DialogFragment {
         genreSpinner.setAdapter(arrayAdapter);
         return view;
     }
+
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        BookQuery bookQuery = getArguments() == null ? null : (BookQuery) getArguments().getSerializable(ARG_DIALOG_BOOK_QUERY);
+        // inflate and set view
+        View view = onCreateView(getActivity().getLayoutInflater(), null, savedInstanceState);
+        assert bookQuery != null : "bookQuery should not be null, it should maintain by newInstance factory method.";
+        ObjectToViewAppliers.apply(view, bookQuery);
+
+        // build dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setView(view)
+                .setTitle(R.string.dialog_title_book_query)
+                .setPositiveButton(R.string.filter, (dialog1, which) -> {
+                    ObjectToViewAppliers.result(view, bookQuery);
+                    Intent intent = IntentsFactory.newBookListIntent(getActivity(), bookQuery);
+                    getActivity().startActivity(intent);
+                })
+                .setNegativeButton(R.string.cancel, (dialog, which) -> onCancel(dialog));
+
+        return builder.create();
+    }
+
+
 }

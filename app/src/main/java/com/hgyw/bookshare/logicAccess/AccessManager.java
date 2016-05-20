@@ -68,5 +68,4 @@ public interface AccessManager {
      */
     UserType getCurrentUserType();
 
-    GeneralAccess getFullAccess();
 }

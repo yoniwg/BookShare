@@ -6,29 +6,16 @@ import java.util.Date;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookReview;
 import com.hgyw.bookshare.entities.BookSupplier;
-import com.hgyw.bookshare.entities.Customer;
 import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.OrderRating;
 import com.hgyw.bookshare.entities.Transaction;
+import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.exceptions.OrdersTransactionException;
 
 /**
  * Created by Yoni on 3/13/2016.
  */
 public interface CustomerAccess extends GeneralAccess {
-
-    /**
-     * retrieve the customer's details
-     * @return the details
-     */
-    Customer retrieveCustomerDetails();
-
-    /**
-     * replace the current customer's details with the provided details
-     * @param newDetails - the new details
-     * @throws IllegalArgumentException if the customer id does not match the current user.
-     */
-    void updateCustomerDetails(Customer newDetails);
 
     /**
      * get all customer's book reviews
@@ -41,7 +28,7 @@ public interface CustomerAccess extends GeneralAccess {
      * @param book the book to be interested in
      * @return collection of interested users
      */
-    Collection<Customer> findInterestedInBook(Book book);
+    Collection<User> findInterestedInBook(Book book);
 
     /**
      * retrieve all orders of current customer in a provided period

@@ -1,7 +1,10 @@
 package com.hgyw.bookshare.logicAccess;
 
+import android.databinding.tool.util.L;
+
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import com.hgyw.bookshare.dataAccess.DataAccess;
 import com.hgyw.bookshare.entities.Book;
@@ -9,7 +12,7 @@ import com.hgyw.bookshare.entities.BookSupplier;
 import com.hgyw.bookshare.entities.IdReference;
 import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.OrderStatus;
-import com.hgyw.bookshare.entities.Supplier;
+import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.entities.UserType;
 
 /**
@@ -17,7 +20,7 @@ import com.hgyw.bookshare.entities.UserType;
  */
 public class SupplierAccessImpl extends GeneralAccessImpl implements SupplierAccess {
 
-    public SupplierAccessImpl(DataAccess crud, Supplier currentUser) {
+    public SupplierAccessImpl(DataAccess crud, User currentUser) {
         super(crud, currentUser);
     }
 
@@ -37,23 +40,13 @@ public class SupplierAccessImpl extends GeneralAccessImpl implements SupplierAcc
     }
 
     @Override
-    public Supplier retrieveSupplierDetails() {
-        return (Supplier) retrieveUserDetails();
+    public List<Order> retrieveOrders(Date fromDate, Date toDate) {
+        return dataAccess.retrieveOrders(null, currentUser, fromDate, toDate, false);
     }
 
     @Override
-    public void updateSupplierDetails(Supplier newDetails) {
-        updateUserDetails(newDetails);
-    }
-
-    @Override
-    public Collection<Order> retrieveOrders(Date fromDate, Date toDate) {
-        return dataAccess.retrieveOrders(null, (Supplier)currentUser, fromDate, toDate, false);
-    }
-
-    @Override
-    public Collection<Order> retrieveActiveOrders(Date fromDate, Date toDate) {
-        return dataAccess.retrieveOrders(null, (Supplier)currentUser, fromDate, toDate, true);
+    public List<Order> retrieveActiveOrders(Date fromDate, Date toDate) {
+        return dataAccess.retrieveOrders(null, currentUser, fromDate, toDate, true);
     }
 
     @Override

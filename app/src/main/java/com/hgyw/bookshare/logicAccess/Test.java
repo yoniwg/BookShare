@@ -26,15 +26,17 @@ public class Test {
         Book book = new Book();
         BookSupplier bookSupplier = new BookSupplier();
         BookQuery bookQuery;
-        Customer customer = new Customer();
+        User customer = new User();
+        customer.setUserType(UserType.CUSTOMER);
 
-        Credentials firstSupplierCredentials = Credentials.create("firstSupplier", "sda34^fdgfd%");
-        Credentials secondSupplierCredentials = Credentials.create("secondSupplier", "sda34^fdgfd%");
+        Credentials firstSupplierCredentials = Credentials.create("s", "");
+        Credentials secondSupplierCredentials = Credentials.create("s2", "");
 
         /////////////////////////////
         // new supplier
-        Supplier supplier = new Supplier();
+        User supplier = new User();
         supplier.setId(0);
+        supplier.setUserType(UserType.SUPPLIER);
         supplier.setCredentials(firstSupplierCredentials);
         supplier.setFirstName("");
         supplier.setLastName("Feldhaime");
@@ -154,7 +156,7 @@ public class Test {
             e.printStackTrace();
         }
         sAccess = accessManager.getSupplierAccess();
-        supplier = sAccess.retrieveSupplierDetails();
+        supplier = sAccess.retrieveUserDetails();
 
         // retrieve books by query
         bookQuery = new BookQuery();
@@ -174,9 +176,9 @@ public class Test {
         }
 
         // update supplier details
-        supplier = sAccess.retrieveSupplierDetails();
+        supplier = sAccess.retrieveUserDetails();
         supplier.setPhoneNumber("03-3333333");
-        sAccess.updateSupplierDetails(supplier);
+        sAccess.updateUserDetails(supplier);
 
         // retrieve supplier books
         System.out.println(" *** Books of supplier: " + supplier);
@@ -300,7 +302,7 @@ public class Test {
 
     private static void printWholeDatabase(DataAccess dataAccess) {
         final List<Class<? extends Entity>> classes = Arrays.asList(
-                Customer.class, Supplier.class, Book.class,
+                User.class, User.class, Book.class,
                 BookSupplier.class, Order.class, Transaction.class, BookReview.class
 
         );
