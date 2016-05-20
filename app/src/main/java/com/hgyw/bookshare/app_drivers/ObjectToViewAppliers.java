@@ -33,14 +33,14 @@ import java.text.MessageFormat;
  */
 public class ObjectToViewAppliers {
 
-    public static void bindTo(View parent, @IdRes int target, String source) {
+    public static void setTo(View parent, @IdRes int target, String source) {
         TextView textView = (TextView) parent.findViewById(target);
         if (textView != null) textView.setText(source);
     }
 
     public static void apply(View view, Book book) {
-        bindTo(view, R.id.bookTitle, book.getTitle());
-        bindTo(view, R.id.bookAuthor, book.getAuthor());
+        setTo(view, R.id.bookTitle, book.getTitle());
+        setTo(view, R.id.bookAuthor, book.getAuthor());
 
         ImageView imageView = (ImageView) view.findViewById(R.id.bookImage);
         if (imageView != null) Utility.setImageById(imageView, book.getImageId(), R.drawable.image_book);
@@ -60,9 +60,9 @@ public class ObjectToViewAppliers {
     }
 
     public static void apply(View view, BookSummary summary) {
-        bindTo(view, R.id.priceRange,
+        setTo(view, R.id.priceRange,
                 Utility.moneyRangeToString(summary.getMinPrice(), summary.getMaxPrice()));
-        bindTo(view, R.id.ratingText,
+        setTo(view, R.id.ratingText,
                 MessageFormat.format(view.getContext().getString(R.string.num_rates), summary.sumOfRates()));
 
         RatingBar ratingBar = (RatingBar) view.findViewById(R.id.reviewRating);
@@ -70,8 +70,8 @@ public class ObjectToViewAppliers {
     }
 
     public static void apply(View view, BookReview bookReview) {
-        bindTo(view, R.id.reviewTitle, bookReview.getTitle());
-        bindTo(view, R.id.reviewDescription, bookReview.getDescription());
+        setTo(view, R.id.reviewTitle, bookReview.getTitle());
+        setTo(view, R.id.reviewDescription, bookReview.getDescription());
 
         RatingBar ratingBar = (RatingBar) view.findViewById(R.id.reviewRating);
         if (ratingBar != null) ratingBar.setRating(bookReview.getRating().getStars());
@@ -89,37 +89,37 @@ public class ObjectToViewAppliers {
 
 
     public static void apply(View view, Customer reviewer) {
-        bindTo(view, R.id.customerName, Utility.userNameToString(reviewer));
+        setTo(view, R.id.customerName, Utility.userNameToString(reviewer));
 
         ImageView userImage = (ImageView) view.findViewById(R.id.user_thumbnail);
         if (userImage != null) Utility.setImageById(userImage, reviewer.getImageId(), R.drawable.image_user);
     }
 
     public static void apply(View view, BookSupplier bookSupplier) {
-        bindTo(view, R.id.order_unit_price, Utility.moneyToString(bookSupplier.getPrice()));
+        setTo(view, R.id.order_unit_price, Utility.moneyToString(bookSupplier.getPrice()));
     }
 
     public static void apply(View view, Supplier supplier) {
-        bindTo(view, R.id.supplierName, Utility.userNameToString(supplier));
-        bindTo(view, R.id.supplierAddress, supplier.getAddress());
+        setTo(view, R.id.supplierName, Utility.userNameToString(supplier));
+        setTo(view, R.id.supplierAddress, supplier.getAddress());
 
         ImageView userImage = (ImageView) view.findViewById(R.id.user_thumbnail);
         if (userImage != null) Utility.setImageById(userImage, supplier.getImageId(), R.drawable.image_user);
     }
 
     public static void apply(View view, Transaction transaction) {
-        bindTo(view, R.id.shipping_address, transaction.getShippingAddress());
-        bindTo(view, R.id.credit_number, transaction.getCreditCard());
-        bindTo(view, R.id.order_date, DateUtils.formatDateTime(null,transaction.getDate().getTime(),
+        setTo(view, R.id.shipping_address, transaction.getShippingAddress());
+        setTo(view, R.id.credit_number, transaction.getCreditCard());
+        setTo(view, R.id.order_date, DateUtils.formatDateTime(null,transaction.getDate().getTime(),
                 DateUtils.FORMAT_NUMERIC_DATE | DateUtils.FORMAT_SHOW_YEAR));
     }
 
     public static void apply(View view, Order order) {
-        bindTo(view, R.id.order_amount, String.valueOf(order.getAmount()));
-        bindTo(view, R.id.final_amount, String.valueOf(order.getAmount()));
-        bindTo(view, R.id.order_unit_price, String.valueOf(Utility.moneyToString(order.getUnitPrice())) );
-        bindTo(view, R.id.orderTotalPrice, Utility.moneyToString(order.calcTotalPrice()));
-        bindTo(view, R.id.order_status, String.valueOf(
+        setTo(view, R.id.order_amount, String.valueOf(order.getAmount()));
+        setTo(view, R.id.final_amount, String.valueOf(order.getAmount()));
+        setTo(view, R.id.order_unit_price, String.valueOf(Utility.moneyToString(order.getUnitPrice())) );
+        setTo(view, R.id.orderTotalPrice, Utility.moneyToString(order.calcTotalPrice()));
+        setTo(view, R.id.order_status, String.valueOf(
                 Utility.findStringResourceOfEnum(view.getContext(), order.getOrderStatus())) );
 
         NumberPicker amountPicker = (NumberPicker) view.findViewById(R.id.orderAmountPicker);
@@ -132,8 +132,8 @@ public class ObjectToViewAppliers {
     }
 
     public static void apply(View view, Credentials credentials) {
-        bindTo(view, R.id.username, credentials.getUsername());
-        bindTo(view, R.id.password, credentials.getPassword());
+        setTo(view, R.id.username, credentials.getUsername());
+        setTo(view, R.id.password, credentials.getPassword());
     }
 
     /**
@@ -154,11 +154,11 @@ public class ObjectToViewAppliers {
 
     public static void apply(View view, User user) {
         apply(view, user.getCredentials());
-        bindTo(view, R.id.userFirstName, user.getFirstName());
-        bindTo(view, R.id.userLastName, user.getLastName());
-        bindTo(view, R.id.userEmail, user.getEmail());
-        bindTo(view, R.id.userAddress, user.getAddress());
-        bindTo(view, R.id.userPhone, user.getPhoneNumber());
+        setTo(view, R.id.userFirstName, user.getFirstName());
+        setTo(view, R.id.userLastName, user.getLastName());
+        setTo(view, R.id.userEmail, user.getEmail());
+        setTo(view, R.id.userAddress, user.getAddress());
+        setTo(view, R.id.userPhone, user.getPhoneNumber());
 
         DatePicker birthdayView = null;//(DatePicker) view.findViewById(R.id.userBirthday);  // TODO
         ImageView imageView = (ImageView) view.findViewById(R.id.user_thumbnail);
@@ -201,10 +201,10 @@ public class ObjectToViewAppliers {
     }
 
     public static void apply(View view, BookQuery bookQuery) {
-        bindTo(view, R.id.title_query, bookQuery.getTitleQuery());
-        bindTo(view, R.id.author_query, bookQuery.getAuthorQuery());
-        bindTo(view, R.id.from_price, Utility.moneyToNumberString(bookQuery.getBeginPrice()));
-        bindTo(view, R.id.to_price, Utility.moneyToNumberString(bookQuery.getEndPrice()));
+        setTo(view, R.id.title_query, bookQuery.getTitleQuery());
+        setTo(view, R.id.author_query, bookQuery.getAuthorQuery());
+        setTo(view, R.id.from_price, Utility.moneyToNumberString(bookQuery.getBeginPrice()));
+        setTo(view, R.id.to_price, Utility.moneyToNumberString(bookQuery.getEndPrice()));
 
         // TODO and spinner
         Spinner genreSpinner = (Spinner) view.findViewById(R.id.genre_spinner);
