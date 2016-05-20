@@ -10,7 +10,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/userThumbnail"
+        android:id="@+id/user_thumbnail"
         android:layout_gravity="center_horizontal|top"
         android:src="@drawable/image_user"
         android:layout_alignParentTop="true"
@@ -24,7 +24,7 @@
         android:text="Supplier Name"
         android:id="@+id/supplierName"
         android:layout_gravity="center"
-        android:layout_below="@+id/userThumbnail"
+        android:layout_below="@+id/user_thumbnail"
         android:layout_centerHorizontal="true" />
 
     <TextView

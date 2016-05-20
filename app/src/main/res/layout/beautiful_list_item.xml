@@ -5,7 +5,7 @@
     android:padding="10dp">
 
     <ImageView
-        android:id="@+id/userThumbnail"
+        android:id="@+id/user_thumbnail"
         android:src="@drawable/image_book"
         android:layout_width="72dip"
         android:layout_height="72dip"
@@ -21,7 +21,7 @@
         android:text="Card title"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/userThumbnail" />
+        android:layout_toEndOf="@+id/user_thumbnail" />
 
     <TextView
         android:id="@+id/description"
@@ -30,7 +30,7 @@
         android:text="Card description"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:layout_below="@+id/supplierName"
-        android:layout_toEndOf="@+id/userThumbnail" />
+        android:layout_toEndOf="@+id/user_thumbnail" />
 
     <TextView
         android:id="@+id/okButton"

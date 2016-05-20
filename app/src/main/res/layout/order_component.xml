@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Order Unit Price"
-        android:id="@+id/orderUnitPrice"
+        android:id="@+id/order_unit_price"
         android:layout_below="@+id/order_amount"
         android:layout_alignStart="@+id/order_amount" />
 
@@ -54,8 +54,8 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Order Total Price"
         android:id="@+id/orderTotalPrice"
-        android:layout_below="@+id/orderUnitPrice"
-        android:layout_alignStart="@+id/orderUnitPrice" />
+        android:layout_below="@+id/order_unit_price"
+        android:layout_alignStart="@+id/order_unit_price" />
 
     <TextView
         android:layout_width="wrap_content"

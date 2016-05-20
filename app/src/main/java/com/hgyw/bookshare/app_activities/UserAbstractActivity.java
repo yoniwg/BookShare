@@ -48,7 +48,7 @@ public abstract class UserAbstractActivity extends AppCompatActivity {
         View rootView = findViewById(android.R.id.content);
         assert rootView != null;
         ObjectToViewAppliers.apply(rootView, user);
-        userThumbnailImageView = (ImageView) rootView.findViewById(R.id.userThumbnail);
+        userThumbnailImageView = (ImageView) rootView.findViewById(R.id.user_thumbnail);
         userThumbnailImageView.setOnClickListener(v -> Utility.startGetImage(this));
 
         // set username and password not editable

@@ -1,12 +1,14 @@
 package com.hgyw.bookshare.entities;
 
+import com.google.common.base.Function;
+
 import java.util.Comparator;
 import java.util.Objects;
 
 /**
  * Created by Yoni on 3/15/2016.
  */
-public final class Book extends Entity {
+public final class Book extends Entity{
 
     public enum Genre {GENERAL, ACTION, ROMANCE, SCIENCE, SCIENCE_FICTION,
         DRAMA, SATIRE, CHILDREN, COMICS, BIOGRAPHIES, FANTASY, HEALTH}

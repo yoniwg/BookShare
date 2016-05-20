@@ -6,7 +6,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/userThumbnail"
+        android:id="@+id/user_thumbnail"
         android:src="@drawable/image_book"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
@@ -22,15 +22,15 @@
         android:id="@+id/customerName"
         android:layout_above="@+id/reviewRating"
         android:layout_alignEnd="@+id/reviewRating"
-        android:layout_toEndOf="@+id/userThumbnail"
+        android:layout_toEndOf="@+id/user_thumbnail"
         android:textAlignment="viewStart" />
 
     <RatingBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/reviewRating"
-        android:layout_alignBottom="@+id/userThumbnail"
-        android:layout_toEndOf="@+id/userThumbnail"
+        android:layout_alignBottom="@+id/user_thumbnail"
+        android:layout_toEndOf="@+id/user_thumbnail"
         android:isIndicator="true"/>
 
     <TextView
