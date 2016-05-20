@@ -33,9 +33,9 @@ import java.text.MessageFormat;
  */
 public class ObjectToViewAppliers {
 
-    public static void bindTo(View parent, @IdRes int to, String from) {
-        TextView textView = (TextView) parent.findViewById(to);
-        if (textView != null) textView.setText(from);
+    public static void bindTo(View parent, @IdRes int target, String source) {
+        TextView textView = (TextView) parent.findViewById(target);
+        if (textView != null) textView.setText(source);
     }
 
     public static void apply(View view, Book book) {
