@@ -1,4 +1,4 @@
-package com.hgyw.bookshare;
+package com.hgyw.bookshare.app_drivers;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -11,6 +11,7 @@ import android.provider.MediaStore;
 import android.support.annotation.DrawableRes;
 import android.widget.ImageView;
 
+import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.app_fragments.IntentsFactory;
 import com.hgyw.bookshare.entities.ImageEntity;
 import com.hgyw.bookshare.entities.User;

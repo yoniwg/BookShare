@@ -2,13 +2,9 @@ package com.hgyw.bookshare.app_fragments;
 
 
 import android.os.Bundle;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.MenuRes;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
-import com.hgyw.bookshare.ObjectToViewAppliers;
+import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.entities.Supplier;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;

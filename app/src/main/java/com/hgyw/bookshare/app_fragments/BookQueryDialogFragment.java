@@ -4,23 +4,18 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.TextView;
 
-import com.hgyw.bookshare.EnumAdapter;
-import com.hgyw.bookshare.ObjectToViewAppliers;
+import com.hgyw.bookshare.app_drivers.EnumAdapter;
+import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
 import com.hgyw.bookshare.R;
-import com.hgyw.bookshare.Utility;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookQuery;
-
-import java.math.BigDecimal;
 
 /**
  * Created by haim7 on 12/05/2016.

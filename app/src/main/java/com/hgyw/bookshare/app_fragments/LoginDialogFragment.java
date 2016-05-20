@@ -8,10 +8,9 @@ import android.app.DialogFragment;
 import android.os.Bundle;
 import android.view.View;
 
-import com.hgyw.bookshare.ObjectToViewAppliers;
+import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.entities.Credentials;
-import com.hgyw.bookshare.entities.Customer;
 import com.hgyw.bookshare.exceptions.WrongLoginException;
 import com.hgyw.bookshare.logicAccess.AccessManager;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;

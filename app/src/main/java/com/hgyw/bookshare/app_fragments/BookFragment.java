@@ -15,8 +15,8 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hgyw.bookshare.ApplyObjectAdapter;
-import com.hgyw.bookshare.ObjectToViewAppliers;
+import com.hgyw.bookshare.app_drivers.ApplyObjectAdapter;
+import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookReview;

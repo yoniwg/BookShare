@@ -4,7 +4,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.hgyw.bookshare.app_fragments.IntentsFactory;
-import com.hgyw.bookshare.ObjectToViewAppliers;
+import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.exceptions.WrongLoginException;

@@ -1,4 +1,4 @@
-package com.hgyw.bookshare;
+package com.hgyw.bookshare.app_drivers;
 
 import android.content.Context;
 import android.text.format.DateUtils;
@@ -10,6 +10,7 @@ import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookQuery;
 import com.hgyw.bookshare.entities.BookReview;
@@ -124,7 +125,7 @@ public class ObjectToViewAppliers {
     }
 
     public static void apply(View view, Order order) {
-        TextView amountView = (TextView) view.findViewById(R.id.orderAmount);
+        TextView amountView = (TextView) view.findViewById(R.id.order_amount);
         TextView finalAmount = (TextView) view.findViewById(R.id.final_amount);
         TextView unitPriceView = (TextView) view.findViewById(R.id.orderUnitPrice);
         TextView totalPriceView = (TextView) view.findViewById(R.id.orderTotalPrice);

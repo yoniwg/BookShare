@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Order Amount"
-        android:id="@+id/orderAmount"
+        android:id="@+id/order_amount"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
@@ -36,8 +36,8 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Order Unit Price"
         android:id="@+id/orderUnitPrice"
-        android:layout_below="@+id/orderAmount"
-        android:layout_alignStart="@+id/orderAmount" />
+        android:layout_below="@+id/order_amount"
+        android:layout_alignStart="@+id/order_amount" />
 
     <TextView
         android:layout_width="wrap_content"
