@@ -1,6 +1,8 @@
 package com.hgyw.bookshare.app_fragments;
 
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.Menu;
@@ -29,12 +31,13 @@ import com.hgyw.bookshare.entities.UserType;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.CustomerAccess;
 
+import java.util.IllegalFormatException;
 import java.util.List;
 
 public class BookFragment extends EntityFragment implements BookReviewDialogFragment.BookReviewResultListener {
 
 
-    private static final int RESULT_CODE_BOOK_REVIEW_DIALOG = 314346537;
+    private static final int REQUEST_CODE_BOOK_UPDATED = 1;
     private RatingBar userRatingBar;
     private boolean isCustomer;
     private Book book;
@@ -173,4 +176,12 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
         userRatingBar.setRating(userBookReview.getRating().getStars());
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE_BOOK_UPDATED && resultCode == Activity.RESULT_OK) {
+            try {
+
+            } catch (IllegalFormatException e) {}
+        }
+    }
 }

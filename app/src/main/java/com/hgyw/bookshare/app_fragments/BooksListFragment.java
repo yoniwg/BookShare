@@ -30,6 +30,7 @@ public class BooksListFragment extends ListFragment implements TitleFragment {
     private BookQuery bookQuery;
     private final GeneralAccess access = AccessManagerFactory.getInstance().getGeneralAccess();
 
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -41,7 +42,7 @@ public class BooksListFragment extends ListFragment implements TitleFragment {
         List<Book> bookList = bookQuery == null ? access.findSpecialOffers(30)
                 : access.findBooks(bookQuery);
 
-        ListAdapter adapter = new ApplyObjectAdapter<Book>(getActivity(), R.layout.book_list_item, bookList) {
+        ApplyObjectAdapter<Book> adapter = new ApplyObjectAdapter<Book>(getActivity(), R.layout.book_list_item, bookList) {
             @Override
             protected void applyOnView(View view, int position) {
                 Book book = getItem(position);
