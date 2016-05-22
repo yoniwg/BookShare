@@ -29,8 +29,8 @@ public class Test {
         User customer = new User();
         customer.setUserType(UserType.CUSTOMER);
 
-        Credentials firstSupplierCredentials = Credentials.create("s", "");
-        Credentials secondSupplierCredentials = Credentials.create("s2", "");
+        final Credentials firstSupplierCredentials = new Credentials("s", "");
+        final Credentials secondSupplierCredentials = new Credentials("s2", "");
 
         /////////////////////////////
         // new supplier
@@ -194,7 +194,7 @@ public class Test {
 
         // new customer
         customer.setId(0);
-        customer.setCredentials(Credentials.create("haim1", "12345"));
+        customer.setCredentials(new Credentials("haim1", "12345"));
         customer.setEmail("haim763@gmail.com");
         customer.setFirstName("Haim");
         customer.setLastName("Greenstein");
@@ -263,6 +263,8 @@ public class Test {
             cAccess.writeBookReview(bookReview);
         } catch (Exception e) {
             System.out.println(e.getClass().getSimpleName() + ": " + e.getMessage());
+        } finally {
+            System.out.println("Actually, no error should occurs. because the method writeBookReview() works by user and book, not by id.");
         }
         try {
             System.out.println(" $$$ Negative test: ");
@@ -280,7 +282,7 @@ public class Test {
 
         // new customer
         customer.setId(0);
-        customer.setCredentials(Credentials.create("yoni1", "54321"));
+        customer.setCredentials(new Credentials("yoni1", "54321"));
         customer.setEmail("yoni@gmail.com");
         customer.setFirstName("Yoni");
         customer.setLastName("Wiesberg");

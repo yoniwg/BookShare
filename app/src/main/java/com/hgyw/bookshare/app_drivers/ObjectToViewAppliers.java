@@ -32,24 +32,31 @@ public class ObjectToViewAppliers {
 
     public static void apply(View view, Book book) {
         TextView titleView = (TextView) view.findViewById(R.id.bookTitle);
-        TextView authorView = (TextView) view.findViewById(R.id.userFullName);
+        TextView authorView = (TextView) view.findViewById(R.id.bookAuthor);
+        //TextView genreView = (TextView) view.findViewById(R.id.bookGenre);
         ImageView imageView = (ImageView) view.findViewById(R.id.bookImage);
+        Spinner genreSpinner = (Spinner)  view.findViewById(R.id.bookGenreSpinner);
 
         if (titleView != null) titleView.setText(book.getTitle());
         if (authorView != null) authorView.setText(book.getAuthor());
+        //if (genreView != null) genreView.setText(book.getAuthor());
+        if (genreSpinner != null) genreSpinner.setSelection(book.getGenre().ordinal());
         if (imageView != null) Utility.setImageById(imageView, book.getImageId(), R.drawable.image_book);
     }
 
     public static void result(View view, Book book) {
         TextView titleView = (TextView) view.findViewById(R.id.bookTitle);
-        TextView authorView = (TextView) view.findViewById(R.id.userFullName);
-        ImageView imageView = (ImageView) view.findViewById(R.id.bookImage); //TODO
+        TextView authorView = (TextView) view.findViewById(R.id.bookAuthor);
+        //TextView genreView = (TextView) view.findViewById(R.id.bookGenre);
+        ImageView imageView = (ImageView) view.findViewById(R.id.bookImage);
+        Spinner genreSpinner = (Spinner)  view.findViewById(R.id.bookGenreSpinner);
 
         //imageView.getDrawable()
 
         if (titleView != null) book.setTitle(titleView.getText().toString());
         if (authorView != null) book.setAuthor(authorView.getText().toString());
         //if (imageView != null) Utility.setImageById(imageView, book.getImageId(), R.drawable.image_book);
+        if (genreSpinner != null) book.setGenre((Book.Genre) genreSpinner.getSelectedItem());
     }
 
     public static void apply(View view, BookSummary summary) {
@@ -109,7 +116,6 @@ public class ObjectToViewAppliers {
         }
         if (amountTextView != null) amountTextView.setText(String.valueOf(order.getAmount()));
         if (orderStatus != null) orderStatus.setText(Utility.findStringResourceOfEnum(view.getContext(), order.getOrderStatus()));
-
     }
 
     public static void apply(View view, Credentials credentials) {
@@ -133,7 +139,7 @@ public class ObjectToViewAppliers {
         String password = "";
         if (usernameView != null) username = usernameView.getText().toString();
         if (passwordView != null) password = passwordView.getText().toString();
-        return Credentials.create(username, password);
+        return new Credentials(username, password);
     }
 
 
@@ -141,7 +147,7 @@ public class ObjectToViewAppliers {
         apply(view, user.getCredentials());
         TextView firstNameView = (TextView) view.findViewById(R.id.userFirstName);
         TextView lastNameView = (TextView) view.findViewById(R.id.userLastName);
-        TextView fullNameView = (TextView) view.findViewById(R.id.userFullName);
+        TextView fullNameView = (TextView) view.findViewById(R.id.bookAuthor);
         TextView emailView = (TextView) view.findViewById(R.id.userEmail);
         TextView addressView = (TextView) view.findViewById(R.id.userAddress);
         TextView phoneView = (TextView) view.findViewById(R.id.userPhone);
@@ -226,20 +232,29 @@ public class ObjectToViewAppliers {
 
     public static void apply(View view, Transaction transaction) {
         // TODO
-        TextView transactionAddtessView = (TextView) view.findViewById(R.id.transactionAddress);
+        TextView transactionAddressView = (TextView) view.findViewById(R.id.transactionAddress);
+        TextView transactionDateText = (TextView) view.findViewById(R.id.transactionDate);
 
-        if (transactionAddtessView != null) transactionAddtessView.setText(transaction.getShippingAddress());
+        if (transactionAddressView != null) transactionAddressView.setText(transaction.getShippingAddress());
+        if (transactionDateText != null) transactionDateText.setText(Utility.datetimeToString(transaction.getDate()));
     }
+
+    ////////
 
     public interface Applier<T> {
         void apply(T object);
-        T result(T object);
+        void result(T t);
+    }
+
+    public static abstract class AbstractApplier<T> implements Applier<T> {
+        AbstractApplier() {}
+        public void result(T t) { throw new UnsupportedOperationException(); }
     }
 
     public static Applier<Book> book(View view) {
-        return new Applier<Book>() {
+        return new AbstractApplier<Book>() {
             TextView titleView = (TextView) view.findViewById(R.id.bookTitle);
-            TextView authorView = (TextView) view.findViewById(R.id.userFullName);
+            TextView authorView = (TextView) view.findViewById(R.id.bookAuthor);
             ImageView imageView = (ImageView) view.findViewById(R.id.bookImage);
             public void apply(Book book) {
                 if (titleView != null) titleView.setText(book.getTitle());
@@ -247,11 +262,11 @@ public class ObjectToViewAppliers {
                 if (imageView != null)
                     Utility.setImageById(imageView, book.getImageId(), R.drawable.image_book);
             }
-            public Book result(Book book) {
+            public void result(Book book) {
                 if (titleView != null) book.setTitle(titleView.getText().toString());
                 if (authorView != null) book.setAuthor(authorView.getText().toString());
-                return book;
             }
         };
     }
+
 }

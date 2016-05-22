@@ -61,11 +61,14 @@ class DataAccessListImpl extends ListsCrudImpl implements DataAccess {
     @Override
     public List<Order> retrieveOrders(User customer, User supplier, Date fromDate, Date toDate, boolean onlyOpen) {
         return streamAllNonDeleted(Order.class)
-                .filter(o -> (customer == null || retrieve(Transaction.class, o.getTransactionId()).getCustomerId() == customer.getId())
-                                && (supplier == null || o.getBookSupplierId() == supplier.getId())
-                                && isBetween(retrieve(Transaction.class, o.getTransactionId()).getDate(), fromDate, toDate)
-                                && (!onlyOpen || o.getOrderStatus().isActive())
-                ).collect(Collectors.toList());
+                .filter(o -> {
+                    Transaction transaction = retrieve(Transaction.class, o.getTransactionId());
+                    BookSupplier bookSupplier = retrieve(BookSupplier.class, o.getBookSupplierId());
+                    return (customer == null || transaction.getCustomerId() == customer.getId())
+                                    && (supplier == null || bookSupplier.getSupplierId() == supplier.getId())
+                                    && isBetween(transaction.getDate(), fromDate, toDate)
+                                    && (!onlyOpen || o.getOrderStatus().isActive());
+                }).collect(Collectors.toList());
     }
 
     @Override

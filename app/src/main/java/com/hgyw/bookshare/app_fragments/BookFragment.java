@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hgyw.bookshare.app_drivers.ApplyObjectAdapter;
+import com.hgyw.bookshare.app_drivers.IntentsFactory;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.entities.Book;
@@ -143,6 +144,9 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
         switch (item.getItemId()) {
             case R.id.action_cart:
                 startActivity(IntentsFactory.newCartIntent(getActivity()));
+                return true;
+            case R.id.action_edit_book:
+                startActivity(IntentsFactory.editBookIntent(getActivity(), book.getId()));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

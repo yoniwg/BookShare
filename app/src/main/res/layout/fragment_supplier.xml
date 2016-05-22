@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Supplier Name"
-        android:id="@+id/userFullName"
+        android:id="@+id/bookAuthor"
         android:layout_gravity="center"
         android:layout_below="@+id/userThumbnail"
         android:layout_centerHorizontal="true" />
@@ -33,7 +33,7 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Supplier Address"
         android:id="@+id/userAddress"
-        android:layout_below="@+id/userFullName"
+        android:layout_below="@+id/bookAuthor"
         android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

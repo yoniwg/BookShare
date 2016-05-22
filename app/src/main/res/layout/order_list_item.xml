@@ -16,7 +16,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:layout_alignBaseline="@+id/bookTitle"
-        android:layout_alignBottom="@+id/supplierName"
+        android:layout_alignBottom="@+id/userFullName"
         android:scaleType="centerCrop" />
 
     <TextView
@@ -49,15 +49,15 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="price"
-        android:id="@+id/order_unit_price"
-        android:layout_below="@+id/supplierName"
+        android:id="@+id/orderUnitPrice"
+        android:layout_below="@+id/userFullName"
         android:layout_toEndOf="@+id/bookImage"
         android:textAlignment="viewStart"
-        android:layout_alignLeft="@+id/supplierName"
+        android:layout_alignLeft="@+id/userFullName"
         android:paddingStart="10dp" />
 
     <TextView
-        android:id="@+id/supplierName"
+        android:id="@+id/userFullName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Supplier name"
@@ -85,7 +85,7 @@
         android:theme="@style/Base.Theme.AppCompat.Light"
         android:layout_alignParentEnd="true"
         android:layout_below="@+id/amount_label"
-        android:layout_alignBottom="@+id/order_unit_price" />
+        android:layout_alignBottom="@+id/orderUnitPrice" />
 
     <TextView
         android:layout_width="wrap_content"

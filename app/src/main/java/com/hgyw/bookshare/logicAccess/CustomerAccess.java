@@ -85,7 +85,7 @@ public interface CustomerAccess extends GeneralAccess {
 
     /**
      * update review on book. the method ignores the bookReview.id, and set it to new Id if there is
-     * no review of user and review.bookId, or to exists review if there is. </br>
+     * no review of user and review.bookId, or to exists review (of user and book) if there is. </br>
      * The customerId will automatically set to the current user. </br>
      * @param bookReview the book review
      * @throws java.util.NoSuchElementException if the bookId is not found.

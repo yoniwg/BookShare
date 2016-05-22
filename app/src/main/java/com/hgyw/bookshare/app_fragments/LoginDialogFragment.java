@@ -5,11 +5,14 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 
+import com.hgyw.bookshare.app_drivers.IntentsFactory;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
 import com.hgyw.bookshare.R;
+import com.hgyw.bookshare.app_drivers.Utility;
 import com.hgyw.bookshare.entities.Credentials;
 import com.hgyw.bookshare.exceptions.WrongLoginException;
 import com.hgyw.bookshare.logicAccess.AccessManager;
@@ -19,13 +22,32 @@ import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 public class LoginDialogFragment extends DialogFragment {
 
     private static final String ARG_DIALOG_CREDENTIALS_OBJECT = "dialogCredentialsObject";
+    private static final String PREFERENCE_KEY_USERNAME = "username";
 
     View view;
 
+    /**
+     * Return new instance of this DialogFragment with empty credentials.
+     * @return instance of LoginDialogFragment
+     */
     public static LoginDialogFragment newInstance() {
-        return newInstance(Credentials.create("",""));
+        return newInstance(Credentials.EMPTY);
     }
 
+    /**
+     * Return new instance of this DialogFragment with saved username.
+     * @return instance of LoginDialogFragment
+     */
+    public static LoginDialogFragment newInstance(Context context) {
+        String username = "";
+        username = Utility.getSharedPreferences(context).getString(PREFERENCE_KEY_USERNAME, "");
+        return newInstance(new Credentials(username,""));
+    }
+
+    /**
+     * Return new instance of this DialogFragment with specific credentials.
+     * @return instance of LoginDialogFragment
+     */
     public static LoginDialogFragment newInstance(Credentials credentials) {
         LoginDialogFragment fragment = new LoginDialogFragment();
         Bundle args = new Bundle();
@@ -54,7 +76,6 @@ public class LoginDialogFragment extends DialogFragment {
                     AccessManager accessManager = AccessManagerFactory.getInstance();
                     try {
                         accessManager.signIn(resultCredentials);;
-                        startActivity(IntentsFactory.homeIntent(getActivity(), true));
                     } catch (WrongLoginException e) {
                         int errorMessage;
                         switch (e.getIssue()) {
@@ -68,7 +89,12 @@ public class LoginDialogFragment extends DialogFragment {
                                 .setMessage(errorMessage)
                                 .setPositiveButton(R.string.ok, null)
                                 .create().show();
+                        return;
                     }
+                    Utility.getSharedPreferences(activity).edit()
+                            .putString(PREFERENCE_KEY_USERNAME, resultCredentials.getUsername())
+                            .commit();
+                    startActivity(IntentsFactory.homeIntent(getActivity(), true));
                 }).create();
     }
 

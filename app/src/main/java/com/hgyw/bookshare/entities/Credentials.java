@@ -8,14 +8,15 @@ import java.util.Objects;
  */
 public final class Credentials implements Serializable {
 
-    public static final Credentials EMPTY = create("", "");
+    public static final Credentials EMPTY = new Credentials("", "");
 
     private final String username;
     private final String password;
 
-    private Credentials(String username, String password) {
-        this.username = Objects.requireNonNull(username);
-        this.password = Objects.requireNonNull(password);
+    public Credentials(String username, String password) {
+        this.username = Objects.requireNonNull(username).trim();
+        this.password = Objects.requireNonNull(password).trim();
+
     }
 
     public String getUsername() {
@@ -46,9 +47,5 @@ public final class Credentials implements Serializable {
                 "username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 '}';
-    }
-
-    public static Credentials create(String username, String password) {
-        return new Credentials(username, password);
     }
 }

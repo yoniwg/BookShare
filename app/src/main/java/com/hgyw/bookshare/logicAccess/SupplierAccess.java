@@ -21,7 +21,7 @@ public interface SupplierAccess extends GeneralAccess {
      * retrieve books of current supplier user
      * @return collection of BookSupplier
      */
-    Collection<BookSupplier> retrieveMyBooks();
+    List<BookSupplier> retrieveMyBooks();
 
     /**
      * Add book to database.

@@ -12,8 +12,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.hgyw.bookshare.app_drivers.EnumAdapter;
+import com.hgyw.bookshare.app_drivers.IntentsFactory;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
 import com.hgyw.bookshare.R;
+import com.hgyw.bookshare.app_drivers.Utility;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookQuery;
 
@@ -43,9 +45,7 @@ public class BookQueryDialogFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_book_query, container, false);
         Spinner genreSpinner = (Spinner) view.findViewById(R.id.genre_spinner);
-        ArrayAdapter arrayAdapter = new EnumAdapter<>(getActivity(), android.R.layout.simple_spinner_item, Book.Genre.values());
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        genreSpinner.setAdapter(arrayAdapter);
+        Utility.setSpinnerToEnum(getActivity(), genreSpinner, Book.Genre.values());
         return view;
     }
 
@@ -54,7 +54,7 @@ public class BookQueryDialogFragment extends DialogFragment {
         BookQuery bookQuery = getArguments() == null ? null : (BookQuery) getArguments().getSerializable(ARG_DIALOG_BOOK_QUERY);
         // inflate and set view
         View view = onCreateView(getActivity().getLayoutInflater(), null, savedInstanceState);
-        assert bookQuery != null : "bookQuery should not be null, it should maintain by newInstance factory method.";
+        if (bookQuery == null) throw new IllegalArgumentException("bookQuery should not be null, it should maintain by newInstance factory method.");
         ObjectToViewAppliers.apply(view, bookQuery);
 
         // build dialog

@@ -3,6 +3,7 @@ package com.hgyw.bookshare.app_activities;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -11,29 +12,32 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.annimon.stream.function.BiConsumer;
 import com.hgyw.bookshare.R;
-import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
 import com.hgyw.bookshare.app_drivers.Utility;
 import com.hgyw.bookshare.app_drivers.IntentsFactory;
-import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 
+import java.io.Serializable;
 
-public abstract class UserAbstractActivity extends AppCompatActivity {
+public abstract class XEntityEditActivity<T extends Serializable> extends AppCompatActivity {/*
 
     private static final String SAVE_KEY_NEW_IMAGE = "newImage";
-    private static final String SAVE_KEY_USER = "user";
-    private ImageView imageView;
-    private User user;
-    private final @StringRes int buttonStringId;
-    private final boolean isRegistration;
-    private Bitmap newImage = null;
-    private final @StringRes int titleId;
 
-    protected UserAbstractActivity(@StringRes int buttonStringId, boolean isRegistration, int titleId) {
+    private T item;
+    private ImageView imageView;
+    private byte[] newImage = null;
+
+    private final @StringRes int buttonStringId;
+    private final @StringRes int titleId;
+    private final BiConsumer<T, Long> imageIdSetter;
+    private final @IdRes int imageViewId;
+
+    protected XEntityEditActivity(@StringRes int buttonStringId, int titleId, int imageViewId, BiConsumer<T, Long> imageIdSetter) {
         this.buttonStringId = buttonStringId;
-        this.isRegistration = isRegistration;
         this.titleId = titleId;
+        this.imageIdSetter = imageIdSetter;
+        this.imageViewId = imageViewId;
     }
 
     @Override
@@ -43,41 +47,30 @@ public abstract class UserAbstractActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle(titleId);
 
+        item = getIntent() == null ? null : (T) getIntent().getSerializableExtra(IntentsFactory.ARG_USER_DETAILS);
+        if (item == null) throw new RuntimeException("XEntityEditActivity should accept non-null object.");
 
         View rootView = findViewById(android.R.id.content);
         assert rootView != null;
-        imageView = (ImageView) rootView.findViewById(R.id.userThumbnail);
+        imageView = (ImageView) rootView.findViewById(imageViewId);
         imageView.setOnClickListener(v -> Utility.startGetImage(this));
 
+        setTheView(rootView);
         if (savedInstanceState == null) {
-            user = isRegistration ? new User() : AccessManagerFactory.getInstance().getGeneralAccess().retrieveUserDetails();
-            ObjectToViewAppliers.apply(rootView, user);
+            applyOnNewView(rootView, item);
         } else {
-            newImage = savedInstanceState.getParcelable(SAVE_KEY_NEW_IMAGE);
-            user = (User) savedInstanceState.getSerializable(SAVE_KEY_USER);
-            if (newImage != null) {
-                imageView.setImageBitmap(newImage);
-            } else {
-                Utility.setImageById(imageView, user.getImageId());
-            }
-        }
-
-        // set username and password not editable
-        if (!isRegistration) {
-            View[] disabledViews  = {
-                    findViewById(R.id.username),
-                    findViewById(R.id.password),
-                    findViewById(R.id.customerSupplierSpinner)
-            };
-            for (View v : disabledViews) if (v != null) v.setVisibility(View.GONE);
+            newImage = savedInstanceState.getByteArray(SAVE_KEY_NEW_IMAGE);
         }
     }
 
+    protected abstract void setTheView(View rootView);
+    protected abstract void applyOnNewView(View rootView, T item);
+    protected abstract T resultFromView(View rootView, T item);
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelable(SAVE_KEY_NEW_IMAGE, newImage);
-        outState.putSerializable(SAVE_KEY_USER, user);
         super.onSaveInstanceState(outState);
+        outState.putByteArray(SAVE_KEY_NEW_IMAGE, newImage);
     }
 
     @Override
@@ -88,20 +81,20 @@ public abstract class UserAbstractActivity extends AppCompatActivity {
     }
 
     private void onOkButton() {
+        View rootView = findViewById(android.R.id.content);
+        item = resultFromView(rootView, item);
         if (newImage != null) {
-            long imageId = AccessManagerFactory.getInstance().getGeneralAccess().upload(Utility.compress(newImage));
-            if (imageId != 0) {
-                user.setImageId(imageId);
+            long imageId = AccessManagerFactory.getInstance().getGeneralAccess().upload(newImage);
+            if (imageId != 0 && imageIdSetter != null) {
+                imageIdSetter.accept(item, imageId);
             } else {
                 Toast.makeText(this, R.string.upload_image_failed, Toast.LENGTH_SHORT).show();
             }
         }
-        View rootView = findViewById(android.R.id.content);
-        ObjectToViewAppliers.result(rootView, user);
-        onOkButton(user);
+        onOkButton(item);
     }
 
-    protected abstract void onOkButton(User user);
+    protected abstract void onOkButton(T user);
 
     // get result of get-image
     protected void onActivityResult(int requestCode, int resultCode, Intent returnedIntent) {
@@ -121,9 +114,7 @@ public abstract class UserAbstractActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-
+    }*/
 }
 
 

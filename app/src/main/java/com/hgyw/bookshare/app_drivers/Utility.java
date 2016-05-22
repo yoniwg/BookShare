@@ -4,23 +4,31 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.DrawableRes;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.hgyw.bookshare.R;
-import com.hgyw.bookshare.app_fragments.IntentsFactory;
+import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.ImageEntity;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.util.Date;
 
 /**
  * Created by haim7 on 11/05/2016.
@@ -47,14 +55,14 @@ public class Utility {
      * @param entityImageId
      * @return
      */
-    private static boolean setImageById(ImageView imageView, long entityImageId) {
+    public static boolean setImageById(ImageView imageView, long entityImageId) {
         return setImageById(imageView, entityImageId, 0);
     }
 
     public static boolean setImageById(ImageView imageView, long entityImageId, @DrawableRes int defaultImageResId) {
         // first remove the current image
         if (defaultImageResId == 0) {
-            imageView.setImageDrawable(null);
+            //imageView.setImageDrawable(null);
         } else {
             imageView.setImageResource(defaultImageResId);
         }
@@ -127,6 +135,27 @@ public class Utility {
         return byteBuffer.toByteArray();
     }
 
+    public static Bitmap decodeUri(Context c, Uri uri, final int requiredSize) throws FileNotFoundException {
+        BitmapFactory.Options o = new BitmapFactory.Options();
+        o.inJustDecodeBounds = true;
+        BitmapFactory.decodeStream(c.getContentResolver().openInputStream(uri), null, o);
+
+        int width_tmp = o.outWidth, height_tmp = o.outHeight;
+        int scale = 1;
+
+        while(true) {
+            if(width_tmp / 2 < requiredSize || height_tmp / 2 < requiredSize)
+                break;
+            width_tmp /= 2;
+            height_tmp /= 2;
+            scale *= 2;
+        }
+
+        BitmapFactory.Options o2 = new BitmapFactory.Options();
+        o2.inSampleSize = scale;
+        return BitmapFactory.decodeStream(c.getContentResolver().openInputStream(uri), null, o2);
+    }
+
     /**
      * /**
      * Set image from selectedImage to targetImageView. return the byte[] that contains the image.
@@ -135,15 +164,15 @@ public class Utility {
      * @param targetImageView can be null
      * @return null if reading has failed.
      */
-    public static byte[] readImageFromURI(Context context, Uri selectedImage, ImageView targetImageView) {
+    public static Bitmap readImageFromURI(Context context, Uri selectedImage, ImageView targetImageView) {
         try {
-            byte[] bytes = readBytesFromURI(context, selectedImage);
+            Bitmap bmp = decodeUri(context, selectedImage, 64);
             if (targetImageView != null) {
-                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                 targetImageView.setImageBitmap(bmp);
             }
-            return bytes;
+            return bmp;
         } catch (IOException e) {
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
             return null;
         }
     }
@@ -161,5 +190,26 @@ public class Utility {
                     activity.startActivityForResult(pickPhoto, IntentsFactory.GET_IMAGE_CODE);
                 })
                 .create().show();
+    }
+
+    public static SharedPreferences getSharedPreferences(Context context) {
+        return context.getSharedPreferences(context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+    }
+
+    public static String datetimeToString(Date date) {
+        return DateFormat.getDateTimeInstance().format(date);
+    }
+
+    public static <T> void setSpinnerToEnum(Context context, Spinner genreSpinner, T[] values) {
+        ArrayAdapter arrayAdapter = new EnumAdapter<>(context, android.R.layout.simple_spinner_item, Book.Genre.values());
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        genreSpinner.setAdapter(arrayAdapter);
+
+    }
+
+    public static byte[] compress(Bitmap newImage) {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        newImage.compress(Bitmap.CompressFormat.JPEG, 50, out);
+        return out.toByteArray();
     }
 }

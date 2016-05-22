@@ -126,4 +126,11 @@
     <string name="orderstatus_closed">Closed</string>
     <string name="orderstatus_waiting_for_cancel">Waiting for Cancel</string>
     <string name="orderstatus_canceled">Canceled</string>
+    <string name="preference_file_key">ourPreferenceFileKey</string>
+    <string name="no_items_list_view">No items to show</string>
+    <string name="add">add</string>
+    <string name="book_edit_title">Edit Book details</string>
+    <string name="book_author">Book Author</string>
+    <string name="edit">Edit</string>
+    <string name="the_book_was_updated">The book updated</string>
 </resources>

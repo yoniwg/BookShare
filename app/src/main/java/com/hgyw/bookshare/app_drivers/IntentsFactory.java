@@ -1,15 +1,13 @@
-package com.hgyw.bookshare.app_fragments;
+package com.hgyw.bookshare.app_drivers;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
 import com.annimon.stream.Stream;
-import com.hgyw.bookshare.app_activities.EntityActivity;
-import com.hgyw.bookshare.app_activities.MainActivity;
-import com.hgyw.bookshare.app_activities.UserRegistrationActivity;
-import com.hgyw.bookshare.app_activities.TransactionActivity;
-import com.hgyw.bookshare.app_activities.UserEditActivity;
+import com.hgyw.bookshare.app_activities.*;
+import com.hgyw.bookshare.app_fragments.*;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookQuery;
 import com.hgyw.bookshare.entities.Entity;
@@ -120,10 +118,7 @@ public class IntentsFactory {
     }
 
     public static Intent userDetailsIntent(Context context) {
-        Intent intent = new Intent(context, UserEditActivity.class);
-        User user = AccessManagerFactory.getInstance().getGeneralAccess().retrieveUserDetails();
-        intent.putExtra(ARG_USER_DETAILS, user);
-        return intent;
+        return new Intent(context, UserEditActivity.class);
     }
 
     public static Intent supplierOrdersIntent(Context context) {
@@ -137,6 +132,12 @@ public class IntentsFactory {
         Intent intent = new Intent(context, MainActivity.class);
         intent.putExtra(ARG_FRAGMENT_CLASS, OldOrdersFragment.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        return intent;
+    }
+
+    public static Intent editBookIntent(Context context, long id) {
+        Intent intent = new Intent(context, BookEditActivity.class);
+        intent.setData(uriOf(IdReference.of(Book.class, id)));
         return intent;
     }
 }

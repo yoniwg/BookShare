@@ -25,8 +25,8 @@ public class SupplierAccessImpl extends GeneralAccessImpl implements SupplierAcc
     }
 
     @Override
-    public Collection<BookSupplier> retrieveMyBooks() {
-        return dataAccess.findEntityReferTo(BookSupplier.class, currentUser);
+    public List<BookSupplier> retrieveMyBooks() {
+        return findBooksOfSuppliers(currentUser);
     }
 
     @Override

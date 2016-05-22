@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -18,12 +17,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hgyw.bookshare.app_drivers.*;
 import com.hgyw.bookshare.app_fragments.BooksListFragment;
 import com.hgyw.bookshare.app_fragments.CartFragment;
-import com.hgyw.bookshare.app_fragments.IntentsFactory;
+import com.hgyw.bookshare.app_drivers.IntentsFactory;
 import com.hgyw.bookshare.app_fragments.LoginDialogFragment;
 import com.hgyw.bookshare.R;
-import com.hgyw.bookshare.app_drivers.Utility;
+import com.hgyw.bookshare.app_fragments.TitleFragment;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.entities.UserType;
 import com.hgyw.bookshare.logicAccess.AccessManager;
@@ -33,7 +33,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, ListenerSupplier {
 
     public static final String MAIN_FRAGMENT_TAG = "mainFragmentTag";
     private DrawerLayout drawer;
@@ -45,6 +45,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragmentNavMap.put(CartFragment.class, R.id.nav_cart);
         fragmentNavMap.put(CartFragment.class, R.id.nav_cart);
     }
+
+    private Fragment fragment;
 
 
     @Override
@@ -129,10 +131,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             return;
         }
         boolean refreshLogin = newIntent.getBooleanExtra(IntentsFactory.ARG_REFRESH_LOGIN, false);
-        if (refreshLogin) updateDrawerOnLogin();
+        if (refreshLogin) {
+            updateDrawerOnLogin();
+        }
         try {
-            Fragment fragment = (Fragment) fragmentClass.newInstance();
+            fragment = (Fragment) fragmentClass.newInstance();
             fragment.setArguments(newIntent.getExtras());
+            if (fragment instanceof TitleFragment) {
+                setTitle(((TitleFragment) fragment).getFragmentTitle());
+            } else {
+                setTitle(fragmentClass.getSimpleName());
+            }
             getFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment, MAIN_FRAGMENT_TAG)
                     .commit();
@@ -174,10 +183,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
+        //if (item.isChecked()) return false;
 
-        switch (id) {
+        switch (item.getItemId()) {
             case R.id.nav_logout:
                 //show yes/no alert dialog
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -193,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 break;
             case R.id.nav_login:
-                LoginDialogFragment.newInstance().show(getFragmentManager(), "LoginDialogFragment");
+                LoginDialogFragment.newInstance(this).show(getFragmentManager(), "LoginDialogFragment");
 
                 break;
             case R.id.nav_books: {
@@ -224,5 +232,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public <T> T tryGetListener(Class<T> listenerClass) {
+        return ListenerSupplierHelper.tryGetListenerFromObjects(listenerClass, fragment);
     }
 }

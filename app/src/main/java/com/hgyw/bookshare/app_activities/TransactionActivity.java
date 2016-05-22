@@ -15,7 +15,7 @@ import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.app_drivers.SimpleTextWatcher;
 import com.hgyw.bookshare.app_drivers.Utility;
 import com.hgyw.bookshare.app_fragments.CartFragment;
-import com.hgyw.bookshare.app_fragments.IntentsFactory;
+import com.hgyw.bookshare.app_drivers.IntentsFactory;
 import com.hgyw.bookshare.entities.Transaction;
 import com.hgyw.bookshare.exceptions.OrdersTransactionException;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;

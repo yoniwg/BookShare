@@ -15,7 +15,7 @@
         android:layout_marginRight="10dp" />
 
     <TextView
-        android:id="@+id/supplierName"
+        android:id="@+id/bookAuthor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Card title"
@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:text="Card description"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:layout_below="@+id/supplierName"
+        android:layout_below="@+id/bookAuthor"
         android:layout_toEndOf="@+id/userThumbnail" />
 
     <TextView

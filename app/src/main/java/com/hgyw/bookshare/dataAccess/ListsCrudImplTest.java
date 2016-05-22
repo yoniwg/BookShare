@@ -35,7 +35,7 @@ class ListsCrudImplTest {
         user = new Customer();
 
         user.setId(0);
-        user.setCredentials(Credentials.create("root", "1234"));
+        user.setCredentials(new Credentials("root", "1234"));
         user.setFirstName("Haim");
         user.setLastName("Greenstein");
         user.setAddress("Petach Tikve");

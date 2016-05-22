@@ -6,5 +6,9 @@
         android:icon="@drawable/cart"
         android:title="@string/search"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_edit_book"
+        android:title="@string/edit"
+        app:showAsAction="ifRoom|withText" />
 
 </menu>

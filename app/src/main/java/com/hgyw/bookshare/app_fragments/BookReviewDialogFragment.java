@@ -5,34 +5,28 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
 import com.hgyw.bookshare.R;
-import com.hgyw.bookshare.app_activities.EntityActivity;
+import com.hgyw.bookshare.app_drivers.ListenerSupplierHelper;
 import com.hgyw.bookshare.entities.BookReview;
 import com.hgyw.bookshare.entities.Rating;
-
-import java.util.Objects;
 
 /**
  * Created by haim7 on 13/05/2016.
  */
 
 /**
- * Returns result by onActivityResult to target fragment with number of stars of rate
- * or DialogFragment.CANCELED if it was canceled.
+ * Throws ClassCastException if the activity cannot supply BookResultListener (by itself or by ListenerSupplier).
  */
 public class BookReviewDialogFragment extends DialogFragment {
 
     private final static String ARG_DIALOG_OLD_BOOK_REVIEW = "dialogOldBookReview";
     private final static String ARG_DIALOG_NEW_RATING = "dialogOldViewRating";
-    private BookReview bookReview;
     private Rating oldRating;
     private BookReviewResultListener resultListener;
+    private BookReview bookReview;
 
     /**
      * Factory method for this fragment class.
@@ -52,33 +46,26 @@ public class BookReviewDialogFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        try {
-            resultListener =
-                    (BookReviewResultListener) getFragmentManager().findFragmentByTag(EntityActivity.ENTITY_FRAGMENT_TAG);
-            Objects.requireNonNull(resultListener);
-        } catch (NullPointerException | ClassCastException e) {
-            throw new RuntimeException("Cannot find the target fragment and cast it to BookReviewResultListener.", e);
-        }
-    }
-
-    public View onCreateView2(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.dialog_book_review, container, false);
-    }
-
-    public void onViewCreated2(View view, Bundle savedInstanceState) {
-        bookReview = getArguments() == null ? null : (BookReview) getArguments().getSerializable(ARG_DIALOG_OLD_BOOK_REVIEW);
-        if (bookReview == null) throw new IllegalArgumentException("The BookReviewDialogFragment should accept not-null bookReview object.");;
-        float newViewRating = getArguments().getFloat(ARG_DIALOG_NEW_RATING, 0);
-        oldRating = bookReview.getRating();
-        bookReview.setRating(Rating.of(newViewRating));
-        ObjectToViewAppliers.apply(view, bookReview);
+        resultListener = ListenerSupplierHelper.getListenerFromActivity(BookReviewResultListener.class, getActivity());
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        View view = onCreateView2(getActivity().getLayoutInflater(), null, savedInstanceState);
-        onViewCreated2(view, savedInstanceState);
+        // inflate view
+        View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_book_review, null, false);
 
+        // retrieve fragment's arguments
+        bookReview = getArguments() == null ? null : (BookReview) getArguments().getSerializable(ARG_DIALOG_OLD_BOOK_REVIEW);
+        if (bookReview == null) throw new IllegalArgumentException("The BookReviewDialogFragment should accept not-null bookReview object.");;
+        // we save the book-review instance to update it at the end, and save the values that the view doesn't change, like id.
+        float newViewRating = getArguments().getFloat(ARG_DIALOG_NEW_RATING, 0);
+        oldRating = bookReview.getRating();
+        bookReview.setRating(Rating.of(newViewRating));
+
+        // update view data
+        ObjectToViewAppliers.apply(view, bookReview);
+
+        // create dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         return builder.setTitle(R.string.rating_box_title)
                 .setView(view)

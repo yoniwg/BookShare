@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Large Text"
-        android:id="@+id/userFullName"
+        android:id="@+id/bookAuthor"
         android:layout_above="@+id/reviewRating"
         android:layout_alignEnd="@+id/reviewRating"
         android:layout_toEndOf="@+id/userThumbnail"

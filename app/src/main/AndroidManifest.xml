@@ -33,6 +33,7 @@
         <activity android:name=".app_activities.TransactionActivity"/>
         <activity android:name=".app_activities.UserRegistrationActivity"/>
         <activity android:name=".app_activities.UserEditActivity"/>
+        <activity android:name=".app_activities.BookEditActivity"/>
     </application>
 
 </manifest>
