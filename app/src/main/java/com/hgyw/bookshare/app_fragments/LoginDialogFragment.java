@@ -40,7 +40,7 @@ public class LoginDialogFragment extends DialogFragment {
      */
     public static LoginDialogFragment newInstance(Context context) {
         String username = "";
-        username = Utility.getSharedPreferences(context).getString(PREFERENCE_KEY_USERNAME, "");
+        username = Utility.loadCredentials(context).getUsername();
         return newInstance(new Credentials(username,""));
     }
 

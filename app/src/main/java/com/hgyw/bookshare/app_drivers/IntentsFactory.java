@@ -154,6 +154,9 @@ public class IntentsFactory {
     }
 
     public static Intent supplierBooksIntent(Context context) {
-        return new Intent(context, SupplierBooksListFragment.class);
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.putExtra(ARG_FRAGMENT_CLASS, SupplierBooksListFragment.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        return intent;
     }
 }

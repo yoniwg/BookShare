@@ -26,8 +26,8 @@ public class SupplierBooksListFragment extends ListFragment implements TitleFrag
 
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
         SupplierAccess sAccess = AccessManagerFactory.getInstance().getSupplierAccess();
         List<BookSupplier> bookSupplierList = sAccess.retrieveMyBooks();

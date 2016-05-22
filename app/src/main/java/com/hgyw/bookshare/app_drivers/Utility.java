@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.entities.Book;
+import com.hgyw.bookshare.entities.Credentials;
 import com.hgyw.bookshare.entities.ImageEntity;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
@@ -33,6 +34,9 @@ import java.util.Date;
  * Created by haim7 on 11/05/2016.
  */
 public class Utility {
+
+    private static final String PREFERENCE_USERNAME = "preference_username";
+    private static final String PREFERENCE_PASSWORD = "preference_password";
 
     /**
      * @param idsClass
@@ -210,5 +214,18 @@ public class Utility {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         newImage.compress(Bitmap.CompressFormat.JPEG, 50, out);
         return out.toByteArray();
+    }
+
+    public static Credentials loadCredentials(Context context){
+        SharedPreferences sharedPreferences = getSharedPreferences(context);
+        String username = sharedPreferences.getString(PREFERENCE_USERNAME,"");
+        String password = sharedPreferences.getString(PREFERENCE_PASSWORD,"");
+        return new Credentials(username, password);
+    }
+
+    public static void saveCredentials(Context context, Credentials credentials){
+        getSharedPreferences(context).edit()
+                .putString(PREFERENCE_USERNAME, credentials.getUsername())
+                .putString(PREFERENCE_PASSWORD, credentials.getPassword()).commit();
     }
 }
