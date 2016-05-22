@@ -104,20 +104,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 navigationView.getMenu().findItem(R.id.nav_login).setVisible(true);
                 navigationView.getMenu().findItem(R.id.nav_logout).setVisible(false);
                 navigationView.getMenu().findItem(R.id.nav_cart).setVisible(false);
-                navigationView.getMenu().findItem(R.id.nav_my_orders).setVisible(false);
+                navigationView.getMenu().findItem(R.id.nav_customer_orders).setVisible(false);
                 navigationView.getMenu().findItem(R.id.nav_user_details).setVisible(false);
                 break;
             case CUSTOMER:
                 navigationView.getMenu().findItem(R.id.nav_login).setVisible(false);
                 navigationView.getMenu().findItem(R.id.nav_logout).setVisible(true);
                 navigationView.getMenu().findItem(R.id.nav_cart).setVisible(true);
-                navigationView.getMenu().findItem(R.id.nav_my_orders).setVisible(true);
+                navigationView.getMenu().findItem(R.id.nav_customer_orders).setVisible(true);
                 break;
             case SUPPLIER:
                 navigationView.getMenu().findItem(R.id.nav_login).setVisible(false);
                 navigationView.getMenu().findItem(R.id.nav_logout).setVisible(true);
                 navigationView.getMenu().findItem(R.id.nav_cart).setVisible(false);
-                navigationView.getMenu().findItem(R.id.nav_my_orders).setVisible(false);
+                navigationView.getMenu().findItem(R.id.nav_customer_orders).setVisible(false);
                 break;
         }
     }
@@ -214,7 +214,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(intent);
                 break;
             }
-            case R.id.nav_my_orders:
+            case R.id.nav_customer_orders:
                 Intent intent = IntentsFactory.newOldOrderIntent(this);
                 startActivity(intent);
                 break;
@@ -224,6 +224,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 } else {
                     startActivity(IntentsFactory.supplierOrdersIntent(this));
                 }
+                break;
+            case R.id.nav_suppliers_books:
+                startActivity(IntentsFactory.supplierBooksIntent(this));
                 break;
             case R.id.nav_user_details:
                 startActivity(IntentsFactory.userDetailsIntent(this));

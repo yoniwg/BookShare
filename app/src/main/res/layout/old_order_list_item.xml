@@ -58,7 +58,7 @@
         android:id="@+id/userFullName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Supplier name"
+        android:text="Supplier/Customer name"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_below="@+id/bookAuthor"
         android:layout_toEndOf="@+id/bookImage"

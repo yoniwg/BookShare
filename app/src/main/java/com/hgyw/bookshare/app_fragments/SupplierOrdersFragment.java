@@ -45,8 +45,8 @@ public class SupplierOrdersFragment extends ListFragment implements TitleFragmen
                 ObjectToViewAppliers.apply(view, book);
                 Transaction transaction = sAccess.retrieve(Transaction.class, order.getTransactionId());
                 ObjectToViewAppliers.apply(view, transaction);
-                User supplier = sAccess.retrieve(User.class, bookSupplier.getSupplierId());
-                ObjectToViewAppliers.apply(view, supplier);
+                User customer = sAccess.retrieve(User.class, transaction.getCustomerId());
+                ObjectToViewAppliers.apply(view, customer);
             }
         });
         setEmptyText(getString(R.string.no_items_list_view));

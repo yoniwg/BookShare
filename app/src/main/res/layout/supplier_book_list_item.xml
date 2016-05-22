@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp">
+
+    <ImageView
+        android:id="@+id/bookImage"
+        android:src="@drawable/image_book"
+        android:layout_width="72dip"
+        android:layout_height="72dip"
+        android:scaleType="centerCrop"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="false"
+        android:layout_marginRight="5dp"
+        android:layout_marginLeft="5dp" />
+
+    <TextView
+        android:id="@+id/bookName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Book name"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_alignTop="@+id/bookImage"
+        android:layout_toEndOf="@+id/bookImage" />
+
+    <TextView
+        android:id="@+id/bookSupplierUnitPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="price"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_below="@+id/bookName"
+        android:layout_toEndOf="@+id/bookImage" />
+
+    <TextView
+        android:id="@+id/bookSupplierAmountAvailable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Amount Available"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_below="@+id/bookSupplierUnitPrice"
+        android:layout_toEndOf="@+id/bookImage" />
+
+</RelativeLayout>

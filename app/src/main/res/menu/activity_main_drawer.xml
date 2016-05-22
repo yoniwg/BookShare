@@ -13,7 +13,7 @@
             android:title="@string/cart"
             android:visible="false"/>
         <item
-            android:id="@+id/nav_my_orders"
+            android:id="@+id/nav_customer_orders"
             android:icon="@drawable/my_orders"
             android:title="@string/my_orders"
             android:visible="false"/>
@@ -30,6 +30,9 @@
             android:title="@string/user_details"
             android:icon="@drawable/edit_male_user"
             android:checkable="false" />
+        <item
+            android:id="@+id/nav_suppliers_books"
+            android:title="@string/my_books"/>
         <item
             android:id="@+id/nav_login"
             android:icon="@drawable/login"

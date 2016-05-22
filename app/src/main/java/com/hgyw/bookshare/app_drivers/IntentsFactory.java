@@ -140,4 +140,8 @@ public class IntentsFactory {
         intent.setData(uriOf(IdReference.of(Book.class, id)));
         return intent;
     }
+
+    public static Intent supplierBooksIntent(Context context) {
+        return new Intent(context, SupplierBooksListFragment.class);
+    }
 }
