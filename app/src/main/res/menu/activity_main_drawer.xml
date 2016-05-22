@@ -1,42 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
     <group android:checkableBehavior="single"
-        android:id="@+id/nav_group_options">
+        android:id="@+id/nav_general_options">
         <item
             android:id="@+id/nav_books"
             android:icon="@drawable/books_list"
-            android:title="@string/books" />
+            android:title="@string/books"/>
+    </group>
+    <group android:checkableBehavior="single"
+        android:id="@+id/nav_customer_options"
+        android:visible="false">
         <item
             android:id="@+id/nav_cart"
             android:icon="@drawable/cart"
-            android:title="@string/cart"
-            android:visible="false"/>
+            android:title="@string/cart"/>
         <item
             android:id="@+id/nav_customer_orders"
             android:icon="@drawable/my_orders"
-            android:title="@string/my_orders"
-            android:visible="false"/>
+            android:title="@string/my_orders"/>
+    </group>
+    <group android:checkableBehavior="single"
+        android:id="@+id/nav_supplier_options"
+        android:visible="false">
+        <item
+            android:id="@+id/nav_my_books"
+            android:icon="@drawable/cart"
+            android:title="@string/cart"/>
         <item
             android:id="@+id/nav_supplier_orders"
             android:icon="@drawable/my_orders"
-            android:title="@string/orders"
-            android:visible="true"/>
+            android:title="@string/orders"/>
+        <item
+            android:id="@+id/nav_suppliers_books"
+            android:title="@string/my_books"/>
     </group>
     <group android:checkableBehavior="single"
-        android:id="@+id/nav_group_management">
+        android:id="@+id/nav_logged_in_management"
+        android:visible="false">
         <item
             android:id="@+id/nav_user_details"
             android:title="@string/user_details"
             android:icon="@drawable/edit_male_user"
-            android:checkable="false" />
-        <item
-            android:id="@+id/nav_suppliers_books"
-            android:title="@string/my_books"/>
-        <item
-            android:id="@+id/nav_login"
-            android:icon="@drawable/login"
-            android:title="@string/login"
             android:checkable="false"/>
         <item
             android:id="@+id/nav_logout"
@@ -44,5 +48,13 @@
             android:title="@string/logout"
             android:checkable="false"/>
     </group>
-
+    <group android:checkableBehavior="single"
+        android:id="@+id/nav_logged_out_management"
+        android:visible="false">
+        <item
+            android:id="@+id/nav_login"
+            android:icon="@drawable/login"
+            android:title="@string/login"
+            android:checkable="false"/>
+    </group>
 </menu>

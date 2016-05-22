@@ -101,23 +101,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (accessManager.getCurrentUserType()) {
             case GUEST:
                 navUserName.setText(R.string.guest);
-                navigationView.getMenu().findItem(R.id.nav_login).setVisible(true);
-                navigationView.getMenu().findItem(R.id.nav_logout).setVisible(false);
-                navigationView.getMenu().findItem(R.id.nav_cart).setVisible(false);
-                navigationView.getMenu().findItem(R.id.nav_customer_orders).setVisible(false);
-                navigationView.getMenu().findItem(R.id.nav_user_details).setVisible(false);
+                navigationView.getMenu().setGroupVisible(R.id.nav_general_options, true);
+                navigationView.getMenu().setGroupVisible(R.id.nav_logged_out_management, true);
                 break;
             case CUSTOMER:
-                navigationView.getMenu().findItem(R.id.nav_login).setVisible(false);
-                navigationView.getMenu().findItem(R.id.nav_logout).setVisible(true);
-                navigationView.getMenu().findItem(R.id.nav_cart).setVisible(true);
-                navigationView.getMenu().findItem(R.id.nav_customer_orders).setVisible(true);
+                navigationView.getMenu().setGroupVisible(R.id.nav_customer_options, true);
+                navigationView.getMenu().setGroupVisible(R.id.nav_logged_in_management, true);
                 break;
             case SUPPLIER:
-                navigationView.getMenu().findItem(R.id.nav_login).setVisible(false);
-                navigationView.getMenu().findItem(R.id.nav_logout).setVisible(true);
-                navigationView.getMenu().findItem(R.id.nav_cart).setVisible(false);
-                navigationView.getMenu().findItem(R.id.nav_customer_orders).setVisible(false);
+                navigationView.getMenu().setGroupVisible(R.id.nav_supplier_options, true);
+                navigationView.getMenu().setGroupVisible(R.id.nav_logged_in_management, true);
                 break;
         }
     }
