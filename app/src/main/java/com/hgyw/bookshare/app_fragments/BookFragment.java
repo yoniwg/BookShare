@@ -31,17 +31,16 @@ import com.hgyw.bookshare.entities.UserType;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.CustomerAccess;
 
-import java.util.IllegalFormatException;
 import java.util.List;
 
 public class BookFragment extends EntityFragment implements BookReviewDialogFragment.BookReviewResultListener {
 
 
-    private static final int REQUEST_CODE_BOOK_UPDATED = 1;
     private RatingBar userRatingBar;
     private boolean isCustomer;
     private Book book;
     private BookReview userBookReview;
+    private View view;
 
     public BookFragment() {
         super(R.layout.fragment_book, R.menu.menu_book, R.string.book_fragment_title);
@@ -60,11 +59,8 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
         super.onViewCreated(view, savedInstanceState);
 
         // set view of book details
-        View bookContainer = view.findViewById(R.id.bookContainer);
-        book = access.retrieve(Book.class, entityId);
-        ObjectToViewAppliers.apply(bookContainer, book);
-        BookSummary bookSummary = access.getBookSummary(book);
-        ObjectToViewAppliers.apply(bookContainer, bookSummary);
+        this.view = view;
+        updateBookDeatilsView();
 
         // set view of user review
         View userReviewContainer = view.findViewById(R.id.userReviewContainer);
@@ -123,7 +119,8 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
     private View createBookSupplierView(BookSupplier bookSupplier) {
         User supplier = access.retrieve(User.class, bookSupplier.getSupplierId());
         View supplierView = getActivity().getLayoutInflater().inflate(R.layout.book_supplier_list_item, null);
-        supplierView.setOnClickListener(v -> startActivity(IntentsFactory.newEntityIntent(getActivity(), supplier)));
+        Intent intent = IntentsFactory.newEntityIntent(getActivity(), supplier);
+        supplierView.setOnClickListener(v -> startActivityForResult(intent, IntentsFactory.CODE_ENTITY_UPDATED));
         ObjectToViewAppliers.apply(supplierView, bookSupplier);
         ObjectToViewAppliers.apply(supplierView, supplier);
         Button buyButton = (Button) supplierView.findViewById(R.id.buy_button);
@@ -176,12 +173,20 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
         userRatingBar.setRating(userBookReview.getRating().getStars());
     }
 
+    private void updateBookDeatilsView() {
+        View bookContainer = view.findViewById(R.id.bookContainer);
+        book = access.retrieve(Book.class, entityId);
+        ObjectToViewAppliers.apply(bookContainer, book);
+        BookSummary bookSummary = access.getBookSummary(book);
+        ObjectToViewAppliers.apply(bookContainer, bookSummary);
+
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CODE_BOOK_UPDATED && resultCode == Activity.RESULT_OK) {
-            try {
-
-            } catch (IllegalFormatException e) {}
+        if (requestCode == IntentsFactory.CODE_ENTITY_UPDATED && resultCode == Activity.RESULT_OK) {
+            updateBookDeatilsView();
         }
     }
+
 }

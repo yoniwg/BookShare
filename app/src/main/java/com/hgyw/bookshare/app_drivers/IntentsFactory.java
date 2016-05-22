@@ -1,19 +1,29 @@
 package com.hgyw.bookshare.app_drivers;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
 import com.annimon.stream.Stream;
-import com.hgyw.bookshare.app_activities.*;
-import com.hgyw.bookshare.app_fragments.*;
+import com.hgyw.bookshare.app_activities.BookEditActivity;
+import com.hgyw.bookshare.app_activities.EntityActivity;
+import com.hgyw.bookshare.app_activities.MainActivity;
+import com.hgyw.bookshare.app_activities.TransactionActivity;
+import com.hgyw.bookshare.app_activities.UserEditActivity;
+import com.hgyw.bookshare.app_activities.UserRegistrationActivity;
+import com.hgyw.bookshare.app_fragments.BookFragment;
+import com.hgyw.bookshare.app_fragments.BooksListFragment;
+import com.hgyw.bookshare.app_fragments.CartFragment;
+import com.hgyw.bookshare.app_fragments.EntityFragment;
+import com.hgyw.bookshare.app_fragments.OldOrdersFragment;
+import com.hgyw.bookshare.app_fragments.SupplierBooksListFragment;
+import com.hgyw.bookshare.app_fragments.SupplierFragment;
+import com.hgyw.bookshare.app_fragments.SupplierOrdersFragment;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookQuery;
 import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.entities.IdReference;
 import com.hgyw.bookshare.entities.User;
-import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 
 import java.util.HashMap;
 import java.util.IllegalFormatException;
@@ -29,9 +39,11 @@ public class IntentsFactory {
     // public static final String ARG_CART = "argCart";
     public static final String ARG_USER_DETAILS = "userDetails";
     public static final String ARG_REFRESH_LOGIN = "refreshLogin";
-    public static final int GET_IMAGE_CODE = 0x44;
+    public static final int CODE_GET_IMAGE = 0x44;
+    public static final int CODE_ENTITY_UPDATED = 0x45;
 
     private static final Map<Class<? extends Entity>, Class<? extends EntityFragment>> entityFragmentMap = new HashMap<>();
+
     static {
         entityFragmentMap.put(Book.class, BookFragment.class);
         entityFragmentMap.put(User.class, SupplierFragment.class);

@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.DrawableRes;
@@ -183,11 +182,11 @@ public class Utility {
                 .setMessage(R.string.camera_galery_choose_message)
                 .setPositiveButton(R.string.camera, (dialog, which) -> {
                     Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    activity.startActivityForResult(takePicture, IntentsFactory.GET_IMAGE_CODE);
+                    activity.startActivityForResult(takePicture, IntentsFactory.CODE_GET_IMAGE);
                 })
                 .setNegativeButton(R.string.gallery, (dialog, which) -> {
                     Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    activity.startActivityForResult(pickPhoto, IntentsFactory.GET_IMAGE_CODE);
+                    activity.startActivityForResult(pickPhoto, IntentsFactory.CODE_GET_IMAGE);
                 })
                 .create().show();
     }
