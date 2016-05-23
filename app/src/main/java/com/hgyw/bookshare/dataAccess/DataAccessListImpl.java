@@ -145,8 +145,8 @@ class DataAccessListImpl extends ListsCrudImpl implements DataAccess {
         return bookSummary;
     }
 
-    public <T extends Entity> Stream<T> streamAllNonDeleted(Class<? extends T> entityType) {
-        return super.streamAll(entityType).filter(e -> !e.isDeleted());
+    public <T extends Entity> Stream<T> streamAllNonDeleted(Class<T> entityType) {
+        return streamAll(entityType).filter(e -> !e.isDeleted());
     }
 
     private boolean performFilterQuery(Book book, BookQuery bookQuery) {
@@ -166,4 +166,14 @@ class DataAccessListImpl extends ListsCrudImpl implements DataAccess {
         return (fromValue==null || value.compareTo(fromValue) >= 0)
                 && (toValue==null || value.compareTo(toValue) < 0);
     }
+
+    @Override
+    public Entity retrieve(IdReference idReference) {
+        return retrieve(idReference.getEntityType(), idReference.getId());
+    }
+
+    public <T extends Entity, R extends Entity> Function<T, R> retrieving(Class<R> referredClass, Function<T, Long> referenceFunction) {
+        return t -> retrieve(referredClass, referenceFunction.apply(t));
+    }
+
 }

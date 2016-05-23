@@ -18,8 +18,9 @@ import java.util.List;
 public class Test {
 
     public static void test(AccessManager accessManager) {
-
       //  DataAccess da = DataAccessFactory.getInstance();
+
+        if (accessManager.getCurrentUserType() !=UserType.GUEST) accessManager.signOut();
 
         SupplierAccess sAccess = null;
         CustomerAccess cAccess = null;
@@ -323,10 +324,10 @@ public class Test {
 
         );
 
-        System.out.println("\n **************** Database Summury ***************");
+        /*System.out.println("\n **************** Database Summury ***************");
         for (Class<? extends Entity> c : classes) System.out.println(
                 " **** " + c.getSimpleName() + " List" + " **** " + "\n * "
                         + dataAccess.streamAll(c).map(Object::toString).collect(Collectors.joining("\n * "))
-        );
+        );*/
     }
 }

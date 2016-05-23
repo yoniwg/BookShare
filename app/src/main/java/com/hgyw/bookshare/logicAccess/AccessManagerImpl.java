@@ -2,6 +2,7 @@ package com.hgyw.bookshare.logicAccess;
 
 import com.hgyw.bookshare.dataAccess.DataAccess;
 import com.hgyw.bookshare.dataAccess.DataAccessFactory;
+import com.hgyw.bookshare.dataAccess.DelayDataAccess;
 import com.hgyw.bookshare.entities.Credentials;
 import com.hgyw.bookshare.entities.Guest;
 import com.hgyw.bookshare.entities.User;
@@ -15,7 +16,7 @@ enum AccessManagerImpl implements AccessManager {
     INSTANCE;
 
     private final User guest = new Guest();
-    private final DataAccess crud = DataAccessFactory.getInstance();
+    private final DataAccess dataAccess = DataAccessFactory.getInstance();
     private GeneralAccess currentAccess;
     private User currentUser;
 
@@ -26,7 +27,7 @@ enum AccessManagerImpl implements AccessManager {
 
     @Override
     public boolean isUserNameTaken(String username) {
-        return crud.isUsernameTaken(username);
+        return dataAccess.isUsernameTaken(username);
     }
 
     @Override
@@ -40,17 +41,17 @@ enum AccessManagerImpl implements AccessManager {
         if (user.getCredentials().getUsername().trim().isEmpty()) {
             throw new WrongLoginException(WrongLoginException.Issue.USERNAME_EMPTY);
         }
-        if (crud.isUsernameTaken(user.getCredentials().getUsername())) {
+        if (dataAccess.isUsernameTaken(user.getCredentials().getUsername())) {
             throw new WrongLoginException(WrongLoginException.Issue.USERNAME_TAKEN);
         }
-        crud.create(user);
+        dataAccess.create(user);
         signIn(user.getCredentials());
     }
 
     @Override
     public synchronized void signIn(Credentials credentials) throws WrongLoginException {
         if (currentUser != guest) throw new IllegalStateException("There is a user that has already been signed in.");
-        User newUser = crud.retrieveUserWithCredentials(credentials).orElseThrow(()->
+        User newUser = dataAccess.retrieveUserWithCredentials(credentials).orElseThrow(()->
             new WrongLoginException(WrongLoginException.Issue.WRONG_USERNAME_OR_PASSWORD)
         );
         switchAccess(newUser);
@@ -59,13 +60,13 @@ enum AccessManagerImpl implements AccessManager {
     private synchronized void switchAccess(User newUser) {
         switch (newUser.getUserType()) {
             case GUEST:
-                currentAccess = new GeneralAccessImpl(crud, newUser);
+                currentAccess = new GeneralAccessImpl(dataAccess, newUser);
                 break;
             case CUSTOMER:
-                currentAccess = new CustomerAccessImpl(crud, newUser);
+                currentAccess = new CustomerAccessImpl(dataAccess, newUser);
                 break;
             case SUPPLIER:
-                currentAccess = new SupplierAccessImpl(crud, newUser);
+                currentAccess = new SupplierAccessImpl(dataAccess, newUser);
                 break;
         }
         currentUser = newUser;

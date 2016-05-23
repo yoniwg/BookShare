@@ -11,6 +11,7 @@ import android.widget.ListView;
 
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.app_drivers.ApplyObjectAdapter;
+import com.hgyw.bookshare.app_drivers.ApplyTask;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookSupplier;
@@ -40,6 +41,8 @@ public class SupplierBooksListFragment extends ListFragment implements TitleFrag
                 ObjectToViewAppliers.apply(view, bs);
                 Book book = sAccess.retrieve(Book.class, bs.getBookId());
                 ObjectToViewAppliers.apply(view, book);
+                //ApplyTask.toBiConsumer(book -> sAccess.retrieve(Book.class, bs.getBookId()), ObjectToViewAppliers::apply, view).executeAsync(bs);
+
             }
         });
         setEmptyText(getString(R.string.no_items_list_view));

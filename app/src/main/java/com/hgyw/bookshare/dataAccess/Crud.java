@@ -44,22 +44,7 @@ interface Crud {
      * @return Entity item of class T
      * @throws java.util.NoSuchElementException If database doesn't contain item of this entity and id.
      */
-    <T extends Entity> T retrieve(Class<? extends T> entityClass, long id);
+    <T extends Entity> T retrieve(Class<T> entityClass, long id);
 
-    /**
-     * Equivalent to retrieve(item.getClass(), item.getId()).
-     * @param idReference The item refference to retrieve
-     * @return Entity item of class T
-     * @throws java.util.NoSuchElementException If database doesn't contain item of this entity and id.
-     */
-    Entity retrieve(IdReference idReference);
 
-    /**
-     * Stream all items of specified entity.
-     * @param <T> The type of entity
-     * @return Stream of all entities.
-     */
-    <T extends Entity> Stream<T> streamAll(Class<? extends T> entityType);
-
-    <T extends Entity, R extends Entity> Function<T, R> retrieving(Class<R> referredClass, Function<T, Long> referenceFunction);
 }

@@ -86,22 +86,22 @@ class ListsCrudImpl implements Crud {
         return retrievedItem;
     }
 
-    public <T extends Entity> Stream<T> streamAll(Class<? extends T> entityType) {
+    /**
+     * Stream all items of specified entity.
+     * @param <T> The type of entity
+     * @return Stream of all entities.
+     */
+    public <T extends Entity> Stream<T> streamAll(Class<T> entityType) {
         List<Entity> entityList = entitiesMap.get(entityType);
         if (entityList != null) return Stream.of(entityList).map(e ->  (T) e.clone());
         return Stream.empty();
     }
 
     @Override
-    public <T extends Entity> T retrieve(Class<? extends T> entityClass, long entityId) {
+    public <T extends Entity> T retrieve(Class<T> entityClass, long entityId) {
         return (T) retrieveOriginalEntity(entityClass, entityId).clone();
     }
 
-
-    @Override
-    public Entity retrieve(IdReference idReference) {
-        return retrieve(idReference.getEntityType(), idReference.getId());
-    }
 
     private <T extends Entity> T retrieveOriginalEntity(Class<? extends T> entityClass, long id) {
         List<Entity> entityList = entitiesMap.get(entityClass);
@@ -117,9 +117,5 @@ class ListsCrudImpl implements Crud {
         return new NoSuchElementException("No entity " + entityClass.getSimpleName() + " with ID " + id);
     }
 
-    @Override
-    public <T extends Entity, R extends Entity> Function<T, R> retrieving(Class<R> referredClass, Function<T, Long> referenceFunction) {
-        return t -> retrieve(referredClass, referenceFunction.apply(t));
-    }
 
 }

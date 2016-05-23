@@ -1,8 +1,5 @@
 package com.hgyw.bookshare.entities;
 
-import com.google.common.base.Function;
-
-import java.util.Comparator;
 import java.util.Objects;
 
 /**

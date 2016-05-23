@@ -1,6 +1,7 @@
 package com.hgyw.bookshare.app_fragments;
 
 import android.app.ListFragment;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -10,8 +11,10 @@ import android.widget.ListView;
 
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.app_drivers.ApplyObjectAdapter;
+import com.hgyw.bookshare.app_drivers.ApplyTask;
 import com.hgyw.bookshare.app_drivers.IntentsFactory;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
+import com.hgyw.bookshare.app_drivers.Utility;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookQuery;
 import com.hgyw.bookshare.entities.BookSummary;
@@ -44,8 +47,7 @@ public class BooksListFragment extends ListFragment implements TitleFragment {
             protected void applyOnView(View view, int position) {
                 Book book = getItem(position);
                 ObjectToViewAppliers.apply(view, book);
-                BookSummary summary = access.getBookSummary(book);
-                ObjectToViewAppliers.apply(view, summary);
+                ApplyTask.toBiConsumer(access::getBookSummary, ObjectToViewAppliers::apply, view).executeAsync(book);
             }
         };
         setListAdapter(adapter);

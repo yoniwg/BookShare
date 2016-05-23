@@ -9,7 +9,7 @@ public class DataAccessFactory {
 
     private static DatabaseType currentDB = DatabaseType.LISTS;
 
-    private static DataAccess crud;
+    private static DataAccess dataAccess;
 
     private DataAccessFactory() {}
 
@@ -17,10 +17,10 @@ public class DataAccessFactory {
      * @return
      */
     static synchronized public DataAccess getInstance(){
-        if (crud == null) {
+        if (dataAccess == null) {
             switch (currentDB) {
                 case LISTS:
-                    crud = new DataAccessListImpl();
+                    dataAccess = new DataAccessListImpl();
                    // new CrudTest((ListsCrudImpl) crud); // test.
                     break;
                 case SQL_LITE:
@@ -30,7 +30,9 @@ public class DataAccessFactory {
                     //TODO
                     break;
             }
+            //dataAccess = new DelayDataAccess(dataAccess); // delay test
         }
-        return crud;
+        return dataAccess;
+
     }
 }

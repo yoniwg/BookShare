@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.LayoutRes;
@@ -20,8 +21,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.annimon.stream.function.BiConsumer;
-import com.annimon.stream.function.BiFunction;
-import com.annimon.stream.function.Function;
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.Credentials;
@@ -82,10 +81,19 @@ public class Utility {
             return true;
         }
         // else set the image
-        ImageEntity imageEntity = AccessManagerFactory.getInstance().getGeneralAccess().retrieve(ImageEntity.class, entityImageId);
-        byte[] bytes = imageEntity.getBytes();
-        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-        imageView.setImageBitmap(bitmap);
+        new AsyncTask<Void, Void, Bitmap>() {
+            @Override
+            protected Bitmap doInBackground(Void... params) {
+                ImageEntity imageEntity = AccessManagerFactory.getInstance().getGeneralAccess().retrieve(ImageEntity.class, entityImageId);
+                byte[] bytes = imageEntity.getBytes();
+                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                return bitmap;
+            }
+            @Override
+            protected void onPostExecute(Bitmap bitmap) {
+                imageView.setImageBitmap(bitmap);
+            }
+        }.execute();
         return true;
     }
 

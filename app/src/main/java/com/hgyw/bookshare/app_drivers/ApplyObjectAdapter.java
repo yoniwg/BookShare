@@ -41,11 +41,12 @@ public abstract class ApplyObjectAdapter<T> extends ArrayAdapter<T> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View view;
-        if ((view = convertView) == null) {
+        View view = convertView;
+        if (view == null) {
             view = inflater.inflate(itemLayoutId, parent, false);
         }
-        applyOnView(view, position);
+        final View finalView = view;
+        applyOnView(finalView, position);
         return view;
     }
 

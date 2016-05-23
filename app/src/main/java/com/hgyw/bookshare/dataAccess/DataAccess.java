@@ -1,6 +1,7 @@
 package com.hgyw.bookshare.dataAccess;
 
 import com.annimon.stream.Optional;
+import com.annimon.stream.function.Function;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookQuery;
 import com.hgyw.bookshare.entities.BookSummary;
@@ -17,6 +18,14 @@ import java.util.List;
  * Created by haim7 on 24/03/2016.
  */
 public interface DataAccess extends Crud {
+
+    /**
+     * Equivalent to retrieve(item.getClass(), item.getId()).
+     * @param idReference The item refference to retrieve
+     * @return Entity item of class T
+     * @throws java.util.NoSuchElementException If database doesn't contain item of this entity and id.
+     */
+    Entity retrieve(IdReference idReference);
 
     /**
      * Retrieve user with credentials match the credentials parameters.
@@ -79,4 +88,6 @@ public interface DataAccess extends Crud {
     <T extends Entity> List<T> findEntityReferTo(Class<T> referringClass, IdReference... referredItems);
 
     BookSummary getBookSummary(Book book);
+
+
 }

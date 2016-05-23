@@ -1,11 +1,5 @@
 package com.hgyw.bookshare.logicAccess;
 
-import android.databinding.tool.util.L;
-
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-
 import com.hgyw.bookshare.dataAccess.DataAccess;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookSupplier;
@@ -14,6 +8,10 @@ import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.OrderStatus;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.entities.UserType;
+
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by haim7 on 26/03/2016.
