@@ -4,7 +4,7 @@
     <item
         android:id="@+id/action_cart"
         android:icon="@drawable/cart"
-        android:title="@string/search"
+        android:title="@string/cart"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_edit_book"

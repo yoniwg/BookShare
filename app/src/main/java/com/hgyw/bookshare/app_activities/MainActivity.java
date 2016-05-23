@@ -24,8 +24,10 @@ import com.hgyw.bookshare.app_drivers.IntentsFactory;
 import com.hgyw.bookshare.app_fragments.LoginDialogFragment;
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.app_fragments.TitleFragment;
+import com.hgyw.bookshare.entities.Credentials;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.entities.UserType;
+import com.hgyw.bookshare.exceptions.WrongLoginException;
 import com.hgyw.bookshare.logicAccess.AccessManager;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 
@@ -43,16 +45,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     static {
         fragmentNavMap.put(BooksListFragment.class, R.id.nav_books);
         fragmentNavMap.put(CartFragment.class, R.id.nav_cart);
-        fragmentNavMap.put(CartFragment.class, R.id.nav_cart);
+        // TODO more...
     }
 
     private Fragment fragment;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         accessManager = AccessManagerFactory.getInstance();
+        Credentials savedCredentials = Utility.loadCredentials(this);
+        try {
+            if (!savedCredentials.getPassword().isEmpty()) {
+                accessManager.signIn(savedCredentials);
+            }
+        } catch (WrongLoginException e) {}
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -71,7 +78,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Integer navItemId = fragmentNavMap.get(fragmentClass);
         navigationView.setCheckedItem(navItemId == null ? 0 : navItemId);
 
-        accessManager = AccessManagerFactory.getInstance();
     }
 
     @Override
@@ -185,16 +191,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 builder.setMessage(R.string.logout_message)
                         .setPositiveButton(R.string.yes, (dialog, which) -> {
                             accessManager.signOut();
+                            // delete credentials password
+                            Credentials savedCredentials = Utility.loadCredentials(this);
+                            Utility.saveCredentials(this, new Credentials(savedCredentials.getUsername(), ""));
+                            // go home activity
                             startActivity(IntentsFactory.homeIntent(this, true));
                             Toast.makeText(this,R.string.toast_loged_out, Toast.LENGTH_SHORT).show();
                         })
                         .setNeutralButton(R.string.no, (dialog, which) -> {
                         });
-                builder.create().show();
+                builder.show();
 
                 break;
             case R.id.nav_login:
-                LoginDialogFragment.newInstance(this).show(getFragmentManager(), "LoginDialogFragment");
+                LoginDialogFragment.newInstance(Utility.loadCredentials(this))
+                        .show(getFragmentManager(), "LoginDialogFragment");
 
                 break;
             case R.id.nav_books: {
@@ -207,6 +218,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(intent);
                 break;
             }
+            case R.id.nav_transactions:
+                startActivity(IntentsFactory.transactionsIntent(this));
+                break;
             case R.id.nav_customer_orders:
                 Intent intent = IntentsFactory.newOldOrderIntent(this);
                 startActivity(intent);

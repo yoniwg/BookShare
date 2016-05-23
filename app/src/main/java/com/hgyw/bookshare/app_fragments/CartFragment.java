@@ -1,12 +1,15 @@
 package com.hgyw.bookshare.app_fragments;
 
 import android.app.AlertDialog;
+import android.app.ListFragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.NumberPicker;
@@ -19,6 +22,7 @@ import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookSupplier;
 import com.hgyw.bookshare.entities.User;
+import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.Cart;
 import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.logicAccess.CustomerAccess;
@@ -29,19 +33,13 @@ import java.util.List;
  * A fragment representing the cart.
  * <p>
  */
-public class CartFragment extends AbstractFragment<CustomerAccess> {
+public class CartFragment extends ListFragment implements TitleFragment {
 
     public static final String IS_MAIN_FRAGMENT = "is_amount_can_modify";
 
     ApplyObjectAdapter<Order> adapter;
+    private final CustomerAccess cAccess = AccessManagerFactory.getInstance().getCustomerAccess();
 
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
-    public CartFragment() {
-        super(R.layout.fragment_standard_list, R.menu.menu_cart, R.string.cart_fragment_title);
-    }
 
     public static CartFragment newInstance(){
         return newInstance(true);
@@ -59,8 +57,7 @@ public class CartFragment extends AbstractFragment<CustomerAccess> {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        ListView listView = (ListView) getActivity().findViewById(R.id.mainListView);
-        Cart cart = access.getCart();
+        Cart cart = cAccess.getCart();
         List<Order> ordersList = cart.retrieveCartContent();
 
         adapter = new ApplyObjectAdapter<Order>(getActivity(), R.layout.order_list_item, ordersList) {
@@ -68,11 +65,11 @@ public class CartFragment extends AbstractFragment<CustomerAccess> {
             protected void applyOnView(View view, int position) {
                 Order order = getItem(position);
                 ObjectToViewAppliers.apply(view, order);
-                BookSupplier bookSupplier = access.retrieve(BookSupplier.class, order.getBookSupplierId());
+                BookSupplier bookSupplier = cAccess.retrieve(BookSupplier.class, order.getBookSupplierId());
                 ObjectToViewAppliers.apply(view, bookSupplier);
-                Book book = access.retrieve(Book.class, bookSupplier.getBookId());
+                Book book = cAccess.retrieve(Book.class, bookSupplier.getBookId());
                 ObjectToViewAppliers.apply(view, book);
-                User supplier = access.retrieve(User.class, bookSupplier.getSupplierId());
+                User supplier = cAccess.retrieve(User.class, bookSupplier.getSupplierId());
                 ObjectToViewAppliers.apply(view, supplier);
                 NumberPicker orderAmountPicker = (NumberPicker) view.findViewById(R.id.orderAmountPicker);
                 if (getArguments().getBoolean(IS_MAIN_FRAGMENT)) {
@@ -85,10 +82,11 @@ public class CartFragment extends AbstractFragment<CustomerAccess> {
                 }
             }
         };
-        listView.setAdapter(adapter);
+        setListAdapter(adapter);
+        setEmptyText(getString(R.string.no_items_list_view));
 
         //setting delete context menu
-        listView.setOnCreateContextMenuListener((menu, v, menuInfo) -> {
+        getListView().setOnCreateContextMenuListener((menu, v, menuInfo) -> {
             menu.add(R.string.delete);
 
             menu.getItem(0).setOnMenuItemClickListener(item -> {
@@ -99,7 +97,7 @@ public class CartFragment extends AbstractFragment<CustomerAccess> {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setMessage(R.string.delete_order_message)
                         .setPositiveButton(R.string.yes, (dialog, which) -> {
-                            access.getCart().remove(order.getBookSupplierId());
+                            cAccess.getCart().remove(order.getBookSupplierId());
                             adapter.notifyDataSetChanged();
                             Toast.makeText(v.getContext(),R.string.toast_order_deleted, Toast.LENGTH_SHORT).show();
                         })
@@ -113,9 +111,8 @@ public class CartFragment extends AbstractFragment<CustomerAccess> {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if (getArguments().getBoolean(IS_MAIN_FRAGMENT)) {
-            super.onCreateOptionsMenu(menu, inflater);
-        }
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_cart, menu);
     }
 
     @Override
@@ -131,7 +128,7 @@ public class CartFragment extends AbstractFragment<CustomerAccess> {
     }
 
     private boolean proceedOrder() {
-        if (access.getCart().isEmpty()){
+        if (cAccess.getCart().isEmpty()){
             new AlertDialog.Builder(getActivity())
                     .setMessage(R.string.cart_empty_message)
                     .setNeutralButton(R.string.ok,(d,w)->{}).create().show();
@@ -150,7 +147,7 @@ public class CartFragment extends AbstractFragment<CustomerAccess> {
     }
 
     private boolean clearCart() {
-        if (access.getCart().isEmpty()){
+        if (cAccess.getCart().isEmpty()){
             new AlertDialog.Builder(getActivity())
                     .setMessage(R.string.cart_empty_message)
                     .setNeutralButton(R.string.ok,(d,w)->{}).create().show();
@@ -159,12 +156,17 @@ public class CartFragment extends AbstractFragment<CustomerAccess> {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(R.string.clear_cart_message)
                 .setPositiveButton(R.string.yes, (dialog, which) -> {
-                    access.getCart().clear();
+                    cAccess.getCart().clear();
                     adapter.notifyDataSetChanged();
                 })
                 .setNeutralButton(R.string.no, (dialog, which) -> {
                 });
         builder.create().show();
         return true;
+    }
+
+    @Override
+    public int getFragmentTitle() {
+        return R.string.cart_fragment_title;
     }
 }

@@ -24,6 +24,7 @@ import com.hgyw.bookshare.entities.UserType;
 
 import java.math.BigDecimal;
 import java.text.MessageFormat;
+import java.util.Date;
 
 /**
  * Created by haim7 on 13/05/2016.
@@ -33,13 +34,13 @@ public class ObjectToViewAppliers {
     public static void apply(View view, Book book) {
         TextView titleView = (TextView) view.findViewById(R.id.bookTitle);
         TextView authorView = (TextView) view.findViewById(R.id.bookAuthor);
-        //TextView genreView = (TextView) view.findViewById(R.id.bookGenre);
+        TextView genreView = (TextView) view.findViewById(R.id.bookGenre);
         ImageView imageView = (ImageView) view.findViewById(R.id.bookImage);
         Spinner genreSpinner = (Spinner)  view.findViewById(R.id.bookGenreSpinner);
 
         if (titleView != null) titleView.setText(book.getTitle());
         if (authorView != null) authorView.setText(book.getAuthor());
-        //if (genreView != null) genreView.setText(book.getAuthor());
+        if (genreView != null) genreView.setText(book.getAuthor());
         if (genreSpinner != null) genreSpinner.setSelection(book.getGenre().ordinal());
         if (imageView != null) Utility.setImageById(imageView, book.getImageId(), R.drawable.image_book);
     }
@@ -47,7 +48,7 @@ public class ObjectToViewAppliers {
     public static void result(View view, Book book) {
         TextView titleView = (TextView) view.findViewById(R.id.bookTitle);
         TextView authorView = (TextView) view.findViewById(R.id.bookAuthor);
-        //TextView genreView = (TextView) view.findViewById(R.id.bookGenre);
+        TextView genreView = (TextView) view.findViewById(R.id.bookGenre);
         ImageView imageView = (ImageView) view.findViewById(R.id.bookImage);
         Spinner genreSpinner = (Spinner)  view.findViewById(R.id.bookGenreSpinner);
 
@@ -94,8 +95,23 @@ public class ObjectToViewAppliers {
 
 
     public static void apply(View view, BookSupplier bookSupplier) {
-        TextView priceText = (TextView) view.findViewById(R.id.orderUnitPrice);
-        if (priceText != null) priceText.setText(Utility.moneyToString(bookSupplier.getPrice()));
+        TextView priceText = (TextView) view.findViewById(R.id.bookSupplierPrice);
+        TextView amountText = (TextView) view.findViewById(R.id.bookSupplierAmount);
+
+        if (priceText != null) priceText.setText(Utility.moneyToNumberString(bookSupplier.getPrice()));
+        if (amountText != null) amountText.setText(String.valueOf(bookSupplier.getAmountAvailable()));
+    }
+
+    public static void result(View view, BookSupplier bookSupplier) {
+        TextView priceText = (TextView) view.findViewById(R.id.bookSupplierPrice);
+        TextView amountText = (TextView) view.findViewById(R.id.bookSupplierAmount);
+
+        if (priceText != null) try {
+            bookSupplier.setPrice(new BigDecimal(priceText.getText().toString()));
+        } catch (NumberFormatException ignored) {}
+        if (amountText != null) try {
+            bookSupplier.setAmountAvailable(Integer.parseInt(amountText.getText().toString()));
+        } catch (NumberFormatException ignored) {}
     }
 
     public static void apply(View view, Order order) {
@@ -127,9 +143,7 @@ public class ObjectToViewAppliers {
     }
 
     /**
-     * If the username and  password view was not found, the it will be wmpty string.
-     * @param view
-     * @return
+     * If the username and password view was not found, the it will be empty string.
      */
     public static Credentials resultCredentials(View view) {
         TextView usernameView = (TextView) view.findViewById(R.id.username);
@@ -147,7 +161,7 @@ public class ObjectToViewAppliers {
         apply(view, user.getCredentials());
         TextView firstNameView = (TextView) view.findViewById(R.id.userFirstName);
         TextView lastNameView = (TextView) view.findViewById(R.id.userLastName);
-        TextView fullNameView = (TextView) view.findViewById(R.id.bookAuthor);
+        TextView fullNameView = (TextView) view.findViewById(R.id.userFullName);
         TextView emailView = (TextView) view.findViewById(R.id.userEmail);
         TextView addressView = (TextView) view.findViewById(R.id.userAddress);
         TextView phoneView = (TextView) view.findViewById(R.id.userPhone);
@@ -237,6 +251,14 @@ public class ObjectToViewAppliers {
 
         if (transactionAddressView != null) transactionAddressView.setText(transaction.getShippingAddress());
         if (transactionDateText != null) transactionDateText.setText(Utility.datetimeToString(transaction.getDate()));
+    }
+
+    public static void setDateRange(View view, Date fromDate, Date toDate) {
+        TextView fromView = (TextView) view.findViewById(R.id.fromDate);
+        TextView toView = (TextView) view.findViewById(R.id.toDate);
+
+        if (fromView != null) fromView.setText(Utility.dateToString(fromDate));
+        if (toView != null) toView.setText(Utility.dateToString(toDate));
     }
 
     ////////

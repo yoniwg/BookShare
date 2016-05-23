@@ -1,7 +1,9 @@
 package com.hgyw.bookshare.logicAccess;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookReview;
@@ -36,7 +38,7 @@ public interface CustomerAccess extends GeneralAccess {
      * @param toDate end of period
      * @return collection of orders
      */
-    Collection<Order> retrieveOrders(Date fromDate, Date toDate);
+    List<Order> retrieveOrders(Date fromDate, Date toDate);
 
     /**
      * retrieve all active orders of current customer (not closed or canceled)
@@ -119,4 +121,8 @@ public interface CustomerAccess extends GeneralAccess {
      * @param amount
      */
     void addBookSupplierToCart(BookSupplier bookSupplier, int amount);
+
+    List<Transaction> retrieveTransactions(Date fromDate, Date toDate);
+
+    List<Order> retrieveOrdersOfTransaction(Transaction transaction);
 }

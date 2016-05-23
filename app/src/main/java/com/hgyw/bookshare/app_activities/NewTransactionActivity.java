@@ -25,7 +25,7 @@ import com.hgyw.bookshare.logicAccess.CustomerAccess;
 /**
  *
  */
-public class TransactionActivity extends AppCompatActivity {
+public class NewTransactionActivity extends AppCompatActivity {
 
 
     private CustomerAccess cAccess;
@@ -38,7 +38,7 @@ public class TransactionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_transaction);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        setTitle(R.string.transaction_title);
+        setTitle(R.string.new_transaction_title);
         Fragment cartFragment = CartFragment.newInstance(false);
         getFragmentManager().beginTransaction()
                 .replace(R.id.cart_container, cartFragment)

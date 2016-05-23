@@ -35,6 +35,7 @@ public class BookEditActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // get arguments from intent
         IdReference idReference;
@@ -90,26 +91,36 @@ public class BookEditActivity extends AppCompatActivity {
         }
     }
 
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.menu_action_ok, menu);
         return true;
-    }
+    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_ok) {
-            ObjectToViewAppliers.result(view, book);
-            saveBook();
-            setResult(RESULT_OK);
-            Toast.makeText(this, R.string.the_book_was_updated, Toast.LENGTH_SHORT).show();
-            finish();
-            return true;
-        } else {
-            return super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            case R.id.action_ok:
+                onActionOk();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
+
+    private void onActionOk() {
+        ObjectToViewAppliers.result(view, book);
+        saveBook();
+        setResult(RESULT_OK);
+        Toast.makeText(this, R.string.the_book_was_updated, Toast.LENGTH_SHORT).show();
+        finish();
+    }
+
+    public void onActionOk(View view) {onActionOk();} // for onClick in layout
 
     private void saveBook() {
         SupplierAccess sAccess = AccessManagerFactory.getInstance().getSupplierAccess();

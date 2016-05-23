@@ -15,7 +15,6 @@ import com.hgyw.bookshare.entities.IdReference;
 
 public class EntityActivity extends AppCompatActivity implements ListenerSupplier{
 
-    public static final String ENTITY_FRAGMENT_TAG = "entityFragmentTag";
     private EntityFragment fragment;
 
     @Override
@@ -27,7 +26,6 @@ public class EntityActivity extends AppCompatActivity implements ListenerSupplie
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
-        actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         // Get values from intent and instantiate the fragment accordingly.
@@ -36,7 +34,7 @@ public class EntityActivity extends AppCompatActivity implements ListenerSupplie
         fragment = EntityFragment.newInstance(fragmentClass, entityReference.getId());
         setTitle(fragment.getFragmentTitle());
         getFragmentManager().beginTransaction()
-                .replace(R.id.fragment_entity_container, fragment, ENTITY_FRAGMENT_TAG)
+                .replace(R.id.fragment_entity_container, fragment)
                 .commit();
     }
 
@@ -44,7 +42,7 @@ public class EntityActivity extends AppCompatActivity implements ListenerSupplie
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                onBackPressed(); return true;
+                finish(); return true;
 
             default:
                 return super.onOptionsItemSelected(item);

@@ -3,18 +3,61 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include
-        android:layout_width="match_parent"
+
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        layout="@layout/dialog_credentials"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/welcome"
+        android:id="@+id/textView10"
         android:layout_gravity="center_horizontal" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="New account"
+        android:text="@string/login_dialog_message"
+        android:id="@+id/textView11"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="15dp" />
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:hint="@string/user_name"
+            android:singleLine="true"
+            android:id="@+id/username"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/password"
+            android:singleLine="true"
+            android:id="@+id/password"
+            android:inputType="textPassword" />
+    </android.support.design.widget.TextInputLayout>
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/remember_me"
+        android:id="@+id/savePasswordCheckbox"
+        android:layout_gravity="center_horizontal"
+        android:checked="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/new_account"
         android:id="@+id/newAccountView"
         android:layout_gravity="center_horizontal"
-        android:textColor="@color/linkColor" />
+        android:textColor="@color/linkColor"
+        android:padding="5dp" />
 </LinearLayout>

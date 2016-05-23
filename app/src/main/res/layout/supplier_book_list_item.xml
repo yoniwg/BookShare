@@ -17,7 +17,7 @@
         android:layout_marginLeft="5dp" />
 
     <TextView
-        android:id="@+id/bookName"
+        android:id="@+id/bookTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Book name"
@@ -26,21 +26,31 @@
         android:layout_toEndOf="@+id/bookImage" />
 
     <TextView
-        android:id="@+id/bookSupplierUnitPrice"
+        android:id="@+id/bookSupplierPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="price"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:layout_below="@+id/bookName"
+        android:layout_below="@+id/bookTitle"
         android:layout_toEndOf="@+id/bookImage" />
 
     <TextView
-        android:id="@+id/bookSupplierAmountAvailable"
+        android:id="@+id/bookSupplierAmount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Amount Available"
+        android:text="0"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:layout_below="@+id/bookSupplierUnitPrice"
-        android:layout_toEndOf="@+id/bookImage" />
+        android:layout_alignTop="@+id/textView"
+        android:layout_toEndOf="@+id/textView" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/amount_available_colon"
+        android:id="@+id/textView"
+        android:layout_below="@+id/bookSupplierPrice"
+        android:layout_alignStart="@+id/bookSupplierPrice"
+        android:paddingEnd="@dimen/defaultHoriozintalNextSpace" />
 
 </RelativeLayout>

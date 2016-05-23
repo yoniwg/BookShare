@@ -12,6 +12,7 @@ import android.widget.ListView;
 
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.app_drivers.ApplyObjectAdapter;
+import com.hgyw.bookshare.app_drivers.DateRangeBar;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookSupplier;
@@ -19,6 +20,7 @@ import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.Transaction;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
+import com.hgyw.bookshare.logicAccess.CustomerAccess;
 import com.hgyw.bookshare.logicAccess.SupplierAccess;
 
 import java.util.Date;
@@ -29,11 +31,26 @@ import java.util.List;
  */
 public class SupplierOrdersFragment extends ListFragment implements TitleFragment {
 
+    private SupplierAccess sAccess;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_orders_supplier, container, false);
+    }
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        SupplierAccess sAccess = AccessManagerFactory.getInstance().getSupplierAccess();
-        List<Order> orders = sAccess.retrieveOrders(new Date(0), new Date());
+        sAccess = AccessManagerFactory.getInstance().getSupplierAccess();
+
+        DateRangeBar dateRangeBar = (DateRangeBar) view.findViewById(R.id.dateRangeBar);
+        dateRangeBar.setDateRangeListener(this::updateListAdapter);
+
+        updateListAdapter(dateRangeBar);
+    }
+
+    private void updateListAdapter(DateRangeBar dateRangeBar) {
+        List<Order> orders = sAccess.retrieveOrders(dateRangeBar.getDateFrom(), dateRangeBar.getDateTo(), false);
         setListAdapter(new ApplyObjectAdapter<Order>(getActivity(), R.layout.old_order_list_item, orders) {
             @Override
             protected void applyOnView(View view, int position) {
@@ -49,7 +66,7 @@ public class SupplierOrdersFragment extends ListFragment implements TitleFragmen
                 ObjectToViewAppliers.apply(view, customer);
             }
         });
-        setEmptyText(getString(R.string.no_items_list_view));
+
     }
 
     @Override

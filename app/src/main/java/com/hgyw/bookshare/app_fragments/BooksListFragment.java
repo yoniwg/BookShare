@@ -15,6 +15,7 @@ import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookQuery;
 import com.hgyw.bookshare.entities.BookSummary;
+import com.hgyw.bookshare.entities.UserType;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.GeneralAccess;
 
@@ -61,6 +62,8 @@ public class BooksListFragment extends ListFragment implements TitleFragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_book_list, menu);
+        boolean isSupplier = access.getUserType() == UserType.SUPPLIER;
+        if (!isSupplier) menu.findItem(R.id.action_add_book).setVisible(false);
     }
 
     @Override

@@ -2,4 +2,5 @@
 <resources>
     <item name="transactionAddress" type="id" />
     <item name="amountTextView" type="id" />
+    <item name="bookGenre" type="id" />
 </resources>

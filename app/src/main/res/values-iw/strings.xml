@@ -6,7 +6,6 @@
     <string name="book_title">שם הספר</string>
     <string name="dialog_title_book_query">סנן ספרים</string>
     <string name="from_price">ממחיר</string>
-    <string name="navigation_drawer_close"></string>
     <string name="to_price">עד מחיר</string>
     <string name="genre_action">פעולה</string>
     <string name="genre_biographies">ביוגרפיה</string>
@@ -19,13 +18,11 @@
     <string name="genre_satire">סאטירה</string>
     <string name="genre_science">מדע</string>
     <string name="genre_science_fiction">מדע בדיוני</string>
-    <string name="hello_blank_fragment"></string>
     <string name="search">חפש</string>
     <string name="filter">סנן</string>
     <string name="cancel">ביטול</string>
     <string name="suppliers">ספקים</string>
     <string name="suppliers_colon">ספקים:</string>
-    <string name="title_activity_book"></string>
     <string name="buy">קנה</string>
     <string name="do_order">הזמן</string>
     <string name="genre_general">כללי</string>
@@ -70,7 +67,7 @@
     <string name="toast_loged_out">התנתקות בוצעה</string>
     <string name="toast_transaction_ok">ההזמנה אושרה והיא תשלח בקרוב</string>
     <string name="total_sum">סכום כללי</string>
-    <string name="transaction_error_message">אופס... משהו התרחש בעת ביצוע העסקה.</string>
+    <string name="transaction_error_message">אופס… משהו התרחש בעת ביצוע העסקה.</string>
     <string name="transaction_message">האם ברצונך להמשיך בביצוע ההזמנה?</string>
     <string name="upload_image_failed">העלאת תמונה נכשלה</string>
     <string name="credit_number">מספר אשראי</string>
@@ -99,7 +96,7 @@
     <string name="user_details">פרטי המשתמש</string>
     <string name="user_details_updated">פרטי המשתמש עודכנו.</string>
     <string name="books_chosen">ספרים שנבחרו</string>
-    <string name="transaction_title">אישור הזמנה</string>
+    <string name="new_transaction_title">אישור הזמנה</string>
     <string name="clear_cart">רוקן עגלה</string>
     <string name="clear_cart_message">האם אתה בטוח שברצונך לרוקן את העגלה?</string>
     <string name="book_list_fragment_title">ספרים בחנות</string>
@@ -113,4 +110,28 @@
     <string name="orderstatus_sent">נשלחה</string>
     <string name="orderstatus_waiting_for_cancel">ממתינה לביטול</string>
     <string name="orderstatus_waiting_for_paying">ממתינה לתשלום</string>
+    <string name="add">הוסף</string>
+    <string name="amount_available_colon">כמות זמינה:</string>
+    <string name="book_author">מחבר הספר</string>
+    <string name="book_edit_title">עריכת פרטי ספר</string>
+    <string name="edit">ערוך</string>
+    <string name="my_books">הספרים שלי</string>
+    <string name="supplier_orders_title">ההזמנות שלי</string>
+    <string name="the_book_was_updated">הספר עודכן</string>
+    <string name="transaction_title">עיסקאות</string>
+    <string name="transactions">עיסקאות</string>
+    <string name="price">מחיר</string>
+    <string name="no_items_list_view">אין פריטים להצגה</string>
+    <string name="from">מ־</string>
+    <string name="choose_date">בחר תאריך</string>
+    <string name="up_to">עד</string>
+    <string name="username_should_not_empty">שם המשתמש לא יכול להיות ריק</string>
+    <string name="username_taken">שם המשתמש תפוס</string>
+    <string name="more_details">פרטים נוספים</string>
+    <string name="preference_file_key"></string>
+    <string name="transaction_details">פרטי עיסקה</string>
+    <string name="new_account">חשבון חדש</string>
+    <string name="registeration_problem_default">התרחשה בעיה בעת ההרשמה</string>
+    <string name="remember_me">זכור אותי</string>
+
 </resources>

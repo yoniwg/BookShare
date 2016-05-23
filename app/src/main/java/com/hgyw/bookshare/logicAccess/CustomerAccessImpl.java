@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import com.annimon.stream.Collectors;
+import com.annimon.stream.Stream;
 import com.hgyw.bookshare.dataAccess.DataAccess;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookReview;
@@ -34,6 +36,18 @@ class CustomerAccessImpl extends GeneralAccessImpl implements CustomerAccess {
         order.setAmount(amount);
         order.setUnitPrice(bookSupplier.getPrice());
         getCart().add(order);
+    }
+
+    @Override
+    public List<Transaction> retrieveTransactions(Date fromDate, Date toDate) {
+        return Stream.of(dataAccess.findEntityReferTo(Transaction.class, currentUser))
+                .filter(t -> fromDate.compareTo(t.getDate()) <= 0 && toDate.compareTo(t.getDate()) >= 0)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Order> retrieveOrdersOfTransaction(Transaction transaction) {
+        return dataAccess.findEntityReferTo(Order.class, transaction);
     }
 
     @Override
@@ -130,6 +144,7 @@ class CustomerAccessImpl extends GeneralAccessImpl implements CustomerAccess {
         List<BookReview> result = dataAccess.findEntityReferTo(BookReview.class, currentUser, IdReference.of(Book.class, bookReview.getBookId()));
         bookReview.setCustomerId(currentUser.getId());
         if (result.isEmpty()) {
+            bookReview.setId(0);
             dataAccess.create(bookReview);
         } else {
             BookReview currentBookReview = result.get(0);

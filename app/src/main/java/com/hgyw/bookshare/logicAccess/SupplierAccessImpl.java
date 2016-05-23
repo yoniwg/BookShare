@@ -40,13 +40,8 @@ public class SupplierAccessImpl extends GeneralAccessImpl implements SupplierAcc
     }
 
     @Override
-    public List<Order> retrieveOrders(Date fromDate, Date toDate) {
-        return dataAccess.retrieveOrders(null, currentUser, fromDate, toDate, false);
-    }
-
-    @Override
-    public List<Order> retrieveActiveOrders(Date fromDate, Date toDate) {
-        return dataAccess.retrieveOrders(null, currentUser, fromDate, toDate, true);
+    public List<Order> retrieveOrders(Date fromDate, Date toDate, boolean onlyActive) {
+        return dataAccess.retrieveOrders(null, currentUser, fromDate, toDate, onlyActive);
     }
 
     @Override

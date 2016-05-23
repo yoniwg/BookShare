@@ -5,7 +5,10 @@ import android.support.annotation.LayoutRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+
+import com.hgyw.bookshare.entities.Entity;
 
 import java.util.Collection;
 import java.util.List;
@@ -13,30 +16,26 @@ import java.util.List;
 /**
  * Created by haim7 on 12/05/2016.
  */
-public abstract class ApplyObjectAdapter<T> extends BaseAdapter {
+public abstract class ApplyObjectAdapter<T> extends ArrayAdapter<T> {
 
     protected final LayoutInflater inflater;
     protected final List<T> itemsList;
     protected final int itemLayoutId;
 
     protected ApplyObjectAdapter(Context context, @LayoutRes int itemLayoutId, List<T> itemsList) {
+        super(context, itemLayoutId, itemsList);
         this.itemsList = itemsList;
         this.inflater = LayoutInflater.from(context);
         this.itemLayoutId = itemLayoutId;
     }
 
     @Override
-    public int getCount() {
-        return itemsList.size();
-    }
-
-    @Override
-    public T getItem(int position) {
-        return itemsList.get(position);
-    }
-
-    @Override
     public long getItemId(int position) {
+        T item = getItem(position);
+        if (item instanceof Entity) {
+            long itemId = ((Entity) item).getId();
+            return itemId > 0 ? itemId : -position;
+        }
         return position;
     }
 

@@ -56,11 +56,13 @@
                 android:padding="10dp"
                 android:layout_marginTop="@dimen/default_vertical_seperate" />
 
-            <ListView
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:id="@+id/reviewListView"
-                android:layout_marginTop="10dp" />
+                android:layout_marginTop="10dp"
+                android:orientation="vertical" />
 
             <Button
                 style="?android:attr/buttonStyleSmall"

@@ -30,8 +30,9 @@ public class Test {
         customer.setUserType(UserType.CUSTOMER);
 
         final Credentials firstSupplierCredentials = new Credentials("s", "");
-        final Credentials secondSupplierCredentials = new Credentials("s2", "");
-
+        final Credentials secondSupplierCredentials = new Credentials("ss", "");
+        final Credentials firstCustomerCredentials = new Credentials("c", "");
+        final Credentials secondCustomerCredentials = new Credentials("cc", "");
         /////////////////////////////
         // new supplier
         User supplier = new User();
@@ -194,7 +195,7 @@ public class Test {
 
         // new customer
         customer.setId(0);
-        customer.setCredentials(new Credentials("haim1", "12345"));
+        customer.setCredentials(firstCustomerCredentials);
         customer.setEmail("haim763@gmail.com");
         customer.setFirstName("Haim");
         customer.setLastName("Greenstein");
@@ -282,7 +283,7 @@ public class Test {
 
         // new customer
         customer.setId(0);
-        customer.setCredentials(new Credentials("yoni1", "54321"));
+        customer.setCredentials(secondCustomerCredentials);
         customer.setEmail("yoni@gmail.com");
         customer.setFirstName("Yoni");
         customer.setLastName("Wiesberg");
@@ -293,8 +294,21 @@ public class Test {
         } catch (WrongLoginException e) {
             e.printStackTrace();
         }
+        accessManager.signOut();
 
 
+        for (int i = 0; i < 5; i++) {
+            Credentials moreCredentials = new Credentials("reviewr user" + (i+1), "passworddd");
+            User newUser = new User();
+            newUser.setCredentials(moreCredentials);
+            newUser.setFirstName("reviewr user");
+            try {
+                accessManager.signUp(newUser);
+                bookReview.setRating(Rating.values()[1 + (int) (Math.random()*4)]);
+                accessManager.getCustomerAccess().writeBookReview(bookReview);
+                accessManager.signOut();
+            } catch (WrongLoginException e) {e.printStackTrace();}
+        }
 
 
         ///////////////////////////////////////////////////

@@ -15,6 +15,9 @@
             android:icon="@drawable/cart"
             android:title="@string/cart"/>
         <item
+            android:id="@+id/nav_transactions"
+            android:title="@string/transactions"/>
+        <item
             android:id="@+id/nav_customer_orders"
             android:icon="@drawable/my_orders"
             android:title="@string/my_orders"/>
@@ -23,15 +26,12 @@
         android:id="@+id/nav_supplier_options"
         android:visible="false">
         <item
-            android:id="@+id/nav_my_books"
-            android:icon="@drawable/cart"
-            android:title="@string/cart"/>
-        <item
             android:id="@+id/nav_supplier_orders"
             android:icon="@drawable/my_orders"
             android:title="@string/orders"/>
         <item
             android:id="@+id/nav_suppliers_books"
+            android:icon="@drawable/books_list"
             android:title="@string/my_books"/>
     </group>
     <group android:checkableBehavior="single"

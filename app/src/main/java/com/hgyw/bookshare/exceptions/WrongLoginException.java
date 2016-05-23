@@ -21,7 +21,7 @@ public class WrongLoginException extends Exception {
         Issue(String message){
             this.message = message;
         }
-        public String toString(){
+        public String getMessage(){
             return message;
         }
     }
@@ -31,7 +31,7 @@ public class WrongLoginException extends Exception {
     }
 
     public WrongLoginException(Issue issue, UserType userType) {
-        super(issue.toString() + (userType == null? "" : " User-type: " + userType));
+        super(issue.getMessage() + (userType == null? "" : " User-type: " + userType));
         Objects.requireNonNull(issue);
         this.issue = issue;
         this.userType = userType;

@@ -41,15 +41,10 @@ public interface SupplierAccess extends GeneralAccess {
      * retrieve all orders from current supplier in a provided period
      * @param fromDate begin of period
      * @param toDate end of period
+     * @param onlyActive whether to retrieve only active orders
      * @return collection of orders
      */
-    List<Order> retrieveOrders(Date fromDate, Date toDate);
-
-    /**
-     * retrieve all active orders from current supplier (not closed or canceled)
-     * @return collection of orders
-     */
-    List<Order> retrieveActiveOrders(Date fromDate, Date toDate);
+    List<Order> retrieveOrders(Date fromDate, Date toDate, boolean onlyActive);
 
     /**
      * update the order status

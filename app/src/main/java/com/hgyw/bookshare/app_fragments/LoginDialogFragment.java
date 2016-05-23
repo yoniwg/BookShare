@@ -6,8 +6,10 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CheckBox;
 
 import com.hgyw.bookshare.app_drivers.IntentsFactory;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
@@ -19,7 +21,7 @@ import com.hgyw.bookshare.logicAccess.AccessManager;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 
 
-public class LoginDialogFragment extends DialogFragment {
+public class LoginDialogFragment extends DialogFragment implements DialogInterface.OnClickListener{
 
     private static final String ARG_DIALOG_CREDENTIALS_OBJECT = "dialogCredentialsObject";
     private static final String PREFERENCE_KEY_USERNAME = "username";
@@ -32,16 +34,6 @@ public class LoginDialogFragment extends DialogFragment {
      */
     public static LoginDialogFragment newInstance() {
         return newInstance(Credentials.EMPTY);
-    }
-
-    /**
-     * Return new instance of this DialogFragment with saved username.
-     * @return instance of LoginDialogFragment
-     */
-    public static LoginDialogFragment newInstance(Context context) {
-        String username = "";
-        username = Utility.loadCredentials(context).getUsername();
-        return newInstance(new Credentials(username,""));
     }
 
     /**
@@ -71,31 +63,40 @@ public class LoginDialogFragment extends DialogFragment {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         return builder.setView(view)
-                .setPositiveButton(R.string.log_in, (dialog, which) -> {
-                    Credentials resultCredentials = ObjectToViewAppliers.resultCredentials(view);
-                    AccessManager accessManager = AccessManagerFactory.getInstance();
-                    try {
-                        accessManager.signIn(resultCredentials);;
-                    } catch (WrongLoginException e) {
-                        int errorMessage;
-                        switch (e.getIssue()) {
-                            case WRONG_USERNAME_OR_PASSWORD:
-                                errorMessage = R.string.wrong_username_or_password; break;
-                            default:
-                                errorMessage = R.string.error_on_login; break;
-                        }
-                        new AlertDialog.Builder(getActivity())
-                                .setTitle(R.string.wrong_log_in_title)
-                                .setMessage(errorMessage)
-                                .setPositiveButton(R.string.ok, null)
-                                .create().show();
-                        return;
-                    }
-                    Utility.getSharedPreferences(activity).edit()
-                            .putString(PREFERENCE_KEY_USERNAME, resultCredentials.getUsername())
-                            .commit();
-                    startActivity(IntentsFactory.homeIntent(getActivity(), true));
-                }).create();
+                .setPositiveButton(R.string.log_in, this)
+                .create();
+    }
+
+    @Override
+    public void onClick(DialogInterface dialog, int which) {
+        if (which != Dialog.BUTTON_POSITIVE) return;
+
+        // get data from view
+        Credentials resultCredentials = ObjectToViewAppliers.resultCredentials(view);
+        CheckBox checkBox = (CheckBox) view.findViewById(R.id.savePasswordCheckbox);
+        boolean savePassword = checkBox == null || checkBox.isChecked();
+
+        AccessManager accessManager = AccessManagerFactory.getInstance();
+        try {
+            accessManager.signIn(resultCredentials);;
+        } catch (WrongLoginException e) {
+            int errorMessage;
+            switch (e.getIssue()) {
+                case WRONG_USERNAME_OR_PASSWORD:
+                    errorMessage = R.string.wrong_username_or_password; break;
+                default:
+                    errorMessage = R.string.error_on_login; break;
+            }
+            new AlertDialog.Builder(getActivity())
+                    .setTitle(R.string.wrong_log_in_title)
+                    .setMessage(errorMessage)
+                    .setPositiveButton(R.string.ok, null)
+                    .create().show();
+            return;
+        }
+        Credentials savingCredentials = savePassword ? resultCredentials : new Credentials(resultCredentials.getUsername(), "");
+        Utility.saveCredentials(getActivity(), savingCredentials);
+        startActivity(IntentsFactory.homeIntent(getActivity(), true));
     }
 
 }

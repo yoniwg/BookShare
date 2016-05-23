@@ -10,4 +10,5 @@
     <dimen name="frame_margin">10dp</dimen>
     <dimen name="default_vertical_seperate">10dp</dimen>
     <dimen name="defaultHoriozintalNextSpace">10dp</dimen>
+    <dimen name="default_activity_padding">15dp</dimen>
 </resources>

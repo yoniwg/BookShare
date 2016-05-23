@@ -121,7 +121,6 @@ class DataAccessListImpl extends ListsCrudImpl implements DataAccess {
 
     @Override
     public <T extends Entity> List<T> findEntityReferTo(Class<T> referringClass, IdReference ... referredItems) {
-        // TODO CHECKING!
         Predicate<T> predicate = EntityReflection.predicateEntityReferTo(referringClass, referredItems);
         return streamAllNonDeleted(referringClass).filter(predicate).collect(Collectors.toList());
     }

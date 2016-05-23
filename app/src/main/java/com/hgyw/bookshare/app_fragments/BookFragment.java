@@ -4,7 +4,6 @@ package com.hgyw.bookshare.app_fragments;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -12,7 +11,6 @@ import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +19,8 @@ import com.hgyw.bookshare.app_drivers.ApplyObjectAdapter;
 import com.hgyw.bookshare.app_drivers.IntentsFactory;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
 import com.hgyw.bookshare.R;
+import com.hgyw.bookshare.app_drivers.ObjectToViewUpdates;
+import com.hgyw.bookshare.app_drivers.Utility;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookReview;
 import com.hgyw.bookshare.entities.BookSummary;
@@ -84,41 +84,34 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
             });
         }
 
-        // set views of reviews
-        List<BookReview> bookReviewList = access.findBookReviews(book);
+        // get reviews
+        List<BookReview> bookReviews = access.findBookReviews(book);
         final int MAX_REVIEWS = 2;
-        if (isCustomer) {bookReviewList.remove(userBookReview);}
+        if (isCustomer) {bookReviews.remove(userBookReview);}
+        boolean thereIsMoreReviews = bookReviews.size() > MAX_REVIEWS;
+        bookReviews = bookReviews.subList(0, Math.min(bookReviews.size(), MAX_REVIEWS));
+        // set reviews list
+        LinearLayout reviewListView = (LinearLayout) view.findViewById(R.id.reviewListView);
         Button allReviewsButton = (Button) view.findViewById(R.id.all_reviews_button);
-        if (bookReviewList.size() <= MAX_REVIEWS) { allReviewsButton.setVisibility(View.GONE); }
-        bookReviewList = bookReviewList.subList(0, Math.min(bookReviewList.size(), MAX_REVIEWS));
-        ListView reviewListView = (ListView) view.findViewById(R.id.reviewListView);
-        reviewListView.setAdapter(new ApplyObjectAdapter<BookReview>(getActivity(), R.layout.book_review_component, bookReviewList) {
-            @Override
-            protected void applyOnView(View view, int position) {
-                BookReview review = getItem(position);
-                User customer = access.retrieve(User.class, review.getCustomerId());
-                ObjectToViewAppliers.apply(view, review);
-                ObjectToViewAppliers.apply(view, customer);
-                TextView descriptionTextView = (TextView) view.findViewById(R.id.description);
-                String description = review.getDescription();
-                if (description.isEmpty()) descriptionTextView.setVisibility(View.GONE);
-
-            }
-        });
+        Utility.addViewsByList(reviewListView, bookReviews, getActivity().getLayoutInflater(), R.layout.book_review_component, this::updateBookReviewView);
+        if (!thereIsMoreReviews) {
+            allReviewsButton.setVisibility(View.GONE);
+        } else {
+            allReviewsButton.setOnClickListener(v -> startActivity(IntentsFactory.allReviewsIntent(getActivity(), book)));
+        }
 
         // set views of suppliers
         LinearLayout bookMainLayout = (LinearLayout) view.findViewById(R.id.bookFragmentLinearLayout);
-        List<BookSupplier> bookSupplierList = access.findBookSuppliers(book);
-        for (BookSupplier bookSupplier : bookSupplierList) {
-            View supplierView = createBookSupplierView(bookSupplier);
-            bookMainLayout.addView(supplierView);
-        }
+        List<BookSupplier> suppliers = access.findBookSuppliers(book);
+        Utility.addViewsByList(bookMainLayout, suppliers, getActivity().getLayoutInflater(), R.layout.book_supplier_list_item, this::updateBookSupplierView);
     }
 
-    @NonNull
-    private View createBookSupplierView(BookSupplier bookSupplier) {
+    private void updateBookReviewView(View reviewView, BookReview bookReview) {
+        ObjectToViewUpdates.updateBookReviewView(access, reviewView, bookReview);
+    }
+
+    private void updateBookSupplierView(View supplierView, BookSupplier bookSupplier) {
         User supplier = access.retrieve(User.class, bookSupplier.getSupplierId());
-        View supplierView = getActivity().getLayoutInflater().inflate(R.layout.book_supplier_list_item, null);
         Intent intent = IntentsFactory.newEntityIntent(getActivity(), supplier);
         supplierView.setOnClickListener(v -> startActivityForResult(intent, IntentsFactory.CODE_ENTITY_UPDATED));
         ObjectToViewAppliers.apply(supplierView, bookSupplier);
@@ -130,13 +123,14 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
             AccessManagerFactory.getInstance().getCustomerAccess().addBookSupplierToCart(bookSupplier, 1);
             Toast.makeText(getActivity(), R.string.order_added_to_cart, Toast.LENGTH_SHORT).show();
         });
-        return supplierView;
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        menu.findItem(R.id.action_cart).setVisible(isCustomer);
+        menu.findItem(R.id.action_cart).setVisible(access.getUserType() == UserType.CUSTOMER);
+        menu.findItem(R.id.action_edit_book).setVisible(access.getUserType() == UserType.SUPPLIER);
+
     }
 
     @Override

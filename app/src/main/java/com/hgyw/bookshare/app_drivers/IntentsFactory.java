@@ -5,10 +5,11 @@ import android.content.Intent;
 import android.net.Uri;
 
 import com.annimon.stream.Stream;
+import com.hgyw.bookshare.app_activities.AllBookReviewListActivity;
 import com.hgyw.bookshare.app_activities.BookEditActivity;
 import com.hgyw.bookshare.app_activities.EntityActivity;
 import com.hgyw.bookshare.app_activities.MainActivity;
-import com.hgyw.bookshare.app_activities.TransactionActivity;
+import com.hgyw.bookshare.app_activities.NewTransactionActivity;
 import com.hgyw.bookshare.app_activities.UserEditActivity;
 import com.hgyw.bookshare.app_activities.UserRegistrationActivity;
 import com.hgyw.bookshare.app_fragments.BookFragment;
@@ -19,10 +20,13 @@ import com.hgyw.bookshare.app_fragments.OldOrdersFragment;
 import com.hgyw.bookshare.app_fragments.SupplierBooksListFragment;
 import com.hgyw.bookshare.app_fragments.SupplierFragment;
 import com.hgyw.bookshare.app_fragments.SupplierOrdersFragment;
+import com.hgyw.bookshare.app_fragments.TransactionFragment;
+import com.hgyw.bookshare.app_fragments.TransactionListFragment;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookQuery;
 import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.entities.IdReference;
+import com.hgyw.bookshare.entities.Transaction;
 import com.hgyw.bookshare.entities.User;
 
 import java.util.HashMap;
@@ -47,7 +51,7 @@ public class IntentsFactory {
     static {
         entityFragmentMap.put(Book.class, BookFragment.class);
         entityFragmentMap.put(User.class, SupplierFragment.class);
-        //TODO entityFragmentMap.put(Order.class, OrderFragment.class);
+        entityFragmentMap.put(Transaction.class, TransactionFragment.class);
     }
 
     public static Class<? extends EntityFragment> getEntityFragment(Class<? extends Entity> entityType) {
@@ -110,8 +114,8 @@ public class IntentsFactory {
         Intent intent = newBookListIntent(context, null);
         if (refreshLogin) {
             intent.putExtra(ARG_REFRESH_LOGIN, true);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK); // for new user mainly
         }
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
         return intent;
     }
 
@@ -120,7 +124,7 @@ public class IntentsFactory {
     }
 
     public static Intent newTransactionIntent(Context context) {
-        Intent intent = new Intent(context, TransactionActivity.class);
+        Intent intent = new Intent(context, NewTransactionActivity.class);
         return intent;
     }
 
@@ -157,6 +161,19 @@ public class IntentsFactory {
         Intent intent = new Intent(context, MainActivity.class);
         intent.putExtra(ARG_FRAGMENT_CLASS, SupplierBooksListFragment.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        return intent;
+    }
+
+    public static Intent transactionsIntent(Context context) {
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.putExtra(ARG_FRAGMENT_CLASS, TransactionListFragment.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        return intent;
+    }
+
+    public static Intent allReviewsIntent(Context context, Book book) {
+        Intent intent = new Intent(context, AllBookReviewListActivity.class);
+        intent.setData(new Uri.Builder().path(String.valueOf(book.getId())).build());
         return intent;
     }
 }

@@ -10,11 +10,18 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.LayoutRes;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.annimon.stream.function.BiConsumer;
+import com.annimon.stream.function.BiFunction;
+import com.annimon.stream.function.Function;
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.Credentials;
@@ -29,6 +36,7 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by haim7 on 11/05/2016.
@@ -203,6 +211,11 @@ public class Utility {
         return DateFormat.getDateTimeInstance().format(date);
     }
 
+    public static String dateToString(Date date) {
+        return DateFormat.getDateInstance().format(date);
+    }
+
+
     public static <T> void setSpinnerToEnum(Context context, Spinner genreSpinner, T[] values) {
         ArrayAdapter arrayAdapter = new EnumAdapter<>(context, android.R.layout.simple_spinner_item, Book.Genre.values());
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -228,4 +241,18 @@ public class Utility {
                 .putString(PREFERENCE_USERNAME, credentials.getUsername())
                 .putString(PREFERENCE_PASSWORD, credentials.getPassword()).commit();
     }
+
+    public static <T> void addViewsByList(ViewGroup viewGroup, List<T> list, LayoutInflater inflater, @LayoutRes int layout , BiConsumer<View, T> viewConsumer) {
+        if (list.isEmpty()) {
+            View emptyView = inflater.inflate(R.layout.simple_empty_listview, viewGroup, false);
+            viewGroup.addView(emptyView);
+        } else {
+            for (T item : list) {
+                View view = inflater.inflate(layout, viewGroup, false);
+                if (viewConsumer != null) viewConsumer.accept(view, item);
+                viewGroup.addView(view);
+            }
+        }
+    }
+
 }

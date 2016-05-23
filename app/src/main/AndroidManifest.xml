@@ -30,10 +30,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".app_activities.MainActivity" />
         </activity>
-        <activity android:name=".app_activities.TransactionActivity"/>
+        <activity android:name=".app_activities.NewTransactionActivity"/>
         <activity android:name=".app_activities.UserRegistrationActivity"/>
         <activity android:name=".app_activities.UserEditActivity"/>
         <activity android:name=".app_activities.BookEditActivity"/>
+        <activity android:name=".app_activities.AllBookReviewListActivity"/>
     </application>
 
 </manifest>

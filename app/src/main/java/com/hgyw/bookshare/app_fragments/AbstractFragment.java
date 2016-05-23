@@ -64,8 +64,7 @@ public abstract class AbstractFragment<T extends GeneralAccess> extends Fragment
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        if(menuId == 0) return;
-        inflater.inflate(menuId, menu);
+        if(menuId != 0) inflater.inflate(menuId, menu);
     }
 
     @Override
