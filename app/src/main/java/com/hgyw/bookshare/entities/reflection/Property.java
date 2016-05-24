@@ -18,5 +18,4 @@ public interface Property {
     boolean canWrite();
     Class<?> getPropertyClass();
     Class<?> getReflectedClass();
-    Annotation[] getFieldAnnotations();
 }

@@ -4,10 +4,15 @@ import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
 import com.annimon.stream.function.Predicate;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+import com.hgyw.bookshare.entities.Book;
+import com.hgyw.bookshare.entities.BookSupplier;
 import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.entities.IdReference;
+import com.hgyw.bookshare.entities.User;
 
 /**
  * Created by haim7 on 04/05/2016.
@@ -41,4 +46,12 @@ public class EntityReflection {
                 .collect(Collectors.toMap(p -> p.getFieldAnnotation(EntityReference.class).value(), p -> p));
     }
 
+    public static List<Class<? extends Entity>> getEntityTypes() {
+        List<Class<? extends Entity>> list = new ArrayList<>();
+        list.add(Book.class);
+        list.add(BookSupplier.class);
+        list.add(User.class);
+        // TODO
+        return list;
+    }
 }

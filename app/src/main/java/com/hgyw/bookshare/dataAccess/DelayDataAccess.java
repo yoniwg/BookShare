@@ -1,6 +1,7 @@
 package com.hgyw.bookshare.dataAccess;
 
 import com.annimon.stream.Optional;
+import com.annimon.stream.Stream;
 import com.hgyw.bookshare.dataAccess.DataAccess;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookQuery;
@@ -97,6 +98,11 @@ public class DelayDataAccess implements DataAccess {
     public void delete(IdReference item) {
         delay();
         dataAccess.delete(item);
+    }
+
+    @Override
+    public <T extends Entity> Stream<T> streamAll(Class<T> entityType) {
+        return dataAccess.streamAll(entityType);
     }
 
     @Override
