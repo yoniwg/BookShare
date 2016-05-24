@@ -30,10 +30,12 @@ import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.entities.UserType;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.CustomerAccess;
+import com.hgyw.bookshare.logicAccess.SupplierAccess;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
-public class BookFragment extends EntityFragment implements BookReviewDialogFragment.BookReviewResultListener {
+public class BookFragment extends EntityFragment implements BookReviewDialogFragment.BookReviewResultListener, BookSupplierDialogFragment.ResultListener {
 
 
     private RatingBar userRatingBar;
@@ -130,7 +132,7 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
         super.onCreateOptionsMenu(menu, inflater);
         menu.findItem(R.id.action_cart).setVisible(access.getUserType() == UserType.CUSTOMER);
         menu.findItem(R.id.action_edit_book).setVisible(access.getUserType() == UserType.SUPPLIER);
-
+        menu.findItem(R.id.action_supply_book).setVisible(access.getUserType() == UserType.SUPPLIER);
     }
 
     @Override
@@ -142,6 +144,11 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
             case R.id.action_edit_book:
                 startActivity(IntentsFactory.editBookIntent(getActivity(), book.getId()));
                 return true;
+            case R.id.action_supply_book: {
+                BookSupplier bs = new BookSupplier();
+                bs.setBookId(entityId);
+                BookSupplierDialogFragment.newInstance(bs).show(getFragmentManager(), "BookSupplierDialogFragment");
+                return true; }
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -183,4 +190,23 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
         }
     }
 
+    @Override
+    public void onBookSupplierResult(ResultCode result, BookSupplier bookSupplier) {
+        SupplierAccess sAccess = (SupplierAccess) access;
+        switch (result) {
+            case OK:
+                if (bookSupplier.getId() == 0) {
+                    sAccess.addBookSupplier(bookSupplier);
+                } else {
+                    sAccess.updateBookSupplier(bookSupplier);
+                }
+                break;
+            case CANCEL: break;
+            case DELETE:
+                try {
+                    sAccess.removeBookSupplier(bookSupplier);
+                } catch (NoSuchElementException ignored) {}
+                break;
+        }
+    }
 }
