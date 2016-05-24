@@ -91,6 +91,7 @@ class ListsCrudImpl implements Crud {
      * @param <T> The type of entity
      * @return Stream of all entities.
      */
+    @Override
     public <T extends Entity> Stream<T> streamAll(Class<T> entityType) {
         List<Entity> entityList = entitiesMap.get(entityType);
         if (entityList != null) return Stream.of(entityList).map(e ->  (T) e.clone());
