@@ -2,9 +2,7 @@ package com.hgyw.bookshare.logicAccess;
 
 import com.hgyw.bookshare.dataAccess.DataAccess;
 import com.hgyw.bookshare.dataAccess.DataAccessFactory;
-import com.hgyw.bookshare.dataAccess.DelayDataAccess;
 import com.hgyw.bookshare.entities.Credentials;
-import com.hgyw.bookshare.entities.Guest;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.entities.UserType;
 import com.hgyw.bookshare.exceptions.WrongLoginException;
@@ -15,7 +13,9 @@ import com.hgyw.bookshare.exceptions.WrongLoginException;
 enum AccessManagerImpl implements AccessManager {
     INSTANCE;
 
-    private final User guest = new Guest();
+    private final User guest = new User(); {
+        guest.setUserType(UserType.GUEST);
+    }
     private final DataAccess dataAccess = DataAccessFactory.getInstance();
     private GeneralAccess currentAccess;
     private User currentUser;
@@ -50,7 +50,7 @@ enum AccessManagerImpl implements AccessManager {
 
     @Override
     public synchronized void signIn(Credentials credentials) throws WrongLoginException {
-        if (currentUser != guest) throw new IllegalStateException("There is a user that has already been signed in.");
+        if (currentUser != guest) throw new WrongLoginException(WrongLoginException.Issue.SOMEBODY_IS_ALREADY_SIGNED_IN);
         User newUser = dataAccess.retrieveUserWithCredentials(credentials).orElseThrow(()->
             new WrongLoginException(WrongLoginException.Issue.WRONG_USERNAME_OR_PASSWORD)
         );

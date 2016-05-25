@@ -117,7 +117,7 @@
     <string name="edit">ערוך</string>
     <string name="my_books">הספרים שלי</string>
     <string name="supplier_orders_title">ההזמנות שלי</string>
-    <string name="the_book_was_updated">הספר עודכן</string>
+    <string name="book_was_updated">הספר עודכן</string>
     <string name="transaction_title">עיסקאות</string>
     <string name="transactions">עיסקאות</string>
     <string name="price">מחיר</string>

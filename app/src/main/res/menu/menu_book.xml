@@ -8,8 +8,7 @@
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_edit_book"
-        android:title="@string/edit"
-        app:showAsAction="ifRoom|withText" />
+        android:title="@string/edit" />
     <item
         android:id="@+id/action_supply_book"
         android:title="@string/supply_the_book" />

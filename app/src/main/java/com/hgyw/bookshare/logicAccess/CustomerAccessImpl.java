@@ -10,6 +10,7 @@ import com.hgyw.bookshare.dataAccess.DataAccess;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookReview;
 import com.hgyw.bookshare.entities.BookSupplier;
+import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.entities.IdReference;
 import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.OrderRating;
@@ -79,13 +80,13 @@ class CustomerAccessImpl extends GeneralAccessImpl implements CustomerAccess {
         // validations and check that transaction can be done
         validateOrdersTransaction(orders);
         // create transaction
-        transaction.setId(0);
+        transaction.setId(Entity.DEFAULT_ID);
         transaction.setDate(new Date());
         transaction.setCustomerId(retrieveUserDetails().getId());
         dataAccess.create(transaction);
         // create orders
         for (Order o : orders) {
-            o.setId(0);
+            o.setId(Entity.DEFAULT_ID);
             o.setOrderStatus(OrderStatus.NEW_ORDER);
             o.setTransactionId(transaction.getId());
             dataAccess.create(o);
@@ -144,7 +145,7 @@ class CustomerAccessImpl extends GeneralAccessImpl implements CustomerAccess {
         List<BookReview> result = dataAccess.findEntityReferTo(BookReview.class, currentUser, IdReference.of(Book.class, bookReview.getBookId()));
         bookReview.setCustomerId(currentUser.getId());
         if (result.isEmpty()) {
-            bookReview.setId(0);
+            bookReview.setId(Entity.DEFAULT_ID);
             dataAccess.create(bookReview);
         } else {
             BookReview currentBookReview = result.get(0);

@@ -2,7 +2,9 @@ package com.hgyw.bookshare.entities.reflection;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -14,8 +16,8 @@ public class PropertiesReflection {
      * Creates of all properties of class clazz, where key is the property name.
      * @param clazz
      */
-    public static Map<String, Property> getPropertiesMap(Class<?> clazz) {
-        Map<String, Property> map = new HashMap<>();
+    public static List<Property> getProperties(Class<?> clazz) {
+        List<Property> list = new ArrayList<>();
         Method[] methods = clazz.getMethods();
         for (Field field : clazz.getDeclaredFields()) {
             for (Method getter : methods) {
@@ -30,15 +32,15 @@ public class PropertiesReflection {
                     Method setter;
                     try {
                         setter = clazz.getMethod("set" + nameUppercase, getter.getReturnType());
-                        if (getter.getParameterTypes().length != 1) setter = null;
+                        if (setter.getParameterTypes().length != 1) setter = null;
                     }
                     catch (NoSuchMethodException e) { setter = null; }
-                    map.put(field.getName(), new ReflectedProperty(field.getName(), getter, setter, field));
+                    list.add(new ReflectedProperty(field.getName(), getter, setter, field));
                 }
             }
         }
-        if (clazz.getSuperclass() != null) map.putAll(getPropertiesMap(clazz.getSuperclass()));
-        return map;
+        if (clazz.getSuperclass() != null) list.addAll(getProperties(clazz.getSuperclass()));
+        return list;
     }
 
 }

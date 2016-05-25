@@ -41,7 +41,7 @@
         android:id="@+id/bookAuthor"
         android:layout_below="@+id/bookTitle"
         android:layout_toEndOf="@+id/bookImage"
-        android:layout_toStartOf="@id/order_amount"
+        android:layout_toStartOf="@id/orderAmount"
         android:paddingStart="10dp" />
 
     <TextView

@@ -29,8 +29,7 @@ public interface AccessManager {
     /**
      * Sign in by exists account with the credentials.
      * @param credentials The credentials
-     * @throws IllegalStateException if there is user signed in.
-     * @throws WrongLoginException if the credentials don't match any user.
+     * @throws WrongLoginException if the credentials don't match any user, or if there is user signed-in.
      */
     void signIn(Credentials credentials) throws WrongLoginException;
 

@@ -4,15 +4,11 @@ import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
 import com.annimon.stream.function.Predicate;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import com.hgyw.bookshare.entities.Book;
-import com.hgyw.bookshare.entities.BookSupplier;
-import com.hgyw.bookshare.entities.Entity;
-import com.hgyw.bookshare.entities.IdReference;
-import com.hgyw.bookshare.entities.User;
+import com.hgyw.bookshare.entities.*;
 
 /**
  * Created by haim7 on 04/05/2016.
@@ -41,17 +37,20 @@ public class EntityReflection {
      * @return
      */
     public static Map<Class<? extends Entity>, Property> getReferringProperties(Class<? extends Entity> referringClass) {
-        return Stream.of(PropertiesReflection.getPropertiesMap(referringClass).values())
+        return Stream.of(PropertiesReflection.getProperties(referringClass))
                 .filter(p -> p.getFieldAnnotation(EntityReference.class) != null)
                 .collect(Collectors.toMap(p -> p.getFieldAnnotation(EntityReference.class).value(), p -> p));
     }
 
     public static List<Class<? extends Entity>> getEntityTypes() {
-        List<Class<? extends Entity>> list = new ArrayList<>();
-        list.add(Book.class);
-        list.add(BookSupplier.class);
-        list.add(User.class);
-        // TODO
-        return list;
+        return Arrays.asList(
+                Book.class,
+                BookReview.class,
+                BookSupplier.class,
+                ImageEntity.class,
+                Order.class,
+                Transaction.class,
+                User.class
+        );
     }
 }

@@ -8,7 +8,6 @@
 
     <item
         android:id="@+id/action_add_book"
-        android:title="@string/add"
-        app:showAsAction="ifRoom|withText" />
+        android:title="@string/add" />
 
 </menu>

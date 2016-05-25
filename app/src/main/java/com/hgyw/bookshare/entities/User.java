@@ -8,7 +8,7 @@ import java.util.Objects;
  */
 public class User extends Entity {
 
-    private Credentials credentials = Credentials.EMPTY;
+    private Credentials credentials = Credentials.empty();
     private String email;
     private String address;
     private String phoneNumber;

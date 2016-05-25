@@ -5,6 +5,7 @@ import com.annimon.stream.Stream;
 import com.hgyw.bookshare.dataAccess.DataAccess;
 import com.hgyw.bookshare.dataAccess.DataAccessFactory;
 import com.hgyw.bookshare.entities.*;
+import com.hgyw.bookshare.entities.reflection.EntityReflection;
 import com.hgyw.bookshare.exceptions.*;
 
 import java.math.BigDecimal;
@@ -18,7 +19,11 @@ import java.util.List;
 public class Test {
 
     public static void test(AccessManager accessManager) {
-      //  DataAccess da = DataAccessFactory.getInstance();
+           // testInternal(accessManager);
+    }
+
+    private static void testInternal(AccessManager accessManager) {
+        //  DataAccess da = DataAccessFactory.getInstance();
 
         if (accessManager.getCurrentUserType() !=UserType.GUEST) accessManager.signOut();
 
@@ -37,7 +42,7 @@ public class Test {
         /////////////////////////////
         // new supplier
         User supplier = new User();
-        supplier.setId(0);
+        supplier.setId(Entity.DEFAULT_ID);
         supplier.setUserType(UserType.SUPPLIER);
         supplier.setCredentials(firstSupplierCredentials);
         supplier.setFirstName("");
@@ -48,33 +53,34 @@ public class Test {
         try {
             accessManager.signUp(supplier);
         } catch (WrongLoginException e) {
-            e.printStackTrace();
+            try {accessManager.signIn(supplier.getCredentials());}
+            catch (WrongLoginException e1) {e1.printStackTrace();}
         }
         sAccess = accessManager.getSupplierAccess();
 
-        book.setId(0);
+        book.setId(Entity.DEFAULT_ID);
         book.setTitle("The Fellowship of the Ring");
         book.setAuthor("J. R. R. Tolkien");
         sAccess.addBook(book);
-        bookSupplier.setId(0);
+        bookSupplier.setId(Entity.DEFAULT_ID);
         bookSupplier.setBookId(book.getId());
         bookSupplier.setPrice(new BigDecimal("49.99"));
         sAccess.addBookSupplier(bookSupplier);
 
-        book.setId(0);
+        book.setId(Entity.DEFAULT_ID);
         book.setTitle("The Two Towers");
         book.setAuthor("J. R. R. Tolkien");
         sAccess.addBook(book);
-        bookSupplier.setId(0);
+        bookSupplier.setId(Entity.DEFAULT_ID);
         bookSupplier.setBookId(book.getId());
         bookSupplier.setPrice(new BigDecimal("89.99"));
         sAccess.addBookSupplier(bookSupplier);
 
-        book.setId(0);
+        book.setId(Entity.DEFAULT_ID);
         book.setTitle("The Return of the King");
         book.setAuthor("J. R. R. Tolkien");
         sAccess.addBook(book);
-        bookSupplier.setId(0);
+        bookSupplier.setId(Entity.DEFAULT_ID);
         bookSupplier.setBookId(book.getId());
         bookSupplier.setPrice(new BigDecimal("79.99"));
         sAccess.addBookSupplier(bookSupplier);
@@ -91,7 +97,7 @@ public class Test {
 
         // new supplier
 
-        supplier.setId(0);
+        supplier.setId(Entity.DEFAULT_ID);
         supplier.setCredentials(secondSupplierCredentials);
         supplier.setFirstName("");
         supplier.setLastName("Yefe-Nof");
@@ -101,16 +107,17 @@ public class Test {
         try {
             accessManager.signUp(supplier);
         } catch (WrongLoginException e) {
-            e.printStackTrace();
+            try {accessManager.signIn(supplier.getCredentials());}
+            catch (WrongLoginException e1) {e1.printStackTrace();}
         }
         sAccess = accessManager.getSupplierAccess();
 
         for (int i = 1; i <= 7; i++) {
-            book.setId(0);
+            book.setId(Entity.DEFAULT_ID);
             book.setTitle("Harry potter " + i);
             book.setAuthor("J.K.Rowling");
             sAccess.addBook(book);
-            bookSupplier.setId(0);
+            bookSupplier.setId(Entity.DEFAULT_ID);
             bookSupplier.setBookId(book.getId());
             bookSupplier.setPrice(BigDecimal.valueOf(100 + 10 * i));
             sAccess.addBookSupplier(bookSupplier);
@@ -120,10 +127,10 @@ public class Test {
         bookQuery = new BookQuery();
         bookQuery.setTitleQuery("The Two Towers");
         book = sAccess.findBooks(bookQuery).iterator().next(); // get first book from books match the quarry
-        bookSupplier.setId(0);
+        bookSupplier.setId(Entity.DEFAULT_ID);
         bookSupplier.setBookId(book.getId());
         bookSupplier.setPrice(BigDecimal.valueOf(77.88));
-        sAccess.addBookSupplier(bookSupplier);
+        //TODO sAccess.addBookSupplier(bookSupplier);
 
         // retrieve all current harry potter books adn change the details of books
         bookQuery = new BookQuery();
@@ -170,7 +177,7 @@ public class Test {
         Collection<Book> booksFound = sAccess.findBooks(bookQuery);
         System.out.println(" *** books found: "); for (Book b : booksFound) System.out.println(b);
         for (Book b : booksFound) {
-            bookSupplier.setId(0);
+            bookSupplier.setId(Entity.DEFAULT_ID);
             bookSupplier.setBookId(b.getId());
             bookSupplier.setSupplierId(supplier.getId());
             bookSupplier.setPrice(BigDecimal.valueOf(66.99));
@@ -195,7 +202,7 @@ public class Test {
         //////////////////////////////
 
         // new customer
-        customer.setId(0);
+        customer.setId(Entity.DEFAULT_ID);
         customer.setCredentials(firstCustomerCredentials);
         customer.setEmail("haim763@gmail.com");
         customer.setFirstName("Haim");
@@ -203,7 +210,8 @@ public class Test {
         try {
             accessManager.signUp(customer);
         } catch (WrongLoginException e) {
-            e.printStackTrace();
+            try {accessManager.signIn(supplier.getCredentials());}
+            catch (WrongLoginException e1) {e1.printStackTrace();}
         }
         cAccess = accessManager.getCustomerAccess();
 
@@ -222,7 +230,7 @@ public class Test {
                     return order;
                 }).collect(Collectors.toList());
 
-       Transaction transaction = new Transaction();
+        Transaction transaction = new Transaction();
         transaction.setCreditCard("231972947817861868");
         try {
             cAccess.performNewTransaction(transaction, orders);
@@ -283,7 +291,7 @@ public class Test {
         //////////////////////////////
 
         // new customer
-        customer.setId(0);
+        customer.setId(Entity.DEFAULT_ID);
         customer.setCredentials(secondCustomerCredentials);
         customer.setEmail("yoni@gmail.com");
         customer.setFirstName("Yoni");
@@ -293,7 +301,8 @@ public class Test {
         try {
             accessManager.signUp(customer);
         } catch (WrongLoginException e) {
-            e.printStackTrace();
+            try {accessManager.signIn(supplier.getCredentials());}
+            catch (WrongLoginException e1) {e1.printStackTrace();}
         }
         accessManager.signOut();
 
@@ -318,11 +327,7 @@ public class Test {
 
 
     private static void printWholeDatabase(DataAccess dataAccess) {
-        final List<Class<? extends Entity>> classes = Arrays.asList(
-                User.class, User.class, Book.class,
-                BookSupplier.class, Order.class, Transaction.class, BookReview.class
-
-        );
+        final List<Class<? extends Entity>> classes = EntityReflection.getEntityTypes();
 
         /*System.out.println("\n **************** Database Summury ***************");
         for (Class<? extends Entity> c : classes) System.out.println(

@@ -16,6 +16,6 @@ public interface Property {
 
     String getName();
     boolean canWrite();
-    Class<?> getPropertyClass();
+    Class<?> getPropertyType();
     Class<?> getReflectedClass();
 }

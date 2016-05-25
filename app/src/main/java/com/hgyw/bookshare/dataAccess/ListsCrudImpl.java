@@ -30,7 +30,7 @@ class ListsCrudImpl implements Crud {
         checkAreReferencesLegal(item);
         List<Entity> entityList = getListOrCreate(item.getClass());
 
-        if (item.getId() != 0) {
+        if (item.getId() != Entity.DEFAULT_ID) {
             throw new IllegalArgumentException("ID must be 0");
         }
         generateNewId(item);
@@ -69,8 +69,9 @@ class ListsCrudImpl implements Crud {
     public void update(Entity item) {
         checkAreReferencesLegal(item);
         item.setDeleted(false);
-        List<Entity> entityList = entitiesMap.get(item.getClass());
-        entityList.remove(item);
+        List<Entity> entityList = getListOrCreate(item.getClass());
+        boolean isRemoved = entityList.remove(item);
+        if (!isRemoved) throw new NoSuchElementException("No element of " + item.toIdReference());
         entityList.add(item.clone());
     }
 

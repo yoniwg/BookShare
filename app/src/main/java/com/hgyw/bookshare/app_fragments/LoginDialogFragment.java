@@ -33,7 +33,7 @@ public class LoginDialogFragment extends DialogFragment implements DialogInterfa
      * @return instance of LoginDialogFragment
      */
     public static LoginDialogFragment newInstance() {
-        return newInstance(Credentials.EMPTY);
+        return newInstance(Credentials.empty());
     }
 
     /**

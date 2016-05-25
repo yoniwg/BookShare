@@ -131,7 +131,7 @@
     <string name="book_edit_title">Edit Book details</string>
     <string name="book_author">Book Author</string>
     <string name="edit">Edit</string>
-    <string name="the_book_was_updated">The book updated</string>
+    <string name="book_was_updated">The book updated</string>
     <string name="my_books">My Books</string>
     <string name="transaction_title">Transactions</string>
     <string name="amount_available_colon">Amount Available:</string>
@@ -148,4 +148,9 @@
     <string name="new_account">New account</string>
     <string name="remember_me">Remember me</string>
     <string name="supply_the_book">Supply the book</string>
+    <string name="book_was_removed_to_supplier">The book have been removed from yours books.</string>
+    <string name="book_was_added_to_supplier">The book was added for yours books</string>
+    <string name="book_was_updated_to_supplier">The book of yours was updated.</string>
+    <string name="new_book_review_dialog">You have not yet have this book. in yours books. write the data and click to add.</string>
+    <string name="update_book_review_dialog">These are current data of book that you provides:</string>
 </resources>

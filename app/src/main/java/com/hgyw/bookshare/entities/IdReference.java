@@ -54,6 +54,12 @@ public abstract class IdReference {
 
     @Override
     public String toString() {
-        return "IdReference{" + "id=" + getId() + ", entityType=" + getEntityType() +"}";
+        return "{" + "id=" + getId() + ", entityType=" + getEntityType() +"}";
+    }
+
+
+    public final IdReference toIdReference() {
+        if (this.getClass() == IdReference.class) return this;
+        return IdReference.of(getEntityType(), getId());
     }
 }

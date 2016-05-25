@@ -1,13 +1,36 @@
 package com.hgyw.bookshare.dataAccess;
 
+import com.hgyw.bookshare.MyApplication;
+
 /**
  * Created by Yoni on 3/17/2016.
  */
 public class DataAccessFactory {
 
-    private enum DatabaseType { LISTS, SQL_LITE ,MY_SQL}
+    private static final boolean PSEUDO_DELAY_TEST = false;
 
-    private static DatabaseType currentDB = DatabaseType.LISTS;
+    private enum DatabaseType {
+        LISTS {
+            DataAccess createDataAccess() {
+                return new DataAccessListImpl(new ListsCrudImpl());
+            }
+        },
+        SQL_LITE {
+            DataAccess createDataAccess() {
+                return new DataAccessListImpl(new SqlLiteCrud(MyApplication.getAppContext()));
+            }
+        },
+        MY_SQL{
+            DataAccess createDataAccess() {
+                throw new UnsupportedOperationException("No implementation yet.");
+            }
+        }
+        ;
+
+        abstract DataAccess createDataAccess();
+    }
+
+    private static DatabaseType currentDB = DatabaseType.SQL_LITE;
 
     private static DataAccess dataAccess;
 
@@ -18,19 +41,8 @@ public class DataAccessFactory {
      */
     static synchronized public DataAccess getInstance(){
         if (dataAccess == null) {
-            switch (currentDB) {
-                case LISTS:
-                    dataAccess = new DataAccessListImpl();
-                   // new CrudTest((ListsCrudImpl) crud); // test.
-                    break;
-                case SQL_LITE:
-                    //TODO
-                    break;
-                case MY_SQL:
-                    //TODO
-                    break;
-            }
-            //dataAccess = new DelayDataAccess(dataAccess); // delay test
+            dataAccess = currentDB.createDataAccess();
+            if (PSEUDO_DELAY_TEST) dataAccess = new DelayDataAccess(dataAccess);
         }
         return dataAccess;
 

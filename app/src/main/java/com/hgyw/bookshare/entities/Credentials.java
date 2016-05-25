@@ -3,15 +3,12 @@ package com.hgyw.bookshare.entities;
 import java.io.Serializable;
 import java.util.Objects;
 
-/**
- * Immutable class represents username and password.
- */
 public final class Credentials implements Serializable {
 
-    public static final Credentials EMPTY = new Credentials("", "");
+    public static final Credentials empty() { return  new Credentials("", ""); }
 
-    private final String username;
-    private final String password;
+    private String username;
+    private String password;
 
     public Credentials(String username, String password) {
         this.username = Objects.requireNonNull(username).trim();
@@ -25,6 +22,14 @@ public final class Credentials implements Serializable {
 
     public String getPassword() {
         return password;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override

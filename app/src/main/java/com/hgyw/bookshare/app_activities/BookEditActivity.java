@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -16,6 +15,7 @@ import com.hgyw.bookshare.app_drivers.IntentsFactory;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
 import com.hgyw.bookshare.app_drivers.Utility;
 import com.hgyw.bookshare.entities.Book;
+import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.entities.IdReference;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.SupplierAccess;
@@ -116,7 +116,7 @@ public class BookEditActivity extends AppCompatActivity {
         ObjectToViewAppliers.result(view, book);
         saveBook();
         setResult(RESULT_OK);
-        Toast.makeText(this, R.string.the_book_was_updated, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.book_was_updated, Toast.LENGTH_SHORT).show();
         finish();
     }
 
@@ -126,9 +126,9 @@ public class BookEditActivity extends AppCompatActivity {
         SupplierAccess sAccess = AccessManagerFactory.getInstance().getSupplierAccess();
         if (newImage != null) {
             long imageId = sAccess.upload(Utility.compress(newImage));
-            if (imageId != 0) book.setImageId(imageId);
+            if (imageId != Entity.DEFAULT_ID) book.setImageId(imageId);
         }
-        if (book.getId() == 0) {
+        if (book.getId() == Entity.DEFAULT_ID) {
             sAccess.addBook(book);
         } else {
             sAccess.updateBook(book);

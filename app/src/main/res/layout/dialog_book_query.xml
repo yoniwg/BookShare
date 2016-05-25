@@ -1,79 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
-    <data>
-        <variable name="query" type="com.hgyw.bookshare.entities.BookQuery"/>
-    </data>
-    <LinearLayout
-        android:orientation="vertical"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/default_external_padding">
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
+        <EditText
+            android:hint="@string/book_title"
+            android:singleLine="true"
+            android:id="@+id/title_query"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent" />
+    </android.support.design.widget.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <EditText
-                android:hint="@string/book_title"
-                android:singleLine="true"
-                android:id="@+id/title_query"
-                android:layout_height="match_parent"
-                android:layout_width="match_parent" />
-        </android.support.design.widget.TextInputLayout>
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/author_name"
+            android:singleLine="true"
+            android:id="@+id/author_query" />
+    </android.support.design.widget.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <EditText android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/author_name"
-                android:singleLine="true"
-                android:id="@+id/author_query" />
-        </android.support.design.widget.TextInputLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal">
 
-        <LinearLayout
-            android:orientation="horizontal"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/category"
+            android:layout_gravity="center_vertical" />
+
+        <Spinner
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal">
+            android:id="@+id/genre_spinner"
+            android:spinnerMode="dropdown"
+            android:touchscreenBlocksFocus="false"
+            android:transitionGroup="false" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="@string/category"
-                android:layout_gravity="center_vertical" />
-
-            <Spinner
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/genre_spinner"
-                android:spinnerMode="dropdown"
-                android:touchscreenBlocksFocus="false"
-                android:transitionGroup="false" />
-
-        </LinearLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <EditText android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/from_price"
-                android:singleLine="true"
-                android:inputType="numberDecimal"
-                android:id="@+id/from_price" />
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/to_price"
-                android:singleLine="true"
-                android:inputType="numberDecimal"
-                android:id="@+id/to_price" />
-        </android.support.design.widget.TextInputLayout>
     </LinearLayout>
-</layout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/from_price"
+            android:singleLine="true"
+            android:inputType="numberDecimal"
+            android:id="@+id/from_price" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/to_price"
+            android:singleLine="true"
+            android:inputType="numberDecimal"
+            android:id="@+id/to_price" />
+    </android.support.design.widget.TextInputLayout>
+
+</LinearLayout>

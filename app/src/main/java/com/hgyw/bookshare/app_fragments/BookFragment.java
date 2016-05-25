@@ -12,10 +12,8 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hgyw.bookshare.app_drivers.ApplyObjectAdapter;
 import com.hgyw.bookshare.app_drivers.IntentsFactory;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
 import com.hgyw.bookshare.R;
@@ -145,10 +143,11 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
                 startActivity(IntentsFactory.editBookIntent(getActivity(), book.getId()));
                 return true;
             case R.id.action_supply_book: {
-                BookSupplier bs = new BookSupplier();
+                BookSupplier bs = AccessManagerFactory.getInstance().getSupplierAccess().retrieveMyBookSupplier(book);
                 bs.setBookId(entityId);
                 BookSupplierDialogFragment.newInstance(bs).show(getFragmentManager(), "BookSupplierDialogFragment");
-                return true; }
+                return true;
+            }
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -186,7 +185,7 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == IntentsFactory.CODE_ENTITY_UPDATED && resultCode == Activity.RESULT_OK) {
-            updateBookDeatilsView();
+            updateBookDeatilsView(); //??????????????????
         }
     }
 
@@ -197,14 +196,18 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
             case OK:
                 if (bookSupplier.getId() == 0) {
                     sAccess.addBookSupplier(bookSupplier);
+                    Toast.makeText(getActivity(),R.string.book_was_added_to_supplier, Toast.LENGTH_SHORT).show();
                 } else {
                     sAccess.updateBookSupplier(bookSupplier);
+                    Toast.makeText(getActivity(),R.string.book_was_updated_to_supplier, Toast.LENGTH_SHORT).show();
                 }
+                startActivity(IntentsFactory.supplierBooksIntent(getActivity()));
                 break;
             case CANCEL: break;
             case DELETE:
                 try {
                     sAccess.removeBookSupplier(bookSupplier);
+                    Toast.makeText(getActivity(),R.string.book_was_removed_to_supplier, Toast.LENGTH_SHORT).show();
                 } catch (NoSuchElementException ignored) {}
                 break;
         }

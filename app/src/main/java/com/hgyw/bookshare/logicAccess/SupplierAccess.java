@@ -78,4 +78,6 @@ public interface SupplierAccess extends GeneralAccess {
      * @throws java.util.NoSuchElementException if the BookSupplier is not found in database.
      */
     void removeBookSupplier(BookSupplier bookSupplier);
+
+    BookSupplier retrieveMyBookSupplier(Book book);
 }

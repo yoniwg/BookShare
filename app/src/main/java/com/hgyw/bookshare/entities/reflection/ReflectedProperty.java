@@ -39,11 +39,11 @@ class ReflectedProperty implements Property {
 
     @Override
     public void set(Object o, Object value) {
-        if (setter == null) throw new UnsupportedOperationException("The Property is read only.");
+        if (setter == null) throw new UnsupportedOperationException("The Property '" + name + "' is read only.");
         try {
             setter.invoke(o, value);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new InternalError(e.getMessage()); // unreached code because the method is public
+            // unreached code because the method is public
         }
     }
 
@@ -54,11 +54,6 @@ class ReflectedProperty implements Property {
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new InternalError(e.getMessage()); // unreached code because the method is public
         }
-    }
-
-    @Override
-    public Annotation[] getFieldAnnotations() {
-        return field == null ? null : field.getAnnotations();
     }
 
     @Override
@@ -77,7 +72,7 @@ class ReflectedProperty implements Property {
     }
 
     @Override
-    public Class<?> getPropertyClass() {
+    public Class<?> getPropertyType() {
         return getter.getReturnType();
     }
 

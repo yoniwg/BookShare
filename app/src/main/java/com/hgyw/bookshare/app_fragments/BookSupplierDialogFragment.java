@@ -5,7 +5,9 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.view.View;
+import android.widget.TextView;
 
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.app_drivers.ListenerSupplierHelper;
@@ -43,8 +45,13 @@ public class BookSupplierDialogFragment extends DialogFragment implements Dialog
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         view = getActivity().getLayoutInflater().inflate(R.layout.dialog_booksupplier, null);
         ObjectToViewAppliers.apply(view, bookSupplier);
+        /*TextView messageTextView = view.findViewById(R.id.message);
+        if (messageTextView != null) messageTextView.setText(dialogMessage);*/
+
+        @StringRes int dialogMessage = bookSupplier.getId() == 0 ? R.string.new_book_review_dialog : R.string.update_book_review_dialog;
         return new AlertDialog.Builder(getActivity()).setView(view)
                 .setTitle("Update Yours Book")
+                .setMessage(dialogMessage)
                 .setPositiveButton(R.string.ok, this)
                 .setNeutralButton(R.string.delete, this)
                 .setNegativeButton(R.string.cancel, this)

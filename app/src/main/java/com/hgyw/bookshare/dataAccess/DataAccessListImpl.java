@@ -31,7 +31,46 @@ import com.hgyw.bookshare.entities.reflection.EntityReflection;
 /**
  * Created by haim7 on 23/03/2016.
  */
-class DataAccessListImpl extends ListsCrudImpl implements DataAccess {
+class DataAccessListImpl implements DataAccess {
+
+    private final Crud crud;
+
+    DataAccessListImpl(Crud crud) {
+        this.crud = crud;
+    }
+
+    ///////////////////////////
+    // Delegate Methods
+    //////////////////////////
+
+    @Override
+    public void create(Entity item) {
+        crud.create(item);
+    }
+
+    @Override
+    public void update(Entity item) {
+        crud.update(item);
+    }
+
+    @Override
+    public void delete(IdReference item) {
+        crud.delete(item);
+    }
+
+    @Override
+    public <T extends Entity> Stream<T> streamAll(Class<T> entityType) {
+        return crud.streamAll(entityType);
+    }
+
+    @Override
+    public <T extends Entity> T retrieve(Class<T> entityClass, long id) {
+        return crud.retrieve(entityClass, id);
+    }
+
+    ///////////////////////////
+    // Delegate Methods End
+    //////////////////////////
 
     @Override
     public Optional<User> retrieveUserWithCredentials(Credentials credentials) {

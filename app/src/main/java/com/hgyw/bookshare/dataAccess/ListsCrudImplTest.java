@@ -34,7 +34,7 @@ class ListsCrudImplTest {
         User user;
         user = new Customer();
 
-        user.setId(0);
+        user.setId(Entity.DEFAULT_ID);
         user.setCredentials(new Credentials("root", "1234"));
         user.setFirstName("Haim");
         user.setLastName("Greenstein");
@@ -44,7 +44,7 @@ class ListsCrudImplTest {
         user.setPhoneNumber("050-1234567");
         crud.create(user);
 
-        user.setId(0);
+        user.setId(Entity.DEFAULT_ID);
         user.setFirstName("Yoni");
         user.setLastName("Wiseberg");
         user.setAddress("Bney Brak");
@@ -53,7 +53,7 @@ class ListsCrudImplTest {
         user.setPhoneNumber("052-1234567");
         crud.create(user);
 
-        user.setId(0);
+        user.setId(Entity.DEFAULT_ID);
         user.setFirstName("Israel");
         user.setLastName("Israeli");
         user.setAddress("Tel Aviv");
@@ -64,7 +64,7 @@ class ListsCrudImplTest {
 
         user = new Supplier();
 
-        user.setId(0);
+        user.setId(Entity.DEFAULT_ID);
         user.setFirstName("");
         user.setLastName("Feldhaime");
         user.setAddress("Israel");
@@ -72,7 +72,7 @@ class ListsCrudImplTest {
         user.setPhoneNumber("03-4004004");
         crud.create(user);
 
-        user.setId(0);
+        user.setId(Entity.DEFAULT_ID);
         user.setFirstName("");
         user.setLastName("Yefe-Nof");
         user.setAddress("Jerusalem, Israel");
@@ -84,23 +84,23 @@ class ListsCrudImplTest {
 
         Book b = new Book();
 
-        b.setId(0);
+        b.setId(Entity.DEFAULT_ID);
         b.setTitle("The Fellowship of the Ring");
         b.setAuthor("J. R. R. Tolkien");
         crud.create(b);
 
-        b.setId(0);
+        b.setId(Entity.DEFAULT_ID);
         b.setTitle("The Two Towers");
         b.setAuthor("J. R. R. Tolkien");
         crud.create(b);
 
-        b.setId(0);
+        b.setId(Entity.DEFAULT_ID);
         b.setTitle("The Return of the King");
         b.setAuthor("J. R. R. Tolkien");
         crud.create(b);
 
         for (int i = 1; i <= 7; i++) {
-            b.setId(0);
+            b.setId(Entity.DEFAULT_ID);
             b.setTitle("Hary potter " + i);
             b.setAuthor("J.K.Rolling");
             crud.create(b);
@@ -118,7 +118,7 @@ class ListsCrudImplTest {
             final double probabilityThatSupplierHaveBook = 2.0 / suppliersCount;
             for (int j = 1; j <= suppliersCount; j++)
                 if (Math.random() < probabilityThatSupplierHaveBook) {
-                    bs.setId(0);
+                    bs.setId(Entity.DEFAULT_ID);
                     bs.setSupplierId(crud.retrieve(Supplier.class, j));
                     bs.setBookId(crud.retrieve(Book.class, i));
                     bs.setPrice(BigDecimal.valueOf(30 + Math.random() * 50).setScale(3, BigDecimal.ROUND_HALF_UP));
@@ -126,7 +126,7 @@ class ListsCrudImplTest {
                 }
             // add Review to each book
             for (int j =0; j < 3; j++) {
-                br.setId(0);
+                br.setId(Entity.DEFAULT_ID);
                 br.setBookId(crud.retrieve(Book.class, i));
                 br.setTitle(generateRandomString(10));
                 br.setDescription(generateRandomString(5));
@@ -143,7 +143,7 @@ class ListsCrudImplTest {
         Transaction transaction = new Transaction();
 
         for (int j=0; j < 6; j++) {
-            transaction.setId(0);
+            transaction.setId(Entity.DEFAULT_ID);
             transaction.setDate(getRandomDate(-4, -2));
             transaction.setCustomerId(getRandomItem(Customer.class));
             crud.create(transaction);

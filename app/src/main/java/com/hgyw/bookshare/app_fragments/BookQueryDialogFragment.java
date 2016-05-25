@@ -41,8 +41,7 @@ public class BookQueryDialogFragment extends DialogFragment {
         return fragment;
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView1(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_book_query, container, false);
         Spinner genreSpinner = (Spinner) view.findViewById(R.id.genre_spinner);
         Utility.setSpinnerToEnum(getActivity(), genreSpinner, Book.Genre.values());
@@ -53,7 +52,7 @@ public class BookQueryDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         BookQuery bookQuery = getArguments() == null ? null : (BookQuery) getArguments().getSerializable(ARG_DIALOG_BOOK_QUERY);
         // inflate and set view
-        View view = onCreateView(getActivity().getLayoutInflater(), null, savedInstanceState);
+        View view = onCreateView1(getActivity().getLayoutInflater(), null, savedInstanceState);
         if (bookQuery == null) throw new IllegalArgumentException("bookQuery should not be null, it should maintain by newInstance factory method.");
         ObjectToViewAppliers.apply(view, bookQuery);
 

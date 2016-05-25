@@ -17,7 +17,7 @@
         android:layout_marginLeft="5dp" />
 
     <TextView
-        android:id="@+id/bookAuthor"
+        android:id="@+id/userFullName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Supplier name"
@@ -26,7 +26,7 @@
         android:layout_toEndOf="@+id/userThumbnail" />
 
     <TextView
-        android:id="@+id/orderUnitPrice"
+        android:id="@+id/bookSupplierPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="price"

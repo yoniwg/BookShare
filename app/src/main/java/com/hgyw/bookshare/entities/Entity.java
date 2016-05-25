@@ -1,7 +1,7 @@
 package com.hgyw.bookshare.entities;
 
 import java.io.Serializable;
-import java.util.Map;
+import java.util.List;
 
 import com.hgyw.bookshare.entities.reflection.Property;
 import com.hgyw.bookshare.entities.reflection.PropertiesReflection;
@@ -11,8 +11,10 @@ import com.hgyw.bookshare.entities.reflection.PropertiesReflection;
  */
 public abstract class Entity extends IdReference implements Cloneable, Serializable
 {
-    private long id;
-    private boolean isDeleted;
+    public static int DEFAULT_ID = 0;
+
+    private long id = DEFAULT_ID;
+    private boolean deleted;
 
     /**
      * Get the id.
@@ -49,16 +51,19 @@ public abstract class Entity extends IdReference implements Cloneable, Serializa
      */
     @Override
     public String toString() {
-        Map<String, Property> map = PropertiesReflection.getPropertiesMap(this.getClass());
-        Property idProperty = map.remove("id");
+        List<Property> props = PropertiesReflection.getProperties(this.getClass());
+        Property idProperty = null;
+        for (Property p : props) if (p.getName().equalsIgnoreCase("id")) {idProperty = p; break;}
+        assert idProperty != null;
+        props.remove(idProperty);
         StringBuilder str = new StringBuilder();
-        for (Map.Entry<String, Property> e : map.entrySet()) {
-            Object value = e.getValue().get(this);
+        for (Property p : props) {
+            Object value = p.get(this);
             if (value instanceof String) value = "'" + value + "'";
             if (value instanceof Entity)
                 value = "(" + ((Entity) value).shortDescription() + ")";
             if (str.length() != 0) str.append(", ");
-            str.append(e.getKey()).append("=").append(value);
+            str.append(p.getName()).append("=").append(value);
         }
         return getClass().getSimpleName() + "(id=" + idProperty.get(this) + "){" + str + "}";
     }
@@ -68,11 +73,11 @@ public abstract class Entity extends IdReference implements Cloneable, Serializa
     }
 
     public boolean isDeleted() {
-        return isDeleted;
+        return deleted;
     }
 
     public void setDeleted(boolean isDeleted) {
-        this.isDeleted = isDeleted;
+        this.deleted = isDeleted;
     }
 
     @Override

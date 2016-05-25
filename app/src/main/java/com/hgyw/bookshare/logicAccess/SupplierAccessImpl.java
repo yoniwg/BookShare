@@ -3,6 +3,7 @@ package com.hgyw.bookshare.logicAccess;
 import com.hgyw.bookshare.dataAccess.DataAccess;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookSupplier;
+import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.entities.IdReference;
 import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.OrderStatus;
@@ -62,7 +63,7 @@ public class SupplierAccessImpl extends GeneralAccessImpl implements SupplierAcc
 
     @Override
     public void addBookSupplier(BookSupplier bookSupplier) {
-        bookSupplier.setId(0);
+        bookSupplier.setId(Entity.DEFAULT_ID);
         bookSupplier.setSupplierId(currentUser.getId());
         IdReference book = retrieve(Book.class, bookSupplier.getBookId());
         Collection<BookSupplier> currentMatchedBookSuppliers = dataAccess.findEntityReferTo(BookSupplier.class, currentUser, book);
@@ -84,6 +85,19 @@ public class SupplierAccessImpl extends GeneralAccessImpl implements SupplierAcc
         BookSupplier originalBookSupplier = (BookSupplier) dataAccess.retrieve(bookSupplier);
         requireItsMeForAccess(UserType.SUPPLIER, originalBookSupplier.getSupplierId());
         dataAccess.delete(bookSupplier);
+    }
+
+    @Override
+    public BookSupplier retrieveMyBookSupplier(Book book) {
+        List<BookSupplier> result = dataAccess.findEntityReferTo(BookSupplier.class, currentUser, book);
+        if (!result.isEmpty()) {
+            return result.get(0);
+        } else {
+            BookSupplier bs = new BookSupplier();
+            bs.setBookId(book.getId());
+            bs.setSupplierId(currentUser.getId());
+            return bs;
+        }
     }
 
 }
