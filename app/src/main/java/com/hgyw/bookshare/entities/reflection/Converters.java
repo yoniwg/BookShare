@@ -12,10 +12,23 @@ public class Converters {
         String getConvertTypeName();
         ConvertT convert(T value);
         T parse(ConvertT value);
+        <R> Converter<R,ConvertT> subConverter(Class<R> subType, Function<R,T> subConvert, Function<T,R> subParse);
+    }
+
+    private static abstract class AbstractConverter<T,ConvertT> implements Converter<T,ConvertT> {
+        public <R> Converter<R,ConvertT> subConverter(Class<R> subType, Function<R,T> subConvert, Function<T,R> subParse) {
+            return new AbstractConverter<R, ConvertT>() {
+                public Class<R> getType() {return subType;}
+                public Class<ConvertT> getConvertType() { return AbstractConverter.this.getConvertType(); }
+                public String getConvertTypeName() { return AbstractConverter.this.getConvertTypeName(); }
+                public ConvertT convert(R value) { return AbstractConverter.this.convert(subConvert.apply(value)); }
+                public R parse(ConvertT value) { return subParse.apply(AbstractConverter.this.parse(value)); }
+            };
+        }
     }
 
     public static <T> Converter<T,T> ofIdentity(Class<T> type, String convertTypeName) {
-        return new Converter<T, T>() {
+        return new AbstractConverter<T, T>()  {
             public Class<T> getType() {return type;}
             public Class<T> getConvertType() {return type;}
             public String getConvertTypeName() { return convertTypeName; }
@@ -29,7 +42,7 @@ public class Converters {
                                                             Function<T, ConvertT> convertFunction,
                                                             Function<ConvertT, T> parseFunc,
                                                             String convertTypeName) {
-        return new Converter<T, ConvertT>() {
+        return new AbstractConverter<T, ConvertT>() {
             public Class<T> getType() {return type;}
             public Class<ConvertT> getConvertType() {return convertType;}
             public String getConvertTypeName() {return convertTypeName;}
@@ -51,6 +64,27 @@ public class Converters {
             throw new UnsupportedOperationException("The convert to boxed type from " + type + " is not implemented.");
         }
         return c;
+    }
+
+    public static <T> Class<T> toUnboxedType(Class<T> type) {
+        if (type.isPrimitive()) return type;
+        try {
+            Class unboxed = (Class) type.getField("TYPE").get(null);
+            if (unboxed.isPrimitive()) type = unboxed;
+        } catch (IllegalAccessException | NoSuchFieldException ignored) {}
+        return type;
+    }
+
+    public static <T> T tryNewInstanceOrThrow(Class<T> type) {
+        try {
+            return type.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new IllegalArgumentException("The class should produce a public empty constructor.", e);
+        }
+    }
+
+    public static <T extends Enum<T>> Converter<T,Integer> enumToIntegerConverter(Class<T> type, String convertTypeName) {
+        return Converters.simple(type, Integer.class, Enum::ordinal, i -> type.getEnumConstants()[i], convertTypeName);
     }
 
 

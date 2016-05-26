@@ -4,6 +4,7 @@ import android.widget.Toast;
 
 import com.hgyw.bookshare.app_drivers.IntentsFactory;
 import com.hgyw.bookshare.R;
+import com.hgyw.bookshare.app_drivers.Utility;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.exceptions.WrongLoginException;
 import com.hgyw.bookshare.logicAccess.AccessManager;
@@ -23,6 +24,7 @@ public class UserRegistrationActivity extends UserAbstractActivity {
         try {
             accessManager.signUp(user);
             Toast.makeText(this, R.string.registration_Succeed, Toast.LENGTH_SHORT).show();
+            Utility.saveCredentials(this, user.getCredentials());
             startActivity(IntentsFactory.homeIntent(this, true));
         } catch (WrongLoginException e) {
             String message;

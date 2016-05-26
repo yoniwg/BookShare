@@ -56,6 +56,7 @@ public class CartFragment extends ListFragment implements TitleFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
 
         Cart cart = cAccess.getCart();
         List<Order> ordersList = cart.retrieveCartContent();
