@@ -56,23 +56,8 @@ public class PropertiesReflection {
      * @return
      */
     public static PropertiesConvertManager newPropertiesConvertManager(String subPropertySeparator, List<Converter> converters) {
-        PropertiesConvertManager propertiesConvertManager = newPropertiesConvertManager(subPropertySeparator);
-        propertiesConvertManager.setConverters(converters);
-        return propertiesConvertManager;
-    }
-
-    private static PropertiesConvertManager newPropertiesConvertManager(String subPropertySeparator) {
         return new PropertiesConvertManager() {
             private final Map<Class, Property[]> flatPropertiesMap = new HashMap<>();
-            private Collection<Converter> converters = new ArrayList<>();
-
-            public Collection<Converter> getConverters() {
-                return converters;
-            }
-
-            public void setConverters(Collection<Converter> converters) {
-                this.converters = Objects.requireNonNull(converters);
-            }
 
             /***
              * returns stream of propertios of aClass to sql
@@ -102,7 +87,7 @@ public class PropertiesReflection {
             public Converter findConverter(Class type) {
                 type = Converters.toBoxedType(type);
                 boolean isEnum = type.isEnum();
-                for (Converter converter : this.converters) {
+                for (Converter converter : converters) {
                     if (isEnum && converter.getType() == Integer.class && converter.getConvertType() == Integer.class) {
                         return Converters.enumToIntegerConverter(type, converter.getConvertTypeName());
                     } else if (converter.getType() == type) return converter;

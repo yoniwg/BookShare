@@ -11,8 +11,6 @@ import java.util.List;
 public interface PropertiesConvertManager {
 
     Stream<Property> streamFlatProperties(Class aClass);
-    Collection<Converter> getConverters();
-    void setConverters(Collection<Converter> converter);
     Converter findConverter(Class aClass);
     boolean isConverterExists(Class aClass);
 
