@@ -1,19 +1,19 @@
 package com.hgyw.bookshare.entities.reflection;
 
+import com.annimon.stream.Stream;
 import com.annimon.stream.function.Function;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by haim7 on 25/05/2016.
  */
 public class Converters {
-    public interface Converter<T,ConvertT> {
-        Class<T> getType();
-        Class<ConvertT> getConvertType();
-        String getConvertTypeName();
-        ConvertT convert(T value);
-        T parse(ConvertT value);
-        <R> Converter<R,ConvertT> subConverter(Class<R> subType, Function<R,T> subConvert, Function<T,R> subParse);
-    }
 
     private static abstract class AbstractConverter<T,ConvertT> implements Converter<T,ConvertT> {
         public <R> Converter<R,ConvertT> subConverter(Class<R> subType, Function<R,T> subConvert, Function<T,R> subParse) {

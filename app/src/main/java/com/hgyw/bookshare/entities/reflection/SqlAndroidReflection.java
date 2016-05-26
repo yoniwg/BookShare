@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.database.Cursor;
 
 import com.annimon.stream.Collectors;
-import com.hgyw.bookshare.entities.reflection.PropertiesReflection.PropertiesConvertManager;
 
 import java.util.Map;
 
@@ -51,7 +50,7 @@ public class SqlAndroidReflection {
                 String message = "No property of cursor column '" + propertyName + "'.";
                 throw new RuntimeException(message);
             }
-            Converters.Converter converter = propertiesConvertManager.findConverter(p.getPropertyType());
+            Converter converter = propertiesConvertManager.findConverter(p.getPropertyType());
             Object convertValue = genericGet(cursor, i, converter.getConvertType());
             Object value = converter.parse(convertValue);
             p.set(newItem, value);

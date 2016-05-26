@@ -10,10 +10,11 @@ import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
 import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.entities.IdReference;
+import com.hgyw.bookshare.entities.reflection.Converter;
 import com.hgyw.bookshare.entities.reflection.Converters;
 import com.hgyw.bookshare.entities.reflection.EntityReflection;
 import com.hgyw.bookshare.entities.reflection.PropertiesReflection;
-import com.hgyw.bookshare.entities.reflection.PropertiesReflection.PropertiesConvertManager;
+import com.hgyw.bookshare.entities.reflection.PropertiesConvertManager;
 import com.hgyw.bookshare.entities.reflection.SqlAndroidReflection;
 
 import java.math.BigDecimal;
@@ -31,8 +32,9 @@ public class SqlLiteCrud extends SQLiteOpenHelper implements Crud {
     private static final String DATABASE_NAME = "booksAppDataBase";
     private static final int DATABASE_VERSION = 1;
 
+    private static final String PRIMARY_KEY_STRING = "id";
 
-    private static final List<Converters.Converter> sqlLiteConverter = Arrays.asList(new Converters.Converter[]{
+    private static final List<Converter> sqlLiteConverter = Arrays.asList(new Converter[]{
             Converters.ofIdentity(Integer.class, "INTEGER"),
             Converters.ofIdentity(Long.class, "BIGINT"),
             Converters.ofIdentity(String.class, "TEXT"),
@@ -119,7 +121,7 @@ public class SqlLiteCrud extends SQLiteOpenHelper implements Crud {
                 .map(p -> {
                     String columnName = p.getName();
                     String columnType = convertManager.findConverter(p.getPropertyType()).getConvertTypeName();
-                    boolean isPrimaryKey = p.getName().equalsIgnoreCase("id");
+                    boolean isPrimaryKey = p.getName().equals(PRIMARY_KEY_STRING);
                     if (isPrimaryKey) {
                         columnType = "INTEGER";
                         return p.getName() + " " + columnType + " primary key autoincrement";

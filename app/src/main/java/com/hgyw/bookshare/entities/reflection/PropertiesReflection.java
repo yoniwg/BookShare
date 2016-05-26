@@ -7,6 +7,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,32 +49,28 @@ public class PropertiesReflection {
         return list;
     }
 
-    public interface PropertiesConvertManager {
-        Stream<Property> streamFlatProperties(Class aClass);
-        List<Converters.Converter> getConverters();
-        void setConverters(List<Converters.Converter> converter);
-        Converters.Converter findConverter(Class aClass);
-        boolean isConverterExists(Class aClass);
-    }
-
-
-    public static PropertiesConvertManager newPropertiesConvertManager(String subPropertySeparator, List<Converters.Converter> converters) {
+    /**
+     * Auto create converter for enums to integer, if converter from integer to integer exists.
+     * @param subPropertySeparator
+     * @param converters
+     * @return
+     */
+    public static PropertiesConvertManager newPropertiesConvertManager(String subPropertySeparator, List<Converter> converters) {
         PropertiesConvertManager propertiesConvertManager = newPropertiesConvertManager(subPropertySeparator);
         propertiesConvertManager.setConverters(converters);
         return propertiesConvertManager;
     }
 
-    public static PropertiesConvertManager newPropertiesConvertManager(String subPropertySeparator) {
+    private static PropertiesConvertManager newPropertiesConvertManager(String subPropertySeparator) {
         return new PropertiesConvertManager() {
             private final Map<Class, Property[]> flatPropertiesMap = new HashMap<>();
-            private List<Converters.Converter> converters = new ArrayList<>();
+            private Collection<Converter> converters = new ArrayList<>();
 
-            public List<Converters.Converter> getConverters() {
+            public Collection<Converter> getConverters() {
                 return converters;
             }
 
-            @Override
-            public void setConverters(List<Converters.Converter> converters) {
+            public void setConverters(Collection<Converter> converters) {
                 this.converters = Objects.requireNonNull(converters);
             }
 
@@ -88,7 +85,7 @@ public class PropertiesReflection {
                                 return Stream.of(p);
                             } else {
                                 return Stream.of(PropertiesReflection.getProperties(p.getPropertyType()))
-                                        .map(p2 -> new ConcaveProperties(p, p2, subPropertySeparator));
+                                        .map(p2 -> new PropertiesReflection.ConcaveProperties(p, p2, subPropertySeparator));
                             }
                         });
             }
@@ -102,16 +99,19 @@ public class PropertiesReflection {
                 return Stream.of(props);
             }
 
-            public Converters.Converter findConverter(Class type) {
+            public Converter findConverter(Class type) {
                 type = Converters.toBoxedType(type);
-                for (Converters.Converter converter : this.converters) if (converter.getType() == type) return converter;
-                if (type.isEnum()) {
-                    return Converters.enumToIntegerConverter(type, "INTEGER");
+                boolean isEnum = type.isEnum();
+                for (Converter converter : this.converters) {
+                    if (isEnum && converter.getType() == Integer.class && converter.getConvertType() == Integer.class) {
+                        return Converters.enumToIntegerConverter(type, converter.getConvertTypeName());
+                    } else if (converter.getType() == type) return converter;
                 }
                 throw new IllegalArgumentException("No sqlLite-Converter to " + type + ".");
             }
 
             public boolean isConverterExists(Class type) {
+                if (type.isEnum()) return true;
                 try { findConverter(type); return true;}
                 catch (IllegalArgumentException e) {return false;}
             }
@@ -119,7 +119,6 @@ public class PropertiesReflection {
         };
     }
 
-    ;;;;
     private static class ConcaveProperties implements Property {
         private final Property p;
         private final Property p2;
