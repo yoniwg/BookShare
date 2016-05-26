@@ -46,7 +46,7 @@ public class SqlLiteCrud extends SQLiteOpenHelper implements Crud {
         return aClass.getSimpleName() + "_" + "table";
     }
 
-    private final PropertiesConvertManager CONVERT_MANAGER = PropertiesReflection.newPropertiesConvertManager("__", sqlLiteConverter);
+    private final PropertiesConvertManager convertManager = PropertiesReflection.newPropertiesConvertManager("__", sqlLiteConverter);
 
     public SqlLiteCrud(Context context) {
         super(context, DATABASE_NAME , null, DATABASE_VERSION);
@@ -57,8 +57,7 @@ public class SqlLiteCrud extends SQLiteOpenHelper implements Crud {
     public void create(Entity item) {
         if (item.getId() != Entity.DEFAULT_ID) throw new IllegalArgumentException("The item id should be " + Entity.DEFAULT_ID + " on create new item.");
         String sqlTable = tableName(item.getEntityType());
-        ContentValues contentValues = new ContentValues();
-        SqlAndroidReflection.writeObject(contentValues, item, CONVERT_MANAGER);
+        ContentValues contentValues = SqlAndroidReflection.writeObject(item, convertManager);
         long newId = getWritableDatabase().insert(sqlTable, null, contentValues);
         if (newId != -1 ) item.setId(newId);
         else throw new RuntimeException("SqlLite cannot write new item from unknown reason.");
@@ -67,8 +66,7 @@ public class SqlLiteCrud extends SQLiteOpenHelper implements Crud {
     @Override
     public void update(Entity item) {
         String sqlTable = tableName(item.getEntityType());
-        ContentValues contentValues = new ContentValues();
-        SqlAndroidReflection.writeObject(contentValues, item, CONVERT_MANAGER);
+        ContentValues contentValues = SqlAndroidReflection.writeObject(item, convertManager);
         int numberOfAffected = getWritableDatabase().update(sqlTable, contentValues, "id = ? ", new String[]{item.getId() + ""});
         if (numberOfAffected == 0) throwNoFountException(item.getEntityType(), item.getId());
     }
@@ -88,7 +86,7 @@ public class SqlLiteCrud extends SQLiteOpenHelper implements Crud {
         Cursor result = getReadableDatabase().rawQuery(sql, null );
 
         if (result.moveToFirst()) do {
-            T item = SqlAndroidReflection.readObject(result, entityType, CONVERT_MANAGER);
+            T item = SqlAndroidReflection.readObject(result, entityType, convertManager);
             items.add(item);
         } while (result.moveToNext());
         result.close();
@@ -101,7 +99,7 @@ public class SqlLiteCrud extends SQLiteOpenHelper implements Crud {
         String sql =  "select * from " + tableName(entityType) + " where id=" + id;
         Cursor result = getReadableDatabase().rawQuery(sql, null);
         if (!result.moveToFirst()) throwNoFountException(entityType, id);
-        T item = SqlAndroidReflection.readObject(result, entityType, CONVERT_MANAGER);
+        T item = SqlAndroidReflection.readObject(result, entityType, convertManager);
         result.close();
         return item;
     }
@@ -117,10 +115,10 @@ public class SqlLiteCrud extends SQLiteOpenHelper implements Crud {
 
     private void createTableIfNotExists(SQLiteDatabase db, Class<? extends Entity> type) {
         String sqlTable = tableName(type);
-        String sqlColumnsType = CONVERT_MANAGER.streamFlatProperties(type)
+        String sqlColumnsType = convertManager.streamFlatProperties(type)
                 .map(p -> {
                     String columnName = p.getName();
-                    String columnType = CONVERT_MANAGER.findConverter(p.getPropertyType()).getConvertTypeName();
+                    String columnType = convertManager.findConverter(p.getPropertyType()).getConvertTypeName();
                     boolean isPrimaryKey = p.getName().equalsIgnoreCase("id");
                     if (isPrimaryKey) {
                         columnType = "INTEGER";

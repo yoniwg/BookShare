@@ -59,7 +59,8 @@ public class SqlAndroidReflection {
         return newItem;
     }
 
-    public static void writeObject(ContentValues contentValues, Object object, PropertiesConvertManager propertiesConvertManager) {
+    public static ContentValues writeObject(Object object, PropertiesConvertManager propertiesConvertManager) {
+        ContentValues contentValues = new ContentValues();
         Class type = object.getClass();
         propertiesConvertManager.streamFlatProperties(type)
                 .filter(p -> !p.getName().equalsIgnoreCase("id"))
@@ -68,6 +69,7 @@ public class SqlAndroidReflection {
                     Object convertValue = propertiesConvertManager.findConverter(p.getPropertyType()).convert(value);
                     genericPut(contentValues, p.getName(), convertValue);
                 });
+        return contentValues;
     }
 
 
