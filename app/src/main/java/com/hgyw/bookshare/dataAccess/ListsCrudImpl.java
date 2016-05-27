@@ -17,7 +17,7 @@ import com.hgyw.bookshare.entities.reflection.Property;
 /**
  * Created by Yoni on 3/17/2016.
  */
-class ListsCrudImpl implements Crud {
+class ListsCrudImpl implements StreamableCrud {
 
     protected ListsCrudImpl() {}
 

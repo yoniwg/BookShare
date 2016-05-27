@@ -12,12 +12,12 @@ public class DataAccessFactory {
     private enum DatabaseType {
         LISTS {
             DataAccess createDataAccess() {
-                return new DataAccessListImpl(new ListsCrudImpl());
+                return new StreamableCrudDataAccess(new ListsCrudImpl());
             }
         },
         SQL_LITE {
             DataAccess createDataAccess() {
-                return new DataAccessListImpl(new SqlLiteCrud(MyApplication.getAppContext()));
+                return new StreamableCrudDataAccess(new SqlLiteCrud(MyApplication.getAppContext()));
             }
         },
         MY_SQL{

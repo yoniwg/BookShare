@@ -27,7 +27,7 @@ import java.util.NoSuchElementException;
 /**
  * Created by haim7 on 24/05/2016.
  */
-public class SqlLiteCrud extends SQLiteOpenHelper implements Crud {
+public class SqlLiteCrud extends SQLiteOpenHelper implements StreamableCrud {
 
     private static final String DATABASE_NAME = "booksAppDataBase";
     private static final int DATABASE_VERSION = 1;
@@ -48,7 +48,8 @@ public class SqlLiteCrud extends SQLiteOpenHelper implements Crud {
         return aClass.getSimpleName() + "_" + "table";
     }
 
-    private final PropertiesConvertManager convertManager = PropertiesReflection.newPropertiesConvertManager("__", sqlLiteConverter);
+    private static final String SUB_PROPERTY_SEPARATOR = "_";
+    private final PropertiesConvertManager convertManager = PropertiesReflection.newPropertiesConvertManager(SUB_PROPERTY_SEPARATOR, sqlLiteConverter);
 
     public SqlLiteCrud(Context context) {
         super(context, DATABASE_NAME , null, DATABASE_VERSION);

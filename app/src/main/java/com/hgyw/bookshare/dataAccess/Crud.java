@@ -36,8 +36,6 @@ interface Crud {
      */
     void delete(IdReference item);
 
-    <T extends Entity> Stream<T> streamAll(Class<T> entityType);
-
     /**
      * Retrieve an entity from database.
      * @param entityClass The entity class
