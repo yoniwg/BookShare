@@ -127,7 +127,8 @@ class MysqlDataAccess implements DataAccess {
     public void create(Entity item) {
         if (item.getId() != 0) throw new IllegalArgumentException("Created item should have id 0.");
         item.setDeleted(false);
-        writeItem(item);
+        long newId = writeItem(item);
+        item.setId(newId);
     }
 
     @Override
@@ -200,11 +201,12 @@ class MysqlDataAccess implements DataAccess {
         }
     }
 
-    private void writeItem(Entity item) {
+    private long writeItem(Entity item) {
         String jsonString = jsonReflection.writeObject(item).toString();
         try {
             System.out.println("Starting send json.");
             String result = Http.post(WRITE_DATA_URL, Collections.singletonMap("json", jsonString));
+            return Long.parseLong(result);
         } catch (IOException e) {
             throw new RuntimeException("Error in write sql to remote server.", e);
         }
