@@ -10,7 +10,7 @@ import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.entities.IdReference;
 
 /**
- * Created by Yoni on 3/17/2016.
+ * Interface for simple CRUD methods.
  */
 interface Crud {
 

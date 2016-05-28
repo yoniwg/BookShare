@@ -37,7 +37,7 @@ public class EntityReflection {
      * @return
      */
     public static Map<Class<? extends Entity>, Property> getReferringProperties(Class<? extends Entity> referringClass) {
-        return Stream.of(PropertiesReflection.getProperties(referringClass))
+        return Stream.of(Properties.getProperties(referringClass))
                 .filter(p -> p.getFieldAnnotation(EntityReference.class) != null)
                 .collect(Collectors.toMap(p -> p.getFieldAnnotation(EntityReference.class).value(), p -> p));
     }

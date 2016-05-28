@@ -53,7 +53,8 @@
         android:id="@+id/reviewRating"
         android:isIndicator="true"
         android:layout_alignParentEnd="true"
-        android:layout_below="@+id/bookImage" />
+        android:layout_below="@+id/bookImage"
+        style="Base.Widget.AppCompat.RatingBar.Indicator" />
 
     <TextView
         android:layout_width="wrap_content"

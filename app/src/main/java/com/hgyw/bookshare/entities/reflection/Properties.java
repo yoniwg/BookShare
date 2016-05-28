@@ -1,6 +1,8 @@
 package com.hgyw.bookshare.entities.reflection;
 
+import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
+import com.annimon.stream.function.Predicate;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -8,15 +10,14 @@ import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 /**
  * Created by haim7 on 23/03/2016.
  */
-public class PropertiesReflection {
+public class Properties {
+
+    private static final boolean DEBUG = true;
 
     /**
      * Creates of all properties of class clazz, where key is the property name.
@@ -49,58 +50,41 @@ public class PropertiesReflection {
         return list;
     }
 
-    /**
-     * Auto create converter for enums to integer, if converter from integer to integer exists.
-     * @param subPropertySeparator
-     * @param converters
-     * @return
+    /***
+     * returns stream of properties of aClass to sql
      */
-    public static PropertiesConvertManager newPropertiesConvertManager(String subPropertySeparator, List<Converter> converters) {
-        return new PropertiesConvertManager() {
-            private final Map<Class, Property[]> flatPropertiesMap = new HashMap<>();
+    private static List<Property> getFlatProperties(Class<?> aClass, String subPropertySeparator, Predicate<Class> baseTypePredicate) {
+        return Stream.of(Properties.getProperties(aClass))
+                .filter(Property::canWrite)
+                .flatMap(p -> {
+                    if(baseTypePredicate.test(p.getPropertyType())) {
+                        return Stream.of(p);
+                    } else {
+                        List<Property> subProperties = Properties.getProperties(p.getPropertyType());
+                        if (subProperties.isEmpty()) {
+                            String message = "Flat property error: The type '%s' of property '%s' in class '%s' is not a base-type, and have not sub-properties to reflect.";
+                            message = String.format(message, p.getPropertyType(), p.getName(), p.getReflectedClass().getSimpleName());
+                            throw new IllegalArgumentException(message);
+                        }
+                        return Stream.of(subProperties)
+                                .map(p2 -> new ConcaveProperties(p, p2, subPropertySeparator));
+                    }
+                }).collect(Collectors.toList());
+    }
 
-            /***
-             * returns stream of propertios of aClass to sql
-             */
-            private Stream<Property> generateFlatProperties(Class aClass) {
-                return Stream.of(PropertiesReflection.getProperties(aClass))
-                        .filter(Property::canWrite)
-                        .flatMap(p -> {
-                            if(isConverterExists(p.getPropertyType())) {
-                                return Stream.of(p);
-                            } else {
-                                return Stream.of(PropertiesReflection.getProperties(p.getPropertyType()))
-                                        .map(p2 -> new PropertiesReflection.ConcaveProperties(p, p2, subPropertySeparator));
-                            }
-                        });
-            }
+    public static List<Property> getFlatProperties(Class<?> aClass, String subPropertySeparator, ConvertersCollection converters) {
+        return getFlatProperties(aClass, subPropertySeparator, converters::canConvertFrom);
+    }
 
-            public Stream<Property> streamFlatProperties(Class aClass) {
-                Property[] props = flatPropertiesMap.get(aClass);
-                if (props == null) {
-                    props = generateFlatProperties(aClass).toArray(Property[]::new);
-                    flatPropertiesMap.put(aClass, props);
-                }
-                return Stream.of(props);
-            }
-
-            public Converter findConverter(Class type) {
-                type = Converters.toBoxedType(type);
-                boolean isEnum = type.isEnum();
-                for (Converter converter : converters) {
-                    if (isEnum && converter.getType() == Integer.class && converter.getConvertType() == Integer.class) {
-                        return Converters.enumToIntegerConverter(type, converter.getConvertTypeName());
-                    } else if (converter.getType() == type) return converter;
-                }
-                throw new IllegalArgumentException("No sqlLite-Converter to " + type + ".");
-            }
-
-            public boolean isConverterExists(Class type) {
-                if (type.isEnum()) return true;
-                try { findConverter(type); return true;}
-                catch (IllegalArgumentException e) {return false;}
-            }
-
+    public static Property renameProperty(Property p, String newName) {
+        return new Property() {
+            @Override public void set(Object o, Object value) {p.set(o, value);}
+            @Override public Object get(Object o) {return p.get(o);}
+            @Override public <T extends Annotation> T getFieldAnnotation(Class<T> annotationClass) {return p.getFieldAnnotation(annotationClass);}
+            @Override public String getName() {return newName;}
+            @Override public boolean canWrite() {return p.canWrite();}
+            @Override public Class<?> getPropertyType() { return p.getPropertyType();}
+            @Override public Class<?> getReflectedClass() {return p.getReflectedClass();}
         };
     }
 
@@ -138,17 +122,33 @@ public class PropertiesReflection {
         public String getName() {
             return p.getName() + subPropertySeparator + p2.getName();
         }
-        public boolean canWrite() {return p2.canWrite();}
+        public boolean canWrite() {return p.canWrite() && p2.canWrite();}
         public Class<?> getPropertyType() {return p2.getPropertyType();}
         public Class<?> getReflectedClass() {return p.getReflectedClass();}
+
         public String toString() {
             return "Nested-Property{'" + getName() + "'}";
         }
     }
 
-    //////////////////////////////////
-    // Properties flating
-    //////////////////////////////////
+
+    public static Property convertedProperty(Property p, Converter converter) {
+        if (!converter.canConvertFrom(p.getPropertyType())) {
+            String message = String.format("The converter (%s) cannot convert from property '%s' (of type %s)", converter, p.getName(), p.getPropertyType());
+            throw new IllegalArgumentException(message);
+        }
+        return new Property() {
+            @Override public void set(Object o, Object value) {p.set(o, converter.parse(p.getPropertyType(), value));}
+            @Override public Object get(Object o) {return converter.convert(p.get(o));}
+            @Override public <T extends Annotation> T getFieldAnnotation(Class<T> annotationClass) {return null;}
+            @Override public String getName() {return p.getName();}
+            @Override public boolean canWrite() {return p.canWrite();}
+            @Override public Class<?> getPropertyType() { return converter.getConvertType();}
+            @Override public Class<?> getReflectedClass() {return p.getReflectedClass();}
+        };
+    }
+
+
 
 
 }

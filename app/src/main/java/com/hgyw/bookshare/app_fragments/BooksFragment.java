@@ -25,7 +25,7 @@ import com.hgyw.bookshare.logicAccess.GeneralAccess;
 import java.util.List;
 
 
-public class BooksListFragment extends ListFragment implements TitleFragment {
+public class BooksFragment extends ListFragment implements TitleFragment {
 
     private BookQuery bookQuery;
     private final GeneralAccess access = AccessManagerFactory.getInstance().getGeneralAccess();

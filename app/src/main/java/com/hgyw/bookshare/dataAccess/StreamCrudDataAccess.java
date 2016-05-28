@@ -31,11 +31,11 @@ import com.hgyw.bookshare.entities.reflection.EntityReflection;
 /**
  * Created by haim7 on 23/03/2016.
  */
-class StreamableCrudDataAccess implements DataAccess {
+class StreamCrudDataAccess implements DataAccess {
 
-    private final StreamableCrud crud;
+    private final StreamCrud crud;
 
-    StreamableCrudDataAccess(StreamableCrud crud) {
+    StreamCrudDataAccess(StreamCrud crud) {
         this.crud = crud;
     }
 

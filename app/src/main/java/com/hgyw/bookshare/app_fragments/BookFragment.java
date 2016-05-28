@@ -84,7 +84,7 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
             });
         }
 
-        // get reviews
+        // apply reviews
         List<BookReview> bookReviews = access.findBookReviews(book);
         final int MAX_REVIEWS = 2;
         if (isCustomer) {bookReviews.remove(userBookReview);}

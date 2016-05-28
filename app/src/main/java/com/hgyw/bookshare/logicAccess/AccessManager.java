@@ -40,7 +40,7 @@ public interface AccessManager {
     void signOut();
 
     /**
-     * get general access for current user signed in.
+     * apply general access for current user signed in.
      * The access object is the same in getCustomerAccess() and getSupplierAccess(), so you can call
      * this method with cast, instead calling them directly
      * @return GeneralAccess instance.

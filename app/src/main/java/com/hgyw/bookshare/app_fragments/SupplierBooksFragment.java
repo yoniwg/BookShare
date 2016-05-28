@@ -13,8 +13,10 @@ import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.app_drivers.ApplyObjectAdapter;
 import com.hgyw.bookshare.app_drivers.ApplyTask;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
+import com.hgyw.bookshare.app_drivers.Utility;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookSupplier;
+import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.SupplierAccess;
 
@@ -24,7 +26,7 @@ import java.util.List;
 /**
  * Created by haim7 on 22/05/2016.
  */
-public class SupplierBooksListFragment extends ListFragment implements TitleFragment, BookSupplierDialogFragment.ResultListener {
+public class SupplierBooksFragment extends ListFragment implements TitleFragment, BookSupplierDialogFragment.ResultListener {
 
 
     private ArrayAdapter<BookSupplier> adapter;
@@ -65,6 +67,7 @@ public class SupplierBooksListFragment extends ListFragment implements TitleFrag
         switch (result) {
             case OK:
                 sAccess.updateBookSupplier(bookSupplier);
+                Utility.replaceById(adapter, bookSupplier);
                 break;
             case DELETE:
                 sAccess = AccessManagerFactory.getInstance().getSupplierAccess();
@@ -74,4 +77,5 @@ public class SupplierBooksListFragment extends ListFragment implements TitleFrag
             case CANCEL: break;
         }
     }
+
 }

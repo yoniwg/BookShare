@@ -1,7 +1,6 @@
 package com.hgyw.bookshare.dataAccess;
 
 import com.annimon.stream.Stream;
-import com.annimon.stream.function.Function;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,7 +16,7 @@ import com.hgyw.bookshare.entities.reflection.Property;
 /**
  * Created by Yoni on 3/17/2016.
  */
-class ListsCrudImpl implements StreamableCrud {
+class ListsCrudImpl implements StreamCrud {
 
     protected ListsCrudImpl() {}
 

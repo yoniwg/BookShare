@@ -45,9 +45,10 @@ public class BookReviewDialogFragment extends DialogFragment {
         return fragment;
     }
 
+
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         resultListener = ListenerSupplierHelper.getListenerFromActivity(BookReviewResultListener.class, getActivity());
     }
 

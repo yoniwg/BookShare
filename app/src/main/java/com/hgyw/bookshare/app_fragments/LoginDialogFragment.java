@@ -71,7 +71,7 @@ public class LoginDialogFragment extends DialogFragment implements DialogInterfa
     public void onClick(DialogInterface dialog, int which) {
         if (which != Dialog.BUTTON_POSITIVE) return;
 
-        // get data from view
+        // apply data from view
         Credentials resultCredentials = ObjectToViewAppliers.resultCredentials(view);
         CheckBox checkBox = (CheckBox) view.findViewById(R.id.savePasswordCheckbox);
         boolean savePassword = checkBox == null || checkBox.isChecked();

@@ -24,6 +24,7 @@ import com.annimon.stream.function.BiConsumer;
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.Credentials;
+import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.entities.ImageEntity;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
@@ -261,6 +262,13 @@ public class Utility {
                 viewGroup.addView(view);
             }
         }
+    }
+
+
+    public static <T extends Entity> void replaceById(ArrayAdapter<T> adapter, T item) {
+        int itemPosition = adapter.getCount();
+        while (--itemPosition >= 0 && adapter.getItemId(itemPosition) == item.getId());
+        if (itemPosition >= 0) adapter.insert(item, itemPosition);
     }
 
 }

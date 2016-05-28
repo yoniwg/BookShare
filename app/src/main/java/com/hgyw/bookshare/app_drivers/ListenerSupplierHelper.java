@@ -9,6 +9,8 @@ public class ListenerSupplierHelper {
     /**
      * Try cast activity to T, or to ListenerSupplier and call tryGetListener(T.class).
      * Returns not-null instance of T, or throw ClassCastException.
+     * Don't try call it before the activity has been fully instantiated. on fragment call it in
+     * {@code onActivityCreate()} or something like that.
      * @throws NullPointerException if activity == null
      */
     public static <T> T getListenerFromActivity(Class<T> listenerClass, Object activity) {

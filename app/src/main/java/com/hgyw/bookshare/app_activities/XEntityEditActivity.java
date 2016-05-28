@@ -96,7 +96,7 @@ public abstract class XEntityEditActivity<T extends Serializable> extends AppCom
 
     protected abstract void onOkButton(T user);
 
-    // get result of get-image
+    // apply result of apply-image
     protected void onActivityResult(int requestCode, int resultCode, Intent returnedIntent) {
         super.onActivityResult(requestCode, resultCode, returnedIntent);
         if (requestCode == IntentsFactory.CODE_GET_IMAGE && resultCode == RESULT_OK) {

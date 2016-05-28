@@ -15,20 +15,23 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:hint="@string/title"
         android:id="@+id/reviewTitle"
         android:layout_below="@+id/reviewRating"
         android:layout_centerHorizontal="true"
-        android:singleLine="true" />
+        android:singleLine="true"
+        android:textAlignment="center" />
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:hint="@string/description"
         android:id="@+id/reviewDescription"
         android:layout_below="@+id/reviewTitle"
         android:layout_centerHorizontal="true"
-        android:lines="4" />
+        android:lines="5"
+        android:inputType="textMultiLine"
+        android:gravity="top" />
 </RelativeLayout>
