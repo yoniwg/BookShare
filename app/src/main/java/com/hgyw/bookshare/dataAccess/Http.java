@@ -37,7 +37,7 @@ public class Http {
         }
     }
 
-    public static String post(String url, Map<String,? extends Object> params) throws IOException {
+    public static String post(String url, Map<String,?> params) throws IOException {
         String postData = Stream.of(params.entrySet())
                 .map(kv -> encodeUrlText(kv.getKey()) + '=' + encodeUrlText(kv.getValue().toString()))
                 .collect(Collectors.joining("&"));
