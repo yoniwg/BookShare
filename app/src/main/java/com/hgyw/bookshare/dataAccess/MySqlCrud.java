@@ -1,32 +1,7 @@
 package com.hgyw.bookshare.dataAccess;
 
-import com.annimon.stream.Stream;
-import com.hgyw.bookshare.entities.Book;
-import com.hgyw.bookshare.entities.BookQuery;
-import com.hgyw.bookshare.entities.BookReview;
-import com.hgyw.bookshare.entities.BookSupplier;
 import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.entities.IdReference;
-import com.hgyw.bookshare.entities.ImageEntity;
-import com.hgyw.bookshare.entities.Order;
-import com.hgyw.bookshare.entities.OrderRating;
-import com.hgyw.bookshare.entities.Transaction;
-import com.hgyw.bookshare.entities.User;
-import com.hgyw.bookshare.entities.reflection.PropertiesReflection;
-import com.hgyw.bookshare.entities.reflection.Property;
-
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Created by Yoni on 5/27/2016.
@@ -107,11 +82,6 @@ public class MySqlCrud implements Crud {
     @Override
     public void delete(IdReference item) {
 
-    }
-
-    @Override
-    public <T extends Entity> Stream<T> streamAll(Class<T> entityType) {
-        return null;
     }
 
     @Override
