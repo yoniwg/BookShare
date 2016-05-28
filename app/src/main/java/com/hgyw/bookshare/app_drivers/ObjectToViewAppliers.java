@@ -37,7 +37,6 @@ public class ObjectToViewAppliers {
         TextView genreView = (TextView) view.findViewById(R.id.bookGenre);
         ImageView imageView = (ImageView) view.findViewById(R.id.bookImage);
         Spinner genreSpinner = (Spinner)  view.findViewById(R.id.bookGenreSpinner);
-
         if (titleView != null) titleView.setText(book.getTitle());
         if (authorView != null) authorView.setText(book.getAuthor());
         if (genreView != null) genreView.setText(book.getAuthor());
