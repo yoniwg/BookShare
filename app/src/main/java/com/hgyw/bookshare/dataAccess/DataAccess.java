@@ -20,14 +20,6 @@ import java.util.List;
 public interface DataAccess extends Crud {
 
     /**
-     * Equivalent to retrieve(item.getClass(), item.getId()).
-     * @param idReference The item refference to retrieve
-     * @return Entity item of class T
-     * @throws java.util.NoSuchElementException If database doesn't contain item of this entity and id.
-     */
-    Entity retrieve(IdReference idReference);
-
-    /**
      * Retrieve user with credentials match the credentials parameters.
      * @param credentials The credentials to which we want match.
      * @return The user object (Customer or Supplier). null if it was found.
@@ -89,5 +81,12 @@ public interface DataAccess extends Crud {
 
     BookSummary getBookSummary(Book book);
 
+    /**
+     * Equivalent to retrieve(item.getClass(), item.getId()).
+     * @param idReference The item refference to retrieve
+     * @return Entity item of class T
+     * @throws java.util.NoSuchElementException If database doesn't contain item of this entity and id.
+     */
+    Entity retrieve(IdReference idReference);
 
 }

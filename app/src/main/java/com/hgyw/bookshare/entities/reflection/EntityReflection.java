@@ -37,9 +37,20 @@ public class EntityReflection {
      * @return
      */
     public static Map<Class<? extends Entity>, Property> getReferringProperties(Class<? extends Entity> referringClass) {
-        return Stream.of(PropertiesReflection.getProperties(referringClass))
+        return Stream.of(Properties.getProperties(referringClass))
                 .filter(p -> p.getFieldAnnotation(EntityReference.class) != null)
                 .collect(Collectors.toMap(p -> p.getFieldAnnotation(EntityReference.class).value(), p -> p));
+    }
+
+    /**
+     * Equivalent to getReferringProperties(referringClass).get(referedClass), but throw exception if not found.
+     * @return non-null Property object of class referringClass and property-type of referredClass.
+     * @throws IllegalArgumentException if referringClass does not refer to referredClass.
+     */
+    public static Property getReferringProperties(Class<? extends Entity> referringClass, Class<? extends Entity> referredClass) {
+        Property p = getReferringProperties(referringClass).get(referredClass);
+        if (p == null) throw new IllegalArgumentException("Error in getReferringProperties from " + referredClass.getSimpleName() + " to " + referredClass.getSimpleName() + ". No such reference.");
+        return p;
     }
 
     public static List<Class<? extends Entity>> getEntityTypes() {

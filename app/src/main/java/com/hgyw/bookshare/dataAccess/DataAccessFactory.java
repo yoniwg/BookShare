@@ -12,17 +12,17 @@ public class DataAccessFactory {
     private enum DatabaseType {
         LISTS {
             DataAccess createDataAccess() {
-                return new DataAccessListImpl(new ListsCrudImpl());
+                return new StreamCrudDataAccess(new ListsCrudImpl());
             }
         },
         SQL_LITE {
             DataAccess createDataAccess() {
-                return new DataAccessListImpl(new SqlLiteCrud(MyApplication.getAppContext()));
+                return new StreamCrudDataAccess(new SqlLiteStreamCrud(MyApplication.getAppContext()));
             }
         },
         MY_SQL{
             DataAccess createDataAccess() {
-                throw new UnsupportedOperationException("No implementation yet.");
+                return new MysqlDataAccess();
             }
         }
         ;
@@ -30,7 +30,7 @@ public class DataAccessFactory {
         abstract DataAccess createDataAccess();
     }
 
-    private static DatabaseType currentDB = DatabaseType.SQL_LITE;
+    private static DatabaseType currentDB = DatabaseType.MY_SQL;
 
     private static DataAccess dataAccess;
 

@@ -20,7 +20,7 @@ import com.hgyw.bookshare.exceptions.OrdersTransactionException;
 public interface CustomerAccess extends GeneralAccess {
 
     /**
-     * get all customer's book reviews
+     * apply all customer's book reviews
      * @return the book reviews
      */
     Collection<BookReview> getCustomerReviews();

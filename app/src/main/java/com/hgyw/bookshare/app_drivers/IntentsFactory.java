@@ -13,11 +13,11 @@ import com.hgyw.bookshare.app_activities.NewTransactionActivity;
 import com.hgyw.bookshare.app_activities.UserEditActivity;
 import com.hgyw.bookshare.app_activities.UserRegistrationActivity;
 import com.hgyw.bookshare.app_fragments.BookFragment;
-import com.hgyw.bookshare.app_fragments.BooksListFragment;
+import com.hgyw.bookshare.app_fragments.BooksFragment;
 import com.hgyw.bookshare.app_fragments.CartFragment;
 import com.hgyw.bookshare.app_fragments.EntityFragment;
 import com.hgyw.bookshare.app_fragments.OldOrdersFragment;
-import com.hgyw.bookshare.app_fragments.SupplierBooksListFragment;
+import com.hgyw.bookshare.app_fragments.SupplierBooksFragment;
 import com.hgyw.bookshare.app_fragments.SupplierFragment;
 import com.hgyw.bookshare.app_fragments.SupplierOrdersFragment;
 import com.hgyw.bookshare.app_fragments.TransactionFragment;
@@ -64,7 +64,7 @@ public class IntentsFactory {
 
     public static Intent newBookListIntent(Context context, BookQuery bookQuery) {
         Intent intent = new Intent(context, MainActivity.class);
-        intent.putExtra(ARG_FRAGMENT_CLASS, BooksListFragment.class);
+        intent.putExtra(ARG_FRAGMENT_CLASS, BooksFragment.class);
         intent.putExtra(ARG_BOOK_QUERY, bookQuery);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         return intent;
@@ -159,7 +159,7 @@ public class IntentsFactory {
 
     public static Intent supplierBooksIntent(Context context) {
         Intent intent = new Intent(context, MainActivity.class);
-        intent.putExtra(ARG_FRAGMENT_CLASS, SupplierBooksListFragment.class);
+        intent.putExtra(ARG_FRAGMENT_CLASS, SupplierBooksFragment.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         return intent;
     }

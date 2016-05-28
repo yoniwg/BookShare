@@ -38,7 +38,7 @@ public abstract class EntityFragment extends AbstractFragment<GeneralAccess> {
         super.onCreate(savedInstanceState);
         entityId = getArguments() == null ? 0 : getArguments().getLong(ARG_ENTITY_ID);
         if (entityId == 0) {
-            throw new IllegalArgumentException("Entity fragment was instantiated with ARG_ENTITY_ID=0 (or null).");
+            throw new IllegalArgumentException("Entity fragment was instantiated with " + ARG_ENTITY_ID + "=0 (or null).");
         }
     }
 }

@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Created by haim7 on 23/05/2016.
  */
-public class DelayDataAccess implements DataAccess {
+class DelayDataAccess implements DataAccess {
 
     private final DataAccess dataAccess;
     private final long constructingTime = System.currentTimeMillis();
@@ -98,11 +98,6 @@ public class DelayDataAccess implements DataAccess {
     public void delete(IdReference item) {
         delay();
         dataAccess.delete(item);
-    }
-
-    @Override
-    public <T extends Entity> Stream<T> streamAll(Class<T> entityType) {
-        return dataAccess.streamAll(entityType);
     }
 
     @Override

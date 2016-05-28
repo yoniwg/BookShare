@@ -18,7 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hgyw.bookshare.app_drivers.*;
-import com.hgyw.bookshare.app_fragments.BooksListFragment;
+import com.hgyw.bookshare.app_fragments.BooksFragment;
 import com.hgyw.bookshare.app_fragments.CartFragment;
 import com.hgyw.bookshare.app_drivers.IntentsFactory;
 import com.hgyw.bookshare.app_fragments.LoginDialogFragment;
@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Class fragmentClass;
     private static final Map<Class<? extends Fragment>, Integer> fragmentNavMap = new HashMap<>();
     static {
-        fragmentNavMap.put(BooksListFragment.class, R.id.nav_books);
+        fragmentNavMap.put(BooksFragment.class, R.id.nav_books);
         fragmentNavMap.put(CartFragment.class, R.id.nav_cart);
         // TODO more...
     }

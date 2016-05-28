@@ -37,7 +37,7 @@ public class BookEditActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        // get arguments from intent
+        // apply arguments from intent
         IdReference idReference;
         try {
             idReference = IntentsFactory.idReferenceFrom(getIntent().getData());
@@ -83,7 +83,7 @@ public class BookEditActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
     }
 
-    // get result of get-image
+    // apply result of apply-image
     public void onActivityResult(int requestCode, int resultCode, Intent returnedIntent) {
         super.onActivityResult(requestCode, resultCode, returnedIntent);
         if (requestCode == IntentsFactory.CODE_GET_IMAGE && resultCode == RESULT_OK) {

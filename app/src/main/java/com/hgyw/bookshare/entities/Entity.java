@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.hgyw.bookshare.entities.reflection.Property;
-import com.hgyw.bookshare.entities.reflection.PropertiesReflection;
+import com.hgyw.bookshare.entities.reflection.Properties;
 
 /**
  * Created by Yoni on 3/15/2016.
@@ -51,11 +51,13 @@ public abstract class Entity extends IdReference implements Cloneable, Serializa
      */
     @Override
     public String toString() {
-        List<Property> props = PropertiesReflection.getProperties(this.getClass());
+        List<Property> props = Properties.getProperties(this.getClass());
+
         Property idProperty = null;
         for (Property p : props) if (p.getName().equalsIgnoreCase("id")) {idProperty = p; break;}
         assert idProperty != null;
         props.remove(idProperty);
+
         StringBuilder str = new StringBuilder();
         for (Property p : props) {
             Object value = p.get(this);

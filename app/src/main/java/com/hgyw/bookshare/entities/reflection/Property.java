@@ -18,4 +18,5 @@ public interface Property {
     boolean canWrite();
     Class<?> getPropertyType();
     Class<?> getReflectedClass();
+
 }

@@ -126,7 +126,7 @@ public class Test {
         // add bookSupplier for another book
         bookQuery = new BookQuery();
         bookQuery.setTitleQuery("The Two Towers");
-        book = sAccess.findBooks(bookQuery).iterator().next(); // get first book from books match the quarry
+        book = sAccess.findBooks(bookQuery).iterator().next(); // apply first book from books match the quarry
         bookSupplier.setId(Entity.DEFAULT_ID);
         bookSupplier.setBookId(book.getId());
         bookSupplier.setPrice(BigDecimal.valueOf(77.88));

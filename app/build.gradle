@@ -20,7 +20,7 @@ android {
         }
     }
     compileOptions {
-        // change compatibility to Java 8 to get Java 8 IDE support
+        // change compatibility to Java 8 to apply Java 8 IDE support
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }

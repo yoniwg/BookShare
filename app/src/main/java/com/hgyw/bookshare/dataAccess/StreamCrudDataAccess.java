@@ -31,11 +31,11 @@ import com.hgyw.bookshare.entities.reflection.EntityReflection;
 /**
  * Created by haim7 on 23/03/2016.
  */
-class DataAccessListImpl implements DataAccess {
+class StreamCrudDataAccess implements DataAccess {
 
-    private final Crud crud;
+    private final StreamCrud crud;
 
-    DataAccessListImpl(Crud crud) {
+    StreamCrudDataAccess(StreamCrud crud) {
         this.crud = crud;
     }
 
@@ -56,11 +56,6 @@ class DataAccessListImpl implements DataAccess {
     @Override
     public void delete(IdReference item) {
         crud.delete(item);
-    }
-
-    @Override
-    public <T extends Entity> Stream<T> streamAll(Class<T> entityType) {
-        return crud.streamAll(entityType);
     }
 
     @Override
@@ -185,7 +180,7 @@ class DataAccessListImpl implements DataAccess {
     }
 
     public <T extends Entity> Stream<T> streamAllNonDeleted(Class<T> entityType) {
-        return streamAll(entityType).filter(e -> !e.isDeleted());
+        return crud.streamAll(entityType).filter(e -> !e.isDeleted());
     }
 
     private boolean performFilterQuery(Book book, BookQuery bookQuery) {

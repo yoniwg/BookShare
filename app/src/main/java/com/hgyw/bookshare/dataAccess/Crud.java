@@ -10,7 +10,7 @@ import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.entities.IdReference;
 
 /**
- * Created by Yoni on 3/17/2016.
+ * Interface for simple CRUD methods.
  */
 interface Crud {
 
@@ -35,8 +35,6 @@ interface Crud {
      * @throws java.util.NoSuchElementException if item of this entity with such id has not found.
      */
     void delete(IdReference item);
-
-    <T extends Entity> Stream<T> streamAll(Class<T> entityType);
 
     /**
      * Retrieve an entity from database.
