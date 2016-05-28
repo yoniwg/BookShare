@@ -54,7 +54,7 @@ public class SqlLiteReflection  {
             properties = Stream.of(Properties.getFlatProperties(aClass, SUB_PROPERTY_SEPARATOR, sqlLiteConverters))
                     .filter(Property::canWrite)
                     .map(p -> p.getName().equals(ID_KEY_OBJECT) ? Properties.renameProperty(p, ID_KEY_SQL) : p)
-                    .map(p -> Properties.convertedProperty(p, sqlLiteConverters.findConverterOrThrow(p.getPropertyType())))
+                    .map(p -> Properties.convertProperty(p, sqlLiteConverters.findConverterOrThrow(p.getPropertyType())))
                     .collect(Collectors.toMap(Property::getName, o -> o));
             propertiesMap.put(aClass, properties);
         }

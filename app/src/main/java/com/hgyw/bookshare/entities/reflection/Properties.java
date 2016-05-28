@@ -132,7 +132,7 @@ public class Properties {
     }
 
 
-    public static Property convertedProperty(Property p, Converter converter) {
+    public static Property convertProperty(Property p, Converter converter) {
         if (!converter.canConvertFrom(p.getPropertyType())) {
             String message = String.format("The converter (%s) cannot convert from property '%s' (of type %s)", converter, p.getName(), p.getPropertyType());
             throw new IllegalArgumentException(message);
