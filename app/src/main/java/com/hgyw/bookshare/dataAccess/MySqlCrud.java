@@ -1,7 +1,24 @@
 package com.hgyw.bookshare.dataAccess;
 
+import com.hgyw.bookshare.entities.Book;
+import com.hgyw.bookshare.entities.BookReview;
+import com.hgyw.bookshare.entities.BookSupplier;
 import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.entities.IdReference;
+import com.hgyw.bookshare.entities.ImageEntity;
+import com.hgyw.bookshare.entities.Order;
+import com.hgyw.bookshare.entities.Transaction;
+import com.hgyw.bookshare.entities.User;
+import com.hgyw.bookshare.entities.reflection.JsonReflection;
+import com.hgyw.bookshare.entities.reflection.Property;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.net.URL;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Yoni on 5/27/2016.
@@ -10,7 +27,7 @@ public class MySqlCrud implements Crud {
 
     private static final String DB_URL = "http://yweisber.vlab.jct.ac.il/getData.php";
 
-/*
+
     private static final Map<Class,String> sqlTypes = new HashMap<>();
     static {
         sqlTypes.put(Integer.class, "INTEGER");
@@ -39,8 +56,8 @@ public class MySqlCrud implements Crud {
     public static void createOnce(Class<? extends Entity> klass) {
         StringBuilder statement = new StringBuilder("CREATE TABLE `BookSharing`.");
         statement.append("`" + klass.getSimpleName().toLowerCase() + "_table` (");
-        statement.append("`id` BIGINT NOT NULL , ");
-        List<Property> properties = PropertiesReflection.getProperties(klass);
+        statement.append("`id` BIGINT NOT NULL AUTO_INCREMENT, ");
+      Collection<Property> properties = new JsonReflection().getProperties(klass).values();
         for (Property property : properties) {
             if (property.getName() == "id") continue;
             statement.append("`" + property.getName() + "` ");
@@ -63,7 +80,7 @@ public class MySqlCrud implements Crud {
             e.printStackTrace();
         }
     }
-*/
+
 
     private static String getTableName(Class<? extends Entity> klass){
         return klass.getSimpleName().toLowerCase() + "_table";
@@ -78,6 +95,7 @@ public class MySqlCrud implements Crud {
     public void update(Entity item) {
 
     }
+
 
     @Override
     public void delete(IdReference item) {

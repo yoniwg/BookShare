@@ -25,7 +25,7 @@ public class JsonReflection  {
             Converters.ofIdentity(Integer.class),
             Converters.ofIdentity(Long.class),
             Converters.ofIdentity(Double.class),
-            Converters.ofIdentity(Boolean.class),
+            Converters.simple(Boolean.class, Integer.class, b->(b)?1:0, i->i==1),
             Converters.simple(byte[].class, String.class, arr -> "", str -> new byte[0]),
             Converters.simple(BigDecimal.class, String.class, Object::toString, BigDecimal::new),
             Converters.simple(Date.class, Long.class, Date::getTime, Date::new),
@@ -51,7 +51,10 @@ public class JsonReflection  {
         T item = Converters.tryNewInstanceOrThrow(type);
         for (Property p : getProperties(type).values()) {
             Object jsonValue;
-            try { jsonValue = jsonObject.get(p.getName());}
+            try {
+                jsonValue = jsonObject.get(p.getName());
+                if (jsonValue.equals(JSONObject.NULL)) jsonValue = null;
+            }
             catch (JSONException e) {throw new RuntimeException(e);}
             p.set(item, jsonValue);
         }

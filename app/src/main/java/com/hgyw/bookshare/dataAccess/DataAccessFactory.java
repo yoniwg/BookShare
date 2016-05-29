@@ -30,7 +30,7 @@ public class DataAccessFactory {
         abstract DataAccess createDataAccess();
     }
 
-    private static DatabaseType currentDB = DatabaseType.SQL_LITE;
+    private static DatabaseType currentDB = DatabaseType.MY_SQL;
 
     private static DataAccess dataAccess;
 

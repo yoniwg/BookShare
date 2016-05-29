@@ -31,7 +31,7 @@ public class HttpRequest extends AsyncTask{
     private HttpURLConnection connection;
     private Exception exception;
 
-    public HttpRequest(URL url, HashMap request, String type) {
+    public HttpRequest(URL url, Map<String,String> request, String type) {
         this.url = url;
         this.request = request;
         this.type = type;
@@ -79,8 +79,8 @@ public class HttpRequest extends AsyncTask{
                     new InputStreamReader(connection.getInputStream(), "UTF-8"));
         } catch (IOException e) {
             this.exception = e;
+            throw new RuntimeException("HttpPost.doInBackground" + e.getMessage(),e);
         }
-        return null;
     }
 
     public Exception getException() {
