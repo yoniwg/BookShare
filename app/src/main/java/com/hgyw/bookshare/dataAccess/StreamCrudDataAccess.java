@@ -189,7 +189,7 @@ class StreamCrudDataAccess implements DataAccess {
                 .map(BookSupplier::getPrice)
                 .max(BigDecimal::compareTo)
                 .orElse(null);
-        if (price == null) return false;
+        if (price == null) return true;  // if no supplier for this book
         return book.getTitle().toLowerCase().contains(bookQuery.getTitleQuery().toLowerCase())
                 && book.getAuthor().toLowerCase().contains(bookQuery.getAuthorQuery().toLowerCase())
                 && (bookQuery.getGenreSet() == null || bookQuery.getGenreSet().contains(book.getGenre()))
