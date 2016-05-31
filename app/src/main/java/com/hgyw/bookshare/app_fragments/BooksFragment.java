@@ -7,22 +7,28 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.app_drivers.ApplyObjectAdapter;
 import com.hgyw.bookshare.app_drivers.ApplyTask;
 import com.hgyw.bookshare.app_drivers.IntentsFactory;
+import com.hgyw.bookshare.app_drivers.ListApplyObjectAdapter;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
 import com.hgyw.bookshare.app_drivers.Utility;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookQuery;
 import com.hgyw.bookshare.entities.BookSummary;
+import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.entities.UserType;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.GeneralAccess;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class BooksFragment extends ListFragment implements TitleFragment {
@@ -36,21 +42,34 @@ public class BooksFragment extends ListFragment implements TitleFragment {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
 
-        bookQuery = getArguments() == null ? null
-                : (BookQuery) getArguments().getSerializable(IntentsFactory.ARG_BOOK_QUERY);
-
-        List<Book> bookList = bookQuery == null ? access.findSpecialOffers(30)
-                : access.findBooks(bookQuery);
-
-        ApplyObjectAdapter<Book> adapter = new ApplyObjectAdapter<Book>(getActivity(), R.layout.book_list_item, bookList) {
+        bookQuery = getArguments() == null ? null : (BookQuery) getArguments().getSerializable(IntentsFactory.ARG_BOOK_QUERY);
+        // TODO: Check what state of fragment is saved, and whether we are initializing again for false.
+        new AsyncTask<Void, Book, List<Book>>() {
             @Override
-            protected void applyOnView(View view, int position) {
-                Book book = getItem(position);
-                ObjectToViewAppliers.apply(view, book);
-                ApplyTask.toBiConsumer(access::getBookSummary, ObjectToViewAppliers::apply, view).executeAsync(book);
+            protected List<Book> doInBackground(Void... params) {
+                List<Book> bookList = bookQuery == null ? access.findSpecialOffers(30) : access.findBooks(bookQuery);
+                //for (Book book : bookList) publishProgress(book);
+                return bookList;
             }
-        };
-        setListAdapter(adapter);
+
+            @Override
+            protected void onPostExecute(List<Book> bookList) {
+                ApplyObjectAdapter<Book> adapter = new ListApplyObjectAdapter<Book>(getActivity(), R.layout.book_list_item, bookList) {
+                    @Override
+                    protected Object[] retrieveData(Book book) {
+                        return new Object[] {access.getBookSummary(book)} ;
+                    }
+                    @Override
+                    protected void applyDataOnView(View view, Book book, Object[] items) {
+                        ObjectToViewAppliers.apply(view, book);
+                        ObjectToViewAppliers.apply(view, (BookSummary) items[0]);
+                        view.setVisibility(View.VISIBLE);
+                    }
+                };
+                setListAdapter(adapter);
+            }
+        }.execute();
+
         setEmptyText(getString(R.string.no_items_list_view));
     }
 

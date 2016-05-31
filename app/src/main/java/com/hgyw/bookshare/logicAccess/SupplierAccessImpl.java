@@ -1,5 +1,6 @@
 package com.hgyw.bookshare.logicAccess;
 
+import com.annimon.stream.Optional;
 import com.hgyw.bookshare.dataAccess.DataAccess;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookSupplier;
@@ -88,15 +89,12 @@ public class SupplierAccessImpl extends GeneralAccessImpl implements SupplierAcc
     }
 
     @Override
-    public BookSupplier retrieveMyBookSupplier(Book book) {
+    public Optional<BookSupplier> retrieveMyBookSupplier(Book book) {
         List<BookSupplier> result = dataAccess.findEntityReferTo(BookSupplier.class, currentUser, book);
         if (!result.isEmpty()) {
-            return result.get(0);
+            return Optional.of(result.get(0));
         } else {
-            BookSupplier bs = new BookSupplier();
-            bs.setBookId(book.getId());
-            bs.setSupplierId(currentUser.getId());
-            return bs;
+            return Optional.empty();
         }
     }
 

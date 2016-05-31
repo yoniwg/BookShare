@@ -23,7 +23,7 @@ import java.util.Map;
 /**
  * Created by Yoni on 5/27/2016.
  */
-public class MySqlCrud implements Crud {
+public class MySqlCrudX implements Crud {
 
     private static final String DB_URL = "http://yweisber.vlab.jct.ac.il/getData.php";
 

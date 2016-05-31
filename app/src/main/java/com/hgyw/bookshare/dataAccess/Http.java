@@ -4,10 +4,12 @@ import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpRetryException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -46,7 +48,7 @@ public class Http {
         con.setRequestMethod("POST");
 
         // For POST only - START
-         con.setDoOutput(true);
+        con.setDoOutput(true);
         OutputStream os = con.getOutputStream();
         os.write(postData.getBytes(UTF_8));
         os.flush();
@@ -55,7 +57,8 @@ public class Http {
 
         int responseCode = con.getResponseCode();
         System.out.println("POST Response Code :: " + responseCode);
-        if (responseCode == HttpURLConnection.HTTP_OK) { //success
+         //success
+        if (responseCode == HttpURLConnection.HTTP_OK) {
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String inputLine;
             StringBuilder response = new StringBuilder();
@@ -63,7 +66,7 @@ public class Http {
             in.close();
             return response.toString();
         } else {
-            return "";
+            throw new HttpRetryException("Error on post Http. (code " + responseCode + ")", responseCode);
         }
     }
 

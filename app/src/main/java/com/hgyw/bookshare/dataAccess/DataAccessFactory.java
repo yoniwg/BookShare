@@ -7,7 +7,7 @@ import com.hgyw.bookshare.MyApplication;
  */
 public class DataAccessFactory {
 
-    private static final boolean PSEUDO_DELAY_TEST = false;
+    private static final boolean PSEUDO_DELAY_TEST = true;
 
     private enum DatabaseType {
         LISTS {

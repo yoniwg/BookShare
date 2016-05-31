@@ -153,4 +153,9 @@
     <string name="book_was_updated_to_supplier">The book of yours was updated.</string>
     <string name="new_book_review_dialog">You have not yet have this book. in yours books. write the data and click to add.</string>
     <string name="update_book_review_dialog">These are current data of book that you provides:</string>
+    <string name="please_wait">Please Wait</string>
+    <string name="trying_to_connect">Trying to connect</string>
+    <string name="registering">Registering</string>
+    <string name="opening">Opening</string>
+    <string name="updating_book_supplying">Updating book supplying</string>
 </resources>

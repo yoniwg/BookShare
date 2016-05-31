@@ -7,6 +7,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
@@ -14,6 +15,7 @@ import android.widget.CheckBox;
 import com.hgyw.bookshare.app_drivers.IntentsFactory;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
 import com.hgyw.bookshare.R;
+import com.hgyw.bookshare.app_drivers.ProgressDialogAsyncTask;
 import com.hgyw.bookshare.app_drivers.Utility;
 import com.hgyw.bookshare.entities.Credentials;
 import com.hgyw.bookshare.exceptions.WrongLoginException;
@@ -75,28 +77,43 @@ public class LoginDialogFragment extends DialogFragment implements DialogInterfa
         Credentials resultCredentials = ObjectToViewAppliers.resultCredentials(view);
         CheckBox checkBox = (CheckBox) view.findViewById(R.id.savePasswordCheckbox);
         boolean savePassword = checkBox == null || checkBox.isChecked();
+        // sign in
+        signInAsync(getActivity(), resultCredentials, savePassword);
+    }
 
+    private static void signInAsync(Context context, Credentials credentials, boolean savePassword)  {
         AccessManager accessManager = AccessManagerFactory.getInstance();
-        try {
-            accessManager.signIn(resultCredentials);;
-        } catch (WrongLoginException e) {
-            int errorMessage;
-            switch (e.getIssue()) {
-                case WRONG_USERNAME_OR_PASSWORD:
-                    errorMessage = R.string.wrong_username_or_password; break;
-                default:
-                    errorMessage = R.string.error_on_login; break;
+        new ProgressDialogAsyncTask<Void,Void,WrongLoginException>(context, "Logining in") {
+            @Override
+            protected WrongLoginException doInBackground1(Void... params) {
+                try {
+                    accessManager.signIn(credentials);
+                    Credentials savingCredentials = savePassword ? credentials : new Credentials(credentials.getUsername(), "");
+                    Utility.saveCredentials(context, savingCredentials);
+                    context.startActivity(IntentsFactory.homeIntent(context, true));
+                    return null;
+                } catch (WrongLoginException e) {
+                    return e;
+                }
             }
-            new AlertDialog.Builder(getActivity())
-                    .setTitle(R.string.wrong_log_in_title)
-                    .setMessage(errorMessage)
-                    .setPositiveButton(R.string.ok, null)
-                    .create().show();
-            return;
-        }
-        Credentials savingCredentials = savePassword ? resultCredentials : new Credentials(resultCredentials.getUsername(), "");
-        Utility.saveCredentials(getActivity(), savingCredentials);
-        startActivity(IntentsFactory.homeIntent(getActivity(), true));
+            @Override
+            protected void onPostExecute1(WrongLoginException e) {
+                if (e != null) {
+                    int errorMessage;
+                    switch (e.getIssue()) {
+                        case WRONG_USERNAME_OR_PASSWORD:
+                            errorMessage = R.string.wrong_username_or_password; break;
+                        default:
+                            errorMessage = R.string.error_on_login; break;
+                    }
+                    new AlertDialog.Builder(context)
+                            .setTitle(R.string.wrong_log_in_title)
+                            .setMessage(errorMessage)
+                            .setPositiveButton(R.string.ok, null)
+                            .create().show();
+                }
+            }
+        }.execute();
     }
 
 }

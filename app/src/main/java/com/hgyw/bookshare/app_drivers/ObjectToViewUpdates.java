@@ -9,7 +9,7 @@ import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.logicAccess.GeneralAccess;
 
 /**
- * Created by haim7 on 13/05/2016.
+ * Update views by full data of items.
  */
 public class ObjectToViewUpdates {
 

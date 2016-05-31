@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import com.annimon.stream.Optional;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookReview;
 import com.hgyw.bookshare.entities.BookSupplier;
@@ -79,5 +80,5 @@ public interface SupplierAccess extends GeneralAccess {
      */
     void removeBookSupplier(BookSupplier bookSupplier);
 
-    BookSupplier retrieveMyBookSupplier(Book book);
+    Optional<BookSupplier> retrieveMyBookSupplier(Book book);
 }

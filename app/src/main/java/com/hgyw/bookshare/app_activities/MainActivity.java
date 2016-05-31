@@ -3,6 +3,7 @@ package com.hgyw.bookshare.app_activities;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -55,11 +56,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         accessManager = AccessManagerFactory.getInstance();
         Credentials savedCredentials = Utility.loadCredentials(this);
-        try {
-            if (!savedCredentials.getPassword().isEmpty()) {
-                accessManager.signIn(savedCredentials);
-            }
-        } catch (WrongLoginException ignored) {}
+        if (accessManager.getCurrentUserType() == UserType.GUEST && !savedCredentials.getPassword().isEmpty()) {
+            new ProgressDialogAsyncTask<Void, Void, Boolean>(this, R.string.trying_to_connect) {
+                @Override
+                protected Boolean doInBackground1(Void... params) {
+                    try {
+                        accessManager.signIn(savedCredentials);
+                        return true;
+                    } catch (WrongLoginException ignored) {
+                        return false;
+                    }
+                }
+
+                @Override
+                protected void onPostExecute1(Boolean Succeeded) {
+                    if (Succeeded) updateDrawerOnLogin();
+                }
+            }.execute();
+        }
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -87,38 +101,48 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void updateDrawerOnLogin(){
+        new AsyncTask<Void, Void, User>() {
+            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+            TextView navUserName = (TextView) navigationView.getHeaderView(0).findViewById(R.id.drawer_user_name);
+            ImageView navUserImage = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.drwer_user_image);
 
-        User user = accessManager.getGeneralAccess().retrieveUserDetails();
-        String userName = Utility.userNameToString(user);
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        TextView navUserName = (TextView) navigationView.getHeaderView(0).findViewById(R.id.drawer_user_name);
-        ImageView navUserImage = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.drwer_user_image);
+            @Override
+            protected User doInBackground(Void... params) {
+                User user = accessManager.getGeneralAccess().retrieveUserDetails();
+                return user;
+            }
 
-        if (userName.trim().isEmpty()){
-            navUserName.setText(R.string.anonymous);
-        }else {
-            navUserName.setText(userName);
-        }
+            @Override
+            protected void onPostExecute(User user) {
+                String userName = Utility.userNameToString(user);
 
-        long userImageId = user.getImageId();
-        Utility.setImageById(navUserImage, userImageId, R.drawable.image_user);
+                if (userName.trim().isEmpty()){
+                    navUserName.setText(R.string.anonymous);
+                }else {
+                    navUserName.setText(userName);
+                }
+
+                long userImageId = user.getImageId();
+                Utility.setImageById(navUserImage, userImageId, R.drawable.image_user);
 
 
-        switch (accessManager.getCurrentUserType()) {
-            case GUEST:
-                navUserName.setText(R.string.guest);
-                navigationView.getMenu().setGroupVisible(R.id.nav_general_options, true);
-                navigationView.getMenu().setGroupVisible(R.id.nav_logged_out_management, true);
-                break;
-            case CUSTOMER:
-                navigationView.getMenu().setGroupVisible(R.id.nav_customer_options, true);
-                navigationView.getMenu().setGroupVisible(R.id.nav_logged_in_management, true);
-                break;
-            case SUPPLIER:
-                navigationView.getMenu().setGroupVisible(R.id.nav_supplier_options, true);
-                navigationView.getMenu().setGroupVisible(R.id.nav_logged_in_management, true);
-                break;
-        }
+                switch (accessManager.getCurrentUserType()) {
+                    case GUEST:
+                        navUserName.setText(R.string.guest);
+                        navigationView.getMenu().setGroupVisible(R.id.nav_general_options, true);
+                        navigationView.getMenu().setGroupVisible(R.id.nav_logged_out_management, true);
+                        break;
+                    case CUSTOMER:
+                        navigationView.getMenu().setGroupVisible(R.id.nav_customer_options, true);
+                        navigationView.getMenu().setGroupVisible(R.id.nav_logged_in_management, true);
+                        break;
+                    case SUPPLIER:
+                        navigationView.getMenu().setGroupVisible(R.id.nav_supplier_options, true);
+                        navigationView.getMenu().setGroupVisible(R.id.nav_logged_in_management, true);
+                        break;
+                }
+            }
+        }.execute();
     }
 
     @Override

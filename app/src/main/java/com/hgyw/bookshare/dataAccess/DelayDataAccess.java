@@ -48,32 +48,27 @@ class DelayDataAccess implements DataAccess {
 
     @Override
     public List<User> findInterestedInBook(Book book, User userAsked) {
-        delay();
-        return dataAccess.findInterestedInBook(book, userAsked);
+        return delay(dataAccess.findInterestedInBook(book, userAsked));
     }
 
     @Override
     public List<Order> retrieveOrders(User customer, User supplier, Date fromDate, Date toDate, boolean onlyOpen) {
-        delay();
-        return dataAccess.retrieveOrders(customer, supplier, fromDate, toDate, onlyOpen);
+        return delay(dataAccess.retrieveOrders(customer, supplier, fromDate, toDate, onlyOpen));
     }
 
     @Override
     public List<Book> findBooks(BookQuery query) {
-        delay();
-        return dataAccess.findBooks(query);
+        return delay(dataAccess.findBooks(query));
     }
 
     @Override
     public List<Book> findSpecialOffers(User user, int limit) {
-        delay();
-        return dataAccess.findSpecialOffers(user, limit);
+        return delay(dataAccess.findSpecialOffers(user, limit));
     }
 
     @Override
     public <T extends Entity> List<T> findEntityReferTo(Class<T> referringClass, IdReference... referredItems) {
-        delay();
-        return dataAccess.findEntityReferTo(referringClass, referredItems);
+        return delay(dataAccess.findEntityReferTo(referringClass, referredItems));
     }
 
     @Override
@@ -104,6 +99,12 @@ class DelayDataAccess implements DataAccess {
     public <T extends Entity> T retrieve(Class<T> entityClass, long id) {
         delay(entityClass);
         return dataAccess.retrieve(entityClass, id);
+    }
+
+
+    private <T> List<T> delay(List<T> list) {
+        delay(200 * (1 + list.size()));
+        return list;
     }
 
     private void delay() {
