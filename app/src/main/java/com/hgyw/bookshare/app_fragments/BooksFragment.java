@@ -64,8 +64,7 @@ public class BooksFragment extends ListFragment implements TitleFragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_book_list, menu);
-        boolean isSupplier = access.getUserType() == UserType.SUPPLIER;
-        if (!isSupplier) menu.findItem(R.id.action_add_book).setVisible(false);
+        menu.findItem(R.id.action_add_book).setVisible(false);
     }
 
     @Override

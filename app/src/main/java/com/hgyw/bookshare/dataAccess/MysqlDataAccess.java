@@ -75,13 +75,7 @@ class MysqlDataAccess implements DataAccess {
         System.out.println(phpArray);
     }*/
 
-    private static String sqlValue(Object value) {
-        if (value == null) return "null";
-        if (value instanceof String){
-            return '\'' + value.toString() + '\'';
-        }
-        return value.toString();
-    }
+
 
     @Override
     public Optional<User> retrieveUserWithCredentials(Credentials credentials) {
@@ -165,7 +159,7 @@ class MysqlDataAccess implements DataAccess {
                 ID,
                 item.getId()
         );
-        executeSql(sql);
+        sendStatementHttpPost(sql);
     }
 
     @Override
@@ -188,16 +182,29 @@ class MysqlDataAccess implements DataAccess {
     /////////////////////////////
     // SQL Execution Methods
     /////////////////////////////
-    
-    private void executeSql(String statement) {
-        try {
-            System.out.println("Starting execute sql: " + statement);
-            String result = Http.post(GET_DATA_URL, Collections.singletonMap("statement", statement));
-        } catch (IOException e) {
-            throw new RuntimeException("Error in read sql from remote server.", e);
+
+    private static String sqlValue(Object value) {
+        if (value == null) return "null";
+        if (value instanceof String){
+            return '\'' + value.toString() + '\'';
         }
+        return value.toString();
     }
-    
+
+    private String sendStatementHttpPost(String statement)  {
+        HttpRequest hr = null;
+        try {
+            hr = new HttpRequest(new URL(GET_DATA_URL),
+                    Collections.singletonMap("statement", statement),
+                    HttpRequest.POST);
+            hr.sendRequest();
+            return hr.getReply();
+        } catch (InterruptedException | IOException | ExecutionException e) {
+            throw new RuntimeException("Error in statementHttpPost: " + e.getMessage(), e);
+        }
+
+    }
+
     private <T extends Entity> List<T> retrieveEntityFromDb(Class<T> type, String statement) {
         try {
             System.out.println("Starting ask sql: " + statement);
@@ -217,7 +224,6 @@ class MysqlDataAccess implements DataAccess {
     }
 
     private long createItem(Entity item) {
-        System.out.println("Starting send json.");
         Collection<Property> properties = jsonReflection.getProperties(item.getClass()).values();
         String fields = Stream.of(properties)
                 .map(Property::getName)
@@ -227,12 +233,12 @@ class MysqlDataAccess implements DataAccess {
                 .collect(Collectors.joining(","));
         String statement = String.format("INSERT INTO %s (%s) VALUES (%s)",
                 tableName(item.getClass()), fields, values);
+        System.out.println("Starting createItem: " + statement);
         String result = sendStatementHttpPost(statement);
         return Long.parseLong(result);
     }
 
     private void updateItem(Entity item) {
-        System.out.println("Starting send json.");
         Collection<Property> properties = jsonReflection.getProperties(item.getClass()).values();
         String keyValues = Stream.of(properties)
                 .filter(p-> !p.getName().equals(ID))
@@ -240,22 +246,11 @@ class MysqlDataAccess implements DataAccess {
                 .collect(Collectors.joining(","));
         String statement = String.format("UPDATE %s SET (%s) WHERE %s=%s",
                 tableName(item.getClass()), keyValues, ID, item.getId());
+        System.out.println("Starting updateItem: " + statement);
         sendStatementHttpPost(statement);
     }
 
 
-    private String sendStatementHttpPost(String statement)  {
-        HttpRequest hr = null;
-        try {
-            hr = new HttpRequest(new URL(GET_DATA_URL),
-                    Collections.singletonMap("statement", statement),
-                    HttpRequest.POST);
-            hr.sendRequest();
-            return hr.getStringReply();
-        } catch (InterruptedException | IOException | ExecutionException e) {
-            throw new RuntimeException("Error in statementHttpPost: " + e.getMessage(), e);
-        }
 
-    }
 
 }

@@ -5,8 +5,10 @@ import android.os.AsyncTask;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpRetryException;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
@@ -18,7 +20,7 @@ import java.util.concurrent.ExecutionException;
 /**
  * Created by Yoni on 5/27/2016.
  */
-public class HttpRequest extends AsyncTask{
+public class HttpRequest extends AsyncTask<Void,Void,String> {
 
     public final static String POST = "POST";
     public final static String GET = "GET";
@@ -52,34 +54,43 @@ public class HttpRequest extends AsyncTask{
         execute();
     }
 
-    public String getStringReply() throws ExecutionException, InterruptedException, IOException {
-        StringBuilder toReturn = new StringBuilder();
-        BufferedReader br = (BufferedReader) get();
-        String lineBuffer = null;
-        while ((lineBuffer = br.readLine()) != null){
-            toReturn.append(lineBuffer);
+    public String getReply() throws ExecutionException, InterruptedException, IOException {
+        String toReturn = get();
+        if (exception != null){
+            throw new RuntimeException(exception);
         }
-        return toReturn.toString();
+        return toReturn;
     }
 
-    public BufferedReader getBufferedReply() throws ExecutionException, InterruptedException {
-        return (BufferedReader) get();
-    }
 
     @Override
-    protected Object doInBackground(Object[] params) {
+    protected String doInBackground(Void[] params) {
         try {
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(type);
             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             connection.setRequestProperty("Content-Length", String.valueOf(postDataBytes.length));
             connection.setDoOutput(true);
-            connection.getOutputStream().write(postDataBytes);
-            return new BufferedReader(
-                    new InputStreamReader(connection.getInputStream(), "UTF-8"));
+            OutputStream os = connection.getOutputStream();
+            os.write(postDataBytes);
+            os.flush();
+            os.close();
+            int responseCode = connection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
+                StringBuilder toReturn = new StringBuilder();
+                String lineBuffer;
+                while ((lineBuffer = br.readLine()) != null){
+                    toReturn.append(lineBuffer);
+                }
+                br.close();
+                return toReturn.toString();
+            } else {
+                throw new HttpRetryException("Error on post Http. (code " + responseCode + ")", responseCode);
+            }
         } catch (IOException e) {
             this.exception = e;
-            throw new RuntimeException("HttpPost.doInBackground" + e.getMessage(),e);
+            return null;
         }
     }
 

@@ -48,20 +48,30 @@ public class Converters {
     public static <T,ConvertT> Converter<T,ConvertT> simple(Class<T> type,
                                                             Class<ConvertT> convertType,
                                                             Function<T, ConvertT> convertFunction,
-                                                            Function<ConvertT, T> parseFunc) {
+                                                            Function<ConvertT, T> parseFunc,
+                                                            ConvertT defaultValue) {
         return new AbstractConverter<T, ConvertT>() {
             @Override public Class<T> getType() {return type;}
             @Override public boolean canConvertFrom(Class type) {return toBoxedType(type) == getType();}
             @Override public Class<ConvertT> getConvertType() {return convertType;}
-            @Override public ConvertT convert(T value) {return value == null ? null : convertFunction.apply(value);}
+            @Override public ConvertT convert(T value) {return value == null ? defaultValue : convertFunction.apply(value);}
             @Override public <R extends T> R parse(Class<R> type, ConvertT value) {
                 requierCanParseTo(type);
-                return value == null ? null : (R) parseFunc.apply(value);
+                if (value == null) value = defaultValue;
+                return (R) parseFunc.apply(value);
             }
         };
     }
 
-    public static <T,ConvertT> Converter<T,ConvertT> inherit(Class<T> type,
+    public static <T,ConvertT> Converter<T,ConvertT> simple(Class<T> type,
+                                                            Class<ConvertT> convertType,
+                                                            Function<T, ConvertT> convertFunction,
+                                                            Function<ConvertT, T> parseFunc) {
+        return simple(type, convertType, convertFunction, parseFunc, null);
+    }
+
+
+                                                            public static <T,ConvertT> Converter<T,ConvertT> inherit(Class<T> type,
                                                             Class<ConvertT> convertType,
                                                             Function<T, ConvertT> convertFunction,
                                                             BiFunction<Class<? extends T>, ConvertT, T> parseFunc) {

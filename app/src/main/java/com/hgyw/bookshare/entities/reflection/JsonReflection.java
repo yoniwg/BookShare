@@ -7,6 +7,7 @@ import com.hgyw.bookshare.entities.Entity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
@@ -27,9 +28,9 @@ public class JsonReflection  {
             Converters.ofIdentity(Double.class),
             Converters.simple(Boolean.class, Integer.class, b->(b)?1:0, i->i==1),
             Converters.simple(byte[].class, String.class, arr -> "", str -> new byte[0]),
-            Converters.simple(BigDecimal.class, String.class, Object::toString, BigDecimal::new),
-            Converters.simple(Date.class, Long.class, Date::getTime, Date::new),
-            Converters.simple(java.sql.Date.class, Long.class, Date::getTime, java.sql.Date::new),
+            Converters.simple(BigDecimal.class, String.class, Object::toString, BigDecimal::new, "0"),
+            Converters.simple(Date.class, Long.class, Date::getTime, Date::new, 0L),
+            Converters.simple(java.sql.Date.class, Long.class, Date::getTime, java.sql.Date::new, 0L),
             Converters.inherit(Enum.class, Integer.class, Enum::ordinal, (type, i) -> type.getEnumConstants()[i])
     );
 
@@ -52,13 +53,29 @@ public class JsonReflection  {
         for (Property p : getProperties(type).values()) {
             Object jsonValue;
             try {
-                jsonValue = jsonObject.get(p.getName());
+                jsonValue = getFromJson(jsonObject, p.getPropertyType(), p.getName());
                 if (jsonValue.equals(JSONObject.NULL)) jsonValue = null;
             }
             catch (JSONException e) {throw new RuntimeException(e);}
             p.set(item, jsonValue);
         }
         return item;
+    }
+
+    private Object getFromJson(JSONObject jsonObject, Class<?> propertyType, String key) throws JSONException {
+        if (propertyType == Integer.class) {
+            return jsonObject.getInt(key);
+        } else if (propertyType == Long.class) {
+            return jsonObject.getLong(key);
+        } else if (propertyType == Boolean.class) {
+            return jsonObject.getBoolean(key);
+        } else if (propertyType == Double.class) {
+            return jsonObject.getDouble(key);
+        } else if (propertyType == String.class) {
+            return jsonObject.getString(key);
+        } else {
+            throw new RuntimeException("Cannot convert from jsonObject to " + propertyType.getName());
+        }
     }
 
     public JSONObject writeObject(Object item) {
