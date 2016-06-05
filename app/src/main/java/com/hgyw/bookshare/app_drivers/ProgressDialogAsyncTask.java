@@ -78,7 +78,7 @@ public abstract class ProgressDialogAsyncTask<Params, Progress, Result> extends 
 
     @Override
     protected final void onPostExecute(OptionalResult<Result> result) {
-        progressDialog.dismiss();
+        if (progressDialog.isShowing()) progressDialog.dismiss(); // TODO check if activity end
         if (result.dataAccessIoException != null) {
             DataAccessIoException e = result.dataAccessIoException;
             Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();

@@ -1,5 +1,7 @@
 package com.hgyw.bookshare.app_fragments;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -29,6 +31,11 @@ public class OldOrdersFragment extends AbstractFragment<CustomerAccess> {
 
     ApplyObjectAdapter<Order> adapter;
 
+    private Activity activity;
+    @Override public void onAttach(Context context) {super.onAttach(context);activity = (Activity) context;}
+    @Override public void onAttach(Activity activity) {super.onAttach(activity);this.activity = activity;}
+
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -49,7 +56,7 @@ public class OldOrdersFragment extends AbstractFragment<CustomerAccess> {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        ListView listView = (ListView) getActivity().findViewById(R.id.mainListView);
+        ListView listView = (ListView) activity.findViewById(R.id.mainListView);
 
         Date yearBefore = new Date();
         yearBefore.setYear(yearBefore.getYear() - 1);
@@ -62,7 +69,7 @@ public class OldOrdersFragment extends AbstractFragment<CustomerAccess> {
 
             @Override
             protected void onPostExecute(List<Order> orders) {
-                adapter = new ListApplyObjectAdapter<Order>(getActivity(), R.layout.old_order_list_item, orders) {
+                adapter = new ListApplyObjectAdapter<Order>(activity, R.layout.old_order_list_item, orders) {
                     @Override
                     protected Object[] retrieveDataForView(Order order) {
                         BookSupplier bookSupplier = access.retrieve(BookSupplier.class, order.getBookSupplierId());

@@ -1,6 +1,8 @@
 package com.hgyw.bookshare.app_fragments;
 
+import android.app.Activity;
 import android.app.ListFragment;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -25,6 +27,10 @@ import java.util.List;
  * Created by haim7 on 23/05/2016.
  */
 public class TransactionListFragment extends ListFragment implements TitleFragment {
+
+    private Activity activity;
+    @Override public void onAttach(Context context) {super.onAttach(context);activity = (Activity) context;}
+    @Override public void onAttach(Activity activity) {super.onAttach(activity);this.activity = activity;}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -51,7 +57,7 @@ public class TransactionListFragment extends ListFragment implements TitleFragme
 
             @Override
             protected void onPostExecute(List<Transaction> transactions) {
-                setListAdapter(new ApplyObjectAdapter<Transaction>(getActivity(), R.layout.transaction_list_item, transactions) {
+                setListAdapter(new ApplyObjectAdapter<Transaction>(activity, R.layout.transaction_list_item, transactions) {
                     @Override
                     protected void applyOnView(View view, int position) {
                         Transaction transaction = getItem(position);
@@ -65,7 +71,7 @@ public class TransactionListFragment extends ListFragment implements TitleFragme
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         Transaction transaction = (Transaction) l.getItemAtPosition(position);
-        Intent intent = IntentsFactory.newEntityIntent(getActivity(), transaction);
+        Intent intent = IntentsFactory.newEntityIntent(activity, transaction);
         startActivity(intent);
     }
 

@@ -1,6 +1,8 @@
 package com.hgyw.bookshare.app_fragments;
 
+import android.app.Activity;
 import android.app.ListFragment;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -27,6 +29,10 @@ public class SupplierBooksFragment extends ListFragment implements TitleFragment
 
     private ArrayAdapter<BookSupplier> adapter;
 
+    private Activity activity;
+    @Override public void onAttach(Context context) {super.onAttach(context);activity = (Activity) context;}
+    @Override public void onAttach(Activity activity) {super.onAttach(activity);this.activity = activity;}
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -41,7 +47,7 @@ public class SupplierBooksFragment extends ListFragment implements TitleFragment
 
             @Override
             protected void onPostExecute(List<BookSupplier> bookSuppliers) {
-                setListAdapter(adapter = new ListApplyObjectAdapter<BookSupplier>(getActivity(), R.layout.supplier_book_list_item, bookSuppliers){
+                setListAdapter(adapter = new ListApplyObjectAdapter<BookSupplier>(activity, R.layout.supplier_book_list_item, bookSuppliers){
                     @Override
                     protected Object[] retrieveDataForView(BookSupplier bs) {
                         return new Object[] { sAccess.retrieve(Book.class, bs.getBookId()) };
@@ -75,16 +81,16 @@ public class SupplierBooksFragment extends ListFragment implements TitleFragment
         final SupplierAccess sAccess = (result == ResultCode.CANCEL) ? null : AccessManagerFactory.getInstance().getSupplierAccess();
         switch (result) {
             case OK:
-                new ProgressDialogAsyncTask<Void, Void, Void>(getActivity()) {
+                new ProgressDialogAsyncTask<Void, Void, Void>(activity) {
                     @Override protected Void doInBackground1(Void... params) {
                         sAccess.updateBookSupplier(bookSupplier); return null;
                     }
                     @Override protected void onPostExecute1(Void aVoid) {
                         Utility.replaceById(adapter, bookSupplier);
                     }
-                }; break;
+                }.execute(); break;
             case DELETE:
-                new ProgressDialogAsyncTask<Void, Void, Void>(getActivity()) {
+                new ProgressDialogAsyncTask<Void, Void, Void>(activity) {
                     @Override protected Void doInBackground1(Void... params) {
                         sAccess.removeBookSupplier(bookSupplier); return null;
                     }

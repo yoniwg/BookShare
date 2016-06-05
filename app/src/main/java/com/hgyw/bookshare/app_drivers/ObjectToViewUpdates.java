@@ -25,8 +25,10 @@ public class ObjectToViewUpdates {
         ObjectToViewAppliers.apply(view, bookReview);
         ObjectToViewAppliers.apply(view, customer);
         TextView descriptionTextView = (TextView) view.findViewById(R.id.description);
-        String description = bookReview.getDescription();
-        if (description.isEmpty()) descriptionTextView.setVisibility(View.GONE);
+        if (descriptionTextView != null) {
+            String description = bookReview.getDescription();
+            if (description.isEmpty()) descriptionTextView.setVisibility(View.GONE);
+        }
     }
 
     // buyButtonOnClickListener - can be null and the buy-button will be gone.
@@ -34,8 +36,10 @@ public class ObjectToViewUpdates {
         ObjectToViewAppliers.apply(view, bookSupplier);
         ObjectToViewAppliers.apply(view, supplier);
         Button buyButton = (Button) view.findViewById(R.id.buy_button);
-        if (buyButtonOnClickListener == null) buyButton.setVisibility(View.GONE);
-        else buyButton.setOnClickListener(buyButtonOnClickListener);
+        if (buyButton != null) {
+            if (buyButtonOnClickListener == null) buyButton.setVisibility(View.GONE);
+            else buyButton.setOnClickListener(buyButtonOnClickListener);
+        }
     }
 
 }

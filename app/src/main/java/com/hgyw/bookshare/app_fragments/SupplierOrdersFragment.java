@@ -1,6 +1,8 @@
 package com.hgyw.bookshare.app_fragments;
 
+import android.app.Activity;
 import android.app.ListFragment;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
@@ -35,6 +37,10 @@ public class SupplierOrdersFragment extends ListFragment implements TitleFragmen
 
     private SupplierAccess sAccess;
 
+    private Activity activity;
+    @Override public void onAttach(Context context) {super.onAttach(context);activity = (Activity) context;}
+    @Override public void onAttach(Activity activity) {super.onAttach(activity);this.activity = activity;}
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_orders_supplier, container, false);
@@ -60,7 +66,7 @@ public class SupplierOrdersFragment extends ListFragment implements TitleFragmen
 
             @Override
             protected void onPostExecute(List<Order> orders) {
-                setListAdapter(new ListApplyObjectAdapter<Order>(getActivity(), R.layout.old_order_list_item, orders) {
+                setListAdapter(new ListApplyObjectAdapter<Order>(activity, R.layout.old_order_list_item, orders) {
                     @Override
                     protected Object[] retrieveDataForView(Order order) {
                         BookSupplier bookSupplier = sAccess.retrieve(BookSupplier.class, order.getBookSupplierId());
