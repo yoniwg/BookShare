@@ -38,6 +38,7 @@ public class UserRegistrationActivity extends UserAbstractActivity {
                 if (e == null) {
                     Toast.makeText(context, R.string.registration_Succeed, Toast.LENGTH_SHORT).show();
                     Utility.saveCredentials(context, user.getCredentials());
+                    finish();
                     startActivity(IntentsFactory.homeIntent(context, true));
                 } else {
                     String message;

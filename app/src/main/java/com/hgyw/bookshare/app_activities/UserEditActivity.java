@@ -26,6 +26,7 @@ public class UserEditActivity extends UserAbstractActivity {
             @Override
             protected void onPostExecute1(Void aVoid) {
                 Toast.makeText(context, R.string.user_details_updated, Toast.LENGTH_LONG).show();
+                finish();
                 startActivity(IntentsFactory.homeIntent(context));
             }
         }.execute();

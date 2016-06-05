@@ -1,5 +1,7 @@
 package com.hgyw.bookshare.app_fragments;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -26,6 +28,10 @@ public class TransactionFragment extends EntityFragment {
 
     CustomerAccess cAccess = AccessManagerFactory.getInstance().getCustomerAccess();
 
+    private Activity activity;
+    @Override public void onAttach(Context context) {super.onAttach(context);activity = (Activity) context;}
+    @Override public void onAttach(Activity activity) {super.onAttach(activity);this.activity = activity;}
+
     public TransactionFragment() {
         super(R.layout.fragment_transaction, 0, R.string.transaction_details);
     }
@@ -35,7 +41,7 @@ public class TransactionFragment extends EntityFragment {
         super.onViewCreated(view, savedInstanceState);
         ViewGroup linearLayout = (ViewGroup) view.findViewById(R.id.mainListView);
 
-        new ProgressDialogAsyncTask<Void, Void, Void>(getActivity()) {
+        new ProgressDialogAsyncTask<Void, Void, Void>(activity) {
             Transaction transaction;
             List<Order> orders;
             @Override
@@ -47,7 +53,7 @@ public class TransactionFragment extends EntityFragment {
 
             @Override
             protected void onPostExecute1(Void aVoid) {
-                Utility.addViewsByList(linearLayout, orders, getActivity().getLayoutInflater(), R.layout.old_order_list_item, TransactionFragment.this::updateOrder);
+                Utility.addViewsByList(linearLayout, orders, activity.getLayoutInflater(), R.layout.old_order_list_item, TransactionFragment.this::updateOrder);
             }
         }.execute();
 

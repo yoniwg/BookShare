@@ -3,6 +3,8 @@ package com.hgyw.bookshare.app_drivers;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.DatePicker;
@@ -36,6 +38,27 @@ public class DateRangeBar extends FrameLayout implements View.OnClickListener {
     public DateRangeBar(Context context, AttributeSet attrs) {
         super(context, attrs);
         inflateView(context);
+    }
+
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("superState", super.onSaveInstanceState());
+        bundle.putLong("dateFrom", dates[0].getTime());
+        bundle.putLong("dateTo", dates[1].getTime());
+        return bundle;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        if (state instanceof Bundle)
+        {
+            Bundle bundle = (Bundle) state;
+            setDate(0 ,new Date(bundle.getLong("dateFrom")));
+            setDate(1 ,new Date(bundle.getLong("dateTo")));
+            state = bundle.getParcelable("superState");
+        }
+        super.onRestoreInstanceState(state);
     }
 
     private void inflateView(Context context) {
