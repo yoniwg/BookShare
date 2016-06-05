@@ -156,6 +156,6 @@
     <string name="please_wait">Please Wait</string>
     <string name="trying_to_connect">Trying to connect</string>
     <string name="registering">Registering</string>
-    <string name="opening">Opening</string>
+    <string name="loading">Loading</string>
     <string name="updating_book_supplying">Updating book supplying</string>
 </resources>

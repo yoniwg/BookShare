@@ -5,6 +5,7 @@ import android.widget.Toast;
 
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.app_drivers.IntentsFactory;
+import com.hgyw.bookshare.app_drivers.ProgressDialogAsyncTask;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 
@@ -16,8 +17,17 @@ public class UserEditActivity extends UserAbstractActivity {
 
     @Override
     public void onOkButton(User user) {
-        AccessManagerFactory.getInstance().getGeneralAccess().updateUserDetails(user);
-        Toast.makeText(this, R.string.user_details_updated, Toast.LENGTH_LONG).show();
-        startActivity(IntentsFactory.homeIntent(this));
+        new ProgressDialogAsyncTask<Void, Void, Void>(this) {
+            @Override
+            protected Void doInBackground1(Void... params) {
+                AccessManagerFactory.getInstance().getGeneralAccess().updateUserDetails(user); return null;
+            }
+
+            @Override
+            protected void onPostExecute1(Void aVoid) {
+                Toast.makeText(context, R.string.user_details_updated, Toast.LENGTH_LONG).show();
+                startActivity(IntentsFactory.homeIntent(context));
+            }
+        }.execute();
     }
 }

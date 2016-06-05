@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static final String MAIN_FRAGMENT_TAG = "mainFragmentTag";
     private DrawerLayout drawer;
     private AccessManager accessManager;
-    private Class fragmentClass;
+
     private static final Map<Class<? extends Fragment>, Integer> fragmentNavMap = new HashMap<>();
     static {
         fragmentNavMap.put(BooksFragment.class, R.id.nav_books);
@@ -49,11 +49,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // TODO more...
     }
 
-    private Fragment fragment;
+    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // connect by credentials if it's needed and possible
         accessManager = AccessManagerFactory.getInstance();
         Credentials savedCredentials = Utility.loadCredentials(this);
         if (accessManager.getCurrentUserType() == UserType.GUEST && !savedCredentials.getPassword().isEmpty()) {
@@ -79,19 +81,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        onNewIntent(getIntent()); // updates the fragmentClass field
-
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        Integer navItemId = fragmentNavMap.get(fragmentClass);
-        navigationView.setCheckedItem(navItemId == null ? 0 : navItemId);
 
+        if (savedInstanceState == null) {
+            onNewIntent(getIntent());
+        }
     }
 
     @Override
@@ -148,8 +149,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onNewIntent(Intent newIntent) {
         super.onNewIntent(newIntent);
-        fragmentClass = newIntent == null ? null : (Class) newIntent.getSerializableExtra(IntentsFactory.ARG_FRAGMENT_CLASS);
+        Class fragmentClass = newIntent == null ? null : (Class) newIntent.getSerializableExtra(IntentsFactory.ARG_FRAGMENT_CLASS);
         if (fragmentClass == null) {
+            finish(); //?
             startActivity(IntentsFactory.homeIntent(this));
             return;
         }
@@ -157,9 +159,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (refreshLogin) {
             updateDrawerOnLogin();
         }
+        replaceFragment(fragmentClass, newIntent.getExtras());
+        setIntent(newIntent);
+    }
+
+    private void replaceFragment(Class fragmentClass, Bundle fragmentArguments) {
         try {
-            fragment = (Fragment) fragmentClass.newInstance();
-            fragment.setArguments(newIntent.getExtras());
+            Fragment fragment = (Fragment) fragmentClass.newInstance();
+            fragment.setArguments(fragmentArguments);
             if (fragment instanceof TitleFragment) {
                 setTitle(((TitleFragment) fragment).getFragmentTitle());
             } else {
@@ -168,13 +175,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             getFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment, MAIN_FRAGMENT_TAG)
                     .commit();
-            setIntent(newIntent);
+            // update menu checked-item by new fragment
+            Integer navItemId = fragmentNavMap.get(fragment.getClass());
+            if (navItemId != null) navigationView.setCheckedItem(navItemId);
             //ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
             //ft.addToBackStack(null);
         } catch (InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     @Override
@@ -270,6 +278,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public <T> T tryGetListener(Class<T> listenerClass) {
+        Fragment fragment = getFragmentManager().findFragmentByTag(MAIN_FRAGMENT_TAG);
         return ListenerSupplierHelper.tryGetListenerFromObjects(listenerClass, fragment);
     }
 }

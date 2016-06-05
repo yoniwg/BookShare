@@ -1,13 +1,13 @@
 package com.hgyw.bookshare.entities.reflection;
 
+import android.util.Base64;
+
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
-import com.hgyw.bookshare.entities.Entity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
@@ -27,11 +27,12 @@ public class JsonReflection  {
             Converters.ofIdentity(Long.class),
             Converters.ofIdentity(Double.class),
             Converters.simple(Boolean.class, Integer.class, b->(b)?1:0, i->i==1),
-            Converters.simple(byte[].class, String.class, arr -> "", str -> new byte[0]),
-            Converters.simple(BigDecimal.class, String.class, Object::toString, BigDecimal::new, "0"),
-            Converters.simple(Date.class, Long.class, Date::getTime, Date::new, 0L),
-            Converters.simple(java.sql.Date.class, Long.class, Date::getTime, java.sql.Date::new, 0L),
-            Converters.inherit(Enum.class, Integer.class, Enum::ordinal, (type, i) -> type.getEnumConstants()[i])
+            Converters.simple(byte[].class, String.class, arr -> Base64.encodeToString(arr, 0), str -> Base64.decode(str,0)),
+            Converters.simple(BigDecimal.class, String.class, Object::toString, BigDecimal::new, BigDecimal.ZERO),
+            //Converters.simple(Date.class, Long.class, Date::getTime, Date::new, 0L),
+            //Converters.simple(java.sql.Date.class, Long.class, Date::getTime, java.sql.Date::new, 0L),
+            Converters.inherit(Date.class, Long.class, Date::getTime, Converters::newDate, type -> Converters.newDate(type, 0)),
+            Converters.inherit(Enum.class, Integer.class, Enum::ordinal, (type, i) -> type.getEnumConstants()[i], type -> type.getEnumConstants()[0])
     );
 
     private final Map<Class, Map<String, Property>> propertiesMap = new HashMap<>();
@@ -48,7 +49,7 @@ public class JsonReflection  {
         return properties;
     }
 
-    public <T extends Entity> T readObject(Class<T> type, JSONObject jsonObject) {
+    public <T> T readObject(Class<T> type, JSONObject jsonObject) {
         T item = Converters.tryNewInstanceOrThrow(type);
         for (Property p : getProperties(type).values()) {
             Object jsonValue;

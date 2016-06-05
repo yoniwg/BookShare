@@ -31,17 +31,14 @@ import java.util.concurrent.ExecutionException;
 /**
  * Created by haim7 on 26/05/2016.
  */
-class MysqlDataAccess implements DataAccess {
+class MysqlDataAccess extends SqlDataAccess implements DataAccess {
 
-    private static final String SUB = JsonReflection.SUB_PROPERTY_SEPARATOR;
     private static final String SERVER_URL = "http://yweisber.vlab.jct.ac.il";
     private static final String GET_DATA_URL = SERVER_URL + "/" + "getData.php";
-    private static final String WRITE_DATA_URL = SERVER_URL + "/" + "/writeData.php";
     private static final JsonReflection jsonReflection = new JsonReflection();
-    public static final String ID = "id";
 
-    static String tableName(Class<?> userClass) {
-        return userClass.getSimpleName().toLowerCase()+"_"+"table";
+    protected MysqlDataAccess() {
+        super("id", JsonReflection.SUB_PROPERTY_SEPARATOR);
     }
 
     /*{printTablesAndPropertiesPhpMap();
@@ -75,113 +72,10 @@ class MysqlDataAccess implements DataAccess {
         System.out.println(phpArray);
     }*/
 
-
-
-    @Override
-    public Optional<User> retrieveUserWithCredentials(Credentials credentials) {
-        String sql = String.format("SELECT * from %s WHERE %s=%s AND %s=%s",
-                tableName(User.class),
-                "credentials" + SUB + "username", sqlValue(credentials.getUsername()),
-                "credentials" + SUB + "password", sqlValue(credentials.getPassword())
-        );
-        List<User> sqlResult = retrieveEntityFromDb(User.class, sql);
-        return sqlResult.isEmpty() ? Optional.empty() : Optional.of(sqlResult.get(0));
-    }
-
-    @Override
-    public boolean isUsernameTaken(String username) {
-        String sql = String.format("SELECT * from %s WHERE %s=%s",
-                tableName(User.class),
-                "credentials" + SUB + "username", sqlValue(username)
-        );
-        List<User> sqlResult = retrieveEntityFromDb(User.class, sql);
-        return !sqlResult.isEmpty();
-    }
-
-    @Override
-    public List<User> findInterestedInBook(Book book, User userAsked) {
-        return Collections.emptyList(); // TODO
-    }
-
-    @Override
-    public List<Order> retrieveOrders(User customer, User supplier, Date fromDate, Date toDate, boolean onlyOpen) {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public List<Book> findBooks(BookQuery query) {
-        String sql = String.format("SELECT * from %s", tableName(Book.class)); // TODO
-        return retrieveEntityFromDb(Book.class, sql);
-    }
-
-    @Override
-    public List<Book> findSpecialOffers(User user, int limit) {
-        return findBooks(new BookQuery()); // TODO
-    }
-
-    @Override
-    public <T extends Entity> List<T> findEntityReferTo(Class<T> referringClass, IdReference... referredItems) {
-        String conditions = Stream.of(referredItems)
-                .map(id -> {
-                    Property p = EntityReflection.getReferringProperties(referringClass, id.getEntityType());
-                    return p.getName() + "=" + id.getId();
-                }).collect(Collectors.joining(" AND "));
-        String sql = String.format("SELECT * FROM %s WHERE %s", tableName(referringClass), conditions);
-        return retrieveEntityFromDb(referringClass, sql);
-    }
-
-    @Override
-    public BookSummary getBookSummary(Book book) {
-        return new BookSummary(); // TODO
-    }
-
-    @Override
-    public void create(Entity item) {
-        if (item.getId() != 0) throw new IllegalArgumentException("Created item should have id 0.");
-        item.setDeleted(false);
-        long newId = createItem(item);
-        item.setId(newId);
-    }
-
-    @Override
-    public void update(Entity item) {
-        if (item.getId() == 0) throw new IllegalArgumentException("Updated item should not have id 0.");
-        item.setDeleted(false);
-        updateItem(item);
-    }
-
-    @Override
-    public void delete(IdReference item) {
-        String sql = String.format("UPDATE %s SET %s=%s WHERE %s=%s",
-                tableName(item.getEntityType()),
-                "deleted",
-                true,
-                ID,
-                item.getId()
-        );
-        sendStatementHttpPost(sql);
-    }
-
-    @Override
-    public <T extends Entity> T retrieve(Class<T> entityClass, long id) {
-        String sql = String.format("SELECT * FROM %s WHERE %s=%s",
-                tableName(entityClass),
-                ID,
-                id
-        );
-        List<T> result = retrieveEntityFromDb(entityClass, sql);
-        if (result.isEmpty()) throw new NoSuchElementException("No item " + id + " of " + entityClass.getSimpleName() +  " in database.");
-        return result.get(0);
-    }
-
-    @Override
-    public Entity retrieve(IdReference idReference) {
-        return retrieve(idReference.getEntityType(), idReference.getId());
-    }
-
     /////////////////////////////
     // SQL Execution Methods
     /////////////////////////////
+
 
     private static String sqlValue(Object value) {
         if (value == null) return "null";
@@ -191,21 +85,47 @@ class MysqlDataAccess implements DataAccess {
         return value.toString();
     }
 
-    private String sendStatementHttpPost(String statement)  {
-        HttpRequest hr = null;
+    private String sendStatementHttpPost1(String statement)  {
         try {
-            hr = new HttpRequest(new URL(GET_DATA_URL),
+            HttpRequest hr = new HttpRequest(new URL(GET_DATA_URL),
                     Collections.singletonMap("statement", statement),
                     HttpRequest.POST);
             hr.sendRequest();
             return hr.getReply();
-        } catch (InterruptedException | IOException | ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException("Error in statementHttpPost: " + e.getMessage(), e);
+        } catch (IOException e) {
+            throw new DataAccessIoException("Error in statementHttpPost: " + e.getMessage(), e);
         }
 
     }
 
-    private <T extends Entity> List<T> retrieveEntityFromDb(Class<T> type, String statement) {
+    private String sendStatementHttpPost(String statement)  {
+        try {
+            return Http.post(GET_DATA_URL, Collections.singletonMap("statement", statement));
+        } catch (IOException e) {
+            throw new DataAccessIoException("Error in statementHttpPost: " + e.getMessage(), e);
+        }
+    }
+
+    ///////////////////////////////
+    // DataAccess implementation
+    ///////////////////////////////
+
+
+    @Override
+    public void delete(IdReference item) {
+        String sql = String.format("UPDATE %s SET %s=%s WHERE %s=%s",
+                tableName(item.getEntityType()),
+                "deleted",
+                true,
+                ID_KEY,
+                item.getId()
+        );
+        sendStatementHttpPost(sql);
+    }
+
+    protected  <T> List<T> retrieveEntityFromDb(Class<T> type, String statement) {
         try {
             System.out.println("Starting ask sql: " + statement);
             String result = sendStatementHttpPost(statement);
@@ -219,11 +139,12 @@ class MysqlDataAccess implements DataAccess {
             return items;
         }
         catch (JSONException e) {
-            throw new RuntimeException("Error in create JSON objects, on asking sql from remote server.", e);
+            throw new DataAccessIoException("Error in create JSON objects, on asking sql from remote server.", e);
         }
     }
 
-    private long createItem(Entity item) {
+    @Override
+    protected long createItemDb(Entity item) {
         Collection<Property> properties = jsonReflection.getProperties(item.getClass()).values();
         String fields = Stream.of(properties)
                 .map(Property::getName)
@@ -234,23 +155,21 @@ class MysqlDataAccess implements DataAccess {
         String statement = String.format("INSERT INTO %s (%s) VALUES (%s)",
                 tableName(item.getClass()), fields, values);
         System.out.println("Starting createItem: " + statement);
-        String result = sendStatementHttpPost(statement);
-        return Long.parseLong(result);
+        String newId = sendStatementHttpPost(statement);
+        return Long.parseLong(newId);
     }
 
-    private void updateItem(Entity item) {
+    @Override
+    protected void updateItemDb(Entity item) {
         Collection<Property> properties = jsonReflection.getProperties(item.getClass()).values();
         String keyValues = Stream.of(properties)
-                .filter(p-> !p.getName().equals(ID))
-                .map(p-> p.getName() + "=" + sqlValue(p.get(item)))
+                .filter(p -> !p.getName().equals(ID_KEY))
+                .map(p -> p.getName() + "=" + sqlValue(p.get(item)))
                 .collect(Collectors.joining(","));
-        String statement = String.format("UPDATE %s SET (%s) WHERE %s=%s",
-                tableName(item.getClass()), keyValues, ID, item.getId());
+        String statement = String.format("UPDATE %s SET %s WHERE %s=%s",
+                tableName(item.getClass()), keyValues, ID_KEY, item.getId());
         System.out.println("Starting updateItem: " + statement);
         sendStatementHttpPost(statement);
     }
-
-
-
 
 }

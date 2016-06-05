@@ -5,13 +5,23 @@ import com.annimon.stream.function.Function;
 
 import org.json.JSONObject;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 /**
  * Created by haim7 on 25/05/2016.
  */
 public class Converters {
+
+    public static <T extends Date> T newDate(Class<T> aClass, long millis) {
+        try {
+            return aClass.getConstructor(long.class).newInstance(millis);
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            throw new RuntimeException("Unexpected error while create a " + aClass.getName() + " new object.");
+        }
+    }
 
     private static abstract class AbstractConverter<T,ConvertT> implements Converter<T,ConvertT> {
         @Override public String getSqlTypeName() {return "";}
@@ -30,6 +40,7 @@ public class Converters {
                 }
             };
         }
+        public T getDefaultValue() {return null;}
     }
 
     public static <T> Converter<T,T> ofIdentity(Class<T> type) {
@@ -49,16 +60,15 @@ public class Converters {
                                                             Class<ConvertT> convertType,
                                                             Function<T, ConvertT> convertFunction,
                                                             Function<ConvertT, T> parseFunc,
-                                                            ConvertT defaultValue) {
+                                                            T defaultValue) {
         return new AbstractConverter<T, ConvertT>() {
             @Override public Class<T> getType() {return type;}
             @Override public boolean canConvertFrom(Class type) {return toBoxedType(type) == getType();}
             @Override public Class<ConvertT> getConvertType() {return convertType;}
-            @Override public ConvertT convert(T value) {return value == null ? defaultValue : convertFunction.apply(value);}
+            @Override public ConvertT convert(T value) {return convertFunction.apply(value == null ? defaultValue : value);}
             @Override public <R extends T> R parse(Class<R> type, ConvertT value) {
                 requierCanParseTo(type);
-                if (value == null) value = defaultValue;
-                return (R) parseFunc.apply(value);
+                return (R) (value == null ? defaultValue : parseFunc.apply(value));
             }
         };
     }
@@ -71,23 +81,33 @@ public class Converters {
     }
 
 
-                                                            public static <T,ConvertT> Converter<T,ConvertT> inherit(Class<T> type,
+    public static <T,ConvertT> Converter<T,ConvertT> inherit(Class<T> type,
                                                             Class<ConvertT> convertType,
                                                             Function<T, ConvertT> convertFunction,
-                                                            BiFunction<Class<? extends T>, ConvertT, T> parseFunc) {
+                                                            BiFunction<Class<? extends T>, ConvertT, T> parseFunc,
+                                                            Function<Class<? extends T>, T> defaultValueFunc) {
         return new AbstractConverter<T, ConvertT>() {
             @Override public Class<T> getType() {return type;}
             @Override public Class<ConvertT> getConvertType() {return convertType;}
-            @Override public ConvertT convert(T value) {return value == null ? null : convertFunction.apply(value);}
+            @Override public ConvertT convert(T value) {
+                return convertFunction.apply(value == null ? defaultValueFunc.apply(type) : value);
+            }
             @Override public <R extends T> R parse(Class<R> type, ConvertT value) {
                 requierCanParseTo(type);
-                return value == null ? null : (R) parseFunc.apply(type, value);
+                return (R) (value == null ? defaultValueFunc.apply(type) : parseFunc.apply(type, value));
             }
             @Override public boolean canConvertFrom(Class type_) {return type.isAssignableFrom(toBoxedType(type_));}
         };
     }
 
-    @SuppressWarnings("unchecked")
+    public static <T,ConvertT> Converter<T,ConvertT> inherit(Class<T> type,
+                                                             Class<ConvertT> convertType,
+                                                             Function<T, ConvertT> convertFunction,
+                                                             BiFunction<Class<? extends T>, ConvertT, T> parseFunc) {
+        return inherit(type, convertType, convertFunction, parseFunc, (c) -> null);
+    }
+
+        @SuppressWarnings("unchecked")
     public static <T> Class<T> toBoxedType(Class<T> type) {
         if (!type.isPrimitive()) return type;
         Class c;

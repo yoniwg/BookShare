@@ -1,6 +1,5 @@
 package com.hgyw.bookshare.app_drivers;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -15,7 +14,7 @@ import com.hgyw.bookshare.dataAccess.DataAccessIoException;
  * Created by haim7 on 30/05/2016.
  */
 public abstract class ProgressDialogAsyncTask<Params, Progress, Result> extends AsyncTask<Params, Progress, ProgressDialogAsyncTask.OptionalResult<Result>> {
-    private AlertDialog progressDialog;
+    private ProgressDialog progressDialog;
     protected final android.content.Context context;
     private final String message;
 
@@ -29,16 +28,17 @@ public abstract class ProgressDialogAsyncTask<Params, Progress, Result> extends 
     }
 
     public ProgressDialogAsyncTask(Context context) {
-        this(context, R.string.opening);
+        this(context, R.string.loading);
     }
 
     @Override
     protected void onPreExecute() {
-        progressDialog = new ProgressDialog.Builder(context)
-                .setTitle(R.string.please_wait)
-                .setMessage(message + "...")
-                .setCancelable(false)
-                .create();
+        progressDialog = new ProgressDialog(context);
+        progressDialog.setTitle(R.string.please_wait);
+        progressDialog.setMessage(message + "...");
+        progressDialog.setCancelable(false);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setIndeterminate(true);
         progressDialog.show();
     }
 
@@ -62,7 +62,7 @@ public abstract class ProgressDialogAsyncTask<Params, Progress, Result> extends 
         try {
             return new OptionalResult<>(doInBackground1(params));
         } catch (DataAccessIoException e) {
-            return new OptionalResult<Result>(e);
+            return new OptionalResult<>(e);
         }
     }
 

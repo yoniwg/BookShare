@@ -1,26 +1,22 @@
 package com.hgyw.bookshare.app_fragments;
 
 import android.app.ListFragment;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.hgyw.bookshare.R;
-import com.hgyw.bookshare.app_drivers.ApplyObjectAdapter;
-import com.hgyw.bookshare.app_drivers.ApplyTask;
+import com.hgyw.bookshare.app_drivers.ListApplyObjectAdapter;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
+import com.hgyw.bookshare.app_drivers.ProgressDialogAsyncTask;
 import com.hgyw.bookshare.app_drivers.Utility;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookSupplier;
-import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.SupplierAccess;
 
-import java.util.ArrayDeque;
 import java.util.List;
 
 /**
@@ -35,18 +31,31 @@ public class SupplierBooksFragment extends ListFragment implements TitleFragment
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        SupplierAccess sAccess = AccessManagerFactory.getInstance().getSupplierAccess();
-        List<BookSupplier> bookSupplierList = sAccess.retrieveMyBooks();
-        setListAdapter(adapter = new ApplyObjectAdapter<BookSupplier>(getActivity(), R.layout.supplier_book_list_item, bookSupplierList){
-            protected void applyOnView(View view, int position) {
-                BookSupplier bs = getItem(position);
-                ObjectToViewAppliers.apply(view, bs);
-                Book book = sAccess.retrieve(Book.class, bs.getBookId());
-                ObjectToViewAppliers.apply(view, book);
-                //ApplyTask.toBiConsumer(book -> sAccess.retrieve(Book.class, bs.getBookId()), ObjectToViewAppliers::apply, view).executeAsync(bs);
+        new AsyncTask<Void, Void, List<BookSupplier>>() {
+            SupplierAccess sAccess = AccessManagerFactory.getInstance().getSupplierAccess();
 
+            @Override
+            protected List<BookSupplier> doInBackground(Void... params) {
+                return sAccess.retrieveMyBooks();
             }
-        });
+
+            @Override
+            protected void onPostExecute(List<BookSupplier> bookSuppliers) {
+                setListAdapter(adapter = new ListApplyObjectAdapter<BookSupplier>(getActivity(), R.layout.supplier_book_list_item, bookSuppliers){
+                    @Override
+                    protected Object[] retrieveDataForView(BookSupplier bs) {
+                        return new Object[] { sAccess.retrieve(Book.class, bs.getBookId()) };
+                    }
+
+                    @Override
+                    protected void applyDataOnView(View view, BookSupplier bs, Object[] data) {
+                        ObjectToViewAppliers.apply(view, bs);
+                        ObjectToViewAppliers.apply(view, (Book) data[0]);
+                    }
+                });
+            }
+        }.execute();
+
         setEmptyText(getString(R.string.no_items_list_view));
     }
 
@@ -63,17 +72,26 @@ public class SupplierBooksFragment extends ListFragment implements TitleFragment
 
     @Override
     public void onBookSupplierResult(ResultCode result, BookSupplier bookSupplier) {
-        SupplierAccess sAccess = result == ResultCode.CANCEL ? null : AccessManagerFactory.getInstance().getSupplierAccess();
+        final SupplierAccess sAccess = (result == ResultCode.CANCEL) ? null : AccessManagerFactory.getInstance().getSupplierAccess();
         switch (result) {
             case OK:
-                sAccess.updateBookSupplier(bookSupplier);
-                Utility.replaceById(adapter, bookSupplier);
-                break;
+                new ProgressDialogAsyncTask<Void, Void, Void>(getActivity()) {
+                    @Override protected Void doInBackground1(Void... params) {
+                        sAccess.updateBookSupplier(bookSupplier); return null;
+                    }
+                    @Override protected void onPostExecute1(Void aVoid) {
+                        Utility.replaceById(adapter, bookSupplier);
+                    }
+                }; break;
             case DELETE:
-                sAccess = AccessManagerFactory.getInstance().getSupplierAccess();
-                sAccess.removeBookSupplier(bookSupplier);
-                adapter.remove(bookSupplier);
-                break;
+                new ProgressDialogAsyncTask<Void, Void, Void>(getActivity()) {
+                    @Override protected Void doInBackground1(Void... params) {
+                        sAccess.removeBookSupplier(bookSupplier); return null;
+                    }
+                    @Override protected void onPostExecute1(Void aVoid) {
+                        adapter.remove(bookSupplier);
+                    }
+                }.execute(); break;
             case CANCEL: break;
         }
     }

@@ -27,6 +27,9 @@ public class Properties {
         List<Property> list = new ArrayList<>();
         Method[] methods = clazz.getMethods();
         for (Field field : clazz.getDeclaredFields()) {
+            EntityProperty propertyAnnotation = field.getAnnotation(EntityProperty.class);
+            if (propertyAnnotation != null && propertyAnnotation.disable()) continue;
+
             for (Method getter : methods) {
                 String getterName = getter.getName();
                 String prefix;

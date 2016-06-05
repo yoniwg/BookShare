@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
+import com.hgyw.bookshare.app_drivers.ProgressDialogAsyncTask;
 import com.hgyw.bookshare.app_drivers.Utility;
 import com.hgyw.bookshare.app_drivers.IntentsFactory;
 import com.hgyw.bookshare.entities.User;
@@ -50,8 +51,15 @@ public abstract class UserAbstractActivity extends AppCompatActivity {
         imageView.setOnClickListener(v -> Utility.startGetImage(this));
 
         if (savedInstanceState == null) {
-            user = isRegistration ? new User() : AccessManagerFactory.getInstance().getGeneralAccess().retrieveUserDetails();
-            ObjectToViewAppliers.apply(rootView, user);
+            new ProgressDialogAsyncTask<Void,Void,User>(this) {
+                @Override protected User doInBackground1(Void... params) {
+                    return isRegistration ? new User() : AccessManagerFactory.getInstance().getGeneralAccess().retrieveUserDetails();
+                }
+                @Override protected void onPostExecute1(User user) {
+                    UserAbstractActivity.this.user = user;
+                    ObjectToViewAppliers.apply(rootView, user);
+                }
+            }.execute();
         } else {
             newImage = savedInstanceState.getParcelable(SAVE_KEY_NEW_IMAGE);
             user = (User) savedInstanceState.getSerializable(SAVE_KEY_USER);
@@ -88,17 +96,27 @@ public abstract class UserAbstractActivity extends AppCompatActivity {
     }
 
     private void onOkButton() {
-        if (newImage != null) {
-            long imageId = AccessManagerFactory.getInstance().getGeneralAccess().upload(Utility.compress(newImage));
-            if (imageId != 0) {
-                user.setImageId(imageId);
-            } else {
-                Toast.makeText(this, R.string.upload_image_failed, Toast.LENGTH_SHORT).show();
+        new ProgressDialogAsyncTask<Void, Void, Void>(this) {
+            @Override
+            protected Void doInBackground1(Void... params) {
+                if (newImage != null) {
+                    long imageId = AccessManagerFactory.getInstance().getGeneralAccess().upload(Utility.compress(newImage));
+                    if (imageId != 0) {
+                        user.setImageId(imageId);
+                    } else {
+                        Toast.makeText(context, R.string.upload_image_failed, Toast.LENGTH_SHORT).show();
+                    }
+                }
+                return null;
             }
-        }
-        View rootView = findViewById(android.R.id.content);
-        ObjectToViewAppliers.result(rootView, user);
-        onOkButton(user);
+
+            @Override
+            protected void onPostExecute1(Void aVoid) {
+                View rootView = findViewById(android.R.id.content);
+                ObjectToViewAppliers.result(rootView, user);
+                onOkButton(user);
+            }
+        }.execute();
     }
 
     protected abstract void onOkButton(User user);

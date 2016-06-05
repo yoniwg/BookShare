@@ -1,34 +1,28 @@
 package com.hgyw.bookshare.app_fragments;
 
+import android.app.Activity;
 import android.app.ListFragment;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.app_drivers.ApplyObjectAdapter;
-import com.hgyw.bookshare.app_drivers.ApplyTask;
 import com.hgyw.bookshare.app_drivers.IntentsFactory;
 import com.hgyw.bookshare.app_drivers.ListApplyObjectAdapter;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
-import com.hgyw.bookshare.app_drivers.Utility;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookQuery;
 import com.hgyw.bookshare.entities.BookSummary;
-import com.hgyw.bookshare.entities.Entity;
-import com.hgyw.bookshare.entities.UserType;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.GeneralAccess;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 public class BooksFragment extends ListFragment implements TitleFragment {
@@ -36,6 +30,18 @@ public class BooksFragment extends ListFragment implements TitleFragment {
     private BookQuery bookQuery;
     private final GeneralAccess access = AccessManagerFactory.getInstance().getGeneralAccess();
 
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        System.out.println("onAttach(Context)");
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        System.out.println("onAttach(Activity)");
+    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -56,7 +62,7 @@ public class BooksFragment extends ListFragment implements TitleFragment {
             protected void onPostExecute(List<Book> bookList) {
                 ApplyObjectAdapter<Book> adapter = new ListApplyObjectAdapter<Book>(getActivity(), R.layout.book_list_item, bookList) {
                     @Override
-                    protected Object[] retrieveData(Book book) {
+                    protected Object[] retrieveDataForView(Book book) {
                         return new Object[] {access.getBookSummary(book)} ;
                     }
                     @Override

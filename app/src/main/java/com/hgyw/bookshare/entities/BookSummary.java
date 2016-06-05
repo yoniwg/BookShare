@@ -1,6 +1,8 @@
 package com.hgyw.bookshare.entities;
 
 import com.annimon.stream.Stream;
+import com.hgyw.bookshare.entities.reflection.EntityProperty;
+import com.hgyw.bookshare.entities.reflection.EntityReference;
 
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -14,6 +16,7 @@ public class BookSummary {
 
     private BigDecimal minPrice = BigDecimal.ZERO;
     private BigDecimal maxPrice = BigDecimal.ZERO;
+    @EntityProperty(disable = true)
     private Map<Rating, Integer> ratingMap = Collections.emptyMap();
 
     public BigDecimal getMinPrice() {

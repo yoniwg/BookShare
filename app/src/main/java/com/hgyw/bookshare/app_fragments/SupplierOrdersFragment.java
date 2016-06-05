@@ -1,6 +1,7 @@
 package com.hgyw.bookshare.app_fragments;
 
 import android.app.ListFragment;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.MenuRes;
@@ -13,6 +14,7 @@ import android.widget.ListView;
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.app_drivers.ApplyObjectAdapter;
 import com.hgyw.bookshare.app_drivers.DateRangeBar;
+import com.hgyw.bookshare.app_drivers.ListApplyObjectAdapter;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookSupplier;
@@ -50,22 +52,34 @@ public class SupplierOrdersFragment extends ListFragment implements TitleFragmen
     }
 
     private void updateListAdapter(DateRangeBar dateRangeBar) {
-        List<Order> orders = sAccess.retrieveOrders(dateRangeBar.getDateFrom(), dateRangeBar.getDateTo(), false);
-        setListAdapter(new ApplyObjectAdapter<Order>(getActivity(), R.layout.old_order_list_item, orders) {
+        new AsyncTask<Date, Void, List<Order>>() {
             @Override
-            protected void applyOnView(View view, int position) {
-                Order order = getItem(position);
-                ObjectToViewAppliers.apply(view, order);
-                BookSupplier bookSupplier = sAccess.retrieve(BookSupplier.class, order.getBookSupplierId());
-                ObjectToViewAppliers.apply(view, bookSupplier);
-                Book book = sAccess.retrieve(Book.class, bookSupplier.getBookId());
-                ObjectToViewAppliers.apply(view, book);
-                Transaction transaction = sAccess.retrieve(Transaction.class, order.getTransactionId());
-                ObjectToViewAppliers.apply(view, transaction);
-                User customer = sAccess.retrieve(User.class, transaction.getCustomerId());
-                ObjectToViewAppliers.apply(view, customer);
+            protected List<Order> doInBackground(Date... dates) {
+                return sAccess.retrieveOrders(dates[0], dates[1], false);
             }
-        });
+
+            @Override
+            protected void onPostExecute(List<Order> orders) {
+                setListAdapter(new ListApplyObjectAdapter<Order>(getActivity(), R.layout.old_order_list_item, orders) {
+                    @Override
+                    protected Object[] retrieveDataForView(Order order) {
+                        BookSupplier bookSupplier = sAccess.retrieve(BookSupplier.class, order.getBookSupplierId());
+                        Book book = sAccess.retrieve(Book.class, bookSupplier.getBookId());
+                        Transaction transaction = sAccess.retrieve(Transaction.class, order.getTransactionId());
+                        User customer = sAccess.retrieve(User.class, transaction.getCustomerId());
+                        return new Object[] {bookSupplier, book, transaction, customer};
+                    }
+
+                    @Override
+                    protected void applyDataOnView(View view, Order order, Object[] data) {
+                        ObjectToViewAppliers.apply(view, (BookSupplier) data[0]);
+                        ObjectToViewAppliers.apply(view, (Book) data[1]);
+                        ObjectToViewAppliers.apply(view, (Transaction) data[2]);
+                        ObjectToViewAppliers.apply(view, (User) data[3]);
+                    }
+                });
+            }
+        }.execute(dateRangeBar.getDates());
 
     }
 

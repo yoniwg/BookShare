@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.hgyw.bookshare.app_drivers.ApplyObjectAdapter;
 import com.hgyw.bookshare.app_drivers.IntentsFactory;
+import com.hgyw.bookshare.app_drivers.ListApplyObjectAdapter;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.entities.Book;
@@ -27,6 +28,7 @@ import com.hgyw.bookshare.logicAccess.Cart;
 import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.logicAccess.CustomerAccess;
 
+import java.util.AbstractMap;
 import java.util.List;
 
 /**
@@ -38,7 +40,7 @@ public class CartFragment extends ListFragment implements TitleFragment {
     public static final String IS_MAIN_FRAGMENT = "is_amount_can_modify";
 
     ApplyObjectAdapter<Order> adapter;
-    private final CustomerAccess cAccess = AccessManagerFactory.getInstance().getCustomerAccess();
+    private Cart cart = AccessManagerFactory.getInstance().getCustomerAccess().getCart();
 
 
     public static CartFragment newInstance(){
@@ -58,26 +60,27 @@ public class CartFragment extends ListFragment implements TitleFragment {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
 
-        Cart cart = cAccess.getCart();
         List<Order> ordersList = cart.retrieveCartContent();
 
-        adapter = new ApplyObjectAdapter<Order>(getActivity(), R.layout.order_list_item, ordersList) {
+        adapter = new ListApplyObjectAdapter<Order>(getActivity(), R.layout.order_list_item, ordersList) {
             @Override
-            protected void applyOnView(View view, int position) {
-                Order order = getItem(position);
-                ObjectToViewAppliers.apply(view, order);
+            protected Object[] retrieveDataForView(Order order) {
+                CustomerAccess cAccess = AccessManagerFactory.getInstance().getCustomerAccess();
                 BookSupplier bookSupplier = cAccess.retrieve(BookSupplier.class, order.getBookSupplierId());
-                ObjectToViewAppliers.apply(view, bookSupplier);
                 Book book = cAccess.retrieve(Book.class, bookSupplier.getBookId());
-                ObjectToViewAppliers.apply(view, book);
                 User supplier = cAccess.retrieve(User.class, bookSupplier.getSupplierId());
-                ObjectToViewAppliers.apply(view, supplier);
+                return new Object[] {bookSupplier, book, supplier};
+            }
+            @Override
+            protected void applyDataOnView(View view, Order order, Object[] data) {
+                ObjectToViewAppliers.apply(view, order);
+                ObjectToViewAppliers.apply(view, (BookSupplier) data[0]);
+                ObjectToViewAppliers.apply(view, (Book) data[1]);
+                ObjectToViewAppliers.apply(view, (User) data[2]);
                 NumberPicker orderAmountPicker = (NumberPicker) view.findViewById(R.id.orderAmountPicker);
                 if (getArguments().getBoolean(IS_MAIN_FRAGMENT)) {
-                    orderAmountPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
-                        order.setAmount(newVal);
-                    });
-                }else {
+                    orderAmountPicker.setOnValueChangedListener((picker, oldVal, newVal) -> order.setAmount(newVal));
+                } else {
                     orderAmountPicker.setVisibility(View.INVISIBLE);
                     view.findViewById(R.id.orderAmountFinal).setVisibility(View.VISIBLE);
                 }
@@ -98,7 +101,7 @@ public class CartFragment extends ListFragment implements TitleFragment {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setMessage(R.string.delete_order_message)
                         .setPositiveButton(R.string.yes, (dialog, which) -> {
-                            cAccess.getCart().remove(order.getBookSupplierId());
+                            cart.remove(order.getBookSupplierId());
                             adapter.notifyDataSetChanged();
                             Toast.makeText(v.getContext(),R.string.toast_order_deleted, Toast.LENGTH_SHORT).show();
                         })
@@ -129,7 +132,7 @@ public class CartFragment extends ListFragment implements TitleFragment {
     }
 
     private boolean proceedOrder() {
-        if (cAccess.getCart().isEmpty()){
+        if (cart.isEmpty()){
             new AlertDialog.Builder(getActivity())
                     .setMessage(R.string.cart_empty_message)
                     .setNeutralButton(R.string.ok,(d,w)->{}).create().show();
@@ -148,7 +151,7 @@ public class CartFragment extends ListFragment implements TitleFragment {
     }
 
     private boolean clearCart() {
-        if (cAccess.getCart().isEmpty()){
+        if (cart.isEmpty()){
             new AlertDialog.Builder(getActivity())
                     .setMessage(R.string.cart_empty_message)
                     .setNeutralButton(R.string.ok,(d,w)->{}).create().show();
@@ -157,7 +160,7 @@ public class CartFragment extends ListFragment implements TitleFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(R.string.clear_cart_message)
                 .setPositiveButton(R.string.yes, (dialog, which) -> {
-                    cAccess.getCart().clear();
+                    cart.clear();
                     adapter.notifyDataSetChanged();
                 })
                 .setNeutralButton(R.string.no, (dialog, which) -> {

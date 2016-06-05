@@ -2,6 +2,7 @@ package com.hgyw.bookshare.app_fragments;
 
 import android.app.ListFragment;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,16 +40,26 @@ public class TransactionListFragment extends ListFragment implements TitleFragme
     }
 
     private void updateListAdapter(DateRangeBar dateRangeBar) {
-        CustomerAccess cAccess = AccessManagerFactory.getInstance().getCustomerAccess();
-        List<Transaction> transactions = cAccess.retrieveTransactions(dateRangeBar.getDateFrom(), dateRangeBar.getDateTo());
-        setListAdapter(new ApplyObjectAdapter<Transaction>(getActivity(), R.layout.transaction_list_item, transactions) {
+        Date dateFrom = dateRangeBar.getDateFrom();
+        Date dateTo = dateRangeBar.getDateTo();
+        new AsyncTask<Void, Void, List<Transaction>>() {
             @Override
-            protected void applyOnView(View view, int position) {
-                Transaction transaction = getItem(position);
-                ObjectToViewAppliers.apply(view, transaction);
+            protected List<Transaction> doInBackground(Void... params) {
+                CustomerAccess cAccess = AccessManagerFactory.getInstance().getCustomerAccess();
+                return cAccess.retrieveTransactions(dateFrom, dateTo);
             }
-        });
 
+            @Override
+            protected void onPostExecute(List<Transaction> transactions) {
+                setListAdapter(new ApplyObjectAdapter<Transaction>(getActivity(), R.layout.transaction_list_item, transactions) {
+                    @Override
+                    protected void applyOnView(View view, int position) {
+                        Transaction transaction = getItem(position);
+                        ObjectToViewAppliers.apply(view, transaction);
+                    }
+                });
+            }
+        }.execute();
     }
 
     @Override

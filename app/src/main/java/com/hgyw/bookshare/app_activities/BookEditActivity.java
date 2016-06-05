@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.app_drivers.IntentsFactory;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
+import com.hgyw.bookshare.app_drivers.ProgressDialogAsyncTask;
 import com.hgyw.bookshare.app_drivers.Utility;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.Entity;
@@ -63,8 +64,15 @@ public class BookEditActivity extends AppCompatActivity {
         view = findViewById(android.R.id.content);
         if (savedInstanceState == null) {
             long id = idReference.getId();
-            book = id == 0 ? new Book() : AccessManagerFactory.getInstance().getGeneralAccess().retrieve(Book.class, id);
-            ObjectToViewAppliers.apply(view, book);
+            new ProgressDialogAsyncTask<Void, Void, Book>(this) {
+                @Override protected Book doInBackground1(Void... params) {
+                    book = id == Entity.DEFAULT_ID ? new Book() : AccessManagerFactory.getInstance().getGeneralAccess().retrieve(Book.class, id);
+                    return book;
+                }
+                @Override protected void onPostExecute1(Book book) {
+                    ObjectToViewAppliers.apply(view, book);
+                }
+            }.execute();
         } else {
             newImage = savedInstanceState.getParcelable(SAVE_KEY_NEW_IMAGE);
             book = (Book) savedInstanceState.getSerializable(SAVE_KEY_BOOK);
@@ -105,34 +113,40 @@ public class BookEditActivity extends AppCompatActivity {
                 finish();
                 return true;
             case R.id.action_ok:
-                onActionOk();
+                saveBook();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    private void onActionOk() {
-        ObjectToViewAppliers.result(view, book);
-        saveBook();
-        setResult(RESULT_OK);
-        Toast.makeText(this, R.string.book_was_updated, Toast.LENGTH_SHORT).show();
-        finish();
-    }
-
-    public void onActionOk(View view) {onActionOk();} // for onClick in layout
+    public void onActionOk(View view) {saveBook();} // for onClick in layout
 
     private void saveBook() {
-        SupplierAccess sAccess = AccessManagerFactory.getInstance().getSupplierAccess();
-        if (newImage != null) {
-            long imageId = sAccess.upload(Utility.compress(newImage));
-            if (imageId != Entity.DEFAULT_ID) book.setImageId(imageId);
-        }
-        if (book.getId() == Entity.DEFAULT_ID) {
-            sAccess.addBook(book);
-        } else {
-            sAccess.updateBook(book);
-        }
+        ObjectToViewAppliers.result(view, book);
+        new ProgressDialogAsyncTask<Void, Void, Void>(this) {
+            @Override
+            protected Void doInBackground1(Void... params) {
+                SupplierAccess sAccess = AccessManagerFactory.getInstance().getSupplierAccess();
+                if (newImage != null) {
+                    long imageId = sAccess.upload(Utility.compress(newImage));
+                    if (imageId != Entity.DEFAULT_ID) book.setImageId(imageId);
+                }
+                if (book.getId() == Entity.DEFAULT_ID) {
+                    sAccess.addBook(book);
+                } else {
+                    sAccess.updateBook(book);
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute1(Void aVoid) {
+                setResult(RESULT_OK);
+                Toast.makeText(context, R.string.book_was_updated, Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        }.execute();
     }
 
 }

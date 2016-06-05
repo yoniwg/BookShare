@@ -6,10 +6,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Created by haim7 on 04/05/2016.
+ * Created by haim7 on 05/06/2016.
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface EntityReference {
-    Class value();
+public @interface EntityProperty {
+    boolean disable() default false;
 }

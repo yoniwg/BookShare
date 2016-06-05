@@ -37,11 +37,12 @@ public class ListenerSupplierHelper {
         return null;
     }
 
+    /*
     @SuppressWarnings("unchecked")
     public static <T> T tryGetListenerFromObjects(Class<T> listenerClass, Object object) {
         if (listenerClass.isInstance(object)) return (T) object;
         return null;
-    }
+    }*/
 
 
 }

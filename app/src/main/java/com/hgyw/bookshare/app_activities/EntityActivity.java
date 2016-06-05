@@ -15,7 +15,8 @@ import com.hgyw.bookshare.entities.IdReference;
 
 public class EntityActivity extends AppCompatActivity implements ListenerSupplier{
 
-    private EntityFragment fragment;
+
+    private static final String ENTITY_FRAGMENT_TAG = "entityFragment";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,15 +29,16 @@ public class EntityActivity extends AppCompatActivity implements ListenerSupplie
         assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        // Get values from intent and instantiate the fragment accordingly.
-        // TODO what if fragment is saved?
-        IdReference entityReference = IntentsFactory.idReferenceFrom(getIntent().getData());
-        Class<? extends EntityFragment> fragmentClass = IntentsFactory.getEntityFragment(entityReference.getEntityType());
-        fragment = EntityFragment.newInstance(fragmentClass, entityReference.getId());
-        setTitle(fragment.getFragmentTitle());
-        getFragmentManager().beginTransaction()
-                .replace(R.id.fragment_entity_container, fragment)
-                .commit();
+        if (savedInstanceState == null) {
+            // Get values from intent and instantiate the fragment accordingly.
+            IdReference entityReference = IntentsFactory.idReferenceFrom(getIntent().getData());
+            Class<? extends EntityFragment> fragmentClass = IntentsFactory.getEntityFragment(entityReference.getEntityType());
+            EntityFragment fragment = EntityFragment.newInstance(fragmentClass, entityReference.getId());
+            setTitle(fragment.getFragmentTitle());
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_entity_container, fragment, ENTITY_FRAGMENT_TAG)
+                    .commit();
+        }
     }
 
     @Override
@@ -44,7 +46,6 @@ public class EntityActivity extends AppCompatActivity implements ListenerSupplie
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish(); return true;
-
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -52,6 +53,7 @@ public class EntityActivity extends AppCompatActivity implements ListenerSupplie
 
     @Override
     public <T> T tryGetListener(Class<T> listenerClass) {
+        Object fragment = getFragmentManager().findFragmentByTag(ENTITY_FRAGMENT_TAG);
         return ListenerSupplierHelper.tryGetListenerFromObjects(listenerClass, fragment);
     }
 

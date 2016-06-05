@@ -133,5 +133,12 @@
     <string name="new_account">חשבון חדש</string>
     <string name="registeration_problem_default">התרחשה בעיה בעת ההרשמה</string>
     <string name="remember_me">זכור אותי</string>
+    <string name="loading">טוען</string>
+    <string name="please_wait">נא המתן</string>
+    <string name="registering">נרשם</string>
+    <string name="supply_the_book">ספֵק את הספר</string>
+    <string name="trying_to_connect">מנסה להתחבר</string>
+    <string name="update_book_review_dialog">אתה מספק כעת את הספר הזה:</string>
+    <string name="updating_book_supplying">מעדכן את אספקת הספר</string>
 
 </resources>

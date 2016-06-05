@@ -85,12 +85,17 @@ public class DateRangeBar extends FrameLayout implements View.OnClickListener {
         avoidStartAfterEnd(index);
     }
 
+
     public Date getDateFrom() {
         return dates[0];
     }
 
     public Date getDateTo() {
         return dates[1];
+    }
+
+    public Date[] getDates() {
+        return new Date[] {dates[0], dates[1]};
     }
 
     private void avoidStartAfterEnd(int dominant) {

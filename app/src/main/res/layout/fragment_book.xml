@@ -16,7 +16,7 @@
 
 
             <include
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 layout="@layout/book_component" />
 
@@ -57,20 +57,19 @@
                 android:layout_marginTop="@dimen/default_vertical_seperate" />
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:id="@+id/reviewListView"
-                android:layout_marginTop="10dp"
-                android:orientation="vertical" />
+                android:id="@+id/reviews_listview"
+                android:orientation="vertical" >
 
-            <Button
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/show_all_reviews"
-                android:id="@+id/all_reviews_button"
-                android:layout_gravity="center_horizontal" />
+                <Button
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/show_all_reviews"
+                    android:id="@+id/all_reviews_button"
+                    android:layout_gravity="center_horizontal" />
+            </LinearLayout>
 
             <TextView
                 android:layout_width="match_parent"
@@ -82,16 +81,13 @@
                 android:padding="10dp"
                 android:layout_marginTop="@dimen/default_vertical_seperate" />
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/suppliers_listview"
+                android:orientation="vertical" />
+
         </LinearLayout>
     </ScrollView>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/shopping_basket_add256"
-        android:fillViewport="false"
-        android:visibility="invisible" />
 </FrameLayout>

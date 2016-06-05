@@ -7,10 +7,6 @@ import android.support.annotation.MainThread;
 import android.support.annotation.WorkerThread;
 import android.view.View;
 
-import com.hgyw.bookshare.entities.Book;
-import com.hgyw.bookshare.entities.BookSummary;
-import com.hgyw.bookshare.entities.Entity;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +32,7 @@ public abstract class ListApplyObjectAdapter<T> extends ApplyObjectAdapter<T> {
         asyncTask = new AsyncTask<Void, Void, Object[]>() {
             @Override
             protected Object[] doInBackground(Void... params) {
-                return ListApplyObjectAdapter.this.retrieveData(item);
+                return ListApplyObjectAdapter.this.retrieveDataForView(item);
             }
 
             @Override
@@ -51,8 +47,8 @@ public abstract class ListApplyObjectAdapter<T> extends ApplyObjectAdapter<T> {
     }
 
     @WorkerThread
-    protected abstract Object[] retrieveData(T item);
+    protected abstract Object[] retrieveDataForView(T item);
 
     @MainThread
-    protected abstract void applyDataOnView(View view, T item, Object[] items);
+    protected abstract void applyDataOnView(View view, T item, Object[] data);
 }

@@ -1,5 +1,6 @@
 package com.hgyw.bookshare.logicAccess;
 
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -81,7 +82,7 @@ class CustomerAccessImpl extends GeneralAccessImpl implements CustomerAccess {
         validateOrdersTransaction(orders);
         // create transaction
         transaction.setId(Entity.DEFAULT_ID);
-        transaction.setDate(new Date());
+        transaction.setDate(new Timestamp(System.currentTimeMillis()));
         transaction.setCustomerId(retrieveUserDetails().getId());
         dataAccess.create(transaction);
         // create orders

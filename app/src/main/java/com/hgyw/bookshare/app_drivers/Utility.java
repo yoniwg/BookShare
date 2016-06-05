@@ -256,10 +256,11 @@ public class Utility {
             View emptyView = inflater.inflate(R.layout.simple_empty_listview, viewGroup, false);
             viewGroup.addView(emptyView);
         } else {
+            int i = 0;
             for (T item : list) {
                 View view = inflater.inflate(layout, viewGroup, false);
                 if (viewConsumer != null) viewConsumer.accept(view, item);
-                viewGroup.addView(view);
+                viewGroup.addView(view, i++);
             }
         }
     }

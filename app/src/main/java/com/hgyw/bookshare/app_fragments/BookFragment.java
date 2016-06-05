@@ -44,9 +44,7 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
     private BookReview userBookReview;
 
     private RatingBar userRatingBar;
-    private View view;
     private View bookContainer;
-    private BookSummary bookSummary;
 
     public BookFragment() {
         super(R.layout.fragment_book, R.menu.menu_book, R.string.book_fragment_title);
@@ -64,66 +62,62 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
     public void onViewCreated(View view, Bundle savedInstanceState) {
 
         super.onViewCreated(view, savedInstanceState);
-        this.view = view;
         bookContainer = view.findViewById(R.id.bookContainer);
         final BookFragment fragment = this;
 
-        // set view of book details
-        updateBookDeatilsView();
-
-        // set view of user review
         View userReviewContainer = view.findViewById(R.id.userReviewContainer);
-        if (userType != UserType.CUSTOMER) {
-            userReviewContainer.setVisibility(View.GONE);
-        } else {
-            userRatingBar = (RatingBar) userReviewContainer.findViewById(R.id.userRatingBar);
-            CustomerAccess cAccess = (CustomerAccess) access;
-            new AsyncTask<Void, Void, Void>() {
-                @Override
-                protected Void doInBackground(Void... params) {
-                    userBookReview = cAccess.retrieveMyReview(book);
-                    return null;
-                }
-                @Override
-                protected void onPostExecute(Void aVoid) {
-                    if (userBookReview == null) {
-                        userBookReview = new BookReview();
-                        userBookReview.setBookId(book.getId());
-                    }
-                    updateUserReviewView();
-                    userRatingBar.setOnRatingBarChangeListener((RatingBar ratingBar, float rating, boolean fromUser) -> {
-                        if (fromUser) {
-                            BookReviewDialogFragment dialogFragment = BookReviewDialogFragment.newInstance(userBookReview, rating);
-                            dialogFragment.show(getFragmentManager(), "BookReviewDialog");
-                        }
-                    });
-                }
-            }.execute();
+        LinearLayout reviewListView = (LinearLayout) view.findViewById(R.id.reviews_listview);
+        LinearLayout suppliersListView = (LinearLayout) view.findViewById(R.id.suppliers_listview);
+        Button allReviewsButton = (Button) view.findViewById(R.id.all_reviews_button);
+        userRatingBar = (RatingBar) userReviewContainer.findViewById(R.id.userRatingBar);
 
-        }
-
-        new AsyncTask<Void,Void,Void>() {
+        new ProgressDialogAsyncTask<Void,Void,Void>(getActivity()) {
             List<BookReview> bookReviews;
             List<BookSupplier> suppliers;
+            public BookSummary bookSummary;
             @Override
-            protected Void doInBackground(Void... params) {
+            protected Void doInBackground1(Void... params) {
+                // get book and user-review data
+                book = access.retrieve(Book.class, entityId);
+                bookSummary = access.getBookSummary(book);
+                if (userType == UserType.CUSTOMER) userBookReview = ((CustomerAccess) access).retrieveMyReview(book);
                 // get lists
                 bookReviews = access.findBookReviews(book);
                 suppliers = access.findBookSuppliers(book);
                 return null;
             }
             @Override
-            protected void onPostExecute(Void aVoid) {
-                // apply reviews
+            protected void onPostExecute1(Void aVoid) {
+                // set book details
+                ObjectToViewAppliers.apply(bookContainer, book);
+                ObjectToViewAppliers.apply(bookContainer, bookSummary);
+
+                // set user review
+                if (userType == UserType.CUSTOMER) {
+                    if (userBookReview == null) {
+                        userBookReview = new BookReview();
+                        userBookReview.setBookId(book.getId());
+                    }
+                    userRatingBar.setRating(userBookReview.getRating().getStars());
+                    userRatingBar.setOnRatingBarChangeListener((RatingBar ratingBar, float rating, boolean fromUser) -> {
+                        if (fromUser) {
+                            BookReviewDialogFragment dialogFragment = BookReviewDialogFragment.newInstance(userBookReview, rating);
+                            dialogFragment.show(getFragmentManager(), "BookReviewDialog");
+                        }
+                    });
+                } else {
+                    userReviewContainer.setVisibility(View.GONE);
+                }
+
+                // set reviews list to max-size
                 final int MAX_REVIEWS = 2;
                 if (userType == UserType.CUSTOMER) {
                     bookReviews.remove(userBookReview);
                 }
                 boolean thereIsMoreReviews = bookReviews.size() > MAX_REVIEWS;
                 bookReviews = bookReviews.subList(0, Math.min(bookReviews.size(), MAX_REVIEWS));
-                // set reviews list
-                LinearLayout reviewListView = (LinearLayout) view.findViewById(R.id.reviewListView);
-                Button allReviewsButton = (Button) view.findViewById(R.id.all_reviews_button);
+
+                // set reviews list view
                 Utility.addViewsByList(reviewListView, bookReviews, getActivity().getLayoutInflater(), R.layout.book_review_component, fragment::updateBookReviewView);
                 if (!thereIsMoreReviews) {
                     allReviewsButton.setVisibility(View.GONE);
@@ -132,29 +126,39 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
                 }
 
                 // set views of suppliers
-                LinearLayout bookMainLayout = (LinearLayout) view.findViewById(R.id.bookFragmentLinearLayout);
-                Utility.addViewsByList(bookMainLayout, suppliers, getActivity().getLayoutInflater(), R.layout.book_supplier_list_item, fragment::updateBookSupplierView);
+                Utility.addViewsByList(suppliersListView, suppliers, getActivity().getLayoutInflater(), R.layout.book_supplier_list_item, fragment::updateBookSupplierView);
             }
         }.execute();
     }
 
     private void updateBookReviewView(View reviewView, BookReview bookReview) {
-        ObjectToViewUpdates.updateBookReviewView(access, reviewView, bookReview);
+        new AsyncTask<Void,Void,User>() {
+            @Override protected User doInBackground(Void... params) {
+                return access.retrieveUserDetails();
+            }
+            @Override protected void onPostExecute(User customer) {
+                ObjectToViewUpdates.updateBookReviewView(reviewView, bookReview, customer);
+            }
+        }.execute();
     }
 
     private void updateBookSupplierView(View supplierView, BookSupplier bookSupplier) {
-        User supplier = access.retrieve(User.class, bookSupplier.getSupplierId());
-        Intent intent = IntentsFactory.newEntityIntent(getActivity(), supplier);
-        supplierView.setOnClickListener(v -> startActivityForResult(intent, IntentsFactory.CODE_ENTITY_UPDATED));
-        ObjectToViewAppliers.apply(supplierView, bookSupplier);
-        ObjectToViewAppliers.apply(supplierView, supplier);
-        Button buyButton = (Button) supplierView.findViewById(R.id.buy_button);
-        if (userType != UserType.CUSTOMER) { buyButton.setVisibility(View.GONE); }
-        buyButton.setOnClickListener(v -> {
-            v.startAnimation(AnimationUtils.loadAnimation(v.getContext(), R.anim.image_click_anim));
-            AccessManagerFactory.getInstance().getCustomerAccess().addBookSupplierToCart(bookSupplier, 1);
-            Toast.makeText(getActivity(), R.string.order_added_to_cart, Toast.LENGTH_SHORT).show();
-        });
+        new AsyncTask<Void,Void,User>() {
+            @Override protected User doInBackground(Void... params) {
+                return access.retrieve(User.class, bookSupplier.getSupplierId());
+            }
+            @Override protected void onPostExecute(User supplier) {
+                View.OnClickListener onBuyButtonClick = null;
+                if (userType == UserType.CUSTOMER) onBuyButtonClick = v -> {
+                    v.startAnimation(AnimationUtils.loadAnimation(v.getContext(), R.anim.image_click_anim));
+                    AccessManagerFactory.getInstance().getCustomerAccess().addBookSupplierToCart(bookSupplier, 1);
+                    Toast.makeText(getActivity(), R.string.order_added_to_cart, Toast.LENGTH_SHORT).show();
+                };
+                ObjectToViewUpdates.updateBookSupplierBuyView(supplierView, bookSupplier, supplier, onBuyButtonClick);
+                Intent intent = IntentsFactory.newEntityIntent(getActivity(), supplier);
+                supplierView.setOnClickListener(v -> startActivityForResult(intent, IntentsFactory.CODE_ENTITY_UPDATED));
+            }
+        }.execute();
     }
 
     @Override
@@ -207,33 +211,24 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
         if (canceled) {
             userRatingBar.setRating(oldUserRating.getStars());
         } else {
-            // apply the customer details
-            CustomerAccess cAccess = (CustomerAccess) access;
-            cAccess.writeBookReview(bookReview);
-            this.userBookReview = bookReview;
-            updateUserReviewView();
-            // message
-            Toast.makeText(getActivity(), "The review was updated.", Toast.LENGTH_LONG).show();
+            new ProgressDialogAsyncTask<Void, Void, Void>(getActivity()) {
+                @Override
+                protected Void doInBackground1(Void... params) {
+                    // apply the customer details
+                    CustomerAccess cAccess = (CustomerAccess) access;
+                    cAccess.writeBookReview(bookReview);
+                    return null;
+                }
+                @Override
+                protected void onPostExecute1(Void aVoid) {
+                    userBookReview = bookReview;
+                    userRatingBar.setRating(userBookReview.getRating().getStars());
+                    // message
+                    Toast.makeText(getActivity(), "The review was updated.", Toast.LENGTH_LONG).show();
+                }
+            }.execute();
         }
 
-    }
-
-    private void updateUserReviewView() {
-        userRatingBar.setRating(userBookReview.getRating().getStars());
-    }
-
-    private void updateBookDeatilsView() {
-        ObjectToViewAppliers.apply(bookContainer, book);
-        new AsyncTask<Void,Void,BookSummary>() {
-            @Override
-            protected BookSummary doInBackground(Void... params) {
-                return bookSummary = access.getBookSummary(book);
-            }
-            @Override
-            protected void onPostExecute(BookSummary summary) {
-                ObjectToViewAppliers.apply(bookContainer, bookSummary);
-            }
-        }.execute();
     }
 
     @Override
@@ -246,30 +241,39 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
     @Override
     public void onBookSupplierResult(ResultCode result, BookSupplier bookSupplier) {
         SupplierAccess sAccess = (SupplierAccess) access;
+        boolean isNewBook = bookSupplier == null || bookSupplier.getId() == 0;
         switch (result) {
             case OK:
                 new ProgressDialogAsyncTask<Void,Void,Void>(getActivity(), R.string.updating_book_supplying) {
                     @Override
                     protected Void doInBackground1(Void... params) {
-                        if (bookSupplier.getId() == 0) {
+                        if (isNewBook) {
                             sAccess.addBookSupplier(bookSupplier);
-                            Toast.makeText(getActivity(), R.string.book_was_added_to_supplier, Toast.LENGTH_SHORT).show();
                         } else {
                             sAccess.updateBookSupplier(bookSupplier);
-                            Toast.makeText(getActivity(), R.string.book_was_updated_to_supplier, Toast.LENGTH_SHORT).show();
                         }
                         return null;
                     }
-                }.execute();
-                startActivity(IntentsFactory.supplierBooksIntent(getActivity()));
-                break;
-            case CANCEL: break;
+
+                    @Override
+                    protected void onPostExecute1(Void aVoid) {
+                        int messageRedId = isNewBook ? R.string.book_was_added_to_supplier : R.string.book_was_updated_to_supplier;
+                        Toast.makeText(getActivity(), messageRedId, Toast.LENGTH_SHORT).show();
+                        startActivity(IntentsFactory.supplierBooksIntent(getActivity()));
+                    }
+                }.execute(); break;
             case DELETE:
-                try {
-                    sAccess.removeBookSupplier(bookSupplier);
-                    Toast.makeText(getActivity(),R.string.book_was_removed_to_supplier, Toast.LENGTH_SHORT).show();
-                } catch (NoSuchElementException ignored) {}
-                break;
+                new ProgressDialogAsyncTask<Void, Void, Boolean>(getActivity(), R.string.updating_book_supplying) {
+                    @Override protected Boolean doInBackground1(Void... params) {
+                        try {
+                            sAccess.removeBookSupplier(bookSupplier); return true;
+                        } catch (NoSuchElementException e) { return false;}
+                    }
+                    @Override protected void onPostExecute1(Boolean success) {
+                        if (success) Toast.makeText(getActivity(),R.string.book_was_removed_to_supplier, Toast.LENGTH_SHORT).show();
+                    }
+                }.execute(); break;
+            case CANCEL: break;
         }
     }
 }

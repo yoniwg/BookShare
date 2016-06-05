@@ -5,6 +5,7 @@ import android.database.Cursor;
 
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
+import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.Entity;
 
 import java.math.BigDecimal;
@@ -27,7 +28,7 @@ public class SqlLiteReflection  {
             Converters.ofIdentity(Long.class),
             Converters.ofIdentity(String.class),
             Converters.ofIdentity(byte[].class),
-            Converters.simple(Boolean.class, Integer.class, b -> b?1:0, i -> i==1),
+            Converters.ofIdentity(Boolean.class),//Converters.simple(Boolean.class, Integer.class, b -> b?1:0, i -> i==1),
             Converters.simple(BigDecimal.class, String.class, Object::toString, BigDecimal::new),
             Converters.simple(Date.class, Long.class, Date::getTime, Date::new),
             Converters.simple(java.sql.Date.class, Long.class, Date::getTime, java.sql.Date::new),
@@ -72,6 +73,7 @@ public class SqlLiteReflection  {
         else if (type == Double.class) cv.put(key, (Double) value);
         else if (type == Float.class) cv.put(key, (Float) value);
         else if (type == String.class) cv.put(key, (String) value);
+        else if (type == Book.class) cv.put(key, (Boolean) value);
         else if (type == byte[].class) cv.put(key, (byte[]) value);
         else throw new RuntimeException("No method in " + ContentValues.class + " to put object of " + type);
     }
@@ -83,6 +85,7 @@ public class SqlLiteReflection  {
         if (type == double.class) return (T) (Object) cursor.getDouble(column);
         if (type == float.class) return (T) (Object) cursor.getFloat(column);
         if (type == String.class) return (T) (Object) cursor.getString(column);
+        if (type == boolean.class) return (T) (Object) (!cursor.isNull(column) && cursor.getShort(column) != 0);
         if (type == byte[].class) return (T) (Object) cursor.getBlob(column);
         throw new RuntimeException("No method in " + Cursor.class + " to apply object of " + type);
     }

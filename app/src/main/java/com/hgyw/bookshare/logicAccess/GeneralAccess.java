@@ -1,5 +1,7 @@
 package com.hgyw.bookshare.logicAccess;
 
+import android.support.annotation.WorkerThread;
+
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookQuery;
 import com.hgyw.bookshare.entities.BookReview;
@@ -59,7 +61,6 @@ public interface GeneralAccess {
      * @throws java.util.NoSuchElementException if the supplier is not found in database
      */
     List<BookSupplier> findBooksOfSuppliers(User supplier);
-
 
     <T extends Entity> T retrieve(Class<T> entityClass, long entityId);
 

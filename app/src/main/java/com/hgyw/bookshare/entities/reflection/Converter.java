@@ -38,7 +38,7 @@ public interface Converter<T,ConvertT> {
     <T2> Converter<T2,ConvertT> subConverter(Converter<T2,T> subConverter);
 
 
-    boolean canConvertFrom(Class type);
+    boolean canConvertFrom(Class<?> type);
 
     String getSqlTypeName();
 

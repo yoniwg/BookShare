@@ -1,10 +1,12 @@
 package com.hgyw.bookshare.app_fragments;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
 
 import com.hgyw.bookshare.app_drivers.ApplyObjectAdapter;
+import com.hgyw.bookshare.app_drivers.ListApplyObjectAdapter;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.entities.Book;
@@ -51,25 +53,37 @@ public class OldOrdersFragment extends AbstractFragment<CustomerAccess> {
 
         Date yearBefore = new Date();
         yearBefore.setYear(yearBefore.getYear() - 1);
-        List<Order> ordersList = new ArrayList<>(access.retrieveOrders(yearBefore, new Date()));
 
-        adapter = new ApplyObjectAdapter<Order>(getActivity(), R.layout.old_order_list_item, ordersList) {
+        new AsyncTask<Void, Void, List<Order>>() {
             @Override
-            protected void applyOnView(View view, int position) {
-                Order order = getItem(position);
-                ObjectToViewAppliers.apply(view, order);
-                BookSupplier bookSupplier = access.retrieve(BookSupplier.class, order.getBookSupplierId());
-                ObjectToViewAppliers.apply(view, bookSupplier);
-                Book book = access.retrieve(Book.class, bookSupplier.getBookId());
-                ObjectToViewAppliers.apply(view, book);
-                User supplier = access.retrieve(User.class, bookSupplier.getSupplierId());
-                ObjectToViewAppliers.apply(view, supplier);
-                Transaction transaction= access.retrieve(Transaction.class, order.getTransactionId());
-                ObjectToViewAppliers.apply(view, transaction);
-
+            protected List<Order> doInBackground(Void... params) {
+                return access.retrieveOrders(yearBefore, new Date());
             }
-        };
-        listView.setAdapter(adapter);
+
+            @Override
+            protected void onPostExecute(List<Order> orders) {
+                adapter = new ListApplyObjectAdapter<Order>(getActivity(), R.layout.old_order_list_item, orders) {
+                    @Override
+                    protected Object[] retrieveDataForView(Order order) {
+                        BookSupplier bookSupplier = access.retrieve(BookSupplier.class, order.getBookSupplierId());
+                        Book book = access.retrieve(Book.class, bookSupplier.getBookId());
+                        User supplier = access.retrieve(User.class, bookSupplier.getSupplierId());
+                        Transaction transaction= access.retrieve(Transaction.class, order.getTransactionId());
+                        return new Object[]{bookSupplier,book,supplier,transaction};
+                    }
+                    @Override
+                    protected void applyDataOnView(View view, Order order, Object[] data) {
+                        ObjectToViewAppliers.apply(view, order);
+                        ObjectToViewAppliers.apply(view, (BookSupplier) data[0]);
+                        ObjectToViewAppliers.apply(view, (Book) data[1]);
+                        ObjectToViewAppliers.apply(view, (User) data[2]);
+                        ObjectToViewAppliers.apply(view,(Transaction) data[3]);
+                    }
+                };
+                listView.setAdapter(adapter);
+            }
+        }.execute();
+
 
     }
 
