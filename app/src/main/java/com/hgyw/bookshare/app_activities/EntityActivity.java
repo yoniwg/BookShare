@@ -29,7 +29,8 @@ public class EntityActivity extends AppCompatActivity implements ListenerSupplie
         assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        if (savedInstanceState == null) {
+        //if (savedInstanceState == null)
+        {
             // Get values from intent and instantiate the fragment accordingly.
             IdReference entityReference = IntentsFactory.idReferenceFrom(getIntent().getData());
             Class<? extends EntityFragment> fragmentClass = IntentsFactory.getEntityFragment(entityReference.getEntityType());

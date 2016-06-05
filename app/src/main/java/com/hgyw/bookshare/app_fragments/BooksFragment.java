@@ -29,18 +29,19 @@ public class BooksFragment extends ListFragment implements TitleFragment {
 
     private BookQuery bookQuery;
     private final GeneralAccess access = AccessManagerFactory.getInstance().getGeneralAccess();
+    private Activity activity;
 
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        System.out.println("onAttach(Context)");
+        this.activity = (Activity) context;
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        System.out.println("onAttach(Activity)");
+        this.activity = activity;
     }
 
     @Override
@@ -49,7 +50,7 @@ public class BooksFragment extends ListFragment implements TitleFragment {
         setHasOptionsMenu(true);
 
         bookQuery = getArguments() == null ? null : (BookQuery) getArguments().getSerializable(IntentsFactory.ARG_BOOK_QUERY);
-        // TODO: Check what state of fragment is saved, and whether we are initializing again for false.
+
         new AsyncTask<Void, Book, List<Book>>() {
             @Override
             protected List<Book> doInBackground(Void... params) {
@@ -60,7 +61,7 @@ public class BooksFragment extends ListFragment implements TitleFragment {
 
             @Override
             protected void onPostExecute(List<Book> bookList) {
-                ApplyObjectAdapter<Book> adapter = new ListApplyObjectAdapter<Book>(getActivity(), R.layout.book_list_item, bookList) {
+                ApplyObjectAdapter<Book> adapter = new ListApplyObjectAdapter<Book>(activity, R.layout.book_list_item, bookList) {
                     @Override
                     protected Object[] retrieveDataForView(Book book) {
                         return new Object[] {access.getBookSummary(book)} ;
@@ -82,7 +83,7 @@ public class BooksFragment extends ListFragment implements TitleFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         Book book = (Book) l.getItemAtPosition(position);
-        startActivity(IntentsFactory.newEntityIntent(getActivity(), book));
+        startActivity(IntentsFactory.newEntityIntent(activity, book));
     }
 
     @Override
@@ -107,7 +108,7 @@ public class BooksFragment extends ListFragment implements TitleFragment {
     }
 
     private void startAddBookDialog() {
-        startActivity(IntentsFactory.editBookIntent(getActivity(), 0));
+        startActivity(IntentsFactory.editBookIntent(activity, 0));
     }
 
     @Override

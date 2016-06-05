@@ -90,7 +90,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        if (savedInstanceState == null) {
+        //if (savedInstanceState == null)
+        {
             onNewIntent(getIntent());
         }
     }
@@ -149,13 +150,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onNewIntent(Intent newIntent) {
         super.onNewIntent(newIntent);
-        Class fragmentClass = newIntent == null ? null : (Class) newIntent.getSerializableExtra(IntentsFactory.ARG_FRAGMENT_CLASS);
-        if (fragmentClass == null) {
-            finish(); //?
-            startActivity(IntentsFactory.homeIntent(this));
-            return;
-        }
+
+        Class fragmentClass = (Class) newIntent.getSerializableExtra(IntentsFactory.ARG_FRAGMENT_CLASS);
+        if (fragmentClass == null) fragmentClass = BooksFragment.class;
         boolean refreshLogin = newIntent.getBooleanExtra(IntentsFactory.ARG_REFRESH_LOGIN, false);
+
         if (refreshLogin) {
             updateDrawerOnLogin();
         }
