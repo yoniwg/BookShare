@@ -1,13 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <!-- TODO... -->
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:clickable="false"
+    android:descendantFocusability="blocksDescendants"
+    android:id="@+id/transactionContainer">
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Transaction List Item"
-        android:id="@+id/textView12"
-        android:layout_gravity="center_horizontal" />
-</LinearLayout>
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="total price"
+        android:id="@+id/total_price"
+        android:textAlignment="viewStart"
+        android:paddingStart="10dp"
+        android:layout_below="@+id/supplier_names_list"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:id="@+id/supplier_names_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Suppliers Names"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:paddingStart="10dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="01/01/2001"
+        android:id="@+id/transactionDate"
+        android:layout_alignTop="@+id/total_price"
+        android:layout_alignParentEnd="true" />
+
+</RelativeLayout>

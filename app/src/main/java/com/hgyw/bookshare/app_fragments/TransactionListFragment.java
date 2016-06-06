@@ -15,11 +15,16 @@ import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.app_drivers.ApplyObjectAdapter;
 import com.hgyw.bookshare.app_drivers.DateRangeBar;
 import com.hgyw.bookshare.app_drivers.IntentsFactory;
+import com.hgyw.bookshare.app_drivers.ListApplyObjectAdapter;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
+import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.Transaction;
+import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.CustomerAccess;
+import com.hgyw.bookshare.logicAccess.GeneralAccess;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -29,6 +34,8 @@ import java.util.List;
 public class TransactionListFragment extends ListFragment implements TitleFragment {
 
     private Activity activity;
+    ApplyObjectAdapter<Transaction> adapter;
+
     @Override public void onAttach(Context context) {super.onAttach(context);activity = (Activity) context;}
     @Override public void onAttach(Activity activity) {super.onAttach(activity);this.activity = activity;}
 
@@ -57,13 +64,22 @@ public class TransactionListFragment extends ListFragment implements TitleFragme
 
             @Override
             protected void onPostExecute(List<Transaction> transactions) {
-                setListAdapter(new ApplyObjectAdapter<Transaction>(activity, R.layout.transaction_list_item, transactions) {
+                adapter = new ListApplyObjectAdapter<Transaction>(activity, R.layout.transaction_list_item, transactions) {
+                    GeneralAccess access = AccessManagerFactory.getInstance().getGeneralAccess();
                     @Override
-                    protected void applyOnView(View view, int position) {
-                        Transaction transaction = getItem(position);
-                        ObjectToViewAppliers.apply(view, transaction);
+                    protected Object[] retrieveDataForView(Transaction item) {
+                        Object[] data = new Object[2];
+                        data[0] = access.calcTotalPriceOfTransaction(item);
+                        data[1] = access.getSuppliersOfTransaction(item);
+                        return data;
                     }
-                });
+
+                    @Override
+                    protected void applyDataOnView(View view, Transaction item, Object[] data) {
+                        ObjectToViewAppliers.apply(view, item, (BigDecimal) data[0], (List<User>) data[1]);
+                    }
+                };
+                setListAdapter(adapter);
             }
         }.execute();
     }

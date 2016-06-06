@@ -8,14 +8,12 @@
     android:id="@+id/bookContainer">
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
         android:id="@+id/bookImage"
         android:src="@drawable/image_book"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
-        android:paddingEnd="15dp"
-        android:paddingBottom="10dp"
         android:scaleType="centerCrop" />
 
     <TextView
@@ -27,7 +25,8 @@
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/bookImage"
         android:layout_alignBaseline="@+id/bookImage"
-        android:layout_marginTop="15dp" />
+        android:layout_marginTop="15dp"
+        android:paddingStart="10dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -36,7 +35,8 @@
         android:text="author"
         android:id="@+id/bookAuthor"
         android:layout_below="@+id/bookTitle"
-        android:layout_toEndOf="@+id/bookImage" />
+        android:layout_toEndOf="@+id/bookImage"
+        android:paddingStart="10dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -45,7 +45,8 @@
         android:text="price"
         android:id="@+id/priceRange"
         android:layout_below="@+id/bookAuthor"
-        android:layout_toEndOf="@+id/bookImage" />
+        android:layout_toEndOf="@+id/bookImage"
+        android:paddingStart="10dp" />
 
     <RatingBar
         android:layout_width="wrap_content"
@@ -66,6 +67,7 @@
         android:layout_alignParentStart="false"
         android:layout_toStartOf="@+id/reviewRating"
         android:labelFor="@+id/reviewRating"
-        android:gravity="start" />
+        android:gravity="start"
+        android:paddingTop="5dp" />
 
 </RelativeLayout>

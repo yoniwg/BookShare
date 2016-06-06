@@ -20,14 +20,20 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.annimon.stream.Collectors;
+import com.annimon.stream.Stream;
 import com.annimon.stream.function.BiConsumer;
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.Credentials;
 import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.entities.ImageEntity;
+import com.hgyw.bookshare.entities.Transaction;
 import com.hgyw.bookshare.entities.User;
+import com.hgyw.bookshare.logicAccess.AccessManager;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
+import com.hgyw.bookshare.logicAccess.CustomerAccess;
+import com.hgyw.bookshare.logicAccess.GeneralAccess;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -224,6 +230,9 @@ public class Utility {
         return DateFormat.getDateInstance().format(date);
     }
 
+    public static String usersListToFlatString(List<User> list){
+        return Stream.of(list).map(User::getLastName).collect(Collectors.joining(","));
+    }
 
     public static <T> void setSpinnerToEnum(Context context, Spinner genreSpinner, T[] values) {
         ArrayAdapter arrayAdapter = new EnumAdapter<>(context, android.R.layout.simple_spinner_item, Book.Genre.values());

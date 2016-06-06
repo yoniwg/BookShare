@@ -8,9 +8,11 @@ import com.hgyw.bookshare.entities.BookReview;
 import com.hgyw.bookshare.entities.BookSummary;
 import com.hgyw.bookshare.entities.BookSupplier;
 import com.hgyw.bookshare.entities.Entity;
+import com.hgyw.bookshare.entities.Transaction;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.entities.UserType;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -62,6 +64,24 @@ public interface GeneralAccess {
      */
     List<BookSupplier> findBooksOfSuppliers(User supplier);
 
+    /**
+     * Calaculate total price of transaction
+     * @param entityClass
+     * @param entityId
+     * @param <T>
+     * @return
+     */
+    BigDecimal calcTotalPriceOfTransaction(Transaction transaction);
+
+    List<User> getSuppliersOfTransaction(Transaction transaction);
+
+    /**
+     * Retrieve any entity from data base
+     * @param entityClass
+     * @param entityId
+     * @param <T>
+     * @return
+     */
     <T extends Entity> T retrieve(Class<T> entityClass, long entityId);
 
     /**

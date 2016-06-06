@@ -1,8 +1,12 @@
 package com.hgyw.bookshare.logicAccess;
 
+import java.math.BigDecimal;
 import java.text.MessageFormat;
+import java.util.Collection;
 import java.util.List;
 
+import com.annimon.stream.Collectors;
+import com.annimon.stream.Stream;
 import com.hgyw.bookshare.dataAccess.DataAccess;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookQuery;
@@ -11,6 +15,8 @@ import com.hgyw.bookshare.entities.BookSummary;
 import com.hgyw.bookshare.entities.BookSupplier;
 import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.entities.ImageEntity;
+import com.hgyw.bookshare.entities.Order;
+import com.hgyw.bookshare.entities.Transaction;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.entities.UserType;
 
@@ -66,6 +72,20 @@ class GeneralAccessImpl implements GeneralAccess {
         return dataAccess.findEntityReferTo(BookSupplier.class, supplier);
     }
 
+    @Override
+    public BigDecimal calcTotalPriceOfTransaction(Transaction transaction) {
+        Collection<Order> orderOfTransaction = dataAccess.findEntityReferTo(Order.class, transaction);
+        return Stream.of(orderOfTransaction).map(Order::calcTotalPrice).reduce(BigDecimal::add).get();
+    }
+
+    @Override
+    public List<User> getSuppliersOfTransaction(Transaction transaction) {
+        List<Order> orderOfTransaction = dataAccess.findEntityReferTo(Order.class, transaction);
+        return Stream.of(orderOfTransaction)
+                .map(o -> retrieve(BookSupplier.class, o.getBookSupplierId()))
+                .map(bs -> retrieve(User.class, bs.getSupplierId()))
+                .collect(Collectors.toList());
+    }
 
 
     @Override

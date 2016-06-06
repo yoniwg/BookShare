@@ -5,8 +5,8 @@
     android:padding="@dimen/default_external_padding">
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:id="@+id/userThumbnail"
         android:src="@drawable/image_book"
         android:layout_alignParentTop="true"

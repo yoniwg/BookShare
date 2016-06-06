@@ -23,7 +23,8 @@
         android:id="@+id/userFullName"
         android:layout_gravity="center"
         android:layout_below="@+id/userThumbnail"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:paddingTop="10dp" />
 
     <TextView
         android:layout_width="wrap_content"

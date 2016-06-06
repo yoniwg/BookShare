@@ -21,10 +21,12 @@ import com.hgyw.bookshare.entities.Rating;
 import com.hgyw.bookshare.entities.Transaction;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.entities.UserType;
+import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 
 import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by haim7 on 13/05/2016.
@@ -248,8 +250,22 @@ public class ObjectToViewAppliers {
         TextView transactionAddressView = (TextView) view.findViewById(R.id.transactionAddress);
         TextView transactionDateText = (TextView) view.findViewById(R.id.transactionDate);
 
+
         if (transactionAddressView != null) transactionAddressView.setText(transaction.getShippingAddress());
         if (transactionDateText != null) transactionDateText.setText(Utility.datetimeToString(transaction.getDate()));
+
+    }
+
+    public static void apply(View view, Transaction transaction, BigDecimal totalPrice, List<User> suppliersList) {
+        apply(view, transaction);
+        TextView transactionTotalPrice = (TextView) view.findViewById(R.id.total_price);
+        TextView transactionSuppliers = (TextView) view.findViewById(R.id.supplier_names_list);
+        if (transactionTotalPrice != null){
+            transactionTotalPrice.setText(Utility.moneyToNumberString(totalPrice));
+        }
+        if (transactionSuppliers != null){
+            transactionSuppliers.setText(Utility.usersListToFlatString(suppliersList));
+        }
     }
 
     public static void setDateRange(View view, Date fromDate, Date toDate) {
@@ -259,6 +275,7 @@ public class ObjectToViewAppliers {
         if (fromView != null) fromView.setText(Utility.dateToString(fromDate));
         if (toView != null) toView.setText(Utility.dateToString(toDate));
     }
+
 
     ////////
 
