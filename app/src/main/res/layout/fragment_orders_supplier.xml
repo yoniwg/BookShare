@@ -10,22 +10,10 @@
         android:layout_height="wrap_content"
         android:id="@+id/dateRangeBar" />
 
-    <FrameLayout
+    <include
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <ListView android:id="@id/android:list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:drawSelectorOnTop="false"/>
-
-        <TextView android:id="@id/android:empty"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="@string/no_items_list_view"
-            android:layout_gravity="center" />
-    </FrameLayout>
+        android:layout_height="match_parent"
+        layout="@android:layout/list_content" />
 
 </LinearLayout>
  
