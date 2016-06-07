@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -99,19 +100,28 @@ public class SupplierOrdersFragment extends ListFragment implements TitleFragmen
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
         Order order = adapter.getItem(info.position);
         if (order.getOrderStatus() == OrderStatus.WAITING_FOR_CANCEL) {
-            menu.add(R.string.cancel_confirm);
-            menu.add(R.string.cancel_reject);
-            setMenuItemListener(menu, v, 0);
-            setMenuItemListener(menu, v, 1);
+            MenuItem itemCancel = menu.add(R.string.cancel_confirm);
+            MenuItem itemReject = menu.add(R.string.cancel_reject);
+            setMenuItemListener(menu, v, itemCancel);
+            setMenuItemListener(menu, v, itemReject);
         }
     }
 
-    private void setMenuItemListener(ContextMenu menu, final View v, int index) {
-        int messageId = (index == 0)? R.string.cancel_order_massage : R.string.reject_cancel_oreder_message;
-        OrderStatus orderStatus = (index == 0) ? OrderStatus.CANCELED : OrderStatus.WAITING_FOR_PAYING;
-        int toastMessageId = (index == 0) ? R.string.toast_order_canceled : R.string.toast_order_cancel_reject;
+    private void setMenuItemListener(ContextMenu menu, final View v, MenuItem menuItem) {
+        int messageId;
+        OrderStatus orderStatus;
+        int toastMessageId;
+        if (menuItem.getTitle() == v.getContext().getString(R.string.cancel_confirm)){
+            messageId = R.string.cancel_order_massage;
+            orderStatus = OrderStatus.CANCELED;
+            toastMessageId = R.string.toast_order_canceled;
+        }else{ //if (menuItem.getTitle() == v.getContext().getString(R.string.cancel_reject)){
+            messageId = R.string.reject_cancel_oreder_message;
+            orderStatus = OrderStatus.WAITING_FOR_PAYING;
+            toastMessageId = R.string.toast_order_cancel_reject;
+        }
 
-        menu.getItem(index).setOnMenuItemClickListener(item -> {
+        menuItem.setOnMenuItemClickListener(item -> {
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
             Order order = adapter.getItem(info.position);
 
