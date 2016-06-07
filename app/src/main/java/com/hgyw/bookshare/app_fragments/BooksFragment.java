@@ -73,7 +73,6 @@ public class BooksFragment extends SwipeRefreshListFragment implements TitleFrag
             protected void applyDataOnView(View view, Book book, Object[] items) {
                 ObjectToViewAppliers.apply(view, book);
                 ObjectToViewAppliers.apply(view, (BookSummary) items[0]);
-                view.setVisibility(View.VISIBLE);
             }
         };
         setListAdapter(adapter);
