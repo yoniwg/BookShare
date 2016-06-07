@@ -126,7 +126,7 @@ public class Utility {
 
     public static String moneyToString(BigDecimal minPrice) {
         final char newShekelSign = '\u20AA';
-        return moneyToNumberString(minPrice) + newShekelSign;
+        return moneyToNumberString(minPrice) + " " + newShekelSign;
     }
 
     public static String moneyRangeToString(BigDecimal minPrice, BigDecimal maxPrice) {
@@ -231,7 +231,7 @@ public class Utility {
     }
 
     public static String usersListToFlatString(List<User> list){
-        return Stream.of(list).map(User::getLastName).collect(Collectors.joining(","));
+        return Stream.of(list).map(User::getLastName).collect(Collectors.joining(", "));
     }
 
     public static <T> void setSpinnerToEnum(Context context, Spinner genreSpinner, T[] values) {

@@ -261,7 +261,7 @@ public class ObjectToViewAppliers {
         TextView transactionTotalPrice = (TextView) view.findViewById(R.id.total_price);
         TextView transactionSuppliers = (TextView) view.findViewById(R.id.supplier_names_list);
         if (transactionTotalPrice != null){
-            transactionTotalPrice.setText(Utility.moneyToNumberString(totalPrice));
+            transactionTotalPrice.setText(Utility.moneyToString(totalPrice));
         }
         if (transactionSuppliers != null){
             transactionSuppliers.setText(Utility.usersListToFlatString(suppliersList));

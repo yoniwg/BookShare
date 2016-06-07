@@ -85,20 +85,19 @@ public class DateRangeBar extends FrameLayout implements View.OnClickListener {
 
         dialogResultOk = false;
         cal.setTime(dates[i]);
-        DatePickerDialog datePickerDialog = new DatePickerDialog(
+        DatePickerDialogLollipop datePickerDialog = new DatePickerDialogLollipop(
                 getContext(),
-                (dialogView, year, monthOfYear, dayOfMonth) -> {
-                    cal.set(year, monthOfYear, dayOfMonth);
-                    if (dialogResultOk) {
-                        setDate(i, cal.getTime());
-                        if (listener != null) listener.onRangeChange(this);
-                    }
-                },
+                (dialogView, year, monthOfYear, dayOfMonth) ->
+                        cal.set(year, monthOfYear, dayOfMonth),
                 cal.get(Calendar.YEAR),
                 cal.get(Calendar.MONTH),
                 cal.get(Calendar.DAY_OF_MONTH)
         );
-        datePickerDialog.setButton(DialogInterface.BUTTON_POSITIVE, getContext().getString(R.string.ok), (dialog, which) -> dialogResultOk = true);
+        datePickerDialog.setButton(DialogInterface.BUTTON_POSITIVE, getContext().getString(R.string.ok),
+                (dialog, which) -> {
+                    setDate(i, cal.getTime());
+                    if (listener != null) listener.onRangeChange(this);
+                });
         datePickerDialog.show();
     }
 
@@ -135,5 +134,20 @@ public class DateRangeBar extends FrameLayout implements View.OnClickListener {
 
     public void setDateRangeListener(DateRangeListener l) {
         this.listener = l;
+    }
+
+    private class DatePickerDialogLollipop extends DatePickerDialog{
+
+        private final DatePicker.OnDateChangedListener listener;
+        public DatePickerDialogLollipop(Context context, DatePicker.OnDateChangedListener callBack, int year, int monthOfYear, int dayOfMonth) {
+            //Do nothing onDateSetListener
+            super(context, (a,b,c,d)->{}, year, monthOfYear, dayOfMonth);
+            listener = callBack;
+        }
+
+        @Override
+        public void onDateChanged(DatePicker view, int year, int month, int day) {
+            listener.onDateChanged(view,year,month,day);
+        }
     }
 }

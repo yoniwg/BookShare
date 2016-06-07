@@ -29,6 +29,8 @@ public class TransactionFragment extends EntityFragment {
     CustomerAccess cAccess = AccessManagerFactory.getInstance().getCustomerAccess();
 
     private Activity activity;
+    private Transaction transaction;
+
     @Override public void onAttach(Context context) {super.onAttach(context);activity = (Activity) context;}
     @Override public void onAttach(Activity activity) {super.onAttach(activity);this.activity = activity;}
 
@@ -42,7 +44,6 @@ public class TransactionFragment extends EntityFragment {
         ViewGroup linearLayout = (ViewGroup) view.findViewById(R.id.mainListView);
 
         new ProgressDialogAsyncTask<Void, Void, Void>(activity) {
-            Transaction transaction;
             List<Order> orders;
             @Override
             protected Void doInBackground1(Void... params) {
@@ -72,6 +73,8 @@ public class TransactionFragment extends EntityFragment {
 
             @Override
             protected void onPostExecute(Object[] data) {
+                ObjectToViewAppliers.apply(view, transaction);
+                ObjectToViewAppliers.apply(view, order);
                 ObjectToViewAppliers.apply(view, (BookSupplier) data[0]);
                 ObjectToViewAppliers.apply(view, (Book) data[1]);
                 ObjectToViewAppliers.apply(view, (User) data[2]);
