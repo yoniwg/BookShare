@@ -1,17 +1,14 @@
 package com.hgyw.bookshare.app_fragments;
 
 import android.app.Activity;
-import android.app.ListFragment;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.hgyw.bookshare.R;
@@ -19,6 +16,7 @@ import com.hgyw.bookshare.app_drivers.ApplyObjectAdapter;
 import com.hgyw.bookshare.app_drivers.IntentsFactory;
 import com.hgyw.bookshare.app_drivers.ListApplyObjectAdapter;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
+import com.hgyw.bookshare.app_drivers.SwipeRefreshListFragment;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookQuery;
 import com.hgyw.bookshare.entities.BookSummary;
@@ -30,7 +28,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 
-public class BooksFragment extends ListFragment implements TitleFragment {
+public class BooksFragment extends SwipeRefreshListFragment implements TitleFragment, SwipeRefreshLayout.OnRefreshListener {
 
     private BookQuery bookQuery;
     private final GeneralAccess access = AccessManagerFactory.getInstance().getGeneralAccess();
@@ -53,11 +51,6 @@ public class BooksFragment extends ListFragment implements TitleFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.list_content_swipe_refresh, container, false);
-    }
-
-    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
@@ -67,7 +60,7 @@ public class BooksFragment extends ListFragment implements TitleFragment {
         bookQuery = getArguments() == null ? null : (BookQuery) getArguments().getSerializable(IntentsFactory.ARG_BOOK_QUERY);
 
         initListViewWithAdapter();
-        initSwipeRefreshing();
+        setOnRefreshListener(this);
     }
 
     /**
@@ -90,20 +83,17 @@ public class BooksFragment extends ListFragment implements TitleFragment {
         createRefreshingAsyncTask().execute();
     }
 
-    /**
-     * Initialize the swipe refreshing to refresh the list
-     */
-    private void initSwipeRefreshing() {
-        swipeRefreshLayout.setOnRefreshListener(()->{
-            AsyncTask refreshAsyncTask = createRefreshingAsyncTask().execute();
-            try {
-                refreshAsyncTask.get();
-                swipeRefreshLayout.setRefreshing(false);
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
-        });
+    @Override
+    public void onRefresh() {
+        AsyncTask refreshAsyncTask = createRefreshingAsyncTask().execute();
+        try {
+            refreshAsyncTask.get();
+            swipeRefreshLayout.setRefreshing(false);
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
     }
+
 
     /**
      * Creating an AsyncTask which in charge of refreshing list data
