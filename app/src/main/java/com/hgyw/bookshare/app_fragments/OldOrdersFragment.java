@@ -36,10 +36,6 @@ public class OldOrdersFragment extends AbstractFragment<CustomerAccess> {
     @Override public void onAttach(Activity activity) {super.onAttach(activity);this.activity = activity;}
 
 
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
     public OldOrdersFragment() {
         super(R.layout.fragment_standard_list, R.menu.menu_old_orders, R.string.old_orders_fragment_title);
     }

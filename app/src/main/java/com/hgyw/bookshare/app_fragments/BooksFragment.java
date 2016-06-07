@@ -1,10 +1,10 @@
 package com.hgyw.bookshare.app_fragments;
 
 import android.app.Activity;
-import android.app.ListFragment;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,14 +22,23 @@ import com.hgyw.bookshare.entities.BookSummary;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.GeneralAccess;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 
-public class BooksFragment extends ListFragment implements TitleFragment {
+public class BooksFragment extends AbstractFragment<GeneralAccess> implements TitleFragment {
 
     private BookQuery bookQuery;
     private final GeneralAccess access = AccessManagerFactory.getInstance().getGeneralAccess();
     private Activity activity;
+    List<Book> bookList = new ArrayList<Book>();
+    ApplyObjectAdapter<Book> adapter;
+
+    private SwipeRefreshLayout swipeRefreshLayout;
+    protected BooksFragment() {
+        super(R.layout.fragment_swipe_refresh_list, R.menu.menu_old_orders, R.string.book_list_fragment_title);
+    }
 
 
     @Override
@@ -44,46 +53,81 @@ public class BooksFragment extends ListFragment implements TitleFragment {
         this.activity = activity;
     }
 
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
-
+        swipeRefreshLayout = (SwipeRefreshLayout) activity.findViewById(R.id.s_list_swipe_layout);
         bookQuery = getArguments() == null ? null : (BookQuery) getArguments().getSerializable(IntentsFactory.ARG_BOOK_QUERY);
 
-        new AsyncTask<Void, Book, List<Book>>() {
+        initListViewWithAdapter();
+
+        initSwipeRefreshing();
+
+    }
+
+    /**
+     * Initialize the list view with new adapter, and set onItemClick listener.
+     */
+    private void initListViewWithAdapter() {
+        ListView listView = (ListView) activity.findViewById(R.id.mainListView);
+        adapter = new ListApplyObjectAdapter<Book>(activity, R.layout.book_list_item, bookList) {
+            @Override
+            protected Object[] retrieveDataForView(Book book) {
+                return new Object[] {access.getBookSummary(book)} ;
+            }
+            @Override
+            protected void applyDataOnView(View view, Book book, Object[] items) {
+                ObjectToViewAppliers.apply(view, book);
+                ObjectToViewAppliers.apply(view, (BookSummary) items[0]);
+                view.setVisibility(View.VISIBLE);
+            }
+        };
+        listView.setOnItemClickListener(
+                (l,v,p,i)-> {
+                    Book book = (Book)l.getItemAtPosition(p);
+                    startActivity(IntentsFactory.newEntityIntent(activity, book));
+                });
+        listView.setAdapter(adapter);
+        createRefreshingAsyncTask().execute();
+    }
+
+    /**
+     * Initialize the swipe refreshing to refresh the list
+     */
+    private void initSwipeRefreshing() {
+        swipeRefreshLayout.setOnRefreshListener(()->{
+            AsyncTask refreshAsyncTask = createRefreshingAsyncTask().execute();
+            try {
+                refreshAsyncTask.get();
+                swipeRefreshLayout.setRefreshing(false);
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    /**
+     * Creating an AsyncTask which in charge of refreshing list data
+     * and notifying adapter.
+     * @return
+     */
+    private AsyncTask<Void,Book,List<Book>> createRefreshingAsyncTask(){
+        return new AsyncTask<Void, Book, List<Book>>() {
             @Override
             protected List<Book> doInBackground(Void... params) {
-                List<Book> bookList = bookQuery == null ? access.findSpecialOffers(30) : access.findBooks(bookQuery);
+                bookList.clear();
+                bookList.addAll(bookQuery == null ? access.findSpecialOffers(30) : access.findBooks(bookQuery));
                 //for (Book book : bookList) publishProgress(book);
                 return bookList;
             }
 
             @Override
             protected void onPostExecute(List<Book> bookList) {
-                ApplyObjectAdapter<Book> adapter = new ListApplyObjectAdapter<Book>(activity, R.layout.book_list_item, bookList) {
-                    @Override
-                    protected Object[] retrieveDataForView(Book book) {
-                        return new Object[] {access.getBookSummary(book)} ;
-                    }
-                    @Override
-                    protected void applyDataOnView(View view, Book book, Object[] items) {
-                        ObjectToViewAppliers.apply(view, book);
-                        ObjectToViewAppliers.apply(view, (BookSummary) items[0]);
-                        view.setVisibility(View.VISIBLE);
-                    }
-                };
-                setListAdapter(adapter);
+                adapter.notifyDataSetChanged();
             }
-        }.execute();
-
-        setEmptyText(getString(R.string.no_items_list_view));
-    }
-
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        Book book = (Book) l.getItemAtPosition(position);
-        startActivity(IntentsFactory.newEntityIntent(activity, book));
+        };
     }
 
     @Override
@@ -111,8 +155,4 @@ public class BooksFragment extends ListFragment implements TitleFragment {
         startActivity(IntentsFactory.editBookIntent(activity, 0));
     }
 
-    @Override
-    public int getFragmentTitle() {
-        return R.string.book_list_fragment_title;
-    }
 }

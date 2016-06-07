@@ -40,9 +40,9 @@
         android:text="author"
         android:id="@+id/bookAuthor"
         android:layout_below="@+id/bookTitle"
-        android:layout_toEndOf="@+id/bookImage"
-        android:layout_toStartOf="@id/orderAmount"
-        android:paddingStart="10dp" />
+        android:paddingStart="10dp"
+        android:layout_toStartOf="@+id/orderAmountPicker"
+        android:layout_toEndOf="@id/bookImage" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -53,8 +53,8 @@
         android:layout_below="@+id/userFullName"
         android:layout_toEndOf="@+id/bookImage"
         android:textAlignment="viewStart"
-        android:layout_alignLeft="@+id/userFullName"
-        android:paddingStart="10dp" />
+        android:paddingStart="10dp"
+        android:layout_toStartOf="@+id/orderAmountPicker" />
 
     <TextView
         android:id="@+id/userFullName"
@@ -64,7 +64,8 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_below="@+id/bookAuthor"
         android:layout_toEndOf="@+id/bookImage"
-        android:paddingStart="10dp" />
+        android:paddingStart="10dp"
+        android:layout_toStartOf="@+id/orderAmountPicker" />
 
     <TextView
         android:layout_width="wrap_content"

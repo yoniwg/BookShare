@@ -116,7 +116,9 @@ public class CartFragment extends ListFragment implements TitleFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_cart, menu);
+        if(getArguments().getBoolean(IS_MAIN_FRAGMENT)) {
+            inflater.inflate(R.menu.menu_cart, menu);
+        }
     }
 
     @Override
