@@ -1,14 +1,17 @@
 package com.hgyw.bookshare.app_fragments;
 
 import android.app.Activity;
+import android.app.ListFragment;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.hgyw.bookshare.R;
@@ -27,7 +30,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 
-public class BooksFragment extends AbstractFragment<GeneralAccess> implements TitleFragment {
+public class BooksFragment extends ListFragment implements TitleFragment {
 
     private BookQuery bookQuery;
     private final GeneralAccess access = AccessManagerFactory.getInstance().getGeneralAccess();
@@ -36,10 +39,6 @@ public class BooksFragment extends AbstractFragment<GeneralAccess> implements Ti
     ApplyObjectAdapter<Book> adapter;
 
     private SwipeRefreshLayout swipeRefreshLayout;
-    protected BooksFragment() {
-        super(R.layout.fragment_swipe_refresh_list, R.menu.menu_old_orders, R.string.book_list_fragment_title);
-    }
-
 
     @Override
     public void onAttach(Context context) {
@@ -53,25 +52,28 @@ public class BooksFragment extends AbstractFragment<GeneralAccess> implements Ti
         this.activity = activity;
     }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.list_content_swipe_refresh, container, false);
+    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
+        setEmptyText(getString(R.string.no_items_list_view));
         swipeRefreshLayout = (SwipeRefreshLayout) activity.findViewById(R.id.s_list_swipe_layout);
+
         bookQuery = getArguments() == null ? null : (BookQuery) getArguments().getSerializable(IntentsFactory.ARG_BOOK_QUERY);
 
         initListViewWithAdapter();
-
         initSwipeRefreshing();
-
     }
 
     /**
      * Initialize the list view with new adapter, and set onItemClick listener.
      */
     private void initListViewWithAdapter() {
-        ListView listView = (ListView) activity.findViewById(R.id.mainListView);
         adapter = new ListApplyObjectAdapter<Book>(activity, R.layout.book_list_item, bookList) {
             @Override
             protected Object[] retrieveDataForView(Book book) {
@@ -84,12 +86,7 @@ public class BooksFragment extends AbstractFragment<GeneralAccess> implements Ti
                 view.setVisibility(View.VISIBLE);
             }
         };
-        listView.setOnItemClickListener(
-                (l,v,p,i)-> {
-                    Book book = (Book)l.getItemAtPosition(p);
-                    startActivity(IntentsFactory.newEntityIntent(activity, book));
-                });
-        listView.setAdapter(adapter);
+        setListAdapter(adapter);
         createRefreshingAsyncTask().execute();
     }
 
@@ -131,6 +128,12 @@ public class BooksFragment extends AbstractFragment<GeneralAccess> implements Ti
     }
 
     @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        Book book = (Book)l.getItemAtPosition(position);
+        startActivity(IntentsFactory.newEntityIntent(activity, book));
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_book_list, menu);
@@ -155,4 +158,8 @@ public class BooksFragment extends AbstractFragment<GeneralAccess> implements Ti
         startActivity(IntentsFactory.editBookIntent(activity, 0));
     }
 
+    @Override
+    public int getFragmentTitle() {
+        return R.string.book_list_fragment_title;
+    }
 }

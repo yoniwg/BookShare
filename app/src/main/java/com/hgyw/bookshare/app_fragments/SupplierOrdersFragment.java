@@ -5,16 +5,12 @@ import android.app.ListFragment;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.MenuRes;
 import android.support.annotation.StringRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 
 import com.hgyw.bookshare.R;
-import com.hgyw.bookshare.app_drivers.ApplyObjectAdapter;
 import com.hgyw.bookshare.app_drivers.DateRangeBar;
 import com.hgyw.bookshare.app_drivers.ListApplyObjectAdapter;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
@@ -24,7 +20,6 @@ import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.Transaction;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
-import com.hgyw.bookshare.logicAccess.CustomerAccess;
 import com.hgyw.bookshare.logicAccess.SupplierAccess;
 
 import java.util.Date;
@@ -43,7 +38,7 @@ public class SupplierOrdersFragment extends ListFragment implements TitleFragmen
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_orders_supplier, container, false);
+        return inflater.inflate(R.layout.list_content_with_date_range, container, false);
     }
 
     @Override
@@ -86,6 +81,7 @@ public class SupplierOrdersFragment extends ListFragment implements TitleFragmen
                 });
             }
         }.execute(dateRangeBar.getDates());
+        setEmptyText(getString(R.string.no_items_list_view));
 
     }
 

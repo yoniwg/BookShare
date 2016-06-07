@@ -24,7 +24,7 @@ public class ObjectToViewUpdates {
     public static void updateBookReviewView(View view, BookReview bookReview, User customer) {
         ObjectToViewAppliers.apply(view, bookReview);
         ObjectToViewAppliers.apply(view, customer);
-        TextView descriptionTextView = (TextView) view.findViewById(R.id.description);
+        TextView descriptionTextView = (TextView) view.findViewById(R.id.reviewDescription);
         if (descriptionTextView != null) {
             String description = bookReview.getDescription();
             if (description.isEmpty()) descriptionTextView.setVisibility(View.GONE);

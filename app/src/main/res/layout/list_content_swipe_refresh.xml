@@ -7,11 +7,10 @@
     android:layout_width="fill_parent"
     android:id="@+id/s_list_swipe_layout">
 
-    <ListView
-        android:id="@+id/mainListView"
+    <include
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        app:layoutManager="LinearLayoutManager"/>
+        android:layout_height="match_parent"
+        layout="@android:layout/list_content" />
 
 </android.support.v4.widget.SwipeRefreshLayout>
 

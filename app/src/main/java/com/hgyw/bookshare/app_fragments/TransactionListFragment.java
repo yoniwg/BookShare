@@ -17,7 +17,6 @@ import com.hgyw.bookshare.app_drivers.DateRangeBar;
 import com.hgyw.bookshare.app_drivers.IntentsFactory;
 import com.hgyw.bookshare.app_drivers.ListApplyObjectAdapter;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
-import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.Transaction;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
@@ -41,7 +40,7 @@ public class TransactionListFragment extends ListFragment implements TitleFragme
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_orders_supplier, container, false);
+        return inflater.inflate(R.layout.list_content_with_date_range, container, false);
     }
 
     @Override
@@ -82,6 +81,8 @@ public class TransactionListFragment extends ListFragment implements TitleFragme
                 setListAdapter(adapter);
             }
         }.execute();
+        setEmptyText(getString(R.string.no_items_list_view));
+
     }
 
     @Override

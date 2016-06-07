@@ -1,22 +1,31 @@
 package com.hgyw.bookshare.app_fragments;
 
 import android.app.Activity;
+import android.app.ListFragment;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.hgyw.bookshare.app_drivers.ApplyObjectAdapter;
 import com.hgyw.bookshare.app_drivers.ListApplyObjectAdapter;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
 import com.hgyw.bookshare.R;
+import com.hgyw.bookshare.dataAccess.DataAccess;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookSupplier;
 import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.Transaction;
 import com.hgyw.bookshare.entities.User;
+import com.hgyw.bookshare.logicAccess.AccessManager;
+import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.CustomerAccess;
+import com.hgyw.bookshare.logicAccess.GeneralAccess;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,7 +35,7 @@ import java.util.List;
  * A fragment representing the cart.
  * <p>
  */
-public class OldOrdersFragment extends AbstractFragment<CustomerAccess> {
+public class OldOrdersFragment extends ListFragment implements TitleFragment {
 
 
     ApplyObjectAdapter<Order> adapter;
@@ -34,11 +43,6 @@ public class OldOrdersFragment extends AbstractFragment<CustomerAccess> {
     private Activity activity;
     @Override public void onAttach(Context context) {super.onAttach(context);activity = (Activity) context;}
     @Override public void onAttach(Activity activity) {super.onAttach(activity);this.activity = activity;}
-
-
-    public OldOrdersFragment() {
-        super(R.layout.fragment_standard_list, R.menu.menu_old_orders, R.string.old_orders_fragment_title);
-    }
 
     public static OldOrdersFragment newInstance() {
         OldOrdersFragment fragment = new OldOrdersFragment();
@@ -49,15 +53,20 @@ public class OldOrdersFragment extends AbstractFragment<CustomerAccess> {
     }
 
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_standard_list, container, false);
+    }
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        ListView listView = (ListView) activity.findViewById(R.id.mainListView);
 
         Date yearBefore = new Date();
         yearBefore.setYear(yearBefore.getYear() - 1);
 
         new AsyncTask<Void, Void, List<Order>>() {
+            public CustomerAccess access = AccessManagerFactory.getInstance().getCustomerAccess();
+
             @Override
             protected List<Order> doInBackground(Void... params) {
                 return access.retrieveOrders(yearBefore, new Date());
@@ -83,11 +92,19 @@ public class OldOrdersFragment extends AbstractFragment<CustomerAccess> {
                         ObjectToViewAppliers.apply(view,(Transaction) data[3]);
                     }
                 };
-                listView.setAdapter(adapter);
+                setListAdapter(adapter);
             }
         }.execute();
-
-
+        setEmptyText(getString(R.string.no_items_list_view));
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_old_orders, menu);
+    }
+
+    @Override
+    public int getFragmentTitle() {
+        return R.string.old_orders_fragment_title;
+    }
 }
