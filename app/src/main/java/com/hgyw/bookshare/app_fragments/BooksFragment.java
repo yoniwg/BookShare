@@ -88,7 +88,7 @@ public class BooksFragment extends SwipeRefreshListFragment implements TitleFrag
         AsyncTask refreshAsyncTask = createRefreshingAsyncTask().execute();
         try {
             refreshAsyncTask.get();
-            swipeRefreshLayout.setRefreshing(false);
+            setRefreshing(false);
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
