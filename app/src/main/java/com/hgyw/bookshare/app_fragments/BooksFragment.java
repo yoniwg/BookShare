@@ -36,8 +36,6 @@ public class BooksFragment extends SwipeRefreshListFragment implements TitleFrag
     List<Book> bookList = new ArrayList<Book>();
     ApplyObjectAdapter<Book> adapter;
 
-    private SwipeRefreshLayout swipeRefreshLayout;
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -55,7 +53,6 @@ public class BooksFragment extends SwipeRefreshListFragment implements TitleFrag
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
         setEmptyText(getString(R.string.no_items_list_view));
-        swipeRefreshLayout = (SwipeRefreshLayout) activity.findViewById(R.id.s_list_swipe_layout);
 
         bookQuery = getArguments() == null ? null : (BookQuery) getArguments().getSerializable(IntentsFactory.ARG_BOOK_QUERY);
 
