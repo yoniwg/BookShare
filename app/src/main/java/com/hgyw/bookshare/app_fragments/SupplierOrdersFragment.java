@@ -80,7 +80,7 @@ public class SupplierOrdersFragment extends ListFragment implements TitleFragmen
                     }
                 });
             }
-        }.execute(dateRangeBar.getDates());
+        }.execute(dateRangeBar.getDateFrom(), dateRangeBar.getDateTo());
         setEmptyText(getString(R.string.no_items_list_view));
 
     }

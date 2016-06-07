@@ -18,11 +18,13 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by haim7 on 23/05/2016.
  */
 public class DateRangeBar extends FrameLayout implements View.OnClickListener {
+    public static final int DAY_MILIS = 24 * 60 * 60 * 1000;
     private TextView[] views = new TextView[2];
     private Date[] dates = new Date[2];
     private DateFormat dateFormat;
@@ -88,7 +90,7 @@ public class DateRangeBar extends FrameLayout implements View.OnClickListener {
         DatePickerDialogLollipop datePickerDialog = new DatePickerDialogLollipop(
                 getContext(),
                 (dialogView, year, monthOfYear, dayOfMonth) ->
-                        cal.set(year, monthOfYear, dayOfMonth),
+                        cal.set(year, monthOfYear, dayOfMonth,0,0,0),
                 cal.get(Calendar.YEAR),
                 cal.get(Calendar.MONTH),
                 cal.get(Calendar.DAY_OF_MONTH)
@@ -107,18 +109,14 @@ public class DateRangeBar extends FrameLayout implements View.OnClickListener {
         avoidStartAfterEnd(index);
     }
 
-
     public Date getDateFrom() {
-        return dates[0];
+        return (Date) dates[0].clone();
     }
 
     public Date getDateTo() {
-        return dates[1];
+        return new Date(dates[1].getTime() + DAY_MILIS);
     }
 
-    public Date[] getDates() {
-        return new Date[] {dates[0], dates[1]};
-    }
 
     private void avoidStartAfterEnd(int dominant) {
         if (dates[0].compareTo(dates[1]) > 0) {
@@ -141,7 +139,7 @@ public class DateRangeBar extends FrameLayout implements View.OnClickListener {
         private final DatePicker.OnDateChangedListener listener;
         public DatePickerDialogLollipop(Context context, DatePicker.OnDateChangedListener callBack, int year, int monthOfYear, int dayOfMonth) {
             //Do nothing onDateSetListener
-            super(context, (a,b,c,d)->{}, year, monthOfYear, dayOfMonth);
+            super(context, null, year, monthOfYear, dayOfMonth);
             listener = callBack;
         }
 
