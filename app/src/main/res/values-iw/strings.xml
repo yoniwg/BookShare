@@ -128,7 +128,7 @@
     <string name="username_should_not_empty">שם המשתמש לא יכול להיות ריק</string>
     <string name="username_taken">שם המשתמש תפוס</string>
     <string name="more_details">פרטים נוספים</string>
-    <string name="preference_file_key"></string>
+    <string name="preference_file_key">-</string>
     <string name="transaction_details">פרטי עיסקה</string>
     <string name="new_account">חשבון חדש</string>
     <string name="registeration_problem_default">התרחשה בעיה בעת ההרשמה</string>
@@ -140,5 +140,23 @@
     <string name="trying_to_connect">מנסה להתחבר</string>
     <string name="update_book_review_dialog">אתה מספק כעת את הספר הזה:</string>
     <string name="updating_book_supplying">מעדכן את אספקת הספר</string>
+    <string name="book_was_added_to_supplier">הספר נוסף לרשימת הספרים שלך</string>
+    <string name="book_was_removed_to_supplier">הספר הוסר מרשימת הספרים שלך</string>
+    <string name="book_was_updated_to_supplier">הספר שלך עודכן</string>
+    <string name="cancel_confirm">אשר ביטול</string>
+    <string name="cancel_order">בטל הזמנה</string>
+    <string name="cancel_order_massage">האם אתה בטוח שברצונך לבטל את ההזמנה?</string>
+    <string name="cancel_reject">דחה ביטול</string>
+    <string name="hello_blank_fragment">-</string>
+    <string name="navigation_drawer_close">-</string>
+    <string name="navigation_drawer_open">-</string>
+    <string name="new_book_review_dialog">ספר זה עדיין לא ברשימת הספרים שלך. עדכן מידע אודות ספר זה ולחץ אישור</string>
+    <string name="reject_cancel_oreder_message">לדחות ביטול הזמנה?</string>
+    <string name="title_activity_book">-</string>
+    <string name="title_activity_entity">-</string>
+    <string name="title_activity_main2">-</string>
+    <string name="toast_order_cancel_reject">בקשת הביטול נדחתה</string>
+    <string name="toast_order_canceled">ההזמנה בוטלה</string>
+    <string name="toast_order_wait_cancel">בקשת הביטול נשלחה לספק</string>
 
 </resources>

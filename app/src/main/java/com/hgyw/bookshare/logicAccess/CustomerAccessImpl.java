@@ -119,8 +119,8 @@ class CustomerAccessImpl extends GeneralAccessImpl implements CustomerAccess {
     }
 
     @Override
-    public void cancelOrder(long orderId) {
-        Order order = dataAccess.retrieve(Order.class, orderId);
+    public void cancelOrder(Order currentOrder) {
+        Order order = dataAccess.retrieve(Order.class, currentOrder.getId());
         Transaction transaction = retrieve(Transaction.class, order.getTransactionId());
         requireItsMeForAccess(UserType.CUSTOMER, transaction.getCustomerId());
         if (!(order.getOrderStatus() == OrderStatus.NEW_ORDER
@@ -128,6 +128,7 @@ class CustomerAccessImpl extends GeneralAccessImpl implements CustomerAccess {
             throw new IllegalStateException("tc cancel the status must be " + OrderStatus.NEW_ORDER + " or " + OrderStatus.WAITING_FOR_PAYING + ".");
         }
         order.setOrderStatus(OrderStatus.WAITING_FOR_CANCEL);
+        currentOrder.setOrderStatus(OrderStatus.WAITING_FOR_CANCEL);
         dataAccess.update(order);
     }
 

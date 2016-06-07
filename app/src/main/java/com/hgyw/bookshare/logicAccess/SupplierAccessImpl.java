@@ -45,8 +45,8 @@ public class SupplierAccessImpl extends GeneralAccessImpl implements SupplierAcc
     }
 
     @Override
-    public void updateOrderStatus(long orderId, OrderStatus orderStatus) {
-        Order order = dataAccess.retrieve(Order.class, orderId);
+    public void updateOrderStatus(Order currentOrder, OrderStatus orderStatus) {
+        Order order = dataAccess.retrieve(Order.class, currentOrder.getId());
         OrderStatus currentOrderStatus = order.getOrderStatus();
         BookSupplier bookSupplier = retrieve(BookSupplier.class, order.getBookSupplierId());
         requireItsMeForAccess(UserType.SUPPLIER, bookSupplier.getSupplierId());
@@ -54,12 +54,13 @@ public class SupplierAccessImpl extends GeneralAccessImpl implements SupplierAcc
         if (orderStatus == OrderStatus.WAITING_FOR_CANCEL) {
             throw new IllegalStateException("Supplier cannot set order state to waiting-for-cancel.");
         }
-        // don't allow cance without customer request before.
+        // don't allow cancel without customer request before.
         if (orderStatus == OrderStatus.CANCELED && currentOrderStatus != OrderStatus.WAITING_FOR_CANCEL) {
             throw new IllegalStateException("You cannot cancel non-waiting-for-cancel order");
         }
         order.setOrderStatus(orderStatus);
         dataAccess.update(order);
+        currentOrder.setOrderStatus(orderStatus);
     }
 
     @Override

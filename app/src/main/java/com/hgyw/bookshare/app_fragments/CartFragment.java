@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.ListFragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -59,7 +60,7 @@ public class CartFragment extends ListFragment implements TitleFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
-
+        registerForContextMenu(getListView());
         List<Order> ordersList = cart.retrieveCartContent();
 
         adapter = new ListApplyObjectAdapter<Order>(getActivity(), R.layout.order_list_item, ordersList) {
@@ -69,8 +70,9 @@ public class CartFragment extends ListFragment implements TitleFragment {
                 BookSupplier bookSupplier = cAccess.retrieve(BookSupplier.class, order.getBookSupplierId());
                 Book book = cAccess.retrieve(Book.class, bookSupplier.getBookId());
                 User supplier = cAccess.retrieve(User.class, bookSupplier.getSupplierId());
-                return new Object[] {bookSupplier, book, supplier};
+                return new Object[]{bookSupplier, book, supplier};
             }
+
             @Override
             protected void applyDataOnView(View view, Order order, Object[] data) {
                 ObjectToViewAppliers.apply(view, order);
@@ -89,36 +91,36 @@ public class CartFragment extends ListFragment implements TitleFragment {
         setListAdapter(adapter);
         setEmptyText(getString(R.string.no_items_list_view));
 
-        //setting delete context menu
-        getListView().setOnCreateContextMenuListener((menu, v, menuInfo) -> {
-            menu.add(R.string.delete);
+    }
 
-            menu.getItem(0).setOnMenuItemClickListener(item -> {
-                AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
-                Order order = (Order) adapter.getItem(info.position);
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        menu.add(R.string.delete);
 
-                //show yes/no alert dialog
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setMessage(R.string.delete_order_message)
-                        .setPositiveButton(R.string.yes, (dialog, which) -> {
-                            cart.remove(order.getBookSupplierId());
-                            adapter.notifyDataSetChanged();
-                            Toast.makeText(v.getContext(),R.string.toast_order_deleted, Toast.LENGTH_SHORT).show();
-                        })
-                        .setNeutralButton(R.string.no, (dialog, which) -> {
-                        });
-                builder.create().show();
-                return true;
-            });
+        menu.getItem(0).setOnMenuItemClickListener(item -> {
+            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+            Order order = (Order) adapter.getItem(info.position);
+
+            //show yes/no alert dialog
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(R.string.delete_order_message)
+                    .setPositiveButton(R.string.yes, (dialog, which) -> {
+                        cart.remove(order.getBookSupplierId());
+                        adapter.notifyDataSetChanged();
+                        Toast.makeText(v.getContext(),R.string.toast_order_deleted, Toast.LENGTH_SHORT).show();
+                    })
+                    .setNeutralButton(R.string.no, (dialog, which) -> {
+                    });
+            builder.create().show();
+            return true;
         });
     }
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        if(getArguments().getBoolean(IS_MAIN_FRAGMENT)) {
-            inflater.inflate(R.menu.menu_cart, menu);
-        }
+        inflater.inflate(R.menu.menu_cart, menu);
     }
 
     @Override

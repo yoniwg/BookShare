@@ -70,11 +70,11 @@ public interface CustomerAccess extends GeneralAccess {
 
     /**
      * request to cancel the order
-     * @param orderId the order id to cancel
+     * @param currentOrder the order to cancel
      * @throws java.util.NoSuchElementException if the order with id orderId is not found.
      * @throws IllegalStateException if current state of order does not allow canceling.
      */
-    void cancelOrder(long orderId);
+    void cancelOrder(Order currentOrder);
 
     /**
      * update the order's rating

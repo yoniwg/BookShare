@@ -1,16 +1,20 @@
 package com.hgyw.bookshare.app_fragments;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ListFragment;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.hgyw.bookshare.app_drivers.ApplyObjectAdapter;
 import com.hgyw.bookshare.app_drivers.ListApplyObjectAdapter;
@@ -39,6 +43,7 @@ public class OldOrdersFragment extends ListFragment implements TitleFragment {
 
 
     ApplyObjectAdapter<Order> adapter;
+    public CustomerAccess access;
 
     private Activity activity;
     @Override public void onAttach(Context context) {super.onAttach(context);activity = (Activity) context;}
@@ -55,12 +60,12 @@ public class OldOrdersFragment extends ListFragment implements TitleFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        access = AccessManagerFactory.getInstance().getCustomerAccess();
+        registerForContextMenu(getListView());
         Date yearBefore = new Date();
         yearBefore.setYear(yearBefore.getYear() - 1);
 
         new AsyncTask<Void, Void, List<Order>>() {
-            public CustomerAccess access = AccessManagerFactory.getInstance().getCustomerAccess();
 
             @Override
             protected List<Order> doInBackground(Void... params) {
@@ -91,6 +96,42 @@ public class OldOrdersFragment extends ListFragment implements TitleFragment {
             }
         }.execute();
         setEmptyText(getString(R.string.no_items_list_view));
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        menu.add(R.string.cancel_order);
+
+        menu.getItem(0).setOnMenuItemClickListener(item -> {
+            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+            Order order = (Order) adapter.getItem(info.position);
+
+            //show yes/no alert dialog
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(R.string.cancel_order_massage)
+                    .setPositiveButton(R.string.yes, (dialog, which) -> {
+                        new AsyncTask<Void,Void,Void>(){
+                            @Override
+                            protected Void doInBackground(Void... params) {
+                                access.cancelOrder(order);
+                                return null;
+                            }
+
+                            @Override
+                            protected void onPostExecute(Void aVoid) {
+                                adapter.notifyDataSetChanged();
+                                Toast.makeText(v.getContext(),R.string.toast_order_wait_cancel,
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        }.execute();
+                    })
+
+                    .setNeutralButton(R.string.no, (dialog, which) -> {
+                    });
+
+            builder.create().show();
+            return true;
+        });
     }
 
     @Override

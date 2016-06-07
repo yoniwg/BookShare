@@ -246,10 +246,10 @@ public class Test {
 
         // cancel order
         orders = cAccess.retrieveActiveOrders();
-        cAccess.cancelOrder(orders.iterator().next().getId());
+        cAccess.cancelOrder(orders.iterator().next());
         try {
             System.out.println("$$$Negative test: ");
-            cAccess.cancelOrder(orders.iterator().next().getId());
+            cAccess.cancelOrder(orders.iterator().next());
         } catch (Exception e) {
             System.out.println(e.getClass().getSimpleName() + ": " + e.getMessage());
         }

@@ -1,17 +1,13 @@
 package com.hgyw.bookshare.logicAccess;
 
-import java.math.BigDecimal;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
 import com.annimon.stream.Optional;
 import com.hgyw.bookshare.entities.Book;
-import com.hgyw.bookshare.entities.BookReview;
 import com.hgyw.bookshare.entities.BookSupplier;
 import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.OrderStatus;
-import com.hgyw.bookshare.entities.User;
 
 /**
  * Created by Yoni on 3/13/2016.
@@ -49,12 +45,12 @@ public interface SupplierAccess extends GeneralAccess {
 
     /**
      * update the order status
-     * @param orderId the id of order
+     * @param currentOrder the id of order
      * @param orderStatus the new status
      * @throws java.util.NoSuchElementException if the order with id orderId is not found.
      * @throws IllegalStateException if current status of order is not match the new (according to implementation).
      */
-    void updateOrderStatus(long orderId, OrderStatus orderStatus);
+    void updateOrderStatus(Order currentOrder, OrderStatus orderStatus);
 
     /**
      * Add new BookSupplier by current user for a book.
