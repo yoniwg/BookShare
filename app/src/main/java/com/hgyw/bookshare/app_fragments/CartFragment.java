@@ -23,6 +23,7 @@ import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookSupplier;
+import com.hgyw.bookshare.entities.ImageEntity;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.Cart;
@@ -70,15 +71,18 @@ public class CartFragment extends ListFragment implements TitleFragment {
                 BookSupplier bookSupplier = cAccess.retrieve(BookSupplier.class, order.getBookSupplierId());
                 Book book = cAccess.retrieve(Book.class, bookSupplier.getBookId());
                 User supplier = cAccess.retrieve(User.class, bookSupplier.getSupplierId());
-                return new Object[]{bookSupplier, book, supplier};
+                ImageEntity bookImage = (book.getImageId() == 0) ?
+                        null : cAccess.retrieve(ImageEntity.class,book.getImageId());
+                return new Object[]{bookSupplier, book, supplier, bookImage};
             }
 
             @Override
             protected void applyDataOnView(View view, Order order, Object[] data) {
                 ObjectToViewAppliers.apply(view, order);
                 ObjectToViewAppliers.apply(view, (BookSupplier) data[0]);
-                ObjectToViewAppliers.apply(view, (Book) data[1]);
+                ObjectToViewAppliers.apply(view, (Book) data[1], false);
                 ObjectToViewAppliers.apply(view, (User) data[2]);
+                ObjectToViewAppliers.apply(view, (ImageEntity) data[3]);
                 NumberPicker orderAmountPicker = (NumberPicker) view.findViewById(R.id.orderAmountPicker);
                 if (getArguments().getBoolean(IS_MAIN_FRAGMENT)) {
                     orderAmountPicker.setOnValueChangedListener((picker, oldVal, newVal) -> order.setAmount(newVal));

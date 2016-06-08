@@ -16,6 +16,7 @@ import com.hgyw.bookshare.entities.BookReview;
 import com.hgyw.bookshare.entities.BookSummary;
 import com.hgyw.bookshare.entities.BookSupplier;
 import com.hgyw.bookshare.entities.Credentials;
+import com.hgyw.bookshare.entities.ImageEntity;
 import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.Rating;
 import com.hgyw.bookshare.entities.Transaction;
@@ -33,7 +34,7 @@ import java.util.List;
  */
 public class ObjectToViewAppliers {
 
-    public static void apply(View view, Book book) {
+    public static void apply(View view, Book book, boolean withImage) {
         TextView titleView = (TextView) view.findViewById(R.id.bookTitle);
         TextView authorView = (TextView) view.findViewById(R.id.bookAuthor);
         TextView genreView = (TextView) view.findViewById(R.id.bookGenre);
@@ -43,7 +44,12 @@ public class ObjectToViewAppliers {
         if (authorView != null) authorView.setText(book.getAuthor());
         if (genreView != null) genreView.setText(book.getAuthor());
         if (genreSpinner != null) genreSpinner.setSelection(book.getGenre().ordinal());
-        if (imageView != null) Utility.setImageById(imageView, book.getImageId(), R.drawable.image_book);
+        if (imageView != null && withImage)
+            Utility.setImageById(imageView, book.getImageId(), R.drawable.image_book);
+    }
+
+    public static void apply(View view, Book book) {
+       apply(view, book, true);
     }
 
     public static void result(View view, Book book) {
@@ -274,6 +280,11 @@ public class ObjectToViewAppliers {
 
         if (fromView != null) fromView.setText(Utility.dateToString(fromDate));
         if (toView != null) toView.setText(Utility.dateToString(toDate));
+    }
+
+    public static void apply(View view, ImageEntity imageEntity) {
+        ImageView imageView = (ImageView) view.findViewById(R.id.bookImage);
+        if (imageView != null && imageEntity != null) Utility.setImageByBytes(imageView,imageEntity.getBytes());
     }
 
 

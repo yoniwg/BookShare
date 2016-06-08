@@ -16,6 +16,7 @@ import com.hgyw.bookshare.app_drivers.ProgressDialogAsyncTask;
 import com.hgyw.bookshare.app_drivers.Utility;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookSupplier;
+import com.hgyw.bookshare.entities.ImageEntity;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.SupplierAccess;
 
@@ -50,13 +51,17 @@ public class SupplierBooksFragment extends ListFragment implements TitleFragment
                 setListAdapter(adapter = new ListApplyObjectAdapter<BookSupplier>(activity, R.layout.supplier_book_list_item, bookSuppliers){
                     @Override
                     protected Object[] retrieveDataForView(BookSupplier bs) {
-                        return new Object[] { sAccess.retrieve(Book.class, bs.getBookId()) };
+                        Book book = sAccess.retrieve(Book.class, bs.getBookId());
+                        ImageEntity bookImage = (book.getImageId() == 0) ?
+                                null : sAccess.retrieve(ImageEntity.class,book.getImageId());
+                        return new Object[] {book, bookImage };
                     }
 
                     @Override
                     protected void applyDataOnView(View view, BookSupplier bs, Object[] data) {
                         ObjectToViewAppliers.apply(view, bs);
-                        ObjectToViewAppliers.apply(view, (Book) data[0]);
+                        ObjectToViewAppliers.apply(view, (Book) data[0], false);
+                        ObjectToViewAppliers.apply(view, (ImageEntity) data[1]);
                     }
                 });
             }

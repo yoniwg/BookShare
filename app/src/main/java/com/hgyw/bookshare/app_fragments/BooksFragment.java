@@ -20,6 +20,7 @@ import com.hgyw.bookshare.app_drivers.SwipeRefreshListFragment;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookQuery;
 import com.hgyw.bookshare.entities.BookSummary;
+import com.hgyw.bookshare.entities.ImageEntity;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.GeneralAccess;
 
@@ -67,12 +68,17 @@ public class BooksFragment extends SwipeRefreshListFragment implements TitleFrag
         adapter = new ListApplyObjectAdapter<Book>(activity, R.layout.book_list_item, bookList) {
             @Override
             protected Object[] retrieveDataForView(Book book) {
-                return new Object[] {access.getBookSummary(book)} ;
+                BookSummary bookSummary = access.getBookSummary(book);
+                ImageEntity bookImage = (book.getImageId() == 0) ?
+                        null : access.retrieve(ImageEntity.class,book.getImageId());
+                return new Object[] {bookSummary,bookImage} ;
             }
             @Override
             protected void applyDataOnView(View view, Book book, Object[] items) {
-                ObjectToViewAppliers.apply(view, book);
+                ObjectToViewAppliers.apply(view, book, false);
                 ObjectToViewAppliers.apply(view, (BookSummary) items[0]);
+                ObjectToViewAppliers.apply(view, (ImageEntity) items[1]);
+
             }
         };
         setListAdapter(adapter);

@@ -104,6 +104,17 @@ public class Utility {
         return true;
     }
 
+    public static boolean setImageByBytes(ImageView imageView, byte[] entityImageBytes) {
+
+        // end if no new image
+        if (entityImageBytes == null || entityImageBytes.length == 0) {
+            return true;
+        }
+        Bitmap bitmap = BitmapFactory.decodeByteArray(entityImageBytes, 0, entityImageBytes.length);
+        imageView.setImageBitmap(bitmap);
+        return true;
+    }
+
 
     ///////////////////////
     // String Utility
@@ -126,7 +137,7 @@ public class Utility {
 
     public static String moneyToString(BigDecimal minPrice) {
         final char newShekelSign = '\u20AA';
-        return moneyToNumberString(minPrice) + " " + newShekelSign;
+        return moneyToNumberString(minPrice) + newShekelSign;
     }
 
     public static String moneyRangeToString(BigDecimal minPrice, BigDecimal maxPrice) {

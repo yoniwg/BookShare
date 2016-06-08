@@ -21,6 +21,7 @@ import com.hgyw.bookshare.app_drivers.ListApplyObjectAdapter;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookSupplier;
+import com.hgyw.bookshare.entities.ImageEntity;
 import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.OrderStatus;
 import com.hgyw.bookshare.entities.Transaction;
@@ -77,16 +78,19 @@ public class SupplierOrdersFragment extends ListFragment implements TitleFragmen
                         Book book = sAccess.retrieve(Book.class, bookSupplier.getBookId());
                         Transaction transaction = sAccess.retrieve(Transaction.class, order.getTransactionId());
                         User customer = sAccess.retrieve(User.class, transaction.getCustomerId());
-                        return new Object[] {bookSupplier, book, transaction, customer};
+                        ImageEntity bookImage = (book.getImageId() == 0) ?
+                                null : sAccess.retrieve(ImageEntity.class,book.getImageId());
+                        return new Object[] {bookSupplier, book, transaction, customer, bookImage};
                     }
 
                     @Override
                     protected void applyDataOnView(View view, Order order, Object[] data) {
                         ObjectToViewAppliers.apply(view, order);
                         ObjectToViewAppliers.apply(view, (BookSupplier) data[0]);
-                        ObjectToViewAppliers.apply(view, (Book) data[1]);
+                        ObjectToViewAppliers.apply(view, (Book) data[1], false);
                         ObjectToViewAppliers.apply(view, (Transaction) data[2]);
                         ObjectToViewAppliers.apply(view, (User) data[3]);
+                        ObjectToViewAppliers.apply(view, (ImageEntity) data[4]);
                     }
                 };
                 setListAdapter(adapter);
@@ -102,20 +106,20 @@ public class SupplierOrdersFragment extends ListFragment implements TitleFragmen
         if (order.getOrderStatus() == OrderStatus.WAITING_FOR_CANCEL) {
             MenuItem itemCancel = menu.add(R.string.cancel_confirm);
             MenuItem itemReject = menu.add(R.string.cancel_reject);
-            setMenuItemListener(menu, v, itemCancel);
-            setMenuItemListener(menu, v, itemReject);
+            setMenuItemListener(v, itemCancel);
+            setMenuItemListener(v, itemReject);
         }
         if (order.getOrderStatus() == OrderStatus.NEW_ORDER) {
             MenuItem itemConfirm = menu.add(R.string.confirm_order);
-            setMenuItemListener(menu, v, itemConfirm);
+            setMenuItemListener(v, itemConfirm);
         }
         if (order.getOrderStatus() == OrderStatus.WAITING_FOR_PAYING) {
             MenuItem itemConfirm = menu.add(R.string.confirm_payment);
-            setMenuItemListener(menu, v, itemConfirm);
+            setMenuItemListener(v, itemConfirm);
         }
     }
 
-    private void setMenuItemListener(ContextMenu menu, final View v, MenuItem menuItem) {
+    private void setMenuItemListener(final View v, MenuItem menuItem) {
         int messageId;
         OrderStatus orderStatus;
         int toastMessageId;
