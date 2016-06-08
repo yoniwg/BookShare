@@ -82,9 +82,9 @@
     <string name="confirm">Confirm</string>
     <string name="choose">Choose</string>
     <string name="registration_Succeed">Registration succeed.</string>
-    <string name="toast_loged_out">You have been loged out</string>
+    <string name="toast_loged_out">You have been logged out</string>
     <string name="logout_message">Are you sure you want to log out?</string>
-    <string name="transaction_message">Do you want to procceed ordering?</string>
+    <string name="transaction_message">Do you want to proceed ordering?</string>
     <string name="confirm_order_message">Are you sure you want to confirm this order?</string>
     <string name="transaction_error_message">Something got wrong with the transaction...</string>
     <string name="toast_transaction_ok">Order has been confirmed and will be shipped soon</string>
@@ -144,7 +144,7 @@
     <string name="from">from</string>
     <string name="up_to">to</string>
     <string name="choose_date">Choose Date\\</string>
-    <string name="transaction_details">Ttransaction Details</string>
+    <string name="transaction_details">Transaction Details</string>
     <string name="new_account">New account</string>
     <string name="remember_me">Remember me</string>
     <string name="supply_the_book">Supply the book</string>
@@ -166,4 +166,12 @@
     <string name="reject_cancel_oreder_message">Reject cancel of order?</string>
     <string name="toast_order_wait_cancel">The cancel request has been sent to supplier</string>
     <string name="toast_order_cancel_reject">Cancel request has been rejected</string>
+    <string name="confirm_order">Confirm Order</string>
+    <string name="toast_order_waiting_for_pay">The order will finally confirmed after paying confirmation</string>
+    <string name="confirm_payment">Confirm Payment</string>
+    <string name="confirm_payment_message">You are about to confirm payment and delivering the order</string>
+    <string name="toast_order_sent">Order has been sent</string>
+    <string name="confirm_receive">Confirm Receive</string>
+    <string name="confirm_receive_message">Do you confirm the order has been received by you?</string>
+    <string name="toast_order_closed">The order has been closed</string>
 </resources>

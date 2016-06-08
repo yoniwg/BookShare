@@ -9,7 +9,6 @@ import com.hgyw.bookshare.entities.reflection.EntityReflection;
 import com.hgyw.bookshare.exceptions.*;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -246,10 +245,10 @@ public class Test {
 
         // cancel order
         orders = cAccess.retrieveActiveOrders();
-        cAccess.cancelOrder(orders.iterator().next());
+        cAccess.updateOrderStatus(orders.iterator().next(), OrderStatus.CANCELED);
         try {
             System.out.println("$$$Negative test: ");
-            cAccess.cancelOrder(orders.iterator().next());
+            cAccess.updateOrderStatus(orders.iterator().next(), OrderStatus.CANCELED);
         } catch (Exception e) {
             System.out.println(e.getClass().getSimpleName() + ": " + e.getMessage());
         }

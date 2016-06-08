@@ -7,31 +7,26 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.ContextMenu;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.hgyw.bookshare.app_drivers.ApplyObjectAdapter;
 import com.hgyw.bookshare.app_drivers.ListApplyObjectAdapter;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
 import com.hgyw.bookshare.R;
-import com.hgyw.bookshare.dataAccess.DataAccess;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookSupplier;
 import com.hgyw.bookshare.entities.Order;
+import com.hgyw.bookshare.entities.OrderStatus;
 import com.hgyw.bookshare.entities.Transaction;
 import com.hgyw.bookshare.entities.User;
-import com.hgyw.bookshare.logicAccess.AccessManager;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.CustomerAccess;
-import com.hgyw.bookshare.logicAccess.GeneralAccess;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -43,7 +38,7 @@ public class OldOrdersFragment extends ListFragment implements TitleFragment {
 
 
     ApplyObjectAdapter<Order> adapter;
-    public CustomerAccess access;
+    public CustomerAccess cAccess;
 
     private Activity activity;
     @Override public void onAttach(Context context) {super.onAttach(context);activity = (Activity) context;}
@@ -60,7 +55,7 @@ public class OldOrdersFragment extends ListFragment implements TitleFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        access = AccessManagerFactory.getInstance().getCustomerAccess();
+        cAccess = AccessManagerFactory.getInstance().getCustomerAccess();
         registerForContextMenu(getListView());
         Date yearBefore = new Date();
         yearBefore.setYear(yearBefore.getYear() - 1);
@@ -69,7 +64,7 @@ public class OldOrdersFragment extends ListFragment implements TitleFragment {
 
             @Override
             protected List<Order> doInBackground(Void... params) {
-                return access.retrieveOrders(yearBefore, new Date());
+                return cAccess.retrieveOrders(yearBefore, new Date());
             }
 
             @Override
@@ -77,10 +72,10 @@ public class OldOrdersFragment extends ListFragment implements TitleFragment {
                 adapter = new ListApplyObjectAdapter<Order>(activity, R.layout.old_order_list_item, orders) {
                     @Override
                     protected Object[] retrieveDataForView(Order order) {
-                        BookSupplier bookSupplier = access.retrieve(BookSupplier.class, order.getBookSupplierId());
-                        Book book = access.retrieve(Book.class, bookSupplier.getBookId());
-                        User supplier = access.retrieve(User.class, bookSupplier.getSupplierId());
-                        Transaction transaction= access.retrieve(Transaction.class, order.getTransactionId());
+                        BookSupplier bookSupplier = cAccess.retrieve(BookSupplier.class, order.getBookSupplierId());
+                        Book book = cAccess.retrieve(Book.class, bookSupplier.getBookId());
+                        User supplier = cAccess.retrieve(User.class, bookSupplier.getSupplierId());
+                        Transaction transaction= cAccess.retrieve(Transaction.class, order.getTransactionId());
                         return new Object[]{bookSupplier,book,supplier,transaction};
                     }
                     @Override
@@ -100,27 +95,50 @@ public class OldOrdersFragment extends ListFragment implements TitleFragment {
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        menu.add(R.string.cancel_order);
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+        Order order = adapter.getItem(info.position);
+        if (order.getOrderStatus() == OrderStatus.NEW_ORDER
+                || order.getOrderStatus() == OrderStatus.WAITING_FOR_PAYING) {
+            MenuItem itemConfirm = menu.add(R.string.cancel_order);
+            setMenuItemListener(v, itemConfirm, order);
+        }
+        if (order.getOrderStatus() == OrderStatus.SENT) {
+            MenuItem itemConfirm = menu.add(R.string.confirm_receive);
+            setMenuItemListener(v, itemConfirm, order);
+        }
+    }
 
-        menu.getItem(0).setOnMenuItemClickListener(item -> {
-            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
-            Order order = (Order) adapter.getItem(info.position);
-
+    private void setMenuItemListener(final View v, MenuItem menuItem, Order order) {
+        int messageId;
+        OrderStatus orderStatus;
+        int toastMessageId;
+        if (menuItem.getTitle() == v.getContext().getString(R.string.cancel_order)){
+            messageId = R.string.cancel_order_massage;
+            orderStatus = (order.getOrderStatus() == OrderStatus.NEW_ORDER)?
+                    OrderStatus.CANCELED : OrderStatus.WAITING_FOR_CANCEL;
+            toastMessageId = (order.getOrderStatus() == OrderStatus.NEW_ORDER)?
+                    R.string.toast_order_canceled : R.string.toast_order_wait_cancel;
+        }else { //if (menuItem.getTitle() == v.getContext().getString(R.string.confirm_receive)){
+            messageId = R.string.confirm_receive_message;
+            orderStatus = OrderStatus.CLOSED;
+            toastMessageId = R.string.toast_order_closed;
+        }
+        menuItem.setOnMenuItemClickListener(item -> {
             //show yes/no alert dialog
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage(R.string.cancel_order_massage)
+            builder.setMessage(messageId)
                     .setPositiveButton(R.string.yes, (dialog, which) -> {
-                        new AsyncTask<Void,Void,Void>(){
+                        new AsyncTask<Void, Void, Void>() {
                             @Override
                             protected Void doInBackground(Void... params) {
-                                access.cancelOrder(order);
+                                cAccess.updateOrderStatus(order, orderStatus);
                                 return null;
                             }
 
                             @Override
                             protected void onPostExecute(Void aVoid) {
                                 adapter.notifyDataSetChanged();
-                                Toast.makeText(v.getContext(),R.string.toast_order_wait_cancel,
+                                Toast.makeText(v.getContext(), toastMessageId,
                                         Toast.LENGTH_SHORT).show();
                             }
                         }.execute();

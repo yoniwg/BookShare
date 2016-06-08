@@ -119,16 +119,19 @@ class CustomerAccessImpl extends GeneralAccessImpl implements CustomerAccess {
     }
 
     @Override
-    public void cancelOrder(Order currentOrder) {
+    public void updateOrderStatus(Order currentOrder, OrderStatus newStatus) {
         Order order = dataAccess.retrieve(Order.class, currentOrder.getId());
         Transaction transaction = retrieve(Transaction.class, order.getTransactionId());
         requireItsMeForAccess(UserType.CUSTOMER, transaction.getCustomerId());
-        if (!(order.getOrderStatus() == OrderStatus.NEW_ORDER
-                || order.getOrderStatus() == OrderStatus.WAITING_FOR_PAYING)){
-            throw new IllegalStateException("tc cancel the status must be " + OrderStatus.NEW_ORDER + " or " + OrderStatus.WAITING_FOR_PAYING + ".");
+        if (!((order.getOrderStatus() == OrderStatus.NEW_ORDER && newStatus == OrderStatus.CANCELED)||
+            (order.getOrderStatus() == OrderStatus.WAITING_FOR_PAYING
+                && newStatus == OrderStatus.WAITING_FOR_CANCEL)||
+            (order.getOrderStatus() == OrderStatus.SENT && newStatus == OrderStatus.CLOSED))) {
+            throw new IllegalStateException("It is illegal to set "
+                    + newStatus + " whether the current order status is " + order.getOrderStatus() + ".");
         }
-        order.setOrderStatus(OrderStatus.WAITING_FOR_CANCEL);
-        currentOrder.setOrderStatus(OrderStatus.WAITING_FOR_CANCEL);
+        order.setOrderStatus(newStatus);
+        currentOrder.setOrderStatus(newStatus);
         dataAccess.update(order);
     }
 

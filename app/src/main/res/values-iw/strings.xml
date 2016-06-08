@@ -158,5 +158,13 @@
     <string name="toast_order_cancel_reject">בקשת הביטול נדחתה</string>
     <string name="toast_order_canceled">ההזמנה בוטלה</string>
     <string name="toast_order_wait_cancel">בקשת הביטול נשלחה לספק</string>
+    <string name="confirm_order">אשר הזמנה</string>
+    <string name="confirm_payment">אשר תשלום</string>
+    <string name="confirm_receive">אשר קבלה</string>
+    <string name="confirm_payment_message">אתה עומד לאשר את התשלום ולשלוח את ההזמנה</string>
+    <string name="confirm_receive_message">האם אתה מאשר שההזמנה התקבלה על ידך?</string>
+    <string name="toast_order_closed">ההזמנה נסגרה</string>
+    <string name="toast_order_sent">ההזמנה נשלחה</string>
+    <string name="toast_order_waiting_for_pay">ההזמנה תאושר סופית לאחר אישור התשלום</string>
 
 </resources>

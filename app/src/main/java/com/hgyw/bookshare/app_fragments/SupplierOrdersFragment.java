@@ -105,6 +105,14 @@ public class SupplierOrdersFragment extends ListFragment implements TitleFragmen
             setMenuItemListener(menu, v, itemCancel);
             setMenuItemListener(menu, v, itemReject);
         }
+        if (order.getOrderStatus() == OrderStatus.NEW_ORDER) {
+            MenuItem itemConfirm = menu.add(R.string.confirm_order);
+            setMenuItemListener(menu, v, itemConfirm);
+        }
+        if (order.getOrderStatus() == OrderStatus.WAITING_FOR_PAYING) {
+            MenuItem itemConfirm = menu.add(R.string.confirm_payment);
+            setMenuItemListener(menu, v, itemConfirm);
+        }
     }
 
     private void setMenuItemListener(ContextMenu menu, final View v, MenuItem menuItem) {
@@ -115,12 +123,19 @@ public class SupplierOrdersFragment extends ListFragment implements TitleFragmen
             messageId = R.string.cancel_order_massage;
             orderStatus = OrderStatus.CANCELED;
             toastMessageId = R.string.toast_order_canceled;
-        }else{ //if (menuItem.getTitle() == v.getContext().getString(R.string.cancel_reject)){
+        }else if (menuItem.getTitle() == v.getContext().getString(R.string.cancel_reject)){
             messageId = R.string.reject_cancel_oreder_message;
             orderStatus = OrderStatus.WAITING_FOR_PAYING;
             toastMessageId = R.string.toast_order_cancel_reject;
+        }else if (menuItem.getTitle() == v.getContext().getString(R.string.confirm_order)){
+            messageId = R.string.confirm_order_message;
+            orderStatus = OrderStatus.WAITING_FOR_PAYING;
+            toastMessageId = R.string.toast_order_waiting_for_pay;
+        }else { //if (menuItem.getTitle() == v.getContext().getString(R.string.confirm_payment)){
+            messageId = R.string.confirm_payment_message;
+            orderStatus = OrderStatus.SENT;
+            toastMessageId = R.string.toast_order_sent;
         }
-
         menuItem.setOnMenuItemClickListener(item -> {
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
             Order order = adapter.getItem(info.position);

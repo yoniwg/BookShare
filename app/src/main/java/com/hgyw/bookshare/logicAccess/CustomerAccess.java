@@ -10,6 +10,7 @@ import com.hgyw.bookshare.entities.BookReview;
 import com.hgyw.bookshare.entities.BookSupplier;
 import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.OrderRating;
+import com.hgyw.bookshare.entities.OrderStatus;
 import com.hgyw.bookshare.entities.Transaction;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.exceptions.OrdersTransactionException;
@@ -71,10 +72,11 @@ public interface CustomerAccess extends GeneralAccess {
     /**
      * request to cancel the order
      * @param currentOrder the order to cancel
+     * @param orderStatus
      * @throws java.util.NoSuchElementException if the order with id orderId is not found.
      * @throws IllegalStateException if current state of order does not allow canceling.
      */
-    void cancelOrder(Order currentOrder);
+    void updateOrderStatus(Order currentOrder, OrderStatus orderStatus);
 
     /**
      * update the order's rating
