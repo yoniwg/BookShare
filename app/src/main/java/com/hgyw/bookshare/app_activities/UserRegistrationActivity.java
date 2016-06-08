@@ -24,7 +24,7 @@ public class UserRegistrationActivity extends UserAbstractActivity {
         AccessManager accessManager = AccessManagerFactory.getInstance();
         new ProgressDialogAsyncTask<Void,Void,WrongLoginException>(this, R.string.registering) {
             @Override
-            protected WrongLoginException doInBackground1(Void... params) {
+            protected WrongLoginException retrieveDataAsync(Void... params) {
                 try {
                     accessManager.signUp(user);
                     return null;
@@ -34,7 +34,7 @@ public class UserRegistrationActivity extends UserAbstractActivity {
             }
 
             @Override
-            protected void onPostExecute1(WrongLoginException e) {
+            protected void doByData(WrongLoginException e) {
                 if (e == null) {
                     Toast.makeText(context, R.string.registration_Succeed, Toast.LENGTH_SHORT).show();
                     Utility.saveCredentials(context, user.getCredentials());

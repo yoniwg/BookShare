@@ -87,19 +87,19 @@ public class SupplierBooksFragment extends ListFragment implements TitleFragment
         switch (result) {
             case OK:
                 new ProgressDialogAsyncTask<Void, Void, Void>(activity) {
-                    @Override protected Void doInBackground1(Void... params) {
+                    @Override protected Void retrieveDataAsync(Void... params) {
                         sAccess.updateBookSupplier(bookSupplier); return null;
                     }
-                    @Override protected void onPostExecute1(Void aVoid) {
+                    @Override protected void doByData(Void aVoid) {
                         Utility.replaceById(adapter, bookSupplier);
                     }
                 }.execute(); break;
             case DELETE:
                 new ProgressDialogAsyncTask<Void, Void, Void>(activity) {
-                    @Override protected Void doInBackground1(Void... params) {
+                    @Override protected Void retrieveDataAsync(Void... params) {
                         sAccess.removeBookSupplier(bookSupplier); return null;
                     }
-                    @Override protected void onPostExecute1(Void aVoid) {
+                    @Override protected void doByData(Void aVoid) {
                         adapter.remove(bookSupplier);
                     }
                 }.execute(); break;

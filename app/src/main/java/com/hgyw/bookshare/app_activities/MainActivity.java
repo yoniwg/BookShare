@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (accessManager.getCurrentUserType() == UserType.GUEST && !savedCredentials.getPassword().isEmpty()) {
             new ProgressDialogAsyncTask<Void, Void, Boolean>(this, R.string.trying_to_connect) {
                 @Override
-                protected Boolean doInBackground1(Void... params) {
+                protected Boolean retrieveDataAsync(Void... params) {
                     try {
                         accessManager.signIn(savedCredentials);
                         return true;
@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
 
                 @Override
-                protected void onPostExecute1(Boolean Succeeded) {
+                protected void doByData(Boolean Succeeded) {
                     if (Succeeded) updateDrawerOnLogin();
                 }
             }.execute();

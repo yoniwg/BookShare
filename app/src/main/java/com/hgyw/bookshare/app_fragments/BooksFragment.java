@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.ListView;
 
 import com.hgyw.bookshare.R;
-import com.hgyw.bookshare.app_drivers.ApplyObjectAdapter;
 import com.hgyw.bookshare.app_drivers.IntentsFactory;
 import com.hgyw.bookshare.app_drivers.ListApplyObjectAdapter;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
@@ -35,7 +34,7 @@ public class BooksFragment extends SwipeRefreshListFragment implements TitleFrag
     private final GeneralAccess access = AccessManagerFactory.getInstance().getGeneralAccess();
     private Activity activity;
     List<Book> bookList = new ArrayList<Book>();
-    ApplyObjectAdapter<Book> adapter;
+    ListApplyObjectAdapter<Book> adapter;
 
     @Override
     public void onAttach(Context context) {

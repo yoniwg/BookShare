@@ -19,12 +19,12 @@ public class UserEditActivity extends UserAbstractActivity {
     public void onOkButton(User user) {
         new ProgressDialogAsyncTask<Void, Void, Void>(this) {
             @Override
-            protected Void doInBackground1(Void... params) {
+            protected Void retrieveDataAsync(Void... params) {
                 AccessManagerFactory.getInstance().getGeneralAccess().updateUserDetails(user); return null;
             }
 
             @Override
-            protected void onPostExecute1(Void aVoid) {
+            protected void doByData(Void aVoid) {
                 Toast.makeText(context, R.string.user_details_updated, Toast.LENGTH_LONG).show();
                 finish();
                 startActivity(IntentsFactory.homeIntent(context));

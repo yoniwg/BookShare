@@ -17,6 +17,7 @@ import com.hgyw.bookshare.app_drivers.DateRangeBar;
 import com.hgyw.bookshare.app_drivers.IntentsFactory;
 import com.hgyw.bookshare.app_drivers.ListApplyObjectAdapter;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
+import com.hgyw.bookshare.app_drivers.ObjectToViewUpdates;
 import com.hgyw.bookshare.entities.Transaction;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
@@ -75,7 +76,7 @@ public class TransactionListFragment extends ListFragment implements TitleFragme
 
                     @Override
                     protected void applyDataOnView(View view, Transaction item, Object[] data) {
-                        ObjectToViewAppliers.apply(view, item, (BigDecimal) data[0], (List<User>) data[1]);
+                        ObjectToViewUpdates.updateTransactionListItem(view, item, (BigDecimal) data[0], (List<User>) data[1]);
                     }
                 };
                 setListAdapter(adapter);

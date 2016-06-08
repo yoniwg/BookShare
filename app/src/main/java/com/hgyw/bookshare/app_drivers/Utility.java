@@ -66,41 +66,44 @@ public class Utility {
     }
 
     /**
-     * Set ImageView to imageId of entities.
-     *
-     * @param imageView
-     * @param entityImageId
-     * @return
+     * Call to {@link #setImageById}{@code (imageView, entityImageId, 0)}.
      */
+    @Deprecated
     public static boolean setImageById(ImageView imageView, long entityImageId) {
         return setImageById(imageView, entityImageId, 0);
     }
 
+    /**
+     * Set ImageView to imageId of entities.
+     * @param imageView
+     * @param entityImageId
+     * @param defaultImageResId image to put if entityImageId == Entity.DEFAULT_ID (or 0 for doing
+     *                          nothing in such case)
+     * @return true
+     */
     public static boolean setImageById(ImageView imageView, long entityImageId, @DrawableRes int defaultImageResId) {
         // first remove the current image
-        if (defaultImageResId == 0) {
-            //imageView.setImageDrawable(null);
-        } else {
-            imageView.setImageResource(defaultImageResId);
-        }
-        // end if no new image
-        if (entityImageId == 0) {
-            return true;
+        imageView.setImageDrawable(null);
+        // set default image if no image
+        if (entityImageId == Entity.DEFAULT_ID) {
+            if (defaultImageResId != 0) imageView.setImageResource(defaultImageResId);
         }
         // else set the image
-        new AsyncTask<Void, Void, Bitmap>() {
-            @Override
-            protected Bitmap doInBackground(Void... params) {
-                ImageEntity imageEntity = AccessManagerFactory.getInstance().getGeneralAccess().retrieve(ImageEntity.class, entityImageId);
-                byte[] bytes = imageEntity.getBytes();
-                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                return bitmap;
-            }
-            @Override
-            protected void onPostExecute(Bitmap bitmap) {
-                imageView.setImageBitmap(bitmap);
-            }
-        }.execute();
+        else {
+            new AsyncTask<Void, Void, Bitmap>() {
+                @Override
+                protected Bitmap doInBackground(Void... params) {
+                    ImageEntity imageEntity = AccessManagerFactory.getInstance().getGeneralAccess().retrieve(ImageEntity.class, entityImageId);
+                    byte[] bytes = imageEntity.getBytes();
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    return bitmap;
+                }
+                @Override
+                protected void onPostExecute(Bitmap bitmap) {
+                    imageView.setImageBitmap(bitmap);
+                }
+            }.execute();
+        }
         return true;
     }
 

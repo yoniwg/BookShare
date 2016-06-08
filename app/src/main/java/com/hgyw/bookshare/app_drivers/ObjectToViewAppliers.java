@@ -262,17 +262,6 @@ public class ObjectToViewAppliers {
 
     }
 
-    public static void apply(View view, Transaction transaction, BigDecimal totalPrice, List<User> suppliersList) {
-        apply(view, transaction);
-        TextView transactionTotalPrice = (TextView) view.findViewById(R.id.total_price);
-        TextView transactionSuppliers = (TextView) view.findViewById(R.id.supplier_names_list);
-        if (transactionTotalPrice != null){
-            transactionTotalPrice.setText(Utility.moneyToString(totalPrice));
-        }
-        if (transactionSuppliers != null){
-            transactionSuppliers.setText(Utility.usersListToFlatString(suppliersList));
-        }
-    }
 
     public static void setDateRange(View view, Date fromDate, Date toDate) {
         TextView fromView = (TextView) view.findViewById(R.id.fromDate);

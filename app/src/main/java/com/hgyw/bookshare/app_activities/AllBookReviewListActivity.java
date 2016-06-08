@@ -59,7 +59,7 @@ public class AllBookReviewListActivity extends ListActivity {
                         ObjectToViewUpdates.updateBookReviewView(view, bookReviews.get(position), customers.get(position));
                     }
                 };
-                AllBookReviewListActivity.this.setListAdapter(listAdapter);
+                setListAdapter(listAdapter);
             }
         };
     }

@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.hgyw.bookshare.R;
+import com.hgyw.bookshare.app_drivers.CancelableLoadingDialogAsyncTask;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
 import com.hgyw.bookshare.app_drivers.ProgressDialogAsyncTask;
 import com.hgyw.bookshare.app_drivers.Utility;
@@ -51,13 +52,18 @@ public abstract class UserAbstractActivity extends AppCompatActivity {
         imageView.setOnClickListener(v -> Utility.startGetImage(this));
 
         if (savedInstanceState == null) {
-            new ProgressDialogAsyncTask<Void,Void,User>(this) {
-                @Override protected User doInBackground1(Void... params) {
+            new CancelableLoadingDialogAsyncTask<Void,Void,User>(this) {
+                @Override protected User retrieveDataAsync(Void... params) {
                     return isRegistration ? new User() : AccessManagerFactory.getInstance().getGeneralAccess().retrieveUserDetails();
                 }
-                @Override protected void onPostExecute1(User user) {
+                @Override protected void doByData(User user) {
                     UserAbstractActivity.this.user = user;
                     ObjectToViewAppliers.apply(rootView, user);
+                }
+
+                @Override
+                protected void onCancel() {
+                    finish();
                 }
             }.execute();
         } else {
@@ -66,7 +72,7 @@ public abstract class UserAbstractActivity extends AppCompatActivity {
             if (newImage != null) {
                 imageView.setImageBitmap(newImage);
             } else {
-                Utility.setImageById(imageView, user.getImageId());
+                Utility.setImageById(imageView, user.getImageId(), R.drawable.image_user);
             }
         }
 
@@ -98,7 +104,7 @@ public abstract class UserAbstractActivity extends AppCompatActivity {
     private void onOkButton() {
         new ProgressDialogAsyncTask<Void, Void, Void>(this) {
             @Override
-            protected Void doInBackground1(Void... params) {
+            protected Void retrieveDataAsync(Void... params) {
                 if (newImage != null) {
                     long imageId = AccessManagerFactory.getInstance().getGeneralAccess().upload(Utility.compress(newImage));
                     if (imageId != 0) {
@@ -111,7 +117,7 @@ public abstract class UserAbstractActivity extends AppCompatActivity {
             }
 
             @Override
-            protected void onPostExecute1(Void aVoid) {
+            protected void doByData(Void aVoid) {
                 View rootView = findViewById(android.R.id.content);
                 ObjectToViewAppliers.result(rootView, user);
                 onOkButton(user);

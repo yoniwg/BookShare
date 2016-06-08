@@ -11,10 +11,14 @@ import android.widget.Toast;
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.entities.BookReview;
 import com.hgyw.bookshare.entities.BookSupplier;
+import com.hgyw.bookshare.entities.Transaction;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.entities.UserType;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.GeneralAccess;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Update views by full data of items.
@@ -41,5 +45,18 @@ public class ObjectToViewUpdates {
             else buyButton.setOnClickListener(buyButtonOnClickListener);
         }
     }
+
+    public static void updateTransactionListItem(View view, Transaction transaction, BigDecimal totalPrice, List<User> suppliersList) {
+        ObjectToViewAppliers.apply(view, transaction);
+        TextView transactionTotalPrice = (TextView) view.findViewById(R.id.total_price);
+        TextView transactionSuppliers = (TextView) view.findViewById(R.id.supplier_names_list);
+        if (transactionTotalPrice != null){
+            transactionTotalPrice.setText(Utility.moneyToNumberString(totalPrice));
+        }
+        if (transactionSuppliers != null){
+            transactionSuppliers.setText(Utility.usersListToFlatString(suppliersList));
+        }
+    }
+
 
 }

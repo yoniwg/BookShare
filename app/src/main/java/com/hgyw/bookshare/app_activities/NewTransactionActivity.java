@@ -122,13 +122,13 @@ public class NewTransactionActivity extends AppCompatActivity implements DialogI
             case DialogInterface.BUTTON_POSITIVE:
                 new ProgressDialogAsyncTask<Void, Void, OrdersTransactionException>(this) {
                     @Override
-                    protected OrdersTransactionException doInBackground1(Void... params) {
+                    protected OrdersTransactionException retrieveDataAsync(Void... params) {
                         try { cAccess.performNewTransaction(); return null; }
                         catch (OrdersTransactionException e) { return e; }
                     }
 
                     @Override
-                    protected void onPostExecute1(OrdersTransactionException e) {
+                    protected void doByData(OrdersTransactionException e) {
                         if (e == null) {
                             Toast.makeText(context, R.string.toast_transaction_ok, Toast.LENGTH_SHORT).show();
                             Intent transactionIntent = IntentsFactory.newBookListIntent(context, null);

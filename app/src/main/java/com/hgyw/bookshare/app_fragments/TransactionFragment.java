@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.hgyw.bookshare.R;
+import com.hgyw.bookshare.app_drivers.CancelableLoadingDialogAsyncTask;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
 import com.hgyw.bookshare.app_drivers.ProgressDialogAsyncTask;
 import com.hgyw.bookshare.app_drivers.Utility;
@@ -43,18 +44,23 @@ public class TransactionFragment extends EntityFragment {
         super.onViewCreated(view, savedInstanceState);
         ViewGroup linearLayout = (ViewGroup) view.findViewById(R.id.mainListView);
 
-        new ProgressDialogAsyncTask<Void, Void, Void>(activity) {
+        new CancelableLoadingDialogAsyncTask<Void, Void, Void>(activity) {
             List<Order> orders;
             @Override
-            protected Void doInBackground1(Void... params) {
+            protected Void retrieveDataAsync(Void... params) {
                 transaction = cAccess.retrieve(Transaction.class, entityId);
                 orders = cAccess.retrieveOrdersOfTransaction(transaction);
                 return null;
             }
 
             @Override
-            protected void onPostExecute1(Void aVoid) {
+            protected void doByData(Void aVoid) {
                 Utility.addViewsByList(linearLayout, orders, activity.getLayoutInflater(), R.layout.old_order_list_item, TransactionFragment.this::updateOrder);
+            }
+
+            @Override
+            protected void onCancel() {
+                activity.finish();
             }
         }.execute();
 

@@ -65,11 +65,11 @@ public class BookEditActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             long id = idReference.getId();
             new ProgressDialogAsyncTask<Void, Void, Book>(this) {
-                @Override protected Book doInBackground1(Void... params) {
+                @Override protected Book retrieveDataAsync(Void... params) {
                     book = id == Entity.DEFAULT_ID ? new Book() : AccessManagerFactory.getInstance().getGeneralAccess().retrieve(Book.class, id);
                     return book;
                 }
-                @Override protected void onPostExecute1(Book book) {
+                @Override protected void doByData(Book book) {
                     ObjectToViewAppliers.apply(view, book);
                 }
             }.execute();
@@ -79,7 +79,7 @@ public class BookEditActivity extends AppCompatActivity {
             if (newImage != null) {
                 imageView.setImageBitmap(newImage);
             } else {
-                Utility.setImageById(imageView, book.getImageId());
+                Utility.setImageById(imageView, book.getImageId(), R.drawable.image_book);
             }
         }
     }
@@ -126,7 +126,7 @@ public class BookEditActivity extends AppCompatActivity {
         ObjectToViewAppliers.result(view, book);
         new ProgressDialogAsyncTask<Void, Void, Void>(this) {
             @Override
-            protected Void doInBackground1(Void... params) {
+            protected Void retrieveDataAsync(Void... params) {
                 SupplierAccess sAccess = AccessManagerFactory.getInstance().getSupplierAccess();
                 if (newImage != null) {
                     long imageId = sAccess.upload(Utility.compress(newImage));
@@ -141,7 +141,7 @@ public class BookEditActivity extends AppCompatActivity {
             }
 
             @Override
-            protected void onPostExecute1(Void aVoid) {
+            protected void doByData(Void aVoid) {
                 setResult(RESULT_OK);
                 Toast.makeText(context, R.string.book_was_updated, Toast.LENGTH_SHORT).show();
                 finish();

@@ -7,7 +7,6 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
@@ -83,9 +82,9 @@ public class LoginDialogFragment extends DialogFragment implements DialogInterfa
 
     private static void signInAsync(Context context, Credentials credentials, boolean savePassword)  {
         AccessManager accessManager = AccessManagerFactory.getInstance();
-        new ProgressDialogAsyncTask<Void,Void,WrongLoginException>(context, "Logining in") {
+        new ProgressDialogAsyncTask<Void,Void,WrongLoginException>(context, R.string.logining_in) {
             @Override
-            protected WrongLoginException doInBackground1(Void... params) {
+            protected WrongLoginException retrieveDataAsync(Void... params) {
                 try {
                     accessManager.signIn(credentials);
                     Credentials savingCredentials = savePassword ? credentials : new Credentials(credentials.getUsername(), "");
@@ -97,7 +96,7 @@ public class LoginDialogFragment extends DialogFragment implements DialogInterfa
                 }
             }
             @Override
-            protected void onPostExecute1(WrongLoginException e) {
+            protected void doByData(WrongLoginException e) {
                 if (e != null) {
                     int errorMessage;
                     switch (e.getIssue()) {
