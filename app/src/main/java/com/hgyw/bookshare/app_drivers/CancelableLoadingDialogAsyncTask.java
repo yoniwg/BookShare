@@ -1,7 +1,9 @@
 package com.hgyw.bookshare.app_drivers;
 
-import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.support.annotation.MainThread;
 import android.support.annotation.StringRes;
@@ -16,28 +18,31 @@ import com.hgyw.bookshare.dataAccess.DataAccessIoException;
  */
 public abstract class CancelableLoadingDialogAsyncTask<Params,Progress, Result> extends AsyncTask<Params,Progress,OptionalResult<Result,DataAccessIoException>>  {
 
-    private final Activity activity;
+    private final Context context;
     private final int dialogMessage;
     private ProgressDialog progressDialog;
 
-    public CancelableLoadingDialogAsyncTask(Activity activity) {
-        this(activity, R.string.loading);
+    public CancelableLoadingDialogAsyncTask(Context context) {
+        this(context, R.string.loading);
     }
 
-    public CancelableLoadingDialogAsyncTask(Activity activity, @StringRes int updating_book_supplying) {
-        this.activity = activity;
+    public CancelableLoadingDialogAsyncTask(Context context, @StringRes int updating_book_supplying) {
+        this.context = context;
         this.dialogMessage = updating_book_supplying;
     }
 
     @Override
     protected void onPreExecute() {
-        progressDialog = new ProgressDialog(activity);
+        progressDialog = new ProgressDialog(context);
         progressDialog.setTitle(R.string.please_wait);
-        progressDialog.setMessage(activity.getString(dialogMessage) + "...");
+        progressDialog.setMessage(context.getString(dialogMessage) + "...");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDialog.setIndeterminate(true);
-        progressDialog.setCancelable(true);
-        progressDialog.setOnCancelListener(dialog ->  onCancel());
+        progressDialog.setCancelable(false);
+        progressDialog.setButton(DialogInterface.BUTTON_NEGATIVE,
+                context.getString(R.string.cancel),
+                (dialog, whitch) -> { cancel(false); onCancel(); }
+        );
         progressDialog.show();
     }
 
@@ -52,12 +57,11 @@ public abstract class CancelableLoadingDialogAsyncTask<Params,Progress, Result> 
 
     @Override
     protected final void onPostExecute(OptionalResult<Result,DataAccessIoException> result) {
-        System.out.println("dialogIsShowing: " + progressDialog.isShowing());
-        boolean dialogIsShowing = progressDialog.isShowing();
+        System.out.println("dialog is showing:" + progressDialog.isShowing() + " Window is active: " + progressDialog.getWindow().isActive());        boolean dialogIsShowing = progressDialog.isShowing();
         if (result.hasResult()) {
             if (dialogIsShowing) progressDialog.setCancelable(false);
             doByData(result.getResult());
-            System.out.println("dialogIsShowing: " + progressDialog.isShowing());
+            System.out.println("dialog is showing:" + progressDialog.isShowing() + " Window is active: " + progressDialog.getWindow().isActive());
             if (dialogIsShowing) progressDialog.dismiss();
         } else {
             if (dialogIsShowing) progressDialog.dismiss();
@@ -67,8 +71,9 @@ public abstract class CancelableLoadingDialogAsyncTask<Params,Progress, Result> 
 
     @MainThread
     protected void onDataAccessIoException(DataAccessIoException e) {
-        Toast.makeText(activity, e.getMessage(), Toast.LENGTH_LONG).show();
-        onCancelled();
+        String message = "Connection Error: \n" + e.getMessage();
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+        onCancel();
     }
 
     @WorkerThread
@@ -77,5 +82,10 @@ public abstract class CancelableLoadingDialogAsyncTask<Params,Progress, Result> 
     @MainThread
     protected abstract void doByData(Result o);
 
+    /**
+     * Invoked by network error, or in cancel by user immediately (in opposite of
+     * {@link #onCancelled} method that's invoked at the end of {@link #doInBackground} method
+     * execution). <br/>
+     */
     protected abstract void onCancel();
 }

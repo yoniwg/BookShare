@@ -1,17 +1,9 @@
 package com.hgyw.bookshare.dataAccess;
 
 import com.annimon.stream.Collectors;
-import com.annimon.stream.Optional;
 import com.annimon.stream.Stream;
-import com.hgyw.bookshare.entities.Book;
-import com.hgyw.bookshare.entities.BookQuery;
-import com.hgyw.bookshare.entities.BookSummary;
-import com.hgyw.bookshare.entities.Credentials;
 import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.entities.IdReference;
-import com.hgyw.bookshare.entities.Order;
-import com.hgyw.bookshare.entities.User;
-import com.hgyw.bookshare.entities.reflection.EntityReflection;
 import com.hgyw.bookshare.entities.reflection.JsonReflection;
 import com.hgyw.bookshare.entities.reflection.Property;
 
@@ -23,9 +15,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -87,9 +77,9 @@ class MysqlDataAccess extends SqlDataAccess implements DataAccess {
 
     private String sendStatementHttpPost1(String statement)  {
         try {
-            HttpRequest hr = new HttpRequest(new URL(GET_DATA_URL),
+            HttpAsync hr = new HttpAsync(new URL(GET_DATA_URL),
                     Collections.singletonMap("statement", statement),
-                    HttpRequest.POST);
+                    HttpAsync.POST);
             hr.sendRequest();
             return hr.getReply();
         } catch (InterruptedException | ExecutionException e) {
@@ -113,18 +103,6 @@ class MysqlDataAccess extends SqlDataAccess implements DataAccess {
     ///////////////////////////////
 
 
-    @Override
-    public void delete(IdReference item) {
-        String sql = String.format("UPDATE %s SET %s=%s WHERE %s=%s",
-                tableName(item.getEntityType()),
-                "deleted",
-                true,
-                ID_KEY,
-                item.getId()
-        );
-        sendStatementHttpPost(sql);
-    }
-
     protected  <T> List<T> retrieveEntityFromDb(Class<T> type, String statement) {
         try {
             System.out.println("Starting ask sql: " + statement);
@@ -144,32 +122,25 @@ class MysqlDataAccess extends SqlDataAccess implements DataAccess {
     }
 
     @Override
-    protected long createItemDb(Entity item) {
-        Collection<Property> properties = jsonReflection.getProperties(item.getClass()).values();
-        String fields = Stream.of(properties)
-                .map(Property::getName)
-                .collect(Collectors.joining(","));
-        String values = Stream.of(properties)
-                .map(p -> sqlValue(p.get(item)))
-                .collect(Collectors.joining(","));
-        String statement = String.format("INSERT INTO %s (%s) VALUES (%s)",
-                tableName(item.getClass()), fields, values);
-        System.out.println("Starting createItem: " + statement);
-        String newId = sendStatementHttpPost(statement);
-        return Long.parseLong(newId);
+    protected Collection<Property> getProperties(Class<?> aClass) {
+        return jsonReflection.getProperties(aClass).values();
+    }
+
+    @Override
+    protected long executeCreateSql(String  sql) {
+        String result = sendStatementHttpPost(sql);
+        return Long.parseLong(result);
+    }
+
+    @Override
+    protected  void executeSql(String sql) {
+        sendStatementHttpPost(sql);
     }
 
     @Override
     protected void updateItemDb(Entity item) {
-        Collection<Property> properties = jsonReflection.getProperties(item.getClass()).values();
-        String keyValues = Stream.of(properties)
-                .filter(p -> !p.getName().equals(ID_KEY))
-                .map(p -> p.getName() + "=" + sqlValue(p.get(item)))
-                .collect(Collectors.joining(","));
-        String statement = String.format("UPDATE %s SET %s WHERE %s=%s",
-                tableName(item.getClass()), keyValues, ID_KEY, item.getId());
-        System.out.println("Starting updateItem: " + statement);
-        sendStatementHttpPost(statement);
+
     }
+
 
 }

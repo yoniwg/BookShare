@@ -1,5 +1,7 @@
 package com.hgyw.bookshare.dataAccess;
 
+import android.content.Context;
+
 import com.hgyw.bookshare.MyApplication;
 
 /**
@@ -17,7 +19,14 @@ public class DataAccessFactory {
         },
         SQL_LITE {
             DataAccess createDataAccess() {
-                return new StreamCrudDataAccess(new SqlLiteStreamCrud(MyApplication.getAppContext()));
+                Context appContext = MyApplication.getAppContext();
+                return new StreamCrudDataAccess(new SqlLiteStreamCrud(appContext));
+            }
+        },
+        SQL_LITE2 {  // TODO!
+            DataAccess createDataAccess() {
+                Context appContext = MyApplication.getAppContext();
+                return new SqlLiteDataAccess(appContext);
             }
         },
         MY_SQL{

@@ -37,7 +37,7 @@ public abstract class ProgressDialogAsyncTask<Params, Progress, Result> extends 
     protected void onPreExecute() {
         progressDialog = new ProgressDialog(context);
         progressDialog.setTitle(R.string.please_wait);
-        progressDialog.setMessage(message + "...");
+        progressDialog.setMessage(context.getString(message) + "...");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDialog.setIndeterminate(true);
         progressDialog.setCancelable(onCancelListener != null);
@@ -61,7 +61,7 @@ public abstract class ProgressDialogAsyncTask<Params, Progress, Result> extends 
     protected abstract Result retrieveDataAsync(Params... params);
 
     /**
-     * The progress-dialog dismisses af this method is called.
+     * The progress-dialog dismisses at this method is called.
      */
     protected void doByData(Result result) {}
 
@@ -76,6 +76,6 @@ public abstract class ProgressDialogAsyncTask<Params, Progress, Result> extends 
     }
 
     protected void onDataAccessIoException(DataAccessIoException e) {
-        Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
-    }
+        String message = "Connection Error: \n" + e.getMessage();
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();    }
 }

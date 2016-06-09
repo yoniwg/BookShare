@@ -14,11 +14,14 @@ import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.Transaction;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.entities.reflection.EntityReflection;
+import com.hgyw.bookshare.entities.reflection.JsonReflection;
 import com.hgyw.bookshare.entities.reflection.Property;
+import com.hgyw.bookshare.entities.reflection.SqlLiteReflection;
 
 import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -32,6 +35,7 @@ abstract class SqlDataAccess implements DataAccess {
     protected final String ID_KEY;
     protected final String SUB;
     protected final String NON_DELETED_CONDITION = "deleted=" + sqlValue(false);
+    private static final SqlLiteReflection sqlLiteReflection = new SqlLiteReflection();
 
     protected SqlDataAccess(String id, String sub) {
         ID_KEY = id;
@@ -165,20 +169,67 @@ abstract class SqlDataAccess implements DataAccess {
 
     protected abstract <T> List<T> retrieveEntityFromDb(Class<T> type, String statement);
 
-    protected abstract long createItemDb(Entity item);
+    protected long createItemDb(Entity item) {
+        Collection<Property> properties = getProperties(item.getClass());
+        List<String> fieldNames = new ArrayList<>(properties.size());
+        List<String> values = new ArrayList<>(properties.size());
+        Stream.of(properties)
+                .filter(p -> !p.getName().equals(ID_KEY))
+                .forEach(p -> {
+                    fieldNames.add(p.getName());
+                    values.add(sqlValue(p.get(item)));
+                });
 
-    protected abstract void updateItemDb(Entity item);
+        String sql = String.format("INSERT INTO %s (%s) VALUES (%s)",
+                tableName(item.getClass()),
+                Stream.of(fieldNames).collect(Collectors.joining(",")),
+                Stream.of(values).collect(Collectors.joining(","))
+        );
+        System.out.println("Starting createItem: " + sql);
+        return executeCreateSql(sql);
+    }
+
+
+    protected void updateItemDb(Entity item) {
+        Collection<Property> properties = getProperties(item.getClass());
+        String keyValues = Stream.of(properties)
+                .filter(p -> !p.getName().equals(ID_KEY))
+                .map(p -> p.getName() + "=" + sqlValue(p.get(item)))
+                .collect(Collectors.joining(","));
+        String statement = String.format("UPDATE %s SET %s WHERE %s=%s",
+                tableName(item.getClass()), keyValues, ID_KEY, item.getId());
+        System.out.println("Starting updateItem: " + statement);
+        executeSql(statement);
+    }
+
+    protected abstract Collection<Property> getProperties(Class<?> aClass);
+
+    protected abstract long executeCreateSql(String sql);
+
+    protected abstract void executeSql(String sql);
 
     @Override
-    public abstract void delete(IdReference item);
+    public void delete(IdReference item) {
+        String sql = String.format("UPDATE %s SET %s=%s WHERE %s=%s",
+                tableName(item.getEntityType()),
+                "deleted",
+                true,
+                ID_KEY,
+                item.getId()
+        );
+        executeSql(sql);
+    }
+
 
     @Override
     public BookSummary getBookSummary(Book book) {
-        String sql = MessageFormat.format("SELECT COALESCE(MIN({0}),{4}) AS minPrice, COALESCE(MAX({0}),{4}) AS maxPrice FROM {1} WHERE {2}={3}",
+        String sqlFormat = "SELECT COALESCE(MIN({0}),{1}) AS minPrice, COALESCE(MAX({0}),{1}) AS maxPrice " + "FROM {2} " + "WHERE {3} AND {4}={5}";
+        String sql = MessageFormat.format(sqlFormat,
                 "price",
+                BigDecimal.ZERO,
                 tableName(BookSupplier.class),
-                "bookId", book.getId(),
-                BigDecimal.ZERO
+                NON_DELETED_CONDITION,
+                "bookId", book.getId()
         );
         List<BookSummary> results = retrieveEntityFromDb(BookSummary.class, sql);
         if (results.isEmpty()) throw new NoSuchElementException("No book with id " + book.getId());

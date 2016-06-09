@@ -223,9 +223,7 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
             }
 
             @Override
-            protected void onCancel() {
-                activity.finish();
-            }
+            protected void onCancel() { /* Do nothing */ }
         }.execute();
     }
 

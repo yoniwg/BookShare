@@ -20,7 +20,7 @@ import java.util.concurrent.ExecutionException;
 /**
  * Created by Yoni on 5/27/2016.
  */
-public class HttpRequest extends AsyncTask<Void,Void,String> {
+public class HttpAsync extends AsyncTask<Void,Void,String> {
 
     public final static String POST = "POST";
     public final static String GET = "GET";
@@ -33,7 +33,7 @@ public class HttpRequest extends AsyncTask<Void,Void,String> {
     private HttpURLConnection connection;
     private Exception exception;
 
-    public HttpRequest(URL url, Map<String,String> request, String type) {
+    public HttpAsync(URL url, Map<String,String> request, String type) {
         this.url = url;
         this.request = request;
         this.type = type;

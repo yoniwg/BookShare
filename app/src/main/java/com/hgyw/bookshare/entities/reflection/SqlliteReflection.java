@@ -2,6 +2,7 @@ package com.hgyw.bookshare.entities.reflection;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.util.Base64;
 
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
@@ -20,18 +21,16 @@ public class SqlLiteReflection  {
 
 
     protected static final String SUB_PROPERTY_SEPARATOR = "_";
-    protected static final String ID_KEY_OBJECT = "id";
-    public static final String ID_KEY_SQL = "_id";
+    public static final String ID_KEY_SQL = "id";
 
     private final ConvertersCollection sqlLiteConverters = new ConvertersCollection(
             Converters.ofIdentity(Integer.class),
             Converters.ofIdentity(Long.class),
             Converters.ofIdentity(String.class),
-            Converters.ofIdentity(byte[].class),
-            Converters.ofIdentity(Boolean.class),//Converters.simple(Boolean.class, Integer.class, b -> b?1:0, i -> i==1),
+            Converters.simple(Boolean.class, Integer.class, b->(b)?1:0, i->i==1),
+            Converters.simple(byte[].class, String.class, arr -> Base64.encodeToString(arr, 0), str -> Base64.decode(str,0)), //Converters.ofIdentity(byte[].class),
             Converters.simple(BigDecimal.class, String.class, Object::toString, BigDecimal::new),
-            Converters.simple(Date.class, Long.class, Date::getTime, Date::new),
-            Converters.simple(java.sql.Date.class, Long.class, Date::getTime, java.sql.Date::new),
+            Converters.inherit(Date.class, Long.class, Date::getTime, Converters::newDate, type -> Converters.newDate(type, 0)),
             Converters.inherit(Enum.class, Integer.class, Enum::ordinal, (type, value) -> type.getEnumConstants()[value])
     );
 
@@ -49,12 +48,11 @@ public class SqlLiteReflection  {
 
     private final Map<Class, Map<String, Property>> propertiesMap = new HashMap<>();
 
-    private Map<String,Property> getProperties(Class aClass) {
+    public Map<String,Property> getProperties(Class aClass) {
         Map<String, Property> properties = propertiesMap.get(aClass);
         if (properties == null) {
             properties = Stream.of(Properties.getFlatProperties(aClass, SUB_PROPERTY_SEPARATOR, sqlLiteConverters))
                     .filter(Property::canWrite)
-                    .map(p -> p.getName().equals(ID_KEY_OBJECT) ? Properties.renameProperty(p, ID_KEY_SQL) : p)
                     .map(p -> Properties.convertProperty(p, sqlLiteConverters.findConverterOrThrow(p.getPropertyType())))
                     .collect(Collectors.toMap(Property::getName, o -> o));
             propertiesMap.put(aClass, properties);
@@ -73,8 +71,8 @@ public class SqlLiteReflection  {
         else if (type == Double.class) cv.put(key, (Double) value);
         else if (type == Float.class) cv.put(key, (Float) value);
         else if (type == String.class) cv.put(key, (String) value);
-        else if (type == Book.class) cv.put(key, (Boolean) value);
         else if (type == byte[].class) cv.put(key, (byte[]) value);
+        else if (type == Book.class) cv.put(key, (Boolean) value);
         else throw new RuntimeException("No method in " + ContentValues.class + " to put object of " + type);
     }
 

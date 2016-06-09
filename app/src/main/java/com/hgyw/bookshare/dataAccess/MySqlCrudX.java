@@ -72,9 +72,9 @@ public class MySqlCrudX implements Crud {
         statement.append(" ENGINE = InnoDB;");
         HashMap<String,String> request = new HashMap<>();
         request.put("statement", statement.toString());
-        HttpRequest hr = null;
+        HttpAsync hr = null;
         try {
-            hr = new HttpRequest(new URL(DB_URL), request, HttpRequest.POST);
+            hr = new HttpAsync(new URL(DB_URL), request, HttpAsync.POST);
             hr.sendRequest();
         } catch (IOException e) {
             e.printStackTrace();

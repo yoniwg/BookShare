@@ -19,7 +19,7 @@
                 android:src="@drawable/image_user"
                 android:layout_gravity="center_horizontal"
                 android:layout_margin="5dp"
-                android:scaleType="fitCenter" />
+                android:scaleType="centerCrop" />
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"

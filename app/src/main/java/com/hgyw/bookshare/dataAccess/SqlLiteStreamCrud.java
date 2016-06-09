@@ -21,6 +21,7 @@ import java.util.NoSuchElementException;
 /**
  * Created by haim7 on 24/05/2016.
  */
+@Deprecated
 class SqlLiteStreamCrud extends SQLiteOpenHelper implements StreamCrud {
 
     private static final String DATABASE_NAME = "booksAppDataBase";
