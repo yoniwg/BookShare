@@ -6,7 +6,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.annimon.stream.Collectors;
-import com.annimon.stream.Stream;
 import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.entities.reflection.EntityReflection;
 import com.hgyw.bookshare.entities.reflection.Property;
@@ -30,7 +29,7 @@ public class SqlLiteDataAccess extends SqlDataAccess {
     private final SQLiteOpenHelper openHelper;
 
     protected SqlLiteDataAccess(Context context) {
-        super(SqlLiteReflection.ID_KEY_SQL, "_");
+        super(SqlLiteReflection.ID_KEY_SQL, "_", null); //TODO
         this.context = context;
         openHelper = new SQLiteOpenHelper(context, DATABASE_NAME , null, DATABASE_VERSION) {
             private void createTableIfNotExists(SQLiteDatabase db, Class<? extends Entity> type) {
@@ -90,11 +89,6 @@ public class SqlLiteDataAccess extends SqlDataAccess {
 
 
     @Override
-    protected Collection<Property> getProperties(Class<?> aClass) {
-        return sqlLiteReflection.getProperties(aClass).values();
-    }
-
-    @Override
     protected synchronized long executeCreateSql(String sql) {
         openHelper.getWritableDatabase().execSQL(sql);
         return getLastID();
@@ -106,7 +100,7 @@ public class SqlLiteDataAccess extends SqlDataAccess {
     }
 
     @Override
-    protected <T> List<T> retrieveEntityFromDb(Class<T> type, String sql) {
+    protected <T> List<T> executeResultSql(Class<T> type, String sql) {
         List<T> items = new ArrayList<>();
         Cursor result = openHelper.getReadableDatabase().rawQuery(sql, null);
 

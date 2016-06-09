@@ -27,11 +27,11 @@ public class SqlLiteReflection  {
             Converters.ofIdentity(Integer.class),
             Converters.ofIdentity(Long.class),
             Converters.ofIdentity(String.class),
-            Converters.simple(Boolean.class, Integer.class, b->(b)?1:0, i->i==1),
-            Converters.simple(byte[].class, String.class, arr -> Base64.encodeToString(arr, 0), str -> Base64.decode(str,0)), //Converters.ofIdentity(byte[].class),
-            Converters.simple(BigDecimal.class, String.class, Object::toString, BigDecimal::new),
-            Converters.inherit(Date.class, Long.class, Date::getTime, Converters::newDate, type -> Converters.newDate(type, 0)),
-            Converters.inherit(Enum.class, Integer.class, Enum::ordinal, (type, value) -> type.getEnumConstants()[value])
+            Converters.fullConverter(Boolean.class, Integer.class, b->(b)?1:0, i->i==1),
+            Converters.fullConverter(byte[].class, String.class, arr -> Base64.encodeToString(arr, 0), str -> Base64.decode(str,0)), //Converters.ofIdentity(byte[].class),
+            Converters.fullConverter(BigDecimal.class, String.class, Object::toString, BigDecimal::new),
+            Converters.fullConverterInherit(Date.class, Long.class, Date::getTime, Converters::newDate, type -> Converters.newDate(type, 0)),
+            Converters.fullConverterInherit(Enum.class, Integer.class, Enum::ordinal, (type, value) -> type.getEnumConstants()[value])
     );
 
 
@@ -51,9 +51,9 @@ public class SqlLiteReflection  {
     public Map<String,Property> getProperties(Class aClass) {
         Map<String, Property> properties = propertiesMap.get(aClass);
         if (properties == null) {
-            properties = Stream.of(Properties.getFlatProperties(aClass, SUB_PROPERTY_SEPARATOR, sqlLiteConverters))
+            properties = Stream.of(Properties.getFlatProperties(aClass, SUB_PROPERTY_SEPARATOR, sqlLiteConverters::canConvertFrom))
                     .filter(Property::canWrite)
-                    .map(p -> Properties.convertProperty(p, sqlLiteConverters.findConverterOrThrow(p.getPropertyType())))
+                    .map(p -> Properties.convertProperty(p, sqlLiteConverters.findFullConverter(p.getPropertyType())))
                     .collect(Collectors.toMap(Property::getName, o -> o));
             propertiesMap.put(aClass, properties);
         }

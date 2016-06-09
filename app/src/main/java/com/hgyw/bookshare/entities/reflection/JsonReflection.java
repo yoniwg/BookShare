@@ -26,13 +26,13 @@ public class JsonReflection  {
             Converters.ofIdentity(Integer.class),
             Converters.ofIdentity(Long.class),
             Converters.ofIdentity(Double.class),
-            Converters.simple(Boolean.class, Integer.class, b->(b)?1:0, i->i==1),
-            Converters.simple(byte[].class, String.class, arr -> Base64.encodeToString(arr, 0), str -> Base64.decode(str,0)),
-            Converters.simple(BigDecimal.class, String.class, Object::toString, BigDecimal::new, BigDecimal.ZERO),
-            //Converters.simple(Date.class, Long.class, Date::getTime, Date::new, 0L),
-            //Converters.simple(java.sql.Date.class, Long.class, Date::getTime, java.sql.Date::new, 0L),
-            Converters.inherit(Date.class, Long.class, Date::getTime, Converters::newDate, type -> Converters.newDate(type, 0)),
-            Converters.inherit(Enum.class, Integer.class, Enum::ordinal, (type, i) -> type.getEnumConstants()[i], type -> type.getEnumConstants()[0])
+            Converters.fullConverter(Boolean.class, Integer.class, b->(b)?1:0, i->i==1),
+            Converters.fullConverter(byte[].class, String.class, arr -> Base64.encodeToString(arr, 0), str -> Base64.decode(str,0)),
+            Converters.fullConverter(BigDecimal.class, String.class, Object::toString, BigDecimal::new, BigDecimal.ZERO),
+            //Converters.fullConverter(Date.class, Long.class, Date::getTime, Date::new, 0L),
+            //Converters.fullConverter(java.sql.Date.class, Long.class, Date::getTime, java.sql.Date::new, 0L),
+            Converters.fullConverterInherit(Date.class, Long.class, Date::getTime, Converters::newDate, type -> Converters.newDate(type, 0)),
+            Converters.fullConverterInherit(Enum.class, Integer.class, Enum::ordinal, (type, i) -> type.getEnumConstants()[i], type -> type.getEnumConstants()[0])
     );
 
     private final Map<Class, Map<String, Property>> propertiesMap = new HashMap<>();
@@ -40,9 +40,9 @@ public class JsonReflection  {
     public Map<String,Property> getProperties(Class aClass) {
         Map<String, Property> properties = propertiesMap.get(aClass);
         if (properties == null) {
-            properties = Stream.of(Properties.getFlatProperties(aClass, SUB_PROPERTY_SEPARATOR, jsonConverters))
+            properties = Stream.of(Properties.getFlatProperties(aClass, SUB_PROPERTY_SEPARATOR, jsonConverters::canConvertFrom))
                     .filter(Property::canWrite)
-                    .map(p -> Properties.convertProperty(p, jsonConverters.findConverterOrThrow(p.getPropertyType())))
+                    .map(p -> Properties.convertProperty(p, jsonConverters.findFullConverter(p.getPropertyType())))
                     .collect(Collectors.toMap(Property::getName, o -> o));
             propertiesMap.put(aClass, properties);
         }

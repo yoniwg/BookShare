@@ -69,14 +69,6 @@ public class Utility {
     }
 
     /**
-     * Call to {@link #setImageById}{@code (imageView, entityImageId, 0)}.
-     */
-    @Deprecated
-    public static void setImageById(ImageView imageView, long entityImageId) {
-        setImageById(imageView, entityImageId, 0);
-    }
-
-    /**
      * Set ImageView to imageId of entities.
      * @param imageView
      * @param entityImageId
@@ -101,16 +93,19 @@ public class Utility {
             }.execute();
     }
 
+    /**
+     * @param imageView view to set the image into.
+     * @param entityImageBytes if null or length=0 set the {@code defaultImage}
+     * @param defaultImage if 0 then does nothing
+     */
     public static void setImageByBytes(ImageView imageView, byte[] entityImageBytes, @DrawableRes int defaultImage) {
         Bitmap bitmap;
         // if no image set default
         if (entityImageBytes == null || entityImageBytes.length == 0) {
             if (defaultImage != 0) {
                 imageView.setImageResource(defaultImage);
-                return;
-            }else {
-                bitmap = BitmapFactory.decodeByteArray(new byte[1],0,0);
             }
+            return;
         }else {
             bitmap = BitmapFactory.decodeByteArray(entityImageBytes, 0, entityImageBytes.length);
             bitmap = getCroppedBitmap(bitmap, imageView.getLayoutParams().width);
@@ -144,10 +139,11 @@ public class Utility {
     }
 
     public static String moneyRangeToString(BigDecimal minPrice, BigDecimal maxPrice) {
-        String minString = moneyToString(minPrice);
-        String maxString = moneyToString(maxPrice);
-        if (minString.equals(maxString)) return minString;
-        return minString + " \u2014 " + maxString;
+        if (minPrice.compareTo(maxPrice) == 0) {
+            if (minPrice.compareTo(BigDecimal.ZERO) == 0) return "---";
+            return moneyToString(minPrice);
+        }
+        return moneyToString(minPrice) + " \u2014 " + moneyToString(maxPrice);
     }
 
     public static String userNameToString(User user) {
@@ -212,7 +208,7 @@ public class Utility {
             }
             return bmp;
         } catch (IOException e) {
-            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show(); // TODO
             return null;
         }
     }
@@ -232,7 +228,7 @@ public class Utility {
                 .create().show();
     }
 
-    public static Bitmap getCroppedBitmap(Bitmap bmp, int radius) {
+    private static Bitmap getCroppedBitmap(Bitmap bmp, int radius) {
         Bitmap sbmp;
 
         if (bmp.getWidth() != radius || bmp.getHeight() != radius) {
@@ -287,6 +283,9 @@ public class Utility {
 
     }
 
+    /**
+     * Compress image for upload to data-base
+     */
     public static byte[] compress(Bitmap newImage) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         newImage.compress(Bitmap.CompressFormat.JPEG, 50, out);
