@@ -69,14 +69,6 @@ public class Utility {
     }
 
     /**
-     * Call to {@link #setImageById}{@code (imageView, entityImageId, 0)}.
-     */
-    @Deprecated
-    public static void setImageById(ImageView imageView, long entityImageId) {
-        setImageById(imageView, entityImageId, 0);
-    }
-
-    /**
      * Set ImageView to imageId of entities.
      * @param imageView
      * @param entityImageId
@@ -101,19 +93,22 @@ public class Utility {
             }.execute();
     }
 
+    /**
+     * @param imageView view to set the image into.
+     * @param entityImageBytes if null or length=0 set the {@code defaultImage}
+     * @param defaultImage if 0 then does nothing
+     */
     public static void setImageByBytes(ImageView imageView, byte[] entityImageBytes, @DrawableRes int defaultImage) {
         Bitmap bitmap;
         // if no image set default
         if (entityImageBytes == null || entityImageBytes.length == 0) {
             if (defaultImage != 0) {
                 imageView.setImageResource(defaultImage);
-                return;
-            }else {
-                bitmap = BitmapFactory.decodeByteArray(new byte[1],0,0);
             }
+            return;
         }else {
             bitmap = BitmapFactory.decodeByteArray(entityImageBytes, 0, entityImageBytes.length);
-            bitmap = getCroppedBitmap(bitmap, imageView.getWidth());
+            bitmap = getCroppedBitmap(bitmap, imageView.getWidth()); // TODO error in rotate screen too
         }
         imageView.setImageBitmap(bitmap);
     }
