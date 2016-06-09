@@ -174,6 +174,8 @@
     <string name="confirm_receive">Confirm Receive</string>
     <string name="confirm_receive_message">Do you confirm the order has been received by you?</string>
     <string name="toast_order_closed">The order has been closed</string>
-    <string name="logining_in">logning_in</string>
+    <string name="logining_in">logning in</string>
     <string name="prossecing">Prossecing</string>
+    <string name="connection_error_title">Connection Error</string>
+    <string name="try_again">Try again</string>
 </resources>

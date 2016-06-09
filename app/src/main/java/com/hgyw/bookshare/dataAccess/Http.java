@@ -4,7 +4,6 @@ import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -23,42 +22,55 @@ public class Http {
 
     private static final String UTF_8 = StandardCharsets.UTF_8.name();
 
-    public static String get(String url) throws IOException {
-        URL obj = new URL(url);
-        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+    /**
+     * Get http
+     */
+    public static String get(String urlString) throws IOException {
+        URL url = new URL(urlString);
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
-        if (con.getResponseCode() == HttpURLConnection.HTTP_OK) { // success
-            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            String inputLine;
-            StringBuilder response = new StringBuilder();
-            while ((inputLine = in.readLine()) != null) response.append(inputLine);
-            in.close();
-            return response.toString();
-        } else {
-            return "";
-        }
+        return readAllOfHttpUrlConnection(con);
     }
 
-    public static String post(String url, Map<String,?> params) throws IOException {
-        String postData = Stream.of(params.entrySet())
-                .map(kv -> encodeUrlText(kv.getKey()) + '=' + encodeUrlText(kv.getValue().toString()))
+    public static String get(String urlString, Map<String,?> params) throws IOException {
+        String parametersString = Stream.of(params.entrySet())
+                .map(kv -> encodeUrl(kv.getKey()) + '=' + encodeUrl(kv.getValue().toString()))
                 .collect(Collectors.joining("&"));
-        URL obj = new URL(url);
-        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        return get(urlString + "?" + parametersString);
+    }
+
+    /**
+     * Post http
+     */
+    public static String post(String urlString, Map<String,?> params) throws IOException {
+        String parametersString = Stream.of(params.entrySet())
+                .map(kv -> encodeUrl(kv.getKey()) + '=' + encodeUrl(kv.getValue().toString()))
+                .collect(Collectors.joining("&"));
+        URL url = new URL(urlString);
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("POST");
 
         // For POST only - START
         con.setDoOutput(true);
         OutputStream os = con.getOutputStream();
-        os.write(postData.getBytes(UTF_8));
+        os.write(parametersString.getBytes(UTF_8));
         os.flush();
         os.close();
         // For POST only - END
 
+        return readAllOfHttpUrlConnection(con);
+    }
+
+    /**
+     * read all output of http connection
+     * @param con an {@link HttpURLConnection} object
+     * @return String of connection output
+     * @throws HttpRetryException if response code is not equals to {@link HttpURLConnection#HTTP_OK}.
+     * @throws IOException on I/O error
+     */
+    private static String readAllOfHttpUrlConnection(HttpURLConnection con) throws IOException {
         int responseCode = con.getResponseCode();
-        System.out.println("POST Response Code :: " + responseCode);
-         //success
-        if (responseCode == HttpURLConnection.HTTP_OK) {
+        if (responseCode == HttpURLConnection.HTTP_OK) { //success
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String inputLine;
             StringBuilder response = new StringBuilder();
@@ -70,11 +82,14 @@ public class Http {
         }
     }
 
-    private static String encodeUrlText(String text) {
+    /**
+     * Encode text to uri string for post http
+     */
+    private static String encodeUrl(String text) {
         try {
             return URLEncoder.encode(text, UTF_8);
         } catch (UnsupportedEncodingException e) {
-            return "";
+            throw new InternalError("Should not occurs because the charset is legal");
         }
     }
 }

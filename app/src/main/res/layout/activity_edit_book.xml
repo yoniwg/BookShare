@@ -10,7 +10,7 @@
         android:id="@+id/bookImage"
         android:layout_gravity="center_horizontal"
         android:src="@drawable/image_book"
-        android:scaleType="fitCenter" />
+        android:scaleType="centerCrop" />
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
