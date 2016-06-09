@@ -7,6 +7,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.media.Image;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
@@ -28,12 +35,8 @@ import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.Credentials;
 import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.entities.ImageEntity;
-import com.hgyw.bookshare.entities.Transaction;
 import com.hgyw.bookshare.entities.User;
-import com.hgyw.bookshare.logicAccess.AccessManager;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
-import com.hgyw.bookshare.logicAccess.CustomerAccess;
-import com.hgyw.bookshare.logicAccess.GeneralAccess;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -69,8 +72,8 @@ public class Utility {
      * Call to {@link #setImageById}{@code (imageView, entityImageId, 0)}.
      */
     @Deprecated
-    public static boolean setImageById(ImageView imageView, long entityImageId) {
-        return setImageById(imageView, entityImageId, 0);
+    public static void setImageById(ImageView imageView, long entityImageId) {
+        setImageById(imageView, entityImageId, 0);
     }
 
     /**
@@ -81,45 +84,38 @@ public class Utility {
      *                          nothing in such case)
      * @return true
      */
-    public static boolean setImageById(ImageView imageView, long entityImageId, @DrawableRes int defaultImageResId) {
-        // first remove the current image
-        imageView.setImageDrawable(null);
-        // set default image if no image
-        if (entityImageId == Entity.DEFAULT_ID) {
-            if (defaultImageResId != 0) imageView.setImageResource(defaultImageResId);
-        }
-        // else set the image
-        else {
-            new AsyncTask<Void, Void, Bitmap>() {
+    public static void setImageById(ImageView imageView, long entityImageId, @DrawableRes int defaultImageResId) {
+        new AsyncTask<Void, Void, byte[]>() {
                 @Override
-                protected Bitmap doInBackground(Void... params) {
+                protected byte[] doInBackground(Void... params) {
+                    if(entityImageId == Entity.DEFAULT_ID){
+                        return null;
+                    }
                     ImageEntity imageEntity = AccessManagerFactory.getInstance().getGeneralAccess().retrieve(ImageEntity.class, entityImageId);
-                    byte[] bytes = imageEntity.getBytes();
-                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                    return bitmap;
+                    return imageEntity.getBytes();
                 }
                 @Override
-                protected void onPostExecute(Bitmap bitmap) {
-                    imageView.setImageBitmap(bitmap);
+                protected void onPostExecute(byte[] bytes) {
+                    setImageByBytes(imageView, bytes, defaultImageResId);;
                 }
             }.execute();
-        }
-        return true;
     }
 
-    public static boolean setImageByBytes(ImageView imageView, byte[] entityImageBytes, @DrawableRes int defaultImage) {
-
-        // end if no new image
+    public static void setImageByBytes(ImageView imageView, byte[] entityImageBytes, @DrawableRes int defaultImage) {
+        Bitmap bitmap;
+        // if no image set default
         if (entityImageBytes == null || entityImageBytes.length == 0) {
-            if (defaultImage != 0){
+            if (defaultImage != 0) {
                 imageView.setImageResource(defaultImage);
-                return true;
+                return;
+            }else {
+                bitmap = BitmapFactory.decodeByteArray(new byte[1],0,0);
             }
-            return false;
+        }else {
+            bitmap = BitmapFactory.decodeByteArray(entityImageBytes, 0, entityImageBytes.length);
+            bitmap = getCroppedBitmap(bitmap, imageView.getWidth());
         }
-        Bitmap bitmap = BitmapFactory.decodeByteArray(entityImageBytes, 0, entityImageBytes.length);
         imageView.setImageBitmap(bitmap);
-        return true;
     }
 
 
@@ -236,6 +232,38 @@ public class Utility {
                 .create().show();
     }
 
+    public static Bitmap getCroppedBitmap(Bitmap bmp, int radius) {
+        Bitmap sbmp;
+
+        if (bmp.getWidth() != radius || bmp.getHeight() != radius) {
+            float smallest = Math.min(bmp.getWidth(), bmp.getHeight());
+            float factor = smallest / radius;
+            sbmp = Bitmap.createScaledBitmap(bmp, (int)(bmp.getWidth() / factor), (int)(bmp.getHeight() / factor), false);
+        } else {
+            sbmp = bmp;
+        }
+
+        Bitmap output = Bitmap.createBitmap(radius, radius,
+                Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
+
+        final int color = 0xffa19774;
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0, 0, radius, radius);
+
+        paint.setAntiAlias(true);
+        paint.setFilterBitmap(true);
+        paint.setDither(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(Color.parseColor("#BAB399"));
+        canvas.drawCircle(radius / 2 + 0.7f,
+                radius / 2 + 0.7f, radius / 2 + 0.1f, paint);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(sbmp, rect, rect, paint);
+
+        return output;
+    }
+
     public static SharedPreferences getSharedPreferences(Context context) {
         return context.getSharedPreferences(context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
     }
@@ -298,5 +326,6 @@ public class Utility {
         while (--itemPosition >= 0 && adapter.getItemId(itemPosition) == item.getId());
         if (itemPosition >= 0) adapter.insert(item, itemPosition);
     }
+
 
 }
