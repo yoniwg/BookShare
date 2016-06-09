@@ -45,18 +45,18 @@ public abstract class ListApplyObjectAdapter<T> extends ApplyObjectAdapter<T> {
             return buffer.get(key);
         }
 
-        public void insert(K view, V items) {
-            if (buffer.containsKey(view)) return;
+        public void insert(K key, V value) {
+            if (buffer.containsKey(key)) return;
             if (buffer.size() > maxBufferSize){
                 buffer.remove(bufferQueue.peek());
             }
-            buffer.put(view, items);
+            buffer.put(key, value);
         }
     }
 
 
     final Map<View,AsyncTask<Void, Void, Object[]>> asyncTasks = new HashMap<>();
-    final SimpleBuffer<View,Object[]> buffer = new SimpleBuffer<>(20);
+    final SimpleBuffer<T,Object[]> buffer = new SimpleBuffer<>(20);
 
     protected ListApplyObjectAdapter(Context context, @LayoutRes int itemLayoutId, List<T> itemsList) {
         super(context, itemLayoutId, itemsList);
@@ -64,14 +64,14 @@ public abstract class ListApplyObjectAdapter<T> extends ApplyObjectAdapter<T> {
 
     @Override
     protected final void applyOnView(View view, int position) {
-        buffer.promoteKey(view);
+        T item = getItem(position);
+        buffer.promoteKey(item);
         view.setVisibility(View.INVISIBLE);
         AsyncTask<Void, Void, Object[]> asyncTask;
         asyncTask = asyncTasks.get(view);
         if (asyncTask != null) asyncTask.cancel(false);
-        T item = getItem(position);
-        if (buffer.containsKey(view)){
-            ListApplyObjectAdapter.this.applyDataOnView(view, item, buffer.get(view));
+        if (buffer.containsKey(item)){
+            ListApplyObjectAdapter.this.applyDataOnView(view, item, buffer.get(item));
             view.setVisibility(View.VISIBLE);
             return;
         }
@@ -83,8 +83,7 @@ public abstract class ListApplyObjectAdapter<T> extends ApplyObjectAdapter<T> {
 
             @Override
             protected void onPostExecute(Object[] items) {
-                buffer.insert(view, items);
-
+                buffer.insert(item, items);
                 if (isCancelled()) return;
                 ListApplyObjectAdapter.this.applyDataOnView(view, item, items);
                 view.setVisibility(View.VISIBLE);

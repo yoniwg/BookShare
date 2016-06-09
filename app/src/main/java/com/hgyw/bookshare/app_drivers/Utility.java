@@ -107,11 +107,15 @@ public class Utility {
         return true;
     }
 
-    public static boolean setImageByBytes(ImageView imageView, byte[] entityImageBytes) {
+    public static boolean setImageByBytes(ImageView imageView, byte[] entityImageBytes, @DrawableRes int defaultImage) {
 
         // end if no new image
         if (entityImageBytes == null || entityImageBytes.length == 0) {
-            return true;
+            if (defaultImage != 0){
+                imageView.setImageResource(defaultImage);
+                return true;
+            }
+            return false;
         }
         Bitmap bitmap = BitmapFactory.decodeByteArray(entityImageBytes, 0, entityImageBytes.length);
         imageView.setImageBitmap(bitmap);

@@ -272,8 +272,9 @@ public class ObjectToViewAppliers {
     }
 
     public static void apply(View view, ImageEntity imageEntity) {
+        if (imageEntity == null) imageEntity = new ImageEntity();
         ImageView imageView = (ImageView) view.findViewById(R.id.bookImage);
-        if (imageView != null && imageEntity != null) Utility.setImageByBytes(imageView,imageEntity.getBytes());
+        if (imageView != null) Utility.setImageByBytes(imageView,imageEntity.getBytes(),R.drawable.image_book);
     }
 
 
