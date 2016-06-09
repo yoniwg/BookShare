@@ -17,7 +17,7 @@
         android:layout_height="70dp"
         android:src="@drawable/image_user"
         android:textAlignment="viewStart"
-        android:scaleType="centerCrop" />
+        android:scaleType="fitCenter" />
 
     <TextView
         android:layout_width="wrap_content"

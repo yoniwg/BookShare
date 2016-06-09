@@ -19,6 +19,7 @@ import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.Transaction;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.entities.UserType;
+import com.hgyw.bookshare.entities.reflection.Property;
 
 /**
  * Created by Yoni on 3/18/2016.

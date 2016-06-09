@@ -113,7 +113,7 @@ public class Utility {
             }
         }else {
             bitmap = BitmapFactory.decodeByteArray(entityImageBytes, 0, entityImageBytes.length);
-            bitmap = getCroppedBitmap(bitmap, imageView.getWidth());
+            bitmap = getCroppedBitmap(bitmap, imageView.getLayoutParams().width);
         }
         imageView.setImageBitmap(bitmap);
     }
