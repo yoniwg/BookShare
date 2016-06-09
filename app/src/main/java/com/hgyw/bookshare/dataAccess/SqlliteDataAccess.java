@@ -8,28 +8,26 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.annimon.stream.Collectors;
 import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.entities.reflection.EntityReflection;
-import com.hgyw.bookshare.entities.reflection.Property;
-import com.hgyw.bookshare.entities.reflection.SqlLiteReflection;
+import com.hgyw.bookshare.entities.reflection.SqlliteReflection;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
  * Created by haim7 on 09/06/2016.
  */
-public class SqlLiteDataAccess extends SqlDataAccess {
+public class SqlliteDataAccess extends SqlDataAccess {
 
     private static final String DATABASE_NAME = "booksAppDataBase";
     private static final int DATABASE_VERSION = 1;
-    private static final SqlLiteReflection sqlLiteReflection = new SqlLiteReflection();
+    private static final SqlliteReflection sqlLiteReflection = new SqlliteReflection();
 
     private final Context context;
 
     private final SQLiteOpenHelper openHelper;
 
-    protected SqlLiteDataAccess(Context context) {
-        super(SqlLiteReflection.ID_KEY_SQL, "_", null); //TODO
+    protected SqlliteDataAccess(Context context) {
+        super(SqlliteReflection.ID_KEY_SQL, "_", null); //TODO
         this.context = context;
         openHelper = new SQLiteOpenHelper(context, DATABASE_NAME , null, DATABASE_VERSION) {
             private void createTableIfNotExists(SQLiteDatabase db, Class<? extends Entity> type) {
@@ -38,7 +36,7 @@ public class SqlLiteDataAccess extends SqlDataAccess {
                         .map(p -> {
                             String columnName = p.getName();
                             String columnType = sqlLiteReflection.getSqlLiteNameOf(p.getPropertyType());
-                            boolean isPrimaryKey = p.getName().equals(SqlLiteReflection.ID_KEY_SQL);
+                            boolean isPrimaryKey = p.getName().equals(SqlliteReflection.ID_KEY_SQL);
                             String primaryKey = isPrimaryKey ? " primary key autoincrement" : "";
                             return columnName + " " + columnType + primaryKey;
                         })
