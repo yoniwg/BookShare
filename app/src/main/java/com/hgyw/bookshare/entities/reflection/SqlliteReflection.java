@@ -17,7 +17,7 @@ import java.util.Map;
 /**
  * Created by haim7 on 25/05/2016.
  */
-public class SqlliteReflection {
+public class SqlLiteReflection {
 
 
     protected static final String SUB_PROPERTY_SEPARATOR = "_";

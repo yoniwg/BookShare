@@ -26,7 +26,7 @@ public class DataAccessFactory {
         SQL_LITE2 {  // TODO!
             DataAccess createDataAccess() {
                 Context appContext = MyApplication.getAppContext();
-                return new SqlliteDataAccess(appContext);
+                return new SqlLiteDataAccess(appContext);
             }
         },
         MY_SQL{

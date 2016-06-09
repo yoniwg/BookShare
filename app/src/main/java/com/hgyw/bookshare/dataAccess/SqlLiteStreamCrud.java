@@ -12,7 +12,7 @@ import com.annimon.stream.Stream;
 import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.entities.IdReference;
 import com.hgyw.bookshare.entities.reflection.EntityReflection;
-import com.hgyw.bookshare.entities.reflection.SqlliteReflection;
+import com.hgyw.bookshare.entities.reflection.SqlLiteReflection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,7 @@ class SqlLiteStreamCrud extends SQLiteOpenHelper implements StreamCrud {
 
     private static final String DATABASE_NAME = "booksAppDataBase";
     private static final int DATABASE_VERSION = 1;
-    private final SqlliteReflection sqlLiteReflection = new SqlliteReflection();
+    private final SqlLiteReflection sqlLiteReflection = new SqlLiteReflection();
 
     /**
      * return the sqlLite table-name for a class.
@@ -65,7 +65,7 @@ class SqlLiteStreamCrud extends SQLiteOpenHelper implements StreamCrud {
     private void updateDatabase(Entity item) {
         String sqlTable = tableName(item.getEntityType());
         ContentValues contentValues = sqlLiteReflection.writeObject(item);
-        int numberOfAffected = getWritableDatabase().update(sqlTable, contentValues, SqlliteReflection.ID_KEY_SQL + " = " + item.getId(), null);
+        int numberOfAffected = getWritableDatabase().update(sqlTable, contentValues, SqlLiteReflection.ID_KEY_SQL + " = " + item.getId(), null);
         if (numberOfAffected == 0) throwNoFountException(item.getEntityType(), item.getId());
     }
 
@@ -94,7 +94,7 @@ class SqlLiteStreamCrud extends SQLiteOpenHelper implements StreamCrud {
 
     @Override
     public <T extends Entity> T retrieve(Class<T> entityType, long id) {
-        String sql =  "select * from " + tableName(entityType) + (" where " + SqlliteReflection.ID_KEY_SQL + "=") + id;
+        String sql =  "select * from " + tableName(entityType) + (" where " + SqlLiteReflection.ID_KEY_SQL + "=") + id;
         Cursor result = getReadableDatabase().rawQuery(sql, null);
         if (!result.moveToFirst()) throwNoFountException(entityType, id);
         T item = sqlLiteReflection.readObject(result, entityType);
@@ -117,7 +117,7 @@ class SqlLiteStreamCrud extends SQLiteOpenHelper implements StreamCrud {
                 .map(p -> {
                     String columnName = p.getName();
                     String columnType = sqlLiteReflection.getSqlLiteNameOf(p.getPropertyType());
-                    boolean isPrimaryKey = p.getName().equals(SqlliteReflection.ID_KEY_SQL);
+                    boolean isPrimaryKey = p.getName().equals(SqlLiteReflection.ID_KEY_SQL);
                     String primaryKey = isPrimaryKey ? " primary key autoincrement" : "";
                     return columnName + " " + columnType + primaryKey;
                 })
