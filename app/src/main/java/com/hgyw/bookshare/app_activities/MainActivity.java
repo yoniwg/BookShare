@@ -99,6 +99,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         updateDrawerOnLogin();
     }
 
