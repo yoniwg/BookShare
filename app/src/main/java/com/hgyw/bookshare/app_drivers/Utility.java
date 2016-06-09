@@ -144,10 +144,11 @@ public class Utility {
     }
 
     public static String moneyRangeToString(BigDecimal minPrice, BigDecimal maxPrice) {
-        String minString = moneyToString(minPrice);
-        String maxString = moneyToString(maxPrice);
-        if (minString.equals(maxString)) return minString;
-        return minString + " \u2014 " + maxString;
+        if (minPrice.compareTo(maxPrice) == 0) {
+            if (minPrice.compareTo(BigDecimal.ZERO) == 0) return "---";
+            return moneyToString(minPrice);
+        }
+        return moneyToString(minPrice) + " \u2014 " + moneyToString(maxPrice);
     }
 
     public static String userNameToString(User user) {
@@ -212,7 +213,7 @@ public class Utility {
             }
             return bmp;
         } catch (IOException e) {
-            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show(); // TODO
             return null;
         }
     }
@@ -232,7 +233,7 @@ public class Utility {
                 .create().show();
     }
 
-    public static Bitmap getCroppedBitmap(Bitmap bmp, int radius) {
+    private static Bitmap getCroppedBitmap(Bitmap bmp, int radius) {
         Bitmap sbmp;
 
         if (bmp.getWidth() != radius || bmp.getHeight() != radius) {
@@ -287,6 +288,9 @@ public class Utility {
 
     }
 
+    /**
+     * Compress image for upload to data-base
+     */
     public static byte[] compress(Bitmap newImage) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         newImage.compress(Bitmap.CompressFormat.JPEG, 50, out);

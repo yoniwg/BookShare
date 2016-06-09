@@ -13,10 +13,10 @@ import com.hgyw.bookshare.entities.IdReference;
 import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.Transaction;
 import com.hgyw.bookshare.entities.User;
+import com.hgyw.bookshare.entities.reflection.ConvertersCollection;
 import com.hgyw.bookshare.entities.reflection.EntityReflection;
-import com.hgyw.bookshare.entities.reflection.JsonReflection;
+import com.hgyw.bookshare.entities.reflection.Properties;
 import com.hgyw.bookshare.entities.reflection.Property;
-import com.hgyw.bookshare.entities.reflection.SqlLiteReflection;
 
 import java.math.BigDecimal;
 import java.text.MessageFormat;
@@ -34,17 +34,21 @@ abstract class SqlDataAccess implements DataAccess {
 
     protected final String ID_KEY;
     protected final String SUB;
-    protected final String NON_DELETED_CONDITION = "deleted=" + sqlValue(false);
-    private static final SqlLiteReflection sqlLiteReflection = new SqlLiteReflection();
+    protected final String NON_DELETED_CONDITION;
+    protected final ConvertersCollection sqlConverters;
 
-    protected SqlDataAccess(String id, String sub) {
+
+    protected SqlDataAccess(String id, String sub, ConvertersCollection sqlConverters) {
         ID_KEY = id;
         SUB = sub;
+        this.sqlConverters = sqlConverters;
+        NON_DELETED_CONDITION = "deleted=" + sqlValue(false);
     }
 
     protected String tableName(Class<?> userClass) {
         return userClass.getSimpleName().toLowerCase()+"_"+"table";
     }
+
 
     @Override
     public Optional<User> retrieveUserWithCredentials(Credentials credentials) {
@@ -54,7 +58,7 @@ abstract class SqlDataAccess implements DataAccess {
                 "credentials" + SUB + "username", sqlValue(credentials.getUsername()),
                 "credentials" + SUB + "password", sqlValue(credentials.getPassword())
         );
-        List<User> sqlResult = retrieveEntityFromDb(User.class, sql);
+        List<User> sqlResult = executeResultSql(User.class, sql);
         return sqlResult.isEmpty() ? Optional.empty() : Optional.of(sqlResult.get(0));
     }
 
@@ -65,7 +69,7 @@ abstract class SqlDataAccess implements DataAccess {
                 NON_DELETED_CONDITION,
                 "credentials" + SUB + "username", sqlValue(username)
         );
-        List<User> sqlResult = retrieveEntityFromDb(User.class, sql);
+        List<User> sqlResult = executeResultSql(User.class, sql);
         return !sqlResult.isEmpty();
     }
 
@@ -87,7 +91,7 @@ abstract class SqlDataAccess implements DataAccess {
         if (toDate != null) conditions.add("trn.date < " + sqlValue(toDate));
 
         String sql = joining + " WHERE " + Stream.of(conditions).collect(Collectors.joining(" AND "));
-        return retrieveEntityFromDb(Order.class, sql);
+        return executeResultSql(Order.class, sql);
     }
 
     @Override
@@ -95,21 +99,19 @@ abstract class SqlDataAccess implements DataAccess {
         List<String> conditions = new ArrayList<>(2);
         if (!query.getTitleQuery().isEmpty()) conditions.add("bks.title LIKE " + sqlValue(query.getTitleQuery()));
         if (!query.getAuthorQuery().isEmpty()) conditions.add("bks.author LIKE " + sqlValue(query.getAuthorQuery()));
-        String genreOrdinals = Stream.of(query.getGenreSet()).map(g -> Integer.toString(g.ordinal())).collect(Collectors.joining(","));
+        String genreOrdinals = Stream.of(query.getGenreSet()).map(this::sqlValue).collect(Collectors.joining(","));
         conditions.add("bks.genre IN (" + genreOrdinals + ")");
         conditions.add("bks." + NON_DELETED_CONDITION); // TODO price
+        String conditionsString = Stream.of(conditions).collect(Collectors.joining(" AND "));
 
-        String sql = String.format("SELECT * from %s bks WHERE %s ",
-                tableName(Book.class),
-                Stream.of(conditions).collect(Collectors.joining(" AND "))
-        );
-        return retrieveEntityFromDb(Book.class, sql);
+        String sql = "SELECT * FROM " + tableName(Book.class) + " bks WHERE %s " + conditionsString;
+        return executeResultSql(Book.class, sql);
     }
 
     @Override
     public List<Book> findSpecialOffers(User user, int limit) {
-        String sql = String.format("SELECT * from %s WHERE %s", tableName(Book.class), NON_DELETED_CONDITION); // TODO
-        return retrieveEntityFromDb(Book.class, sql);
+        String sql = "SELECT * FROM " + tableName(Book.class) + " WHERE " + NON_DELETED_CONDITION; // TODO
+        return executeResultSql(Book.class, sql);
     }
 
     @Override
@@ -120,7 +122,7 @@ abstract class SqlDataAccess implements DataAccess {
                     return p.getName() + "=" + id.getId();
                 }).collect(Collectors.joining(" AND "));
         String sql = String.format("SELECT * FROM %s WHERE %s AND %s", tableName(referringClass), NON_DELETED_CONDITION, conditions);
-        return retrieveEntityFromDb(referringClass, sql);
+        return executeResultSql(referringClass, sql);
     }
 
     @Override
@@ -144,7 +146,7 @@ abstract class SqlDataAccess implements DataAccess {
                 tableName(entityClass),
                 ID_KEY, id
         );
-        List<T> result = retrieveEntityFromDb(entityClass, sql);
+        List<T> result = executeResultSql(entityClass, sql);
         if (result.isEmpty()) throw new NoSuchElementException("No item " + id + " of " + entityClass.getSimpleName() +  " in database.");
         return result.get(0);
     }
@@ -158,16 +160,15 @@ abstract class SqlDataAccess implements DataAccess {
     // SQL Execution Methods
     /////////////////////////////
 
-    private static String sqlValue(Object value) {
+    private String sqlValue(Object value) {
         if (value == null) return "null";
-        if (value instanceof String) return '\'' + value.toString() + '\'';
-        if (value instanceof Date) return Long.toString(((Date) value).getTime());
-        if (value instanceof Boolean) return ((Boolean) value) ? "1" : "0";
+        value = sqlConverters.convert(value);
+        if (value instanceof String){
+            return '\'' + value.toString() + '\'';
+        }
         return value.toString();
     }
 
-
-    protected abstract <T> List<T> retrieveEntityFromDb(Class<T> type, String statement);
 
     protected long createItemDb(Entity item) {
         Collection<Property> properties = getProperties(item.getClass());
@@ -202,18 +203,16 @@ abstract class SqlDataAccess implements DataAccess {
         executeSql(statement);
     }
 
-    protected abstract Collection<Property> getProperties(Class<?> aClass);
-
-    protected abstract long executeCreateSql(String sql);
-
-    protected abstract void executeSql(String sql);
+    protected Collection<Property> getProperties(Class<?> aClass) {
+        return Properties.getFlatProperties(aClass, SUB, sqlConverters::canConvertFrom);
+    }
 
     @Override
     public void delete(IdReference item) {
         String sql = String.format("UPDATE %s SET %s=%s WHERE %s=%s",
                 tableName(item.getEntityType()),
                 "deleted",
-                true,
+                sqlValue(true),
                 ID_KEY,
                 item.getId()
         );
@@ -226,14 +225,21 @@ abstract class SqlDataAccess implements DataAccess {
         String sqlFormat = "SELECT COALESCE(MIN({0}),{1}) AS minPrice, COALESCE(MAX({0}),{1}) AS maxPrice " + "FROM {2} " + "WHERE {3} AND {4}={5}";
         String sql = MessageFormat.format(sqlFormat,
                 "price",
-                BigDecimal.ZERO,
+                sqlValue(BigDecimal.ZERO),
                 tableName(BookSupplier.class),
                 NON_DELETED_CONDITION,
                 "bookId", book.getId()
         );
-        List<BookSummary> results = retrieveEntityFromDb(BookSummary.class, sql);
+        List<BookSummary> results = executeResultSql(BookSummary.class, sql);
         if (results.isEmpty()) throw new NoSuchElementException("No book with id " + book.getId());
         return results.get(0);
     }
+
+
+    protected abstract void executeSql(String sql);
+
+    protected abstract long executeCreateSql(String sql);
+
+    protected abstract <T> List<T> executeResultSql(Class<T> type, String statement);
 
 }

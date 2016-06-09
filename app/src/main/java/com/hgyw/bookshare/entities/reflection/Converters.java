@@ -3,12 +3,8 @@ package com.hgyw.bookshare.entities.reflection;
 import com.annimon.stream.function.BiFunction;
 import com.annimon.stream.function.Function;
 
-import org.json.JSONObject;
-
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by haim7 on 25/05/2016.
@@ -23,28 +19,28 @@ public class Converters {
         }
     }
 
-    private static abstract class AbstractConverter<T,ConvertT> implements Converter<T,ConvertT> {
+    private static abstract class AbstractFullConverter<T,ConvertT> implements FullConverter<T,ConvertT> {
         @Override public String getSqlTypeName() {return "";}
         protected void requierCanParseTo(Class type) {
             if (!canConvertFrom(type)) throw new IllegalArgumentException("This converter cannot cast to " + type);
         }
         @Override
-        public <T2> Converter<T2,ConvertT> subConverter(Converter<T2,T> subConverter) {
-            return new AbstractConverter<T2, ConvertT>() {
-                @Override public Class<T2> getType() {return subConverter.getType();}
+        public <T2> FullConverter<T2,ConvertT> subConverter(FullConverter<T2,T> subFullConverter) {
+            return new AbstractFullConverter<T2, ConvertT>() {
+                @Override public Class<T2> getType() {return subFullConverter.getType();}
                 @Override public boolean canConvertFrom(Class type) {return toBoxedType(type) == getType();}
-                @Override public Class<ConvertT> getConvertType() { return AbstractConverter.this.getConvertType(); }
-                @Override public ConvertT convert(T2 value) { return AbstractConverter.this.convert(subConverter.convert(value)); }
+                @Override public Class<ConvertT> getConvertType() { return AbstractFullConverter.this.getConvertType(); }
+                @Override public ConvertT convert(T2 value) { return AbstractFullConverter.this.convert(subFullConverter.convert(value)); }
                 @Override public <R extends T2> R parse(Class<R> type, ConvertT value) {
-                    return subConverter.parse(type, AbstractConverter.this.parse(subConverter.getConvertType(), value));
+                    return subFullConverter.parse(type, AbstractFullConverter.this.parse(subFullConverter.getConvertType(), value));
                 }
             };
         }
         public T getDefaultValue() {return null;}
     }
 
-    public static <T> Converter<T,T> ofIdentity(Class<T> type) {
-        return new AbstractConverter<T, T>()  {
+    public static <T> FullConverter<T,T> ofIdentity(Class<T> type) {
+        return new AbstractFullConverter<T, T>()  {
             @Override public Class<T> getType() {return type;}
             @Override public boolean canConvertFrom(Class type) {return toBoxedType(type) == getType();}
             @Override public Class<T> getConvertType() {return type;}
@@ -56,12 +52,12 @@ public class Converters {
         };
     }
 
-    public static <T,ConvertT> Converter<T,ConvertT> simple(Class<T> type,
-                                                            Class<ConvertT> convertType,
-                                                            Function<T, ConvertT> convertFunction,
-                                                            Function<ConvertT, T> parseFunc,
-                                                            T defaultValue) {
-        return new AbstractConverter<T, ConvertT>() {
+    public static <T,ConvertT> FullConverter<T,ConvertT> fullConverter(Class<T> type,
+                                                                       Class<ConvertT> convertType,
+                                                                       Function<T, ConvertT> convertFunction,
+                                                                       Function<ConvertT, T> parseFunc,
+                                                                       T defaultValue) {
+        return new AbstractFullConverter<T, ConvertT>() {
             @Override public Class<T> getType() {return type;}
             @Override public boolean canConvertFrom(Class type) {return toBoxedType(type) == getType();}
             @Override public Class<ConvertT> getConvertType() {return convertType;}
@@ -73,20 +69,20 @@ public class Converters {
         };
     }
 
-    public static <T,ConvertT> Converter<T,ConvertT> simple(Class<T> type,
-                                                            Class<ConvertT> convertType,
-                                                            Function<T, ConvertT> convertFunction,
-                                                            Function<ConvertT, T> parseFunc) {
-        return simple(type, convertType, convertFunction, parseFunc, null);
+    public static <T,ConvertT> FullConverter<T,ConvertT> fullConverter(Class<T> type,
+                                                                       Class<ConvertT> convertType,
+                                                                       Function<T, ConvertT> convertFunction,
+                                                                       Function<ConvertT, T> parseFunc) {
+        return fullConverter(type, convertType, convertFunction, parseFunc, null);
     }
 
 
-    public static <T,ConvertT> Converter<T,ConvertT> inherit(Class<T> type,
-                                                            Class<ConvertT> convertType,
-                                                            Function<T, ConvertT> convertFunction,
-                                                            BiFunction<Class<? extends T>, ConvertT, T> parseFunc,
-                                                            Function<Class<? extends T>, T> defaultValueFunc) {
-        return new AbstractConverter<T, ConvertT>() {
+    public static <T,ConvertT> FullConverter<T,ConvertT> fullConverterInherit(Class<T> type,
+                                                                              Class<ConvertT> convertType,
+                                                                              Function<T, ConvertT> convertFunction,
+                                                                              BiFunction<Class<? extends T>, ConvertT, T> parseFunc,
+                                                                              Function<Class<? extends T>, T> defaultValueFunc) {
+        return new AbstractFullConverter<T, ConvertT>() {
             @Override public Class<T> getType() {return type;}
             @Override public Class<ConvertT> getConvertType() {return convertType;}
             @Override public ConvertT convert(T value) {
@@ -100,11 +96,11 @@ public class Converters {
         };
     }
 
-    public static <T,ConvertT> Converter<T,ConvertT> inherit(Class<T> type,
-                                                             Class<ConvertT> convertType,
-                                                             Function<T, ConvertT> convertFunction,
-                                                             BiFunction<Class<? extends T>, ConvertT, T> parseFunc) {
-        return inherit(type, convertType, convertFunction, parseFunc, (c) -> null);
+    public static <T,ConvertT> FullConverter<T,ConvertT> fullConverterInherit(Class<T> type,
+                                                                              Class<ConvertT> convertType,
+                                                                              Function<T, ConvertT> convertFunction,
+                                                                              BiFunction<Class<? extends T>, ConvertT, T> parseFunc) {
+        return fullConverterInherit(type, convertType, convertFunction, parseFunc, (c) -> null);
     }
 
         @SuppressWarnings("unchecked")
@@ -140,5 +136,36 @@ public class Converters {
         }
     }
 
+
+    public static <T,ConvertT> OneSideConverter<T,ConvertT> simple(Class<T> type, Function<T, ConvertT> convertFunction, ConvertT defaultValue, String sqlTypeName) {
+        return new OneSideConverter<T, ConvertT>() {
+            @Override public Class<T> getType() {return type;}
+            @Override public ConvertT convert(T value) {return value == null ? defaultValue : convertFunction.apply(value);}
+            @Override public boolean canConvertFrom(Class<?> type) {return type.isAssignableFrom(type);}
+            @Override public String getSqlTypeName() {return sqlTypeName;}
+        };
+    }
+    public static <T,ConvertT> OneSideConverter<T,ConvertT> simple(Class<T> type, Function<T, ConvertT> convertFunction, String sqlTypeName) {
+        return simple(type, convertFunction, sqlTypeName);
+    }
+
+    public static <T,ConvertT> Parser<T,ConvertT> simple(Class<T> sourceType, Class<ConvertT> convertType, BiFunction<Class<? extends T>, ConvertT, T> convertFunction) {
+        return new Parser<T, ConvertT>() {
+            @Override public Class<ConvertT> getConvertType() {return convertType;}
+            @Override public <R extends T> R parse(Class<R> type, ConvertT value) {return (R) convertFunction.apply(type, value);}
+            @Override public boolean canConvertFrom(Class<?> type) {return sourceType.isAssignableFrom(type);}
+        };
+    }
+
+    public static <T,ConvertT> Parser<T,ConvertT> simple(Class<T> sourceType, Class<ConvertT> convertType, Function<ConvertT, T> convertFunction) {
+        return new Parser<T, ConvertT>() {
+            @Override public Class<ConvertT> getConvertType() {return convertType;}
+            @Override public <R extends T> R parse(Class<R> type, ConvertT value) {
+                if (type != sourceType) throw new IllegalArgumentException("This parser can parse only to " + type.getName());
+                return (R) convertFunction.apply(value);
+            }
+            @Override public boolean canConvertFrom(Class<?> type) {return sourceType.isAssignableFrom(type);}
+        };
+    }
 
 }

@@ -9,7 +9,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -56,7 +55,7 @@ public class Properties {
     /***
      * returns stream of properties of aClass to sql
      */
-    private static List<Property> getFlatProperties(Class<?> aClass, String subPropertySeparator, Predicate<Class> baseTypePredicate) {
+    public static List<Property> getFlatProperties(Class<?> aClass, String subPropertySeparator, Predicate<Class> baseTypePredicate) {
         return Stream.of(Properties.getProperties(aClass))
                 .filter(Property::canWrite)
                 .flatMap(p -> {
@@ -75,9 +74,9 @@ public class Properties {
                 }).collect(Collectors.toList());
     }
 
-    public static List<Property> getFlatProperties(Class<?> aClass, String subPropertySeparator, ConvertersCollection converters) {
+    /*public static List<Property> getFlatProperties(Class<?> aClass, String subPropertySeparator, ConvertersCollection converters) {
         return getFlatProperties(aClass, subPropertySeparator, converters::canConvertFrom);
-    }
+    }*/
 
     public static Property renameProperty(Property p, String newName) {
         return new Property() {
@@ -135,18 +134,18 @@ public class Properties {
     }
 
 
-    public static Property convertProperty(Property p, Converter converter) {
-        if (!converter.canConvertFrom(p.getPropertyType())) {
-            String message = String.format("The converter (%s) cannot convert from property '%s' (of type %s)", converter, p.getName(), p.getPropertyType());
+    public static Property convertProperty(Property p, FullConverter fullConverter) {
+        if (!fullConverter.canConvertFrom(p.getPropertyType())) {
+            String message = String.format("The converter (%s) cannot convert from property '%s' (of type %s)", fullConverter, p.getName(), p.getPropertyType());
             throw new IllegalArgumentException(message);
         }
         return new Property() {
-            @Override public void set(Object o, Object value) {p.set(o, converter.parse(p.getPropertyType(), value));}
-            @Override public Object get(Object o) {return converter.convert(p.get(o));}
+            @Override public void set(Object o, Object value) {p.set(o, fullConverter.parse(p.getPropertyType(), value));}
+            @Override public Object get(Object o) {return fullConverter.convert(p.get(o));}
             @Override public <T extends Annotation> T getFieldAnnotation(Class<T> annotationClass) {return null;}
             @Override public String getName() {return p.getName();}
             @Override public boolean canWrite() {return p.canWrite();}
-            @Override public Class<?> getPropertyType() { return converter.getConvertType();}
+            @Override public Class<?> getPropertyType() { return fullConverter.getConvertType();}
             @Override public Class<?> getReflectedClass() {return p.getReflectedClass();}
         };
     }
