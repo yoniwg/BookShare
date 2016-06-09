@@ -72,7 +72,7 @@ public abstract class ListApplyObjectAdapter<T> extends ApplyObjectAdapter<T> {
         if (asyncTask != null) asyncTask.cancel(false);
         if (buffer.containsKey(item)){
             ListApplyObjectAdapter.this.applyDataOnView(view, item, buffer.get(item));
-            view.setVisibility(View.VISIBLE); // TODO bug: problem with syncronizing!! see 'if (isCancelled()) return;'
+            view.setVisibility(View.VISIBLE);
             return;
         }
         asyncTask = new AsyncTask<Void, Void, Object[]>() {
