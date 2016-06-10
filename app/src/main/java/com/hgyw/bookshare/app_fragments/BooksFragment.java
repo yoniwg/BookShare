@@ -20,6 +20,7 @@ import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookQuery;
 import com.hgyw.bookshare.entities.BookSummary;
 import com.hgyw.bookshare.entities.ImageEntity;
+import com.hgyw.bookshare.entities.UserType;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.GeneralAccess;
 
@@ -32,21 +33,12 @@ public class BooksFragment extends SwipeRefreshListFragment implements TitleFrag
 
     private BookQuery bookQuery;
     private final GeneralAccess access = AccessManagerFactory.getInstance().getGeneralAccess();
-    private Activity activity;
     List<Book> bookList = new ArrayList<Book>();
     ListApplyObjectAdapter<Book> adapter;
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        this.activity = (Activity) context;
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        this.activity = activity;
-    }
+    private Activity activity;
+    @Override public void onAttach(Context context) {super.onAttach(context);this.activity = (Activity) context;}
+    @Override public void onAttach(Activity activity) {super.onAttach(activity);this.activity = activity;}
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -128,7 +120,7 @@ public class BooksFragment extends SwipeRefreshListFragment implements TitleFrag
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_book_list, menu);
-        menu.findItem(R.id.action_add_book).setVisible(false);
+        menu.findItem(R.id.action_add_book).setVisible(access.getUserType() == UserType.SUPPLIER);
     }
 
     @Override

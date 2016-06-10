@@ -1,5 +1,7 @@
 package com.hgyw.bookshare.entities.reflection;
 
+import com.annimon.stream.Collectors;
+import com.annimon.stream.Stream;
 import com.annimon.stream.function.BiFunction;
 import com.annimon.stream.function.Function;
 
@@ -11,7 +13,28 @@ import java.util.Date;
  */
 public class Converters {
 
-    public static <T extends Date> T newDate(Class<T> aClass, long millis) {
+    /**
+     * invoke constructor natch the params. Boxed types will be as unboxed.
+     * @throws NullPointerException if aClass is null, or any of params is null.
+     * @throws IllegalArgumentException if any problem occur in retrieve constructor and invoke it.
+     */
+    public static <T> T newInstance(Class<T> aClass, Object ... params) {
+        aClass = toBoxedType(aClass);
+        Class<?>[] paramsTypes = new Class[params.length];
+        for (int i = 0; i < params.length; i++) {
+            Object param = params[i];
+            if (param == null) throw new NullPointerException("The params should not be null. param " + i + " is null.");
+            paramsTypes[i] = toUnboxedType(params[i].getClass());
+        }
+        try {
+            return aClass.getConstructor(paramsTypes).newInstance(params);
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            String message = "Cannot create new instance of " + aClass.getName() + " with constructor new(" +
+                    Stream.of(paramsTypes).map(Class::getName).collect(Collectors.joining(",")) + ")";
+            throw new IllegalArgumentException(message, e);
+        }
+    }
+    /*public static <T extends Date> T newDate(Class<T> aClass, long millis) {
         try {
             return aClass.getConstructor(long.class).newInstance(millis);
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
@@ -19,8 +42,22 @@ public class Converters {
         }
     }
 
+    public static <T> T stringConstructor(Class<T> aClass, String string) {
+        try {
+            return aClass.getConstructor(String.class).newInstance(string);
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            throw new RuntimeException(e); // should not be occured
+        }
+    }*/
+
     private static abstract class AbstractFullConverter<T,ConvertT> implements FullConverter<T,ConvertT> {
-        @Override public String getSqlTypeName() {return "";}
+        private String sqlTypeName = "";
+        @Override public String getSqlTypeName() {return sqlTypeName;}
+        @Override
+        public FullConverter<T, ConvertT> withSqlName(String sqlTypeName) {
+            this.sqlTypeName = sqlTypeName == null ? "" : sqlTypeName;
+            return this;
+        }
         protected void requierCanParseTo(Class type) {
             if (!canConvertFrom(type)) throw new IllegalArgumentException("This converter cannot cast to " + type);
         }
@@ -37,6 +74,27 @@ public class Converters {
             };
         }
         public T getDefaultValue() {return null;}
+    }
+
+    public static <T> FullConverter<T,String> toStringConverter(Class<T> type) {
+        return new AbstractFullConverter<T, String>() {
+            @Override public Class<T> getType() {return type;}
+            @Override public Class<String> getConvertType() {return String.class;}
+            @Override public String convert(T value) {return value.toString();}
+            @Override public boolean canConvertFrom(Class<?> type) {
+                try {type.getDeclaredConstructor(String.class); return true; }
+                catch (NoSuchMethodException e) {return false;}
+            }
+            @Override public <R extends T> R parse(Class<R> type, String value) {
+                try {
+                    return type.getDeclaredConstructor(String.class).newInstance(value);
+                } catch (NoSuchMethodException e) {
+                    throw new IllegalArgumentException("no constructor new(String) in " + type.getName());
+                } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
+                    throw new InternalError("Should not occur");
+                }
+            }
+        };
     }
 
     public static <T> FullConverter<T,T> ofIdentity(Class<T> type) {
@@ -66,6 +124,8 @@ public class Converters {
                 requierCanParseTo(type);
                 return (R) (value == null ? defaultValue : parseFunc.apply(value));
             }
+
+            @Override public String toString() {return this.getClass().getSimpleName()+"(from " + type.getSimpleName() + " to " + convertType.getSimpleName() +")";}
         };
     }
 
@@ -103,7 +163,10 @@ public class Converters {
         return fullConverterInherit(type, convertType, convertFunction, parseFunc, (c) -> null);
     }
 
-        @SuppressWarnings("unchecked")
+    /**
+     * @throws NullPointerException if type == null
+     */
+    @SuppressWarnings("unchecked")
     public static <T> Class<T> toBoxedType(Class<T> type) {
         if (!type.isPrimitive()) return type;
         Class c;
@@ -128,14 +191,6 @@ public class Converters {
         return type;
     }
 
-    public static <T> T tryNewInstanceOrThrow(Class<T> type) {
-        try {
-            return type.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            throw new IllegalArgumentException("The class should produce a public empty constructor.", e);
-        }
-    }
-
 
     public static <T,ConvertT> OneSideConverter<T,ConvertT> simple(Class<T> type, Function<T, ConvertT> convertFunction, ConvertT defaultValue, String sqlTypeName) {
         return new OneSideConverter<T, ConvertT>() {
@@ -154,6 +209,7 @@ public class Converters {
             @Override public Class<ConvertT> getConvertType() {return convertType;}
             @Override public <R extends T> R parse(Class<R> type, ConvertT value) {return (R) convertFunction.apply(type, value);}
             @Override public boolean canConvertFrom(Class<?> type) {return sourceType.isAssignableFrom(type);}
+            @Override public String getSqlTypeName() {return "";}
         };
     }
 
@@ -165,6 +221,7 @@ public class Converters {
                 return (R) convertFunction.apply(value);
             }
             @Override public boolean canConvertFrom(Class<?> type) {return sourceType.isAssignableFrom(type);}
+            @Override public String getSqlTypeName() {return "";}
         };
     }
 

@@ -17,6 +17,7 @@ import java.util.Map;
 /**
  * Created by haim7 on 25/05/2016.
  */
+@Deprecated
 public class SqlLiteReflection {
 
 
@@ -30,7 +31,7 @@ public class SqlLiteReflection {
             Converters.fullConverter(Boolean.class, Integer.class, b->(b)?1:0, i->i==1),
             Converters.fullConverter(byte[].class, String.class, arr -> Base64.encodeToString(arr, 0), str -> Base64.decode(str,0)), //Converters.ofIdentity(byte[].class),
             Converters.fullConverter(BigDecimal.class, String.class, Object::toString, BigDecimal::new),
-            Converters.fullConverterInherit(Date.class, Long.class, Date::getTime, Converters::newDate, type -> Converters.newDate(type, 0)),
+            Converters.fullConverterInherit(Date.class, Long.class, Date::getTime, Converters::newInstance, type -> Converters.newInstance(type, 0)),
             Converters.fullConverterInherit(Enum.class, Integer.class, Enum::ordinal, (type, value) -> type.getEnumConstants()[value])
     );
 
@@ -89,7 +90,7 @@ public class SqlLiteReflection {
     }
 
     public <T> T readObject(Cursor cursor, Class<T> type) {
-        T newItem = Converters.tryNewInstanceOrThrow(type);
+        T newItem = Converters.newInstance(type);
         Map<String, Property> propertiesMap = getProperties(type);
         for (int i = 0; i < cursor.getColumnCount(); i++) {
             String propertyName = cursor.getColumnName(i);

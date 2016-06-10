@@ -20,12 +20,6 @@ public class DataAccessFactory {
         SQL_LITE {
             DataAccess createDataAccess() {
                 Context appContext = MyApplication.getAppContext();
-                return new StreamCrudDataAccess(new SqlLiteStreamCrud(appContext));
-            }
-        },
-        SQL_LITE2 {  // TODO!
-            DataAccess createDataAccess() {
-                Context appContext = MyApplication.getAppContext();
                 return new SqlLiteDataAccess(appContext);
             }
         },
