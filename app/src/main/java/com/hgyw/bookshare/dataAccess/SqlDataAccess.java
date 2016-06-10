@@ -187,7 +187,7 @@ abstract class SqlDataAccess implements DataAccess {
      * Calls sqlQuote(String) if needed.
      */
     private String sqlValue(Object value){
-        if (value == null) return "null";
+        if (value == null) return "'null'";
 
         OneSideConverter converter = sqlConverters.findConverter(value.getClass());
         String sqlType = converter.getSqlTypeName();

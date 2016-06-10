@@ -137,6 +137,7 @@ class MysqlDataAccess extends SqlDataAccess implements DataAccess {
                 Parser parser = sqlConverters.findParser(propertyType);
 
                 String stringValue = jsonObject.getString(p.getName());
+                // The null value is created by json, so we have to compare it with json's null:
                 if (stringValue.equals(JSONObject.NULL.toString())) propertyValue = null;
                 else propertyValue = parser.parse(propertyType, stringValue);
             }
