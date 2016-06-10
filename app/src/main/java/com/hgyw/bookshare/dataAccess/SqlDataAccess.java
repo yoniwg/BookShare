@@ -256,10 +256,8 @@ abstract class SqlDataAccess implements DataAccess {
     public void delete(IdReference item) {
         String sql = String.format("UPDATE %s SET %s=%s WHERE %s=%s",
                 tableName(item.getEntityType()),
-                "deleted",
-                sqlValue(true),
-                ID_KEY,
-                item.getId()
+                "deleted", sqlValue(true),
+                ID_KEY, item.getId()
         );
         executeSql(sql);
     }
