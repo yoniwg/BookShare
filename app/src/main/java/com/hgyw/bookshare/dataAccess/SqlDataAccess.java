@@ -97,14 +97,14 @@ abstract class SqlDataAccess implements DataAccess {
     @Override
     public List<Book> findBooks(BookQuery query) {
         List<String> conditions = new ArrayList<>(2);
-        if (!query.getTitleQuery().isEmpty()) conditions.add("bks.title LIKE " + sqlValue(query.getTitleQuery()));
-        if (!query.getAuthorQuery().isEmpty()) conditions.add("bks.author LIKE " + sqlValue(query.getAuthorQuery()));
+        if (!query.getTitleQuery().isEmpty()) conditions.add("bks.title LIKE " + sqlValue(query.getTitleQuery(),true));
+        if (!query.getAuthorQuery().isEmpty()) conditions.add("bks.author LIKE " + sqlValue(query.getAuthorQuery(),true));
         String genreOrdinals = Stream.of(query.getGenreSet()).map(this::sqlValue).collect(Collectors.joining(","));
         conditions.add("bks.genre IN (" + genreOrdinals + ")");
         conditions.add("bks." + NON_DELETED_CONDITION); // TODO price
         String conditionsString = Stream.of(conditions).collect(Collectors.joining(" AND "));
 
-        String sql = "SELECT * FROM " + tableName(Book.class) + " bks WHERE %s " + conditionsString;
+        String sql = "SELECT * FROM " + tableName(Book.class) + " bks WHERE " + conditionsString;
         return executeResultSql(Book.class, sql);
     }
 
@@ -160,11 +160,16 @@ abstract class SqlDataAccess implements DataAccess {
     // SQL Execution Methods
     /////////////////////////////
 
-    private String sqlValue(Object value) {
+    private String sqlValue(Object value){
+        return sqlValue(value,false);
+    }
+
+    private String sqlValue(Object value, boolean isLike) {
         if (value == null) return "null";
         value = sqlConverters.convert(value);
         if (value instanceof String){
-            return '\'' + value.toString() + '\'';
+            String likeChar = (isLike) ? "%" : "";
+            return '\'' + likeChar + value.toString() + likeChar + '\'';
         }
         return value.toString();
     }
