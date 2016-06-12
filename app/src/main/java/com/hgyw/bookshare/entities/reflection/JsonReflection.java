@@ -16,6 +16,7 @@ import java.util.Map;
 /**
  * Created by haim7 on 27/05/2016.
  */
+@Deprecated
 public class JsonReflection  {
 
     public static final String SUB_PROPERTY_SEPARATOR = "_";
@@ -29,9 +30,7 @@ public class JsonReflection  {
             Converters.fullConverter(Boolean.class, Integer.class, b->(b)?1:0, i->i==1),
             Converters.fullConverter(byte[].class, String.class, arr -> Base64.encodeToString(arr, 0), str -> Base64.decode(str,0)),
             Converters.fullConverter(BigDecimal.class, String.class, Object::toString, BigDecimal::new, BigDecimal.ZERO),
-            //Converters.fullConverter(Date.class, Long.class, Date::getTime, Date::new, 0L),
-            //Converters.fullConverter(java.sql.Date.class, Long.class, Date::getTime, java.sql.Date::new, 0L),
-            Converters.fullConverterInherit(Date.class, Long.class, Date::getTime, Converters::newDate, type -> Converters.newDate(type, 0)),
+            Converters.fullConverterInherit(Date.class, Long.class, Date::getTime, Converters::newInstance, Converters::newInstance),
             Converters.fullConverterInherit(Enum.class, Integer.class, Enum::ordinal, (type, i) -> type.getEnumConstants()[i], type -> type.getEnumConstants()[0])
     );
 
@@ -50,7 +49,7 @@ public class JsonReflection  {
     }
 
     public <T> T readObject(Class<T> type, JSONObject jsonObject) {
-        T item = Converters.tryNewInstanceOrThrow(type);
+        T item = Converters.newInstance(type);
         for (Property p : getProperties(type).values()) {
             Object jsonValue;
             try {

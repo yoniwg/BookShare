@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -25,20 +26,26 @@ public class BookQuery implements Serializable {
 
     private List<SortByProperty> sortByPropertyList = new LinkedList<>();
 
+    /**
+     * @return non-null
+     */
     public String getTitleQuery() {
         return titleQuery;
     }
 
     public void setTitleQuery(String titleQuery) {
-        this.titleQuery = titleQuery;
+        this.titleQuery = titleQuery == null ? "" : titleQuery;
     }
 
+    /**
+     * @return non-null
+     */
     public String getAuthorQuery() {
         return authorQuery;
     }
 
     public void setAuthorQuery(String authorQuery) {
-        this.authorQuery = authorQuery;
+        this.authorQuery = authorQuery == null ? "" : authorQuery;
     }
 
     public Set<Book.Genre> getGenreSet() {

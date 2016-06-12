@@ -11,5 +11,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EntityProperty {
+    /**
+     * Skip the field, and don't refer it as property.
+     */
     boolean disable() default false;
 }

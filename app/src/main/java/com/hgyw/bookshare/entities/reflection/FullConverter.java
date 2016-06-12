@@ -13,6 +13,5 @@ public interface FullConverter<T,ConvertT>  extends  OneSideConverter<T,ConvertT
      */
     <T2> FullConverter<T2,ConvertT> subConverter(FullConverter<T2,T> subFullConverter);
 
-
-
+    FullConverter<T,ConvertT> withSqlName(String sqlTypeName);
 }

@@ -154,7 +154,7 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
     private void updateBookReviewView(View reviewView, BookReview bookReview) {
         new AsyncTask<Void,Void,User>() {
             @Override protected User doInBackground(Void... params) {
-                return access.retrieveUserDetails();
+                return access.retrieve(User.class, bookReview.getCustomerId());
             }
             @Override protected void onPostExecute(User customer) {
                 ObjectToViewUpdates.updateBookReviewView(reviewView, bookReview, customer);

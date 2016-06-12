@@ -3,18 +3,10 @@ package com.hgyw.bookshare.dataAccess;
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Optional;
 import com.annimon.stream.Stream;
-import com.hgyw.bookshare.entities.Book;
-import com.hgyw.bookshare.entities.BookQuery;
-import com.hgyw.bookshare.entities.BookSummary;
-import com.hgyw.bookshare.entities.BookSupplier;
-import com.hgyw.bookshare.entities.Credentials;
-import com.hgyw.bookshare.entities.Entity;
-import com.hgyw.bookshare.entities.IdReference;
-import com.hgyw.bookshare.entities.Order;
-import com.hgyw.bookshare.entities.Transaction;
-import com.hgyw.bookshare.entities.User;
+import com.hgyw.bookshare.entities.*;
 import com.hgyw.bookshare.entities.reflection.ConvertersCollection;
 import com.hgyw.bookshare.entities.reflection.EntityReflection;
+import com.hgyw.bookshare.entities.reflection.OneSideConverter;
 import com.hgyw.bookshare.entities.reflection.Properties;
 import com.hgyw.bookshare.entities.reflection.Property;
 
@@ -24,7 +16,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 /**
@@ -36,19 +30,39 @@ abstract class SqlDataAccess implements DataAccess {
     protected final String SUB;
     protected final String NON_DELETED_CONDITION;
     protected final ConvertersCollection sqlConverters;
+    private final String idColumnAdditionalProperties;
 
-
-    protected SqlDataAccess(String id, String sub, ConvertersCollection sqlConverters) {
+    protected SqlDataAccess(String id, String sub, ConvertersCollection sqlConverters, String idColumnAdditionalProperties) {
         ID_KEY = id;
         SUB = sub;
         this.sqlConverters = sqlConverters;
+        this.idColumnAdditionalProperties = idColumnAdditionalProperties;
         NON_DELETED_CONDITION = "deleted=" + sqlValue(false);
     }
 
-    protected String tableName(Class<?> userClass) {
+    protected SqlDataAccess(ConvertersCollection sqlConverters, String idColumnAdditionalProperties) {
+            this("id", "_", sqlConverters, idColumnAdditionalProperties);
+    }
+
+
+    protected String tableName(Class<? extends Entity> userClass) {
         return userClass.getSimpleName().toLowerCase()+"_"+"table";
     }
 
+    public void createTableIfNotExists(Class<? extends Entity> type) {
+        String sqlTable = tableName(type);
+        String sqlColumnTypeList = Stream.of(getProperties(type).values())
+                .map(p -> {
+                    String columnName = p.getName();
+                    String columnType = sqlConverters.findConverter(p.getPropertyType()).getSqlTypeName();
+                    boolean isPrimaryKey = p.getName().equals(ID_KEY);
+                    String primaryKey = isPrimaryKey ? idColumnAdditionalProperties : "";
+                    return columnName + " " + columnType + " " + primaryKey;
+                })
+                .collect(Collectors.joining(","));
+        String sql = "CREATE TABLE IF NOT EXISTS " + sqlTable + "(" + sqlColumnTypeList + ")";
+        executeSql(sql);
+    }
 
     @Override
     public Optional<User> retrieveUserWithCredentials(Credentials credentials) {
@@ -87,8 +101,8 @@ abstract class SqlDataAccess implements DataAccess {
         List<String> conditions = new ArrayList<>(2);
         if (customer != null) conditions.add("trn.customerId = " + customer.getId());
         if (supplier != null) conditions.add("bsp.supplierId = " + supplier.getId());
-        if (fromDate != null) conditions.add("trn.date > " + sqlValue(fromDate));
-        if (toDate != null) conditions.add("trn.date < " + sqlValue(toDate));
+        if (fromDate != null) conditions.add("trn.date >= " + sqlValue(fromDate));
+        if (toDate != null) conditions.add("trn.date <= " + sqlValue(toDate));
 
         String sql = joining + " WHERE " + Stream.of(conditions).collect(Collectors.joining(" AND "));
         return executeResultSql(Order.class, sql);
@@ -97,14 +111,19 @@ abstract class SqlDataAccess implements DataAccess {
     @Override
     public List<Book> findBooks(BookQuery query) {
         List<String> conditions = new ArrayList<>(2);
-        if (!query.getTitleQuery().isEmpty()) conditions.add("bks.title LIKE " + sqlValue(query.getTitleQuery(),true));
-        if (!query.getAuthorQuery().isEmpty()) conditions.add("bks.author LIKE " + sqlValue(query.getAuthorQuery(),true));
-        String genreOrdinals = Stream.of(query.getGenreSet()).map(this::sqlValue).collect(Collectors.joining(","));
-        conditions.add("bks.genre IN (" + genreOrdinals + ")");
-        conditions.add("bks." + NON_DELETED_CONDITION); // TODO price
-        String conditionsString = Stream.of(conditions).collect(Collectors.joining(" AND "));
 
-        String sql = "SELECT * FROM " + tableName(Book.class) + " bks WHERE " + conditionsString;
+        if (!query.getTitleQuery().isEmpty()) conditions.add("bks.title LIKE " + sqlStringContains(query.getTitleQuery()));
+        if (!query.getAuthorQuery().isEmpty()) conditions.add("bks.author LIKE " + sqlStringContains(query.getAuthorQuery()));
+        String genreValues = Stream.of(query.getGenreSet()).map(this::sqlValue).collect(Collectors.joining(","));
+        conditions.add("bks.genre IN (" + genreValues + ")");
+        conditions.add("bks." + NON_DELETED_CONDITION);
+        // TODO price
+        //if (query.getBeginPrice() != null) conditions.add("MIN(bsp.price) >= " + sqlValue(query.getBeginPrice()));
+
+        String conditionsString = Stream.of(conditions).collect(Collectors.joining(" AND "));
+        String sql = "SELECT * FROM " + tableName(Book.class) + " bks " +
+                "INNER JOIN " + tableName(BookSupplier.class) + " bsp ON (bsp.bookId = bks." + ID_KEY + ") " +
+                "WHERE " + conditionsString;
         return executeResultSql(Book.class, sql);
     }
 
@@ -160,36 +179,49 @@ abstract class SqlDataAccess implements DataAccess {
     // SQL Execution Methods
     /////////////////////////////
 
-    private String sqlValue(Object value){
-        return sqlValue(value,false);
+    private String sqlQuote(String string){
+        return '\'' + string + '\'';
     }
 
-    private String sqlValue(Object value, boolean isLike) {
-        if (value == null) return "null";
-        value = sqlConverters.convert(value);
-        if (value instanceof String){
-            String likeChar = (isLike) ? "%" : "";
-            return '\'' + likeChar + value.toString() + likeChar + '\'';
+    /**
+     * Calls sqlQuote(String) if needed.
+     */
+    private String sqlValue(Object value){
+        if (value == null) return "'null'";
+
+        OneSideConverter converter = sqlConverters.findConverter(value.getClass());
+        String sqlType = converter.getSqlTypeName();
+
+        String sqlValue = converter.convert(value).toString();
+        if (sqlType.isEmpty() && value instanceof String || !sqlType.isEmpty() && (sqlType.contains("CHAR") || sqlType.contains("TEXT"))){
+            sqlValue = sqlQuote(sqlValue);
         }
-        return value.toString();
+        return sqlValue;
+    }
+
+    /**
+     * Call this method instead of sqlValue(Object), for condition '_ LIKE [sqlStringContains(string)]'.
+     */
+    private String sqlStringContains(String string) {
+        return sqlQuote("%" + string + "%");
     }
 
 
     protected long createItemDb(Entity item) {
-        Collection<Property> properties = getProperties(item.getClass());
+        Collection<Property> properties = getProperties(item.getClass()).values();
         List<String> fieldNames = new ArrayList<>(properties.size());
-        List<String> values = new ArrayList<>(properties.size());
+        List<String> sqlValues = new ArrayList<>(properties.size());
         Stream.of(properties)
                 .filter(p -> !p.getName().equals(ID_KEY))
                 .forEach(p -> {
                     fieldNames.add(p.getName());
-                    values.add(sqlValue(p.get(item)));
+                    sqlValues.add(sqlValue(p.get(item)));
                 });
 
         String sql = String.format("INSERT INTO %s (%s) VALUES (%s)",
                 tableName(item.getClass()),
                 Stream.of(fieldNames).collect(Collectors.joining(",")),
-                Stream.of(values).collect(Collectors.joining(","))
+                Stream.of(sqlValues).collect(Collectors.joining(","))
         );
         System.out.println("Starting createItem: " + sql);
         return executeCreateSql(sql);
@@ -197,7 +229,7 @@ abstract class SqlDataAccess implements DataAccess {
 
 
     protected void updateItemDb(Entity item) {
-        Collection<Property> properties = getProperties(item.getClass());
+        Collection<Property> properties = getProperties(item.getClass()).values();
         String keyValues = Stream.of(properties)
                 .filter(p -> !p.getName().equals(ID_KEY))
                 .map(p -> p.getName() + "=" + sqlValue(p.get(item)))
@@ -208,18 +240,24 @@ abstract class SqlDataAccess implements DataAccess {
         executeSql(statement);
     }
 
-    protected Collection<Property> getProperties(Class<?> aClass) {
-        return Properties.getFlatProperties(aClass, SUB, sqlConverters::canConvertFrom);
+
+    private final Map<Class<?>, Map<String,Property>> propertiesMaps = new HashMap<>();
+    protected Map<String,Property> getProperties(Class<?> aClass) {
+        Map<String,Property> properties = propertiesMaps.get(aClass);
+        if (properties == null) {
+            Collection<Property> propertyCollection = Properties.getFlatProperties(aClass, SUB, sqlConverters::canConvertFrom);
+            properties = Stream.of(propertyCollection).collect(Collectors.toMap(Property::getName, o->o));
+            propertiesMaps.put(aClass, properties);
+        }
+        return properties;
     }
 
     @Override
     public void delete(IdReference item) {
         String sql = String.format("UPDATE %s SET %s=%s WHERE %s=%s",
                 tableName(item.getEntityType()),
-                "deleted",
-                sqlValue(true),
-                ID_KEY,
-                item.getId()
+                "deleted", sqlValue(true),
+                ID_KEY, item.getId()
         );
         executeSql(sql);
     }

@@ -20,4 +20,6 @@ public interface Parser<T,ConvertT> {
 
     boolean canConvertFrom(Class<?> type);
 
+    String getSqlTypeName();
+
 }

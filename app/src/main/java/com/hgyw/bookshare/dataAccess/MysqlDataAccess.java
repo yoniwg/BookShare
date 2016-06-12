@@ -2,13 +2,9 @@ package com.hgyw.bookshare.dataAccess;
 
 import android.util.Base64;
 
-import com.fasterxml.jackson.databind.util.Converter;
-import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.entities.reflection.Converters;
 import com.hgyw.bookshare.entities.reflection.ConvertersCollection;
-import com.hgyw.bookshare.entities.reflection.JsonReflection;
 import com.hgyw.bookshare.entities.reflection.Parser;
-import com.hgyw.bookshare.entities.reflection.Properties;
 import com.hgyw.bookshare.entities.reflection.Property;
 
 import org.json.JSONArray;
@@ -19,7 +15,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -32,73 +27,60 @@ class MysqlDataAccess extends SqlDataAccess implements DataAccess {
 
     private static final String SERVER_URL = "http://yweisber.vlab.jct.ac.il";
     private static final String GET_DATA_URL = SERVER_URL + "/" + "getData.php";
-    private static final ConvertersCollection sqlConverters = new ConvertersCollection(
-            Converters.ofIdentity(String.class),
-            Converters.ofIdentity(Integer.class),
-            Converters.ofIdentity(Long.class),
-            Converters.ofIdentity(Double.class),
-            Converters.fullConverter(Boolean.class, Integer.class, b->(b)?1:0, i->i==1),
-            Converters.fullConverter(byte[].class, String.class, arr -> Base64.encodeToString(arr, 0), str -> Base64.decode(str,0)),
-            Converters.fullConverter(BigDecimal.class, String.class, Object::toString, BigDecimal::new, BigDecimal.ZERO),
-            Converters.fullConverterInherit(Date.class, Long.class, Date::getTime, Converters::newDate, type -> Converters.newDate(type, 0)),
-            Converters.fullConverterInherit(Enum.class, Integer.class, Enum::ordinal, (type, i) -> type.getEnumConstants()[i], type -> type.getEnumConstants()[0])
-    );
 
     protected MysqlDataAccess() {
-        super("id", JsonReflection.SUB_PROPERTY_SEPARATOR, sqlConverters);
+        super(new ConvertersCollection(
+                Converters.ofIdentity(String.class).withSqlName("TEXT"),
+                Converters.fullConverter(Long.class, String.class, Object::toString, Long::new).withSqlName("BIGINT"),
+                Converters.fullConverter(Integer.class, String.class, Object::toString, Integer::new).withSqlName("INT"),
+                Converters.fullConverter(Boolean.class, String.class, b->b?"1":"0", i->i.equals("1")).withSqlName("TINYINT"),
+                Converters.fullConverter(byte[].class, String.class, arr -> Base64.encodeToString(arr, 0), str -> Base64.decode(str,0)).withSqlName("TINYTEXT"),
+                Converters.fullConverter(BigDecimal.class, String.class, Object::toString, BigDecimal::new, BigDecimal.ZERO).withSqlName("DECIMAL(6,2)"),
+                Converters.fullConverterInherit(Date.class, String.class,
+                        d -> String.valueOf(d.getTime()),
+                        (type, str) -> Converters.newInstance(type, new Long(str)),
+                        type -> Converters.newInstance(type, 0)
+                ).withSqlName("BIGINT"),
+                Converters.fullConverterInherit(Enum.class, String.class,
+                        e -> String.valueOf(e.ordinal()),
+                        (type, str) -> type.getEnumConstants()[new Integer(str)],
+                        type -> type.getEnumConstants()[0]
+                ).withSqlName("TINYINT")
+        ), "PRIMARY KEY AUTO_INCREMENT");
     }
 
-    private Object getFromJson(JSONObject jsonObject, Class<?> propertyType, String key) throws JSONException {
-        if (propertyType == Integer.class) {
-            return jsonObject.getInt(key);
-        } else if (propertyType == Long.class) {
-            return jsonObject.getLong(key);
-        } else if (propertyType == Boolean.class) {
-            return jsonObject.getBoolean(key);
-        } else if (propertyType == Double.class) {
-            return jsonObject.getDouble(key);
-        } else if (propertyType == String.class) {
-            return jsonObject.getString(key);
-        } else {
-            throw new RuntimeException("Cannot convert from jsonObject to " + propertyType.getName());
+
+    /*public static void createOnce(Class<? extends Entity> klass) {
+        StringBuilder statement = new StringBuilder("CREATE TABLE `BookSharing`.");
+        statement.append("`" + klass.getSimpleName().toLowerCase() + "_table` (");
+        statement.append("`id` BIGINT NOT NULL AUTO_INCREMENT, ");
+        Collection<Property> properties = new JsonReflection().getProperties(klass).values();
+        for (Property property : properties) {
+            if (property.getName() == "id") continue;
+            statement.append("`" + property.getName() + "` ");
+            String type;
+            if ((type = sqlTypes.get(property.getPropertyType())) == null){
+                type = "TEXT";
+            }
+            statement.append(type + " ");
+            statement.append("NULL , ");
         }
-    }
-
-    /*{printTablesAndPropertiesPhpMap();
-        User user = new User();
-        user.setFirstName("Haim");
-        user.setCredentials(new Credentials("jsaajs", "1234"));
-        user.setBirthday(new java.sql.Date(0));
-        System.out.println(jsonReflection.writeObject(user).toString());
-        ObjectMapper om = new ObjectMapper();
+        statement.append("PRIMARY KEY (`id`))");
+        statement.append(" ENGINE = InnoDB;");
+        HashMap<String,String> request = new HashMap<>();
+        request.put("statement", statement.toString());
+        HttpAsync hr = null;
         try {
-            String s = om.writeValueAsString(user);
-            System.out.println(s);
-        } catch (JsonProcessingException e) {
+            hr = new HttpAsync(new URL(DB_URL), request, HttpAsync.POST);
+            hr.sendRequest();
+        } catch (IOException e) {
             e.printStackTrace();
         }
-        MySqlCrud.createAll();
-
-    }
-
-    private void printTablesAndPropertiesPhpMap() {
-        String entities = Stream.of(EntityReflection.getEntityTypes())
-                .map(type -> {
-                    String tableName = tableName(type);
-                    String properties = Stream.of(jsonReflection.getProperties(type).values())
-                            .map(p -> quote(p.getName()) + " => " + quote(p.getPropertyType().getSimpleName()) )
-                            .collect(Collectors.joining(", "));
-                    return quote(tableName) + " => array(" + properties + ")";
-                })
-                .collect(Collectors.joining(",\n\t"));
-        String phpArray = "$tables = array(" + entities + ");";
-        System.out.println(phpArray);
     }*/
 
     /////////////////////////////
-    // SQL Execution Methods
+    // Http
     /////////////////////////////
-
 
     private String sendStatementHttpPost1(String statement)  {
         try {
@@ -127,7 +109,7 @@ class MysqlDataAccess extends SqlDataAccess implements DataAccess {
     // DataAccess implementation
     ///////////////////////////////
 
-
+    @Override
     protected  <T> List<T> executeResultSql(Class<T> type, String statement) {
         try {
             System.out.println("Starting ask sql: " + statement);
@@ -147,16 +129,17 @@ class MysqlDataAccess extends SqlDataAccess implements DataAccess {
     }
 
     private  <T> T readObject(Class<T> type, JSONObject jsonObject) {
-        T item = Converters.tryNewInstanceOrThrow(type);
-        for (Property p : getProperties(type)) {
+        T item = Converters.newInstance(type);
+        for (Property p : getProperties(type).values()) {
             Object propertyValue;
             try {
                 Class<?> propertyType = p.getPropertyType();
-                Parser propertyFromJsonParser = sqlConverters.findParser(propertyType);
-                Class<?> jsonType = propertyFromJsonParser.getConvertType();
+                Parser parser = sqlConverters.findParser(propertyType);
 
-                Object jsonValue = getFromJson(jsonObject, jsonType, p.getName());
-                propertyValue = jsonValue.equals(JSONObject.NULL) ? null : propertyFromJsonParser.parse(propertyType, jsonValue);
+                String stringValue = jsonObject.getString(p.getName());
+                // The null value is created by json, so we have to compare it with json's null:
+                if (stringValue.equals(JSONObject.NULL.toString())) propertyValue = null;
+                else propertyValue = parser.parse(propertyType, stringValue);
             }
             catch (JSONException e) {throw new RuntimeException(e);}
             p.set(item, propertyValue);
