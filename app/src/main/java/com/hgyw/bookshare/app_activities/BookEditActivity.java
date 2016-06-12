@@ -95,7 +95,8 @@ public class BookEditActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent returnedIntent) {
         super.onActivityResult(requestCode, resultCode, returnedIntent);
         if (requestCode == IntentsFactory.CODE_GET_IMAGE && resultCode == RESULT_OK) {
-            newImage = Utility.readImageFromURI(this, returnedIntent.getData(), imageView);
+            newImage = (Bitmap)returnedIntent.getExtras().get("data");
+            Utility.setCroppedImageBitmap(imageView, newImage);
         }
     }
 

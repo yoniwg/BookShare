@@ -105,11 +105,15 @@ public class Utility {
             if (defaultImage != 0) {
                 imageView.setImageResource(defaultImage);
             }
-            return;
+
         }else {
             bitmap = BitmapFactory.decodeByteArray(entityImageBytes, 0, entityImageBytes.length);
-            bitmap = getCroppedBitmap(bitmap, imageView.getLayoutParams().width);
+            setCroppedImageBitmap(imageView, bitmap);
         }
+    }
+
+    public static void setCroppedImageBitmap(ImageView imageView, Bitmap bitmap){
+        bitmap = getCroppedBitmap(bitmap, imageView.getLayoutParams().width);
         imageView.setImageBitmap(bitmap);
     }
 
@@ -228,7 +232,7 @@ public class Utility {
                 .create().show();
     }
 
-    private static Bitmap getCroppedBitmap(Bitmap bmp, int radius) {
+    public static Bitmap getCroppedBitmap(Bitmap bmp, int radius) {
         Bitmap sbmp;
 
         if (bmp.getWidth() != radius || bmp.getHeight() != radius) {

@@ -27,7 +27,7 @@ public class SqlLiteDataAccess extends SqlDataAccess {
     private final SQLiteOpenHelper openHelper;
 
     protected SqlLiteDataAccess(Context context) {
-        super(SqlLiteReflection.ID_KEY_SQL, "_", null); //TODO
+        super(SqlLiteReflection.ID_KEY_SQL, "_", null, null); //TODO
         this.context = context;
         openHelper = new SQLiteOpenHelper(context, DATABASE_NAME , null, DATABASE_VERSION) {
             private void createTableIfNotExists(SQLiteDatabase db, Class<? extends Entity> type) {
