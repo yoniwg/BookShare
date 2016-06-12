@@ -32,7 +32,6 @@
         android:text="price"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:layout_centerVertical="true"
-        android:layout_toStartOf="@+id/okButton"
         android:layout_marginEnd="18dp"
         android:layout_toEndOf="@id/userThumbnail" />
 
@@ -44,5 +43,25 @@
         android:background="@drawable/shopping_basket_add256"
         android:layout_centerVertical="true"
         android:layout_alignParentEnd="true"/>
+
+    <TextView
+        android:id="@+id/bookSupplierAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_alignBottom="@+id/userThumbnail"
+        android:layout_toEndOf="@+id/userThumbnail" />
+
+    <TextView
+        android:id="@+id/amount_avail_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/available"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_toEndOf="@+id/bookSupplierAmount"
+        android:layout_alignTop="@+id/bookSupplierAmount"
+        android:labelFor="@id/bookSupplierAmount"
+        android:paddingStart="10dp" />
 
 </RelativeLayout>

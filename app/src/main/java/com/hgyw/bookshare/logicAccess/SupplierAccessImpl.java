@@ -61,6 +61,12 @@ public class SupplierAccessImpl extends GeneralAccessImpl implements SupplierAcc
         order.setOrderStatus(orderStatus);
         dataAccess.update(order);
         currentOrder.setOrderStatus(orderStatus);
+        //return back amount
+        if (orderStatus == OrderStatus.CANCELED){
+            BookSupplier bs = retrieve(BookSupplier.class, order.getBookSupplierId());
+            bs.setAmountAvailable(bs.getAmountAvailable() + order.getAmount());
+            dataAccess.update(bs);
+        }
     }
 
     @Override

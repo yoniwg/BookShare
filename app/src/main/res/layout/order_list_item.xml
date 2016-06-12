@@ -42,7 +42,7 @@
         android:layout_below="@+id/bookTitle"
         android:paddingStart="10dp"
         android:layout_toStartOf="@+id/orderAmountPicker"
-        android:layout_toEndOf="@id/bookImage" />
+        android:layout_toEndOf="@id/bookImage"/>
 
     <TextView
         android:layout_width="wrap_content"

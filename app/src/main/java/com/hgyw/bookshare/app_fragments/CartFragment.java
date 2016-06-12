@@ -85,7 +85,10 @@ public class CartFragment extends ListFragment implements TitleFragment {
                 ObjectToViewAppliers.apply(view, (ImageEntity) data[3]);
                 NumberPicker orderAmountPicker = (NumberPicker) view.findViewById(R.id.orderAmountPicker);
                 if (getArguments().getBoolean(IS_MAIN_FRAGMENT)) {
-                    orderAmountPicker.setOnValueChangedListener((picker, oldVal, newVal) -> order.setAmount(newVal));
+                    orderAmountPicker.setMaxValue(((BookSupplier) data[0]).getAmountAvailable());
+                    orderAmountPicker.setWrapSelectorWheel(false);
+                    orderAmountPicker.setOnValueChangedListener((picker, oldVal, newVal) ->
+                            order.setAmount(newVal));
                 } else {
                     orderAmountPicker.setVisibility(View.INVISIBLE);
                     view.findViewById(R.id.orderAmountFinal).setVisibility(View.VISIBLE);

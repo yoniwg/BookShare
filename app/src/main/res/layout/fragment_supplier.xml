@@ -6,8 +6,8 @@
     tools:context=".app_fragments.SupplierFragment">
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
         android:id="@+id/userThumbnail"
         android:layout_gravity="center_horizontal|top"
         android:src="@drawable/image_user"
@@ -18,21 +18,22 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Supplier Name"
         android:id="@+id/userFullName"
         android:layout_gravity="center"
         android:layout_below="@+id/userThumbnail"
         android:layout_centerHorizontal="true"
-        android:paddingTop="10dp" />
+        android:paddingTop="15dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Supplier Address"
         android:id="@+id/userAddress"
         android:layout_below="@+id/userFullName"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:paddingTop="15dp"/>
 
 </RelativeLayout>

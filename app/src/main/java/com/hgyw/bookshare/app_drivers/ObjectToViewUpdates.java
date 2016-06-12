@@ -35,15 +35,9 @@ public class ObjectToViewUpdates {
         }
     }
 
-    // buyButtonOnClickListener - can be null and the buy-button will be gone.
-    public static void updateBookSupplierBuyView(View view, BookSupplier bookSupplier, User supplier, View.OnClickListener buyButtonOnClickListener) {
+    public static void updateBookSupplierBuyView(View view, BookSupplier bookSupplier, User supplier) {
         ObjectToViewAppliers.apply(view, bookSupplier);
         ObjectToViewAppliers.apply(view, supplier);
-        Button buyButton = (Button) view.findViewById(R.id.buy_button);
-        if (buyButton != null) {
-            if (buyButtonOnClickListener == null) buyButton.setVisibility(View.GONE);
-            else buyButton.setOnClickListener(buyButtonOnClickListener);
-        }
     }
 
     public static void updateTransactionListItem(View view, Transaction transaction, BigDecimal totalPrice, List<User> suppliersList) {

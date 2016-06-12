@@ -122,7 +122,7 @@ public interface CustomerAccess extends GeneralAccess {
      * @param bookSupplier
      * @param amount
      */
-    void addBookSupplierToCart(BookSupplier bookSupplier, int amount);
+    void addBookSupplierToCart(BookSupplier bookSupplier, int amount) throws OrdersTransactionException;
 
     List<Transaction> retrieveTransactions(Date fromDate, Date toDate);
 

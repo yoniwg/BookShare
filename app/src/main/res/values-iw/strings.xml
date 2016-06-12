@@ -166,5 +166,11 @@
     <string name="toast_order_closed">ההזמנה נסגרה</string>
     <string name="toast_order_sent">ההזמנה נשלחה</string>
     <string name="toast_order_waiting_for_pay">ההזמנה תאושר סופית לאחר אישור התשלום</string>
+    <string name="connection_error_title">בעיית התחברות</string>
+    <string name="logining_in">מתחבר</string>
+    <string name="order_not_enough_amount">אין מספיק ספרים כרגע</string>
+    <string name="prossecing">מעבד</string>
+    <string name="try_again">נסה שוב</string>
+    <string name="available">זמינים</string>
 
 </resources>

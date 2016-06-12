@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 public class Order extends Entity {
     @EntityReference(BookSupplier.class)
     private long bookSupplierId;
-    private int amount = 1;
+    private int amount = 0;
     private BigDecimal unitPrice = BigDecimal.ZERO;
     private OrderRating orderRating = new OrderRating();
     private OrderStatus orderStatus = OrderStatus.NEW_ORDER;

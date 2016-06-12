@@ -32,12 +32,22 @@ class CustomerAccessImpl extends GeneralAccessImpl implements CustomerAccess {
         super(crud, currentUser);
     }
 
-    public void addBookSupplierToCart(BookSupplier bookSupplier, int amount) {
-        Order order = new Order();
-        order.setBookSupplierId(bookSupplier.getId());
-        order.setAmount(amount);
-        order.setUnitPrice(bookSupplier.getPrice());
-        getCart().add(order);
+    public void addBookSupplierToCart(BookSupplier bookSupplier, int amount) throws OrdersTransactionException {
+        if (bookSupplier.getAmountAvailable() < amount){
+            throw new OrdersTransactionException(OrdersTransactionException.Issue.NOT_AVAILABLE, null);
+        }
+        Order order = getCart().get(bookSupplier.getId());
+        if (order == null){
+            order = new Order();
+            getCart().add(order);
+            order.setUnitPrice(bookSupplier.getPrice());
+            order.setBookSupplierId(bookSupplier.getId());
+        }
+        int globalAmount = order.getAmount() + amount;
+        if (bookSupplier.getAmountAvailable() < globalAmount){
+            throw new OrdersTransactionException(OrdersTransactionException.Issue.NOT_AVAILABLE, order);
+        }
+        order.setAmount(globalAmount);
     }
 
     @Override
@@ -74,10 +84,6 @@ class CustomerAccessImpl extends GeneralAccessImpl implements CustomerAccess {
 
     @Override
     public void performNewTransaction(Transaction transaction, Collection<Order> orders) throws OrdersTransactionException {
-        for (Order order : orders) {
-            BookSupplier bookSupplier = retrieve(BookSupplier.class, order.getBookSupplierId());
-            order.setUnitPrice(bookSupplier.getPrice());
-        }
         // validations and check that transaction can be done
         validateOrdersTransaction(orders);
         // create transaction
@@ -93,7 +99,8 @@ class CustomerAccessImpl extends GeneralAccessImpl implements CustomerAccess {
             dataAccess.create(o);
             // decrease amount available
             BookSupplier bookSupplier = dataAccess.retrieve(BookSupplier.class, o.getBookSupplierId());
-            bookSupplier.setAmountAvailable(bookSupplier.getAmountAvailable());
+            o.setUnitPrice(bookSupplier.getPrice());
+            bookSupplier.setAmountAvailable(bookSupplier.getAmountAvailable() - o.getAmount());
             dataAccess.update(bookSupplier);
         }
     }
@@ -109,10 +116,10 @@ class CustomerAccessImpl extends GeneralAccessImpl implements CustomerAccess {
             // Validates according to bookSupplier in the database, the Order::getBookSupplierId() is
             //   only reference, and can be non updated.
             BookSupplier realBookSupplier = dataAccess.retrieve(BookSupplier.class, o.getBookSupplierId());
-            if (!o.getUnitPrice().equals(realBookSupplier.getPrice())) {
-                throw new OrdersTransactionException(OrdersTransactionException.Issue.PRICE_NOT_MATCH, o);
-            }
-            if (realBookSupplier.getAmountAvailable() <= 0) {
+//            if (!o.getUnitPrice().equals(realBookSupplier.getPrice())) {
+//                throw new OrdersTransactionException(OrdersTransactionException.Issue.PRICE_NOT_MATCH, o);
+//            }
+            if (realBookSupplier.getAmountAvailable() < o.getAmount()) {
                 throw new OrdersTransactionException(OrdersTransactionException.Issue.NOT_AVAILABLE, o);
             }
         }
@@ -131,8 +138,14 @@ class CustomerAccessImpl extends GeneralAccessImpl implements CustomerAccess {
                     + newStatus + " whether the current order status is " + order.getOrderStatus() + ".");
         }
         order.setOrderStatus(newStatus);
-        currentOrder.setOrderStatus(newStatus);
         dataAccess.update(order);
+        currentOrder.setOrderStatus(newStatus);
+        //return back amount
+        if (newStatus == OrderStatus.CANCELED){
+            BookSupplier bs = retrieve(BookSupplier.class, order.getBookSupplierId());
+            bs.setAmountAvailable(bs.getAmountAvailable() + order.getAmount());
+            dataAccess.update(bs);
+        }
     }
 
     @Override

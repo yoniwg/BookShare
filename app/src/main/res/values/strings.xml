@@ -178,4 +178,6 @@
     <string name="prossecing">Prossecing</string>
     <string name="connection_error_title">Connection Error</string>
     <string name="try_again">Try again</string>
+    <string name="order_not_enough_amount">There is not enough books available currently</string>
+    <string name="available">Available</string>
 </resources>

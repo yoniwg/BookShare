@@ -4,6 +4,7 @@ package com.hgyw.bookshare.app_fragments;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
@@ -30,6 +31,7 @@ import com.hgyw.bookshare.entities.BookSupplier;
 import com.hgyw.bookshare.entities.Rating;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.entities.UserType;
+import com.hgyw.bookshare.exceptions.OrdersTransactionException;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.CustomerAccess;
 import com.hgyw.bookshare.logicAccess.SupplierAccess;
@@ -166,17 +168,36 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
                 return access.retrieve(User.class, bookSupplier.getSupplierId());
             }
             @Override protected void onPostExecute(User supplier) {
-                View.OnClickListener onBuyButtonClick = null;
-                if (userType == UserType.CUSTOMER) onBuyButtonClick = v -> {
-                    v.startAnimation(AnimationUtils.loadAnimation(v.getContext(), R.anim.image_click_anim));
-                    AccessManagerFactory.getInstance().getCustomerAccess().addBookSupplierToCart(bookSupplier, 1);
-                    Toast.makeText(activity, R.string.order_added_to_cart, Toast.LENGTH_SHORT).show();
-                };
-                ObjectToViewUpdates.updateBookSupplierBuyView(supplierView, bookSupplier, supplier, onBuyButtonClick);
+                ObjectToViewUpdates.updateBookSupplierBuyView(supplierView, bookSupplier, supplier);
+                Button buyButton = (Button) supplierView.findViewById(R.id.buy_button);
+                //by default - invisible
+                buyButton.setVisibility(View.GONE);
+
+                if (userType == UserType.CUSTOMER) {
+                    buyButton.setVisibility(View.VISIBLE);
+                    setBuyButtonOnClick(supplierView, buyButton, supplier, bookSupplier);
+                }
+
                 Intent intent = IntentsFactory.newEntityIntent(activity, supplier);
                 supplierView.setOnClickListener(v -> startActivityForResult(intent, IntentsFactory.CODE_ENTITY_UPDATED));
             }
         }.execute();
+    }
+
+    private void setBuyButtonOnClick(View supplierView, Button buyButton, User supplier, BookSupplier bookSupplier) {
+        if (bookSupplier.getAmountAvailable() >= 1){
+            buyButton.setOnClickListener(v -> {
+                v.startAnimation(AnimationUtils.loadAnimation(v.getContext(), R.anim.image_click_anim));
+                try {
+                    AccessManagerFactory.getInstance().getCustomerAccess().addBookSupplierToCart(bookSupplier, 1);
+                    Toast.makeText(activity, R.string.order_added_to_cart, Toast.LENGTH_SHORT).show();
+                } catch (OrdersTransactionException e) {
+                    Toast.makeText(activity, R.string.order_not_enough_amount, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }else{
+            buyButton.setAlpha(0.25f);
+        }
     }
 
     @Override
