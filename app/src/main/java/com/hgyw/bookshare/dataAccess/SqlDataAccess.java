@@ -26,27 +26,27 @@ import java.util.NoSuchElementException;
  */
 abstract class SqlDataAccess implements DataAccess {
 
-    protected final String ID_KEY;
-    protected final String SUB;
+    protected final String ID_KEY = "id";
+    protected final String SUB = "_";
     protected final String NON_DELETED_CONDITION;
     protected final ConvertersCollection sqlConverters;
     private final String idColumnAdditionalProperties;
 
-    protected SqlDataAccess(String id, String sub, ConvertersCollection sqlConverters, String idColumnAdditionalProperties) {
-        ID_KEY = id;
-        SUB = sub;
+    /**
+     *
+     * @param sqlConverters Converters from java to sql values for creating sql statement using
+     * {@code converter.convert(value).toString()}.
+     * @param idColumnAdditionalProperties Something like "primary key auto_increment" to add to the id column definition.
+     */
+    protected SqlDataAccess(ConvertersCollection sqlConverters, String idColumnAdditionalProperties) {
         this.sqlConverters = sqlConverters;
         this.idColumnAdditionalProperties = idColumnAdditionalProperties;
         NON_DELETED_CONDITION = "deleted=" + sqlValue(false);
     }
 
-    protected SqlDataAccess(ConvertersCollection sqlConverters, String idColumnAdditionalProperties) {
-            this("id", "_", sqlConverters, idColumnAdditionalProperties);
-    }
-
 
     protected String tableName(Class<? extends Entity> userClass) {
-        return userClass.getSimpleName().toLowerCase()+"_"+"table";
+        return userClass.getSimpleName().toLowerCase() + "_" + "table";
     }
 
     public void createTableIfNotExists(Class<? extends Entity> type) {
@@ -242,6 +242,7 @@ abstract class SqlDataAccess implements DataAccess {
 
 
     private final Map<Class<?>, Map<String,Property>> propertiesMaps = new HashMap<>();
+
     protected Map<String,Property> getProperties(Class<?> aClass) {
         Map<String,Property> properties = propertiesMaps.get(aClass);
         if (properties == null) {
