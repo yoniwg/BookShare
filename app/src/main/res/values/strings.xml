@@ -150,7 +150,7 @@
     <string name="supply_the_book">Supply the book</string>
     <string name="book_was_removed_to_supplier">The book have been removed from yours books.</string>
     <string name="book_was_added_to_supplier">The book was added for yours books</string>
-    <string name="book_was_updated_to_supplier">The book of yours was updated.</string>
+    <string name="book_was_updated_to_supplier">Your book was updated.</string>
     <string name="new_book_review_dialog">You have not yet have this book. in yours books. write the data and click to add.</string>
     <string name="update_book_review_dialog">These are current data of book that you provides:</string>
     <string name="please_wait">Please Wait</string>
@@ -178,6 +178,9 @@
     <string name="prossecing">Prossecing</string>
     <string name="connection_error_title">Connection Error</string>
     <string name="try_again">Try again</string>
-    <string name="order_not_enough_amount">There is not enough books available currently</string>
+    <string name="order_not_enough_amount">There is no more books available currently</string>
     <string name="available">Available</string>
+    <string name="book_update_dialog">Update Yours Book</string>
+    <string name="remove_from_my_books">remove from my books</string>
+    <string name="remove_from_my_books_message">Are you sure you want to remove this book from your book list?</string>
 </resources>

@@ -45,7 +45,9 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by haim7 on 11/05/2016.
@@ -309,7 +311,8 @@ public class Utility {
                 .putString(PREFERENCE_PASSWORD, credentials.getPassword()).commit();
     }
 
-    public static <T> void addViewsByList(ViewGroup viewGroup, List<T> list, LayoutInflater inflater, @LayoutRes int layout , BiConsumer<View, T> viewConsumer) {
+    public static <T> Map<T,View> addViewsByList(ViewGroup viewGroup, List<T> list, LayoutInflater inflater, @LayoutRes int layout , BiConsumer<View, T> viewConsumer) {
+        Map<T,View> viewsMap = new HashMap<>();
         if (list.isEmpty()) {
             View emptyView = inflater.inflate(R.layout.simple_empty_listview, viewGroup, false);
             viewGroup.addView(emptyView);
@@ -319,8 +322,10 @@ public class Utility {
                 View view = inflater.inflate(layout, viewGroup, false);
                 if (viewConsumer != null) viewConsumer.accept(view, item);
                 viewGroup.addView(view, i++);
+                viewsMap.put(item,view);
             }
         }
+        return viewsMap;
     }
 
 

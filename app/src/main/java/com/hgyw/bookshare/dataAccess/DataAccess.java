@@ -87,6 +87,6 @@ public interface DataAccess extends Crud {
      * @return Entity item of class T
      * @throws java.util.NoSuchElementException If database doesn't contain item of this entity and id.
      */
-    Entity retrieve(IdReference idReference);
+    <T extends IdReference> T retrieve(T idReference);
 
 }

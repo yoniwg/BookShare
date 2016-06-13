@@ -28,7 +28,7 @@ class DelayDataAccess implements DataAccess {
     }
 
     @Override
-    public Entity retrieve(IdReference idReference) {
+    public <T extends IdReference> T retrieve(T idReference) {
         delay(idReference.getEntityType());
         return dataAccess.retrieve(idReference);
     }

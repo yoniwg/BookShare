@@ -149,12 +149,13 @@ class CustomerAccessImpl extends GeneralAccessImpl implements CustomerAccess {
     }
 
     @Override
-    public void updateOrderRating(long orderId, OrderRating orderRating) {
-        Order order = dataAccess.retrieve(Order.class, orderId);
+    public void updateOrderRating(Order currentOrder, OrderRating orderRating) {
+        Order order = dataAccess.retrieve(currentOrder);
         Transaction transaction = retrieve(Transaction.class, order.getTransactionId());
         requireItsMeForAccess(UserType.CUSTOMER, transaction.getCustomerId());
         order.setOrderRating(orderRating);
         dataAccess.update(order);
+        currentOrder.setOrderRating(orderRating);
     }
 
     @Override
@@ -175,7 +176,7 @@ class CustomerAccessImpl extends GeneralAccessImpl implements CustomerAccess {
 
     @Override
     public void removeBookReview(BookReview bookReview) {
-        BookReview currentBookReview = (BookReview) dataAccess.retrieve(bookReview);
+        BookReview currentBookReview = dataAccess.retrieve(bookReview);
         requireItsMeForAccess(UserType.CUSTOMER, currentBookReview.getCustomerId());
         dataAccess.delete(bookReview);
     }

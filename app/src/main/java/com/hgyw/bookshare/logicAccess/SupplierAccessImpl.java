@@ -83,14 +83,14 @@ public class SupplierAccessImpl extends GeneralAccessImpl implements SupplierAcc
 
     @Override
     public void updateBookSupplier(BookSupplier bookSupplier) {
-        BookSupplier originalBookSupplier = (BookSupplier) dataAccess.retrieve(bookSupplier);
+        BookSupplier originalBookSupplier = dataAccess.retrieve(bookSupplier);
         requireItsMeForAccess(UserType.SUPPLIER, originalBookSupplier.getSupplierId());
         dataAccess.update(bookSupplier);
     }
 
     @Override
     public void removeBookSupplier(BookSupplier bookSupplier) {
-        BookSupplier originalBookSupplier = (BookSupplier) dataAccess.retrieve(bookSupplier);
+        BookSupplier originalBookSupplier = dataAccess.retrieve(bookSupplier);
         requireItsMeForAccess(UserType.SUPPLIER, originalBookSupplier.getSupplierId());
         dataAccess.delete(bookSupplier);
     }

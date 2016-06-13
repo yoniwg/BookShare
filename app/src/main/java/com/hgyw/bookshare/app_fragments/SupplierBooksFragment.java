@@ -1,13 +1,18 @@
 package com.hgyw.bookshare.app_fragments;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ListFragment;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.app_drivers.ListApplyObjectAdapter;
@@ -31,12 +36,16 @@ public class SupplierBooksFragment extends ListFragment implements TitleFragment
     private ArrayAdapter<BookSupplier> adapter;
 
     private Activity activity;
+    private final SupplierAccess sAccess = AccessManagerFactory.getInstance().getSupplierAccess();
+
     @Override public void onAttach(Context context) {super.onAttach(context);activity = (Activity) context;}
     @Override public void onAttach(Activity activity) {super.onAttach(activity);this.activity = activity;}
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        registerForContextMenu(getListView());
 
         new AsyncTask<Void, Void, List<BookSupplier>>() {
             SupplierAccess sAccess = AccessManagerFactory.getInstance().getSupplierAccess();
@@ -76,14 +85,44 @@ public class SupplierBooksFragment extends ListFragment implements TitleFragment
     }
 
     @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        BookSupplier bs = (BookSupplier) l.getItemAtPosition(position);
-        BookSupplierDialogFragment.newInstance(bs).show(getFragmentManager(), "BookSupplierDialogFragment");
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        //get chosen book-supplier
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+        BookSupplier bookSupplier = adapter.getItem(info.position);
+        //add menu items
+        MenuItem editMenuItem = menu.add(R.string.edit);
+        MenuItem deleteMenuItem = menu.add(R.string.remove_from_my_books);
+
+        //set edit listener
+        editMenuItem.setOnMenuItemClickListener(item -> {
+            BookSupplierDialogFragment.newInstance(bookSupplier).show(getFragmentManager(), "BookSupplierDialogFragment");
+            return true;
+        });
+
+        //set delete listener
+        deleteMenuItem.setOnMenuItemClickListener(item -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(R.string.remove_from_my_books_message)
+                    .setPositiveButton(R.string.yes, (dialog, which) -> {
+                        new ProgressDialogAsyncTask<Void, Void, Void>(activity) {
+                            @Override protected Void retrieveDataAsync(Void... params) {
+                                sAccess.removeBookSupplier(bookSupplier); return null;
+                            }
+                            @Override protected void doByData(Void aVoid) {
+                                adapter.remove(bookSupplier);
+                                Toast.makeText(activity,R.string.book_was_removed_to_supplier, Toast.LENGTH_SHORT).show();
+                            }
+                        }.execute();
+                    })
+                    .setNeutralButton(R.string.no, (dialog, which) -> {
+                    });
+            builder.create().show();
+            return true;
+        });
     }
 
     @Override
     public void onBookSupplierResult(ResultCode result, BookSupplier bookSupplier) {
-        final SupplierAccess sAccess = (result == ResultCode.CANCEL) ? null : AccessManagerFactory.getInstance().getSupplierAccess();
         switch (result) {
             case OK:
                 new ProgressDialogAsyncTask<Void, Void, Void>(activity) {
@@ -91,16 +130,7 @@ public class SupplierBooksFragment extends ListFragment implements TitleFragment
                         sAccess.updateBookSupplier(bookSupplier); return null;
                     }
                     @Override protected void doByData(Void aVoid) {
-                        Utility.replaceById(adapter, bookSupplier);
-                    }
-                }.execute(); break;
-            case DELETE:
-                new ProgressDialogAsyncTask<Void, Void, Void>(activity) {
-                    @Override protected Void retrieveDataAsync(Void... params) {
-                        sAccess.removeBookSupplier(bookSupplier); return null;
-                    }
-                    @Override protected void doByData(Void aVoid) {
-                        adapter.remove(bookSupplier);
+                        adapter.notifyDataSetChanged();
                     }
                 }.execute(); break;
             case CANCEL: break;

@@ -2,9 +2,9 @@ package com.hgyw.bookshare.app_fragments;
 
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.Toast;
 
+import com.annimon.stream.Optional;
 import com.hgyw.bookshare.app_drivers.IntentsFactory;
 import com.hgyw.bookshare.app_drivers.CancelableLoadingDialogAsyncTask;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
@@ -37,6 +38,7 @@ import com.hgyw.bookshare.logicAccess.CustomerAccess;
 import com.hgyw.bookshare.logicAccess.SupplierAccess;
 
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 public class BookFragment extends EntityFragment implements BookReviewDialogFragment.BookReviewResultListener, BookSupplierDialogFragment.ResultListener {
@@ -49,6 +51,9 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
     private RatingBar userRatingBar;
     private View bookContainer;
     private Activity activity;
+    private Menu menu;
+    private Map<BookSupplier, View> suppliersViewsMap;
+    private LinearLayout suppliersListView;
 
     public BookFragment() {
         super(R.layout.fragment_book, R.menu.menu_book, R.string.book_fragment_title);
@@ -82,13 +87,14 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
 
         View userReviewContainer = view.findViewById(R.id.userReviewContainer);
         LinearLayout reviewListView = (LinearLayout) view.findViewById(R.id.reviews_listview);
-        LinearLayout suppliersListView = (LinearLayout) view.findViewById(R.id.suppliers_listview);
+        suppliersListView = (LinearLayout) view.findViewById(R.id.suppliers_listview);
         Button allReviewsButton = (Button) view.findViewById(R.id.all_reviews_button);
         userRatingBar = (RatingBar) userReviewContainer.findViewById(R.id.userRatingBar);
 
         new CancelableLoadingDialogAsyncTask<Void,Void,Void>(activity) {
             List<BookReview> bookReviews;
             List<BookSupplier> suppliers;
+            Optional<BookSupplier> oCurrentBookSupplier;
             public BookSummary bookSummary;
             @Override
             protected Void retrieveDataAsync(Void... params) {
@@ -96,6 +102,7 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
                 book = access.retrieve(Book.class, entityId);
                 bookSummary = access.getBookSummary(book);
                 if (userType == UserType.CUSTOMER) userBookReview = ((CustomerAccess) access).retrieveMyReview(book);
+                else oCurrentBookSupplier = ((SupplierAccess) access).retrieveMyBookSupplier(book);
                 // get lists
                 bookReviews = access.findBookReviews(book);
                 suppliers = access.findBookSuppliers(book);
@@ -121,6 +128,7 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
                         }
                     });
                 } else {
+                    menu.findItem(R.id.action_remove_book).setVisible(oCurrentBookSupplier.isPresent());
                     userReviewContainer.setVisibility(View.GONE);
                 }
 
@@ -141,7 +149,7 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
                 }
 
                 // set views of suppliers
-                Utility.addViewsByList(suppliersListView, suppliers, activity.getLayoutInflater(), R.layout.book_supplier_list_item, fragment::updateBookSupplierView);
+                suppliersViewsMap = Utility.addViewsByList(suppliersListView, suppliers, activity.getLayoutInflater(), R.layout.book_supplier_list_item, fragment::updateBookSupplierView);
             }
 
             @Override
@@ -203,9 +211,11 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
+        this.menu = menu;
         menu.findItem(R.id.action_cart).setVisible(access.getUserType() == UserType.CUSTOMER);
         menu.findItem(R.id.action_edit_book).setVisible(access.getUserType() == UserType.SUPPLIER);
         menu.findItem(R.id.action_supply_book).setVisible(access.getUserType() == UserType.SUPPLIER);
+        menu.findItem(R.id.action_remove_book).setVisible(access.getUserType() == UserType.SUPPLIER);
     }
 
     @Override
@@ -217,12 +227,39 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
             case R.id.action_edit_book:
                 startActivity(IntentsFactory.editBookIntent(activity, book.getId()));
                 return true;
+            case R.id.action_remove_book:
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setMessage(R.string.remove_from_my_books_message)
+                        .setPositiveButton(R.string.yes, (dialog, which) -> onDeleteBook())
+                        .setNeutralButton(R.string.no, (d,w)->{});
+                builder.create().show();
+                return true;
             case R.id.action_supply_book: {
                 startBookSupplierDialogAsync();
             }
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void onDeleteBook() {
+        SupplierAccess sAccess = (SupplierAccess) access;
+        new ProgressDialogAsyncTask<Void, Void, Optional<BookSupplier>>(activity, R.string.updating_book_supplying) {
+            @Override protected Optional<BookSupplier> retrieveDataAsync(Void... params) {
+                Optional<BookSupplier> oBookSupplier = sAccess.retrieveMyBookSupplier(book);
+                if (oBookSupplier.isPresent()){
+                    sAccess.removeBookSupplier(oBookSupplier.get());
+                }
+                return oBookSupplier;
+            }
+            @Override protected void doByData(Optional<BookSupplier> oBookSupplier) {
+                if (oBookSupplier.isPresent()){
+                    Toast.makeText(activity,R.string.book_was_removed_to_supplier, Toast.LENGTH_SHORT).show();
+                    suppliersListView.removeView(suppliersViewsMap.get(oBookSupplier.get()));
+                    menu.findItem(R.id.action_remove_book).setVisible(false);
+                }
+            }
+        }.execute();
     }
 
     private void startBookSupplierDialogAsync() {
@@ -302,17 +339,6 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
                         int messageRedId = isNewBook ? R.string.book_was_added_to_supplier : R.string.book_was_updated_to_supplier;
                         Toast.makeText(activity, messageRedId, Toast.LENGTH_SHORT).show();
                         startActivity(IntentsFactory.supplierBooksIntent(activity));
-                    }
-                }.execute(); break;
-            case DELETE:
-                new ProgressDialogAsyncTask<Void, Void, Boolean>(activity, R.string.updating_book_supplying) {
-                    @Override protected Boolean retrieveDataAsync(Void... params) {
-                        try {
-                            sAccess.removeBookSupplier(bookSupplier); return true;
-                        } catch (NoSuchElementException e) { return false;}
-                    }
-                    @Override protected void doByData(Boolean success) {
-                        if (success) Toast.makeText(activity,R.string.book_was_removed_to_supplier, Toast.LENGTH_SHORT).show();
                     }
                 }.execute(); break;
             case CANCEL: break;

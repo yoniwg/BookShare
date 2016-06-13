@@ -97,7 +97,7 @@ class GeneralAccessImpl implements GeneralAccess {
     @Override
     public User retrieveUserDetails() {
         if (currentUser.getUserType() != UserType.GUEST){
-            return (User) dataAccess.retrieve(currentUser);
+            return dataAccess.retrieve(currentUser);
         } else {
             return (User) currentUser.clone();
         }
@@ -114,7 +114,7 @@ class GeneralAccessImpl implements GeneralAccess {
     @Override
     public void updateUserDetails(User newDetails) {
         requireItsMeForAccess(newDetails.getUserType(), newDetails.getId());
-        newDetails.setCredentials(((User) dataAccess.retrieve(currentUser)).getCredentials()); // Avoid change credentials by this method.
+        newDetails.setCredentials((dataAccess.retrieve(currentUser)).getCredentials()); // Avoid change credentials by this method.
         dataAccess.update(newDetails);
     }
 

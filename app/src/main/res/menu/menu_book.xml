@@ -12,5 +12,8 @@
     <item
         android:id="@+id/action_supply_book"
         android:title="@string/supply_the_book" />
+    <item
+        android:id="@+id/action_remove_book"
+        android:title="@string/remove_from_my_books" />
 
 </menu>

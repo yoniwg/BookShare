@@ -1,6 +1,5 @@
 package com.hgyw.bookshare.logicAccess;
 
-import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -80,11 +79,11 @@ public interface CustomerAccess extends GeneralAccess {
 
     /**
      * update the order's rating
-     * @param orderId the order to rate
+     * @param order the order to rate
      * @param orderRating the order's rating
      * @throws java.util.NoSuchElementException if the order with id orderId is not found.
      */
-    void updateOrderRating(long orderId, OrderRating orderRating);
+    void updateOrderRating(Order order, OrderRating orderRating);
 
 
     /**

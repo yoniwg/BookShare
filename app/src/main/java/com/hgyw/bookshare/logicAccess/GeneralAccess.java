@@ -95,5 +95,7 @@ public interface GeneralAccess {
     void updateUserDetails(User user);
 
     UserType getUserType();
+
+
 }
 

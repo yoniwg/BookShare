@@ -102,9 +102,9 @@ public class CartFragment extends ListFragment implements TitleFragment {
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        menu.add(R.string.delete);
+        MenuItem deleteMenuItem = menu.add(R.string.delete);
 
-        menu.getItem(0).setOnMenuItemClickListener(item -> {
+        deleteMenuItem.setOnMenuItemClickListener(item -> {
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
             Order order = (Order) adapter.getItem(info.position);
 

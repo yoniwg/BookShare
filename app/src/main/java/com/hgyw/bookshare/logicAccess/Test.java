@@ -257,7 +257,7 @@ public class Test {
         OrderRating orderRating = new OrderRating();
         orderRating.setCommunication(Rating.GOOD);
         orderRating.setItemAsDescribed(Rating.BAD);
-        cAccess.updateOrderRating(Stream.of(orders).skip(1).findFirst().get().getId(), orderRating);
+        cAccess.updateOrderRating(Stream.of(orders).skip(1).findFirst().get(), orderRating);
 
         // book review
         BookReview bookReview = new BookReview();

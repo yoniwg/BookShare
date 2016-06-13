@@ -172,5 +172,8 @@
     <string name="prossecing">מעבד</string>
     <string name="try_again">נסה שוב</string>
     <string name="available">זמינים</string>
+    <string name="book_update_dialog">עדכן את פרטי הספר שלך</string>
+    <string name="remove_from_my_books">הסר מרשימת הספרים</string>
+    <string name="remove_from_my_books_message">האם אתה בטוח שברצונך להסיר ספר זה מרשימת הספרים שלך?</string>
 
 </resources>

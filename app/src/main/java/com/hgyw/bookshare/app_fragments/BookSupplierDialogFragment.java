@@ -50,10 +50,9 @@ public class BookSupplierDialogFragment extends DialogFragment implements Dialog
 
         @StringRes int dialogMessage = bookSupplier.getId() == 0 ? R.string.new_book_review_dialog : R.string.update_book_review_dialog;
         return new AlertDialog.Builder(getActivity()).setView(view)
-                .setTitle("Update Yours Book")
+                .setTitle(R.string.book_update_dialog)
                 .setMessage(dialogMessage)
                 .setPositiveButton(R.string.ok, this)
-                .setNeutralButton(R.string.delete, this)
                 .setNegativeButton(R.string.cancel, this)
                 .create();
     }
@@ -61,10 +60,6 @@ public class BookSupplierDialogFragment extends DialogFragment implements Dialog
     private void onOkPressed() {
         ObjectToViewAppliers.result(view, bookSupplier);
         listener.onBookSupplierResult(ResultListener.ResultCode.OK, bookSupplier);
-    }
-
-    private void onDeletePressed() {
-        listener.onBookSupplierResult(ResultListener.ResultCode.DELETE, bookSupplier);
     }
 
     @Override
@@ -77,14 +72,13 @@ public class BookSupplierDialogFragment extends DialogFragment implements Dialog
     public void onClick(DialogInterface dialog, int which) {
         switch (which) {
             case Dialog.BUTTON_POSITIVE: onOkPressed(); break;
-            case Dialog.BUTTON_NEUTRAL: onDeletePressed(); break;
             case Dialog.BUTTON_NEGATIVE: dismiss(); break;
         }
     }
 
     public interface ResultListener {
         enum ResultCode {
-            OK, CANCEL, DELETE
+            OK, CANCEL
         }
 
         void onBookSupplierResult(ResultCode result, BookSupplier bookSupplier);
