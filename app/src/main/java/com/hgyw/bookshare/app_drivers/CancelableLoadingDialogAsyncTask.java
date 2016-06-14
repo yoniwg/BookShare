@@ -41,7 +41,7 @@ public abstract class CancelableLoadingDialogAsyncTask<Params,Progress, Result> 
         progressDialog.setCancelable(false);
         progressDialog.setButton(DialogInterface.BUTTON_NEGATIVE,
                 context.getString(R.string.cancel),
-                (dialog, whitch) -> { cancel(false); onCancel(); }
+                (dialog, which) -> { cancel(false); onCancel(); }
         );
         progressDialog.show();
     }

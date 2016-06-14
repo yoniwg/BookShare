@@ -21,7 +21,7 @@
     <string name="search">חפש</string>
     <string name="filter">סנן</string>
     <string name="cancel">ביטול</string>
-    <string name="suppliers">ספקים</string>
+    <string name="bookSuppliers">ספקים</string>
     <string name="suppliers_colon">ספקים:</string>
     <string name="buy">קנה</string>
     <string name="do_order">הזמן</string>
@@ -141,7 +141,7 @@
     <string name="update_book_review_dialog">אתה מספק כעת את הספר הזה:</string>
     <string name="updating_book_supplying">מעדכן את אספקת הספר</string>
     <string name="book_was_added_to_supplier">הספר נוסף לרשימת הספרים שלך</string>
-    <string name="book_was_removed_to_supplier">הספר הוסר מרשימת הספרים שלך</string>
+    <string name="book_was_removed_from_supplier">הספר הוסר מרשימת הספרים שלך</string>
     <string name="book_was_updated_to_supplier">הספר שלך עודכן</string>
     <string name="cancel_confirm">אשר ביטול</string>
     <string name="cancel_order">בטל הזמנה</string>

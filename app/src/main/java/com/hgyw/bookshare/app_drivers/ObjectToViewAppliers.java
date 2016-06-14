@@ -164,7 +164,7 @@ public class ObjectToViewAppliers {
     }
 
 
-    public static void apply(View view, User user) {
+    public static void apply(View view, User user, boolean withImage) {
         apply(view, user.getCredentials());
         TextView firstNameView = (TextView) view.findViewById(R.id.userFirstName);
         TextView lastNameView = (TextView) view.findViewById(R.id.userLastName);
@@ -183,8 +183,17 @@ public class ObjectToViewAppliers {
         if (addressView!= null) addressView.setText(user.getAddress());
         if (phoneView!= null) phoneView.setText(user.getPhoneNumber());
         if (birthdayView!= null) {} // TODO
-        if (userImage != null) Utility.setImageById(userImage, user.getImageId(), R.drawable.image_user);
+        if (userImage != null && withImage) Utility.setImageById(userImage, user.getImageId(), R.drawable.image_user);
         if (customerSupplierSpinner != null) customerSupplierSpinner.setSelection(user.getUserType() == UserType.CUSTOMER ? 0 : 1);
+    }
+
+    /**
+     * default call for apply(View, User, boolean).
+     * @param view
+     * @param user
+     */
+    public static void apply(View view, User user){
+        apply(view, user, true);
     }
 
     public static void result(View view, User user) {
@@ -273,8 +282,10 @@ public class ObjectToViewAppliers {
 
     public static void apply(View view, ImageEntity imageEntity) {
         if (imageEntity == null) imageEntity = new ImageEntity();
-        ImageView imageView = (ImageView) view.findViewById(R.id.bookImage);
-        if (imageView != null) Utility.setImageByBytes(imageView,imageEntity.getBytes(),R.drawable.image_book);
+        ImageView bookImageView = (ImageView) view.findViewById(R.id.bookImage);
+        ImageView userImageView = (ImageView) view.findViewById(R.id.userThumbnail);
+        if (bookImageView != null) Utility.setImageByBytes(bookImageView,imageEntity.getBytes(),R.drawable.image_book);
+        if (userImageView != null) Utility.setImageByBytes(userImageView,imageEntity.getBytes(),R.drawable.image_user);
     }
 
 

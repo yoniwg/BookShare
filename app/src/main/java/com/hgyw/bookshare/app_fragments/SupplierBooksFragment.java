@@ -11,14 +11,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.app_drivers.ListApplyObjectAdapter;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
 import com.hgyw.bookshare.app_drivers.ProgressDialogAsyncTask;
-import com.hgyw.bookshare.app_drivers.Utility;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookSupplier;
 import com.hgyw.bookshare.entities.ImageEntity;
@@ -110,7 +108,7 @@ public class SupplierBooksFragment extends ListFragment implements TitleFragment
                             }
                             @Override protected void doByData(Void aVoid) {
                                 adapter.remove(bookSupplier);
-                                Toast.makeText(activity,R.string.book_was_removed_to_supplier, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(activity,R.string.book_was_removed_from_supplier, Toast.LENGTH_SHORT).show();
                             }
                         }.execute();
                     })

@@ -3,6 +3,7 @@ package com.hgyw.bookshare.app_activities;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,7 +19,9 @@ import com.hgyw.bookshare.app_drivers.Utility;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.entities.IdReference;
+import com.hgyw.bookshare.entities.ImageEntity;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
+import com.hgyw.bookshare.logicAccess.GeneralAccess;
 import com.hgyw.bookshare.logicAccess.SupplierAccess;
 
 /**
@@ -28,6 +31,7 @@ public class BookEditActivity extends AppCompatActivity {
 
     private static final String SAVE_KEY_NEW_IMAGE = "newImage";
     private static final String SAVE_KEY_BOOK = "book";
+    public static final GeneralAccess access = AccessManagerFactory.getInstance().getGeneralAccess();
     private Book book;
     private Bitmap newImage;
     private ImageView imageView;
@@ -64,13 +68,15 @@ public class BookEditActivity extends AppCompatActivity {
         view = findViewById(android.R.id.content);
         if (savedInstanceState == null) {
             long id = idReference.getId();
-            new ProgressDialogAsyncTask<Void, Void, Book>(this) {
-                @Override protected Book retrieveDataAsync(Void... params) {
-                    book = id == Entity.DEFAULT_ID ? new Book() : AccessManagerFactory.getInstance().getGeneralAccess().retrieve(Book.class, id);
-                    return book;
+            new ProgressDialogAsyncTask<Void, Void, Pair<Book, ImageEntity>>(this) {
+                @Override protected Pair<Book, ImageEntity> retrieveDataAsync(Void... params) {
+                    book = id == Entity.DEFAULT_ID ? new Book() : access.retrieve(Book.class, id);
+                    ImageEntity imageEntity = access.retrieve(ImageEntity.class, book.getImageId());
+                    return new Pair<Book, ImageEntity>(book, imageEntity);
                 }
-                @Override protected void doByData(Book book) {
-                    ObjectToViewAppliers.apply(view, book);
+                @Override protected void doByData(Pair<Book, ImageEntity> book) {
+                    ObjectToViewAppliers.apply(view, book.first);
+                    ObjectToViewAppliers.apply(view, book.second);
                 }
             }.execute();
         } else {

@@ -25,9 +25,9 @@ import java.util.List;
  */
 public class ObjectToViewUpdates {
 
-    public static void updateBookReviewView(View view, BookReview bookReview, User customer) {
+    public static void updateBookReviewView(View view, BookReview bookReview, User customer, boolean withImage) {
         ObjectToViewAppliers.apply(view, bookReview);
-        ObjectToViewAppliers.apply(view, customer);
+        ObjectToViewAppliers.apply(view, customer, withImage);
         TextView descriptionTextView = (TextView) view.findViewById(R.id.reviewDescription);
         if (descriptionTextView != null) {
             String description = bookReview.getDescription();
@@ -35,9 +35,9 @@ public class ObjectToViewUpdates {
         }
     }
 
-    public static void updateBookSupplierBuyView(View view, BookSupplier bookSupplier, User supplier) {
+    public static void updateBookSupplierBuyView(View view, BookSupplier bookSupplier, User supplier, boolean withImage) {
         ObjectToViewAppliers.apply(view, bookSupplier);
-        ObjectToViewAppliers.apply(view, supplier);
+        ObjectToViewAppliers.apply(view, supplier, withImage);
     }
 
     public static void updateTransactionListItem(View view, Transaction transaction, BigDecimal totalPrice, List<User> suppliersList) {

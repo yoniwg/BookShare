@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * A Class represents an extended list of book-reviews
+ * should get book id by Intent
  * Created by haim7 on 23/05/2016.
  */
 public class AllBookReviewListActivity extends ListActivity {
@@ -36,14 +38,18 @@ public class AllBookReviewListActivity extends ListActivity {
         String bookIdString = getIntent().getData().getPath().replaceAll("\\D+","");
         long bookId = Long.parseLong(bookIdString);
 
-        Book book = new Book(); book.setId(bookId);
+        //fictive book in order to pass the ID
+        Book bookIdContainer = new Book();
+        bookIdContainer.setId(bookId);
+
+        //retrieve book-review by async-task
         new AsyncTask<Void,Void,Void>() {
             List<BookReview> bookReviews;
             List<User> customers;
             @Override
             protected Void doInBackground(Void... params) {
                 GeneralAccess access = AccessManagerFactory.getInstance().getGeneralAccess();
-                bookReviews = access.findBookReviews(book);
+                bookReviews = access.findBookReviews(bookIdContainer);
                 customers = new ArrayList<>(bookReviews.size());
                 for (BookReview bookReview : bookReviews) {
                     User customer = access.retrieve(User.class, bookReview.getCustomerId());
@@ -54,9 +60,13 @@ public class AllBookReviewListActivity extends ListActivity {
 
             @Override
             protected void onPostExecute(Void aVoid) {
-                ListAdapter listAdapter = new ApplyObjectAdapter<BookReview>(AllBookReviewListActivity.this, R.layout.book_review_component, bookReviews) {
-                    @Override protected void applyOnView(View view, int position) {
-                        ObjectToViewUpdates.updateBookReviewView(view, bookReviews.get(position), customers.get(position));
+                ListAdapter listAdapter =
+                        new ApplyObjectAdapter<BookReview>(
+                                AllBookReviewListActivity.this,
+                                R.layout.book_review_component, bookReviews) {
+                    @Override
+                    protected void applyOnView(View view, int position) {
+                        ObjectToViewUpdates.updateBookReviewView(view, bookReviews.get(position), customers.get(position), true);
                     }
                 };
                 setListAdapter(listAdapter);

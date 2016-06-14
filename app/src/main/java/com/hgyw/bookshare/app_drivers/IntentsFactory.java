@@ -173,6 +173,7 @@ public class IntentsFactory {
 
     public static Intent allReviewsIntent(Context context, Book book) {
         Intent intent = new Intent(context, AllBookReviewListActivity.class);
+        //TODO ???why using data rather than extras???
         intent.setData(new Uri.Builder().path(String.valueOf(book.getId())).build());
         return intent;
     }
