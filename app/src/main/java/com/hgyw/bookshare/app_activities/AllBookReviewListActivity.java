@@ -4,6 +4,7 @@ import android.app.ListActivity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.util.Pair;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListAdapter;
