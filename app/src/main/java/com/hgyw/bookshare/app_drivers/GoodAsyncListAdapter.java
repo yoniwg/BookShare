@@ -67,7 +67,7 @@ public abstract class GoodAsyncListAdapter<T> extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return datas.size();
+        return items.size();
     }
 
     @Override
@@ -157,6 +157,7 @@ public abstract class GoodAsyncListAdapter<T> extends BaseAdapter {
     public synchronized void refreshRetrieveList() { // TODO: doesn't work properly on second call
         cancelTasks();
         if (DEBUG) System.out.println("GoodAsyncListAdapter: " + "Clear");
+        items.clear();
         datas.clear();
         notifyDataSetChanged();
         loadingEndPosition = 0;
