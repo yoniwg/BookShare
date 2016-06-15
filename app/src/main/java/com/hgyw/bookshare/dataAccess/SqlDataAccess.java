@@ -151,7 +151,7 @@ abstract class SqlDataAccess implements DataAccess {
     }
 
     private static boolean isChituchNotEmpty(Number x1, Number x2, Number y1, Number y2) {
-        return Math.min(x2.intValue(), y2.intValue()) - Math.max(x1.intValue(), y1.intValue()) > 0;
+        return Math.min(x2.intValue(), y2.intValue()) - Math.max(x1.intValue(), y1.intValue()) >= 0;
     }
 
 
