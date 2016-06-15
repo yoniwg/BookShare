@@ -2,12 +2,14 @@ package com.hgyw.bookshare.logicAccess;
 
 import android.support.annotation.WorkerThread;
 
+import com.annimon.stream.Optional;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookQuery;
 import com.hgyw.bookshare.entities.BookReview;
 import com.hgyw.bookshare.entities.BookSummary;
 import com.hgyw.bookshare.entities.BookSupplier;
 import com.hgyw.bookshare.entities.Entity;
+import com.hgyw.bookshare.entities.ImageEntity;
 import com.hgyw.bookshare.entities.Transaction;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.entities.UserType;
@@ -84,6 +86,13 @@ public interface GeneralAccess {
      */
     <T extends Entity> T retrieve(Class<T> entityClass, long entityId);
 
+    /**
+     * Retrieve any entity from data base if not DEFAULT ID
+     * @param imageEntityClass
+     * @param imageId
+     * @return
+     */
+    <T extends Entity> Optional<T> retrieveOptional(Class<T> imageEntityClass, long imageId);
     /**
      * If userType is guest then return internal object of guest. Don't change it!
      * @return

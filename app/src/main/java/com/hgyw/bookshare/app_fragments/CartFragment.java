@@ -66,8 +66,7 @@ public class CartFragment extends ListFragment implements TitleFragment {
                 BookSupplier bookSupplier = cAccess.retrieve(BookSupplier.class, order.getBookSupplierId());
                 Book book = cAccess.retrieve(Book.class, bookSupplier.getBookId());
                 User supplier = cAccess.retrieve(User.class, bookSupplier.getSupplierId());
-                ImageEntity bookImage = (book.getImageId() == 0) ?
-                        null : cAccess.retrieve(ImageEntity.class,book.getImageId());
+                ImageEntity bookImage = cAccess.retrieveOptional(ImageEntity.class,book.getImageId()).orElse(null);
                 return new Object[]{bookSupplier, book, supplier, bookImage};
             }
 
@@ -75,7 +74,7 @@ public class CartFragment extends ListFragment implements TitleFragment {
             protected void applyDataOnView(View view, Order order, Object[] data) {
                 ObjectToViewAppliers.apply(view, order);
                 ObjectToViewAppliers.apply(view, (BookSupplier) data[0]);
-                ObjectToViewAppliers.apply(view, (Book) data[1], false);
+                ObjectToViewAppliers.apply(view, (Book) data[1]);
                 ObjectToViewAppliers.apply(view, (User) data[2]);
                 ObjectToViewAppliers.apply(view, (ImageEntity) data[3]);
                 NumberPicker orderAmountPicker = (NumberPicker) view.findViewById(R.id.orderAmountPicker);

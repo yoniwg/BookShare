@@ -14,6 +14,7 @@ import com.hgyw.bookshare.app_drivers.ObjectToViewUpdates;
 import com.hgyw.bookshare.app_drivers.Utility;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookSupplier;
+import com.hgyw.bookshare.entities.ImageEntity;
 import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.Transaction;
 import com.hgyw.bookshare.entities.User;
@@ -72,7 +73,8 @@ public class TransactionFragment extends EntityFragment {
                 BookSupplier bookSupplier = cAccess.retrieve(BookSupplier.class, order.getBookSupplierId());
                 Book book = cAccess.retrieve(Book.class, bookSupplier.getBookId());
                 User supplier = cAccess.retrieve(User.class, bookSupplier.getSupplierId());
-                return new Object[] {bookSupplier, book, supplier};
+                ImageEntity bookImage = cAccess.retrieveOptional(ImageEntity.class, book.getImageId()).orElse(null);
+                return new Object[] {bookSupplier, book, supplier, bookImage};
             }
 
             @Override
@@ -82,7 +84,7 @@ public class TransactionFragment extends EntityFragment {
                 ObjectToViewAppliers.apply(view, (BookSupplier) data[0]);
                 ObjectToViewAppliers.apply(view, (Book) data[1]);
                 ObjectToViewAppliers.apply(view, (User) data[2]);
-
+                ObjectToViewAppliers.apply(view, (ImageEntity) data[3]);
                 ObjectToViewUpdates.setListenerToOrder(view, order);
             }
         }.execute();

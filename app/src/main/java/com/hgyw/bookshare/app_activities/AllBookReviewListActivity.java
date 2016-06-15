@@ -4,6 +4,7 @@ import android.app.ListActivity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.support.v4.util.Pair;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListAdapter;
@@ -14,6 +15,7 @@ import com.hgyw.bookshare.app_drivers.ApplyObjectAdapter;
 import com.hgyw.bookshare.app_drivers.ObjectToViewUpdates;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookReview;
+import com.hgyw.bookshare.entities.ImageEntity;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.logicAccess.AccessManager;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
@@ -45,7 +47,7 @@ public class AllBookReviewListActivity extends ListActivity {
         //retrieve book-review by async-task
         new AsyncTask<Void,Void,Void>() {
             List<BookReview> bookReviews;
-            List<User> customers;
+            List<Pair<User,ImageEntity>> customers;
             @Override
             protected Void doInBackground(Void... params) {
                 GeneralAccess access = AccessManagerFactory.getInstance().getGeneralAccess();
@@ -53,7 +55,8 @@ public class AllBookReviewListActivity extends ListActivity {
                 customers = new ArrayList<>(bookReviews.size());
                 for (BookReview bookReview : bookReviews) {
                     User customer = access.retrieve(User.class, bookReview.getCustomerId());
-                    customers.add(customer);
+                    ImageEntity userImage = access.retrieveOptional(ImageEntity.class, customer.getImageId()).orElse(null);
+                    customers.add(new Pair<>(customer, userImage));
                 }
                 return null;
             }
@@ -66,7 +69,10 @@ public class AllBookReviewListActivity extends ListActivity {
                                 R.layout.book_review_component, bookReviews) {
                     @Override
                     protected void applyOnView(View view, int position) {
-                        ObjectToViewUpdates.updateBookReviewView(view, bookReviews.get(position), customers.get(position), true);
+                        ObjectToViewUpdates.updateBookReviewView(view,
+                                bookReviews.get(position),
+                                customers.get(position).first,
+                                customers.get(position).second);
                     }
                 };
                 setListAdapter(listAdapter);

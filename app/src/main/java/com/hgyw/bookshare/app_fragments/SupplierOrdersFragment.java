@@ -78,8 +78,7 @@ public class SupplierOrdersFragment extends ListFragment implements TitleFragmen
                     Book book = sAccess.retrieve(Book.class, bookSupplier.getBookId());
                     Transaction transaction = sAccess.retrieve(Transaction.class, order.getTransactionId());
                     User customer = sAccess.retrieve(User.class, transaction.getCustomerId());
-                    ImageEntity bookImage = (book.getImageId() == 0) ?
-                            null : sAccess.retrieve(ImageEntity.class,book.getImageId());
+                    ImageEntity bookImage = sAccess.retrieveOptional(ImageEntity.class,book.getImageId()).orElse(null);
                     return new Object[] {bookSupplier, book, transaction, customer, bookImage};
             }
 
@@ -87,7 +86,7 @@ public class SupplierOrdersFragment extends ListFragment implements TitleFragmen
             public void applyDataOnView(Order order, Object[] data, View view) {
                     ObjectToViewAppliers.apply(view, order);
                     ObjectToViewAppliers.apply(view, (BookSupplier) data[0]);
-                    ObjectToViewAppliers.apply(view, (Book) data[1], false);
+                    ObjectToViewAppliers.apply(view, (Book) data[1]);
                     ObjectToViewAppliers.apply(view, (Transaction) data[2]);
                     ObjectToViewAppliers.apply(view, (User) data[3]);
                     ObjectToViewAppliers.apply(view, (ImageEntity) data[4]);

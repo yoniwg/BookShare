@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.annimon.stream.Collectors;
+import com.annimon.stream.Optional;
 import com.annimon.stream.Stream;
 import com.hgyw.bookshare.dataAccess.DataAccess;
 import com.hgyw.bookshare.entities.Book;
@@ -186,9 +187,8 @@ class CustomerAccessImpl extends GeneralAccessImpl implements CustomerAccess {
     }
 
     @Override
-    public BookReview retrieveMyReview(Book book) {
-        List<BookReview> result = dataAccess.findEntityReferTo(BookReview.class, currentUser, book);
-        return result.isEmpty() ? null : result.get(0);
+    public Optional<BookReview> retrieveMyReview(Book book) {
+        return Stream.of(dataAccess.findEntityReferTo(BookReview.class, currentUser, book)).findFirst();
     }
 
     @Override

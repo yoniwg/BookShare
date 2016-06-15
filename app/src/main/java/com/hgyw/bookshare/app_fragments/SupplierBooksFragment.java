@@ -54,15 +54,14 @@ public class SupplierBooksFragment extends ListFragment implements TitleFragment
             @Override
             public Object[] retrieveData(BookSupplier bs) {
                 Book book = sAccess.retrieve(Book.class, bs.getBookId());
-                ImageEntity bookImage = (book.getImageId() == 0) ?
-                        null : sAccess.retrieve(ImageEntity.class,book.getImageId());
+                ImageEntity bookImage = sAccess.retrieveOptional(ImageEntity.class,book.getImageId()).orElse(null);
                 return new Object[] {book, bookImage };
             }
 
             @Override
             public void applyDataOnView(BookSupplier bs, Object[] data, View view) {
                 ObjectToViewAppliers.apply(view, bs);
-                ObjectToViewAppliers.apply(view, (Book) data[0], false);
+                ObjectToViewAppliers.apply(view, (Book) data[0]);
                 ObjectToViewAppliers.apply(view, (ImageEntity) data[1]);
             }
         };

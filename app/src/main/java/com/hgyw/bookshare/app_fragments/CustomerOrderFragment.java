@@ -43,8 +43,7 @@ public class CustomerOrderFragment extends EntityFragment {
                     Book book = cAccess.retrieve(Book.class, bookSupplier.getBookId());
                     User supplier = cAccess.retrieve(User.class, bookSupplier.getSupplierId());
                     Transaction transaction = cAccess.retrieve(Transaction.class, order.getTransactionId());
-                    ImageEntity bookImage = (book.getImageId() == 0) ?
-                            null : cAccess.retrieve(ImageEntity.class, book.getImageId());
+                    ImageEntity bookImage = cAccess.retrieveOptional(ImageEntity.class, book.getImageId()).orElse(null);
                     return new Object[]{bookSupplier, book, supplier, transaction, bookImage};
                 }
 
@@ -52,7 +51,7 @@ public class CustomerOrderFragment extends EntityFragment {
                 protected void doByData(Object[] data) {
                     ObjectToViewAppliers.apply(view, order);
                     ObjectToViewAppliers.apply(view, (BookSupplier) data[0]);
-                    ObjectToViewAppliers.apply(view, (Book) data[1], false);
+                    ObjectToViewAppliers.apply(view, (Book) data[1]);
                     ObjectToViewAppliers.apply(view, (User) data[2]);
                     ObjectToViewAppliers.apply(view, (Transaction) data[3]);
                     ObjectToViewAppliers.apply(view, (ImageEntity) data[4]);

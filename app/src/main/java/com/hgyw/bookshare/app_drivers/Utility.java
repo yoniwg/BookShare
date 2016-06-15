@@ -115,7 +115,9 @@ public class Utility {
 
         }else {
             bitmap = BitmapFactory.decodeByteArray(entityImageBytes, 0, entityImageBytes.length);
-            setCroppedImageBitmap(imageView, bitmap);
+            if (bitmap != null) {
+                setCroppedImageBitmap(imageView, bitmap);
+            }
         }
     }
 

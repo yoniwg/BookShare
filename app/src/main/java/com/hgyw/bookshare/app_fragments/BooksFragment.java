@@ -55,14 +55,13 @@ public class BooksFragment extends SwipeRefreshListFragment implements TitleFrag
             @Override
             public Object[] retrieveData(Book book) {
                 BookSummary bookSummary = access.getBookSummary(book);
-                ImageEntity bookImage = (book.getImageId() == 0) ?
-                        null : access.retrieve(ImageEntity.class,book.getImageId());
+                ImageEntity bookImage = access.retrieveOptional(ImageEntity.class,book.getImageId()).orElse(null);
                 return new Object[] {bookSummary,bookImage} ;
             }
 
             @Override
             public void applyDataOnView(Book book, Object[] data, View view) {
-                ObjectToViewAppliers.apply(view, book, false);
+                ObjectToViewAppliers.apply(view, book);
                 ObjectToViewAppliers.apply(view, (BookSummary) data[0]);
                 ObjectToViewAppliers.apply(view, (ImageEntity) data[1]);
             }

@@ -71,7 +71,7 @@ public class BookEditActivity extends AppCompatActivity {
             new ProgressDialogAsyncTask<Void, Void, Pair<Book, ImageEntity>>(this) {
                 @Override protected Pair<Book, ImageEntity> retrieveDataAsync(Void... params) {
                     book = id == Entity.DEFAULT_ID ? new Book() : access.retrieve(Book.class, id);
-                    ImageEntity imageEntity = access.retrieve(ImageEntity.class, book.getImageId());
+                    ImageEntity imageEntity = access.retrieveOptional(ImageEntity.class, book.getImageId()).orElse(null);
                     return new Pair<Book, ImageEntity>(book, imageEntity);
                 }
                 @Override protected void doByData(Pair<Book, ImageEntity> book) {

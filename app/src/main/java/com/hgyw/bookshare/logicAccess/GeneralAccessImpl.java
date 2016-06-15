@@ -4,8 +4,10 @@ import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import com.annimon.stream.Collectors;
+import com.annimon.stream.Optional;
 import com.annimon.stream.Stream;
 import com.hgyw.bookshare.dataAccess.DataAccess;
 import com.hgyw.bookshare.entities.Book;
@@ -19,7 +21,6 @@ import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.Transaction;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.entities.UserType;
-import com.hgyw.bookshare.entities.reflection.Property;
 
 /**
  * Created by Yoni on 3/18/2016.
@@ -76,7 +77,7 @@ class GeneralAccessImpl implements GeneralAccess {
     @Override
     public BigDecimal calcTotalPriceOfTransaction(Transaction transaction) {
         Collection<Order> orderOfTransaction = dataAccess.findEntityReferTo(Order.class, transaction);
-        return Stream.of(orderOfTransaction).map(Order::calcTotalPrice).reduce(BigDecimal::add).get();
+        return Stream.of(orderOfTransaction).map(Order::calcTotalPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     @Override
@@ -93,6 +94,15 @@ class GeneralAccessImpl implements GeneralAccess {
     @Override
     public <T extends Entity> T retrieve(Class<T> entityClass, long entityId) {
         return dataAccess.retrieve(entityClass, entityId);
+    }
+
+    @Override
+    public <T extends Entity> Optional<T> retrieveOptional(Class<T> entityClass, long entityId) {
+        try{
+            return Optional.of(retrieve(entityClass, entityId));
+        }catch (NoSuchElementException e){
+            return Optional.empty();
+        }
     }
 
     @Override

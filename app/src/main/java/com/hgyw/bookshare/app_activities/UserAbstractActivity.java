@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
+import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,14 +18,17 @@ import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
 import com.hgyw.bookshare.app_drivers.ProgressDialogAsyncTask;
 import com.hgyw.bookshare.app_drivers.Utility;
 import com.hgyw.bookshare.app_drivers.IntentsFactory;
+import com.hgyw.bookshare.entities.ImageEntity;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
+import com.hgyw.bookshare.logicAccess.GeneralAccess;
 
 
 public abstract class UserAbstractActivity extends AppCompatActivity {
 
     private static final String SAVE_KEY_NEW_IMAGE = "newImage";
     private static final String SAVE_KEY_USER = "user";
+    public static final GeneralAccess access = AccessManagerFactory.getInstance().getGeneralAccess();
     private ImageView imageView;
     private User user;
     private final @StringRes int buttonStringId;
@@ -52,13 +56,16 @@ public abstract class UserAbstractActivity extends AppCompatActivity {
         imageView.setOnClickListener(v -> Utility.startGetImage(this));
 
         if (savedInstanceState == null) {
-            new CancelableLoadingDialogAsyncTask<Void,Void,User>(this) {
-                @Override protected User retrieveDataAsync(Void... params) {
-                    return isRegistration ? new User() : AccessManagerFactory.getInstance().getGeneralAccess().retrieveUserDetails();
+            new CancelableLoadingDialogAsyncTask<Void,Void,Pair<User,ImageEntity>>(this) {
+                @Override protected Pair<User,ImageEntity> retrieveDataAsync(Void... params) {
+                    User u = isRegistration ? new User() : access.retrieveUserDetails();
+                    ImageEntity i = access.retrieveOptional(ImageEntity.class, u.getImageId()).orElse(null);
+                    return new Pair<>(u, i);
                 }
-                @Override protected void doByData(User user) {
-                    UserAbstractActivity.this.user = user;
-                    ObjectToViewAppliers.apply(rootView, user);
+                @Override protected void doByData(Pair<User,ImageEntity> user) {
+                    UserAbstractActivity.this.user = user.first;
+                    ObjectToViewAppliers.apply(rootView, user.first);
+                    ObjectToViewAppliers.apply(rootView, user.second);
                 }
 
                 @Override

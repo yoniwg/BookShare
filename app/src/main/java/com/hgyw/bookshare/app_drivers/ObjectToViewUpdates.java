@@ -15,6 +15,7 @@ import com.hgyw.bookshare.entities.BookReview;
 import com.hgyw.bookshare.entities.BookSupplier;
 import com.hgyw.bookshare.entities.IdReference;
 import com.hgyw.bookshare.entities.Order;
+import com.hgyw.bookshare.entities.ImageEntity;
 import com.hgyw.bookshare.entities.Transaction;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
@@ -28,9 +29,10 @@ import java.util.List;
  */
 public class ObjectToViewUpdates {
 
-    public static void updateBookReviewView(View view, BookReview bookReview, User customer, boolean withImage) {
+    public static void updateBookReviewView(View view, BookReview bookReview, User customer, ImageEntity userImage) {
         ObjectToViewAppliers.apply(view, bookReview);
-        ObjectToViewAppliers.apply(view, customer, withImage);
+        ObjectToViewAppliers.apply(view, customer);
+        ObjectToViewAppliers.apply(view, userImage);
         TextView descriptionTextView = (TextView) view.findViewById(R.id.reviewDescription);
         if (descriptionTextView != null) {
             String description = bookReview.getDescription();
@@ -38,9 +40,10 @@ public class ObjectToViewUpdates {
         }
     }
 
-    public static void updateBookSupplierBuyView(View view, BookSupplier bookSupplier, User supplier, boolean withImage) {
+    public static void updateBookSupplierBuyView(View view, BookSupplier bookSupplier, User supplier, ImageEntity userImage) {
         ObjectToViewAppliers.apply(view, bookSupplier);
-        ObjectToViewAppliers.apply(view, supplier, withImage);
+        ObjectToViewAppliers.apply(view, supplier);
+        ObjectToViewAppliers.apply(view, userImage);
     }
 
     public static void updateTransactionListItem(View view, Transaction transaction, BigDecimal totalPrice, List<User> suppliersList) {

@@ -34,7 +34,7 @@ import java.util.List;
  */
 public class ObjectToViewAppliers {
 
-    public static void apply(View view, Book book, boolean withImage) {
+    public static void apply(View view, Book book) {
         TextView titleView = (TextView) view.findViewById(R.id.bookTitle);
         TextView authorView = (TextView) view.findViewById(R.id.bookAuthor);
         TextView genreView = (TextView) view.findViewById(R.id.bookGenre);
@@ -44,12 +44,6 @@ public class ObjectToViewAppliers {
         if (authorView != null) authorView.setText(book.getAuthor());
         if (genreView != null) genreView.setText(book.getAuthor());
         if (genreSpinner != null) genreSpinner.setSelection(book.getGenre().ordinal());
-        if (imageView != null && withImage)
-            Utility.setImageById(imageView, book.getImageId(), R.drawable.image_book);
-    }
-
-    public static void apply(View view, Book book) {
-       apply(view, book, true);
     }
 
     public static void result(View view, Book book) {
@@ -164,7 +158,7 @@ public class ObjectToViewAppliers {
     }
 
 
-    public static void apply(View view, User user, boolean withImage) {
+    public static void apply(View view, User user) {
         apply(view, user.getCredentials());
         TextView firstNameView = (TextView) view.findViewById(R.id.userFirstName);
         TextView lastNameView = (TextView) view.findViewById(R.id.userLastName);
@@ -183,17 +177,7 @@ public class ObjectToViewAppliers {
         if (addressView!= null) addressView.setText(user.getAddress());
         if (phoneView!= null) phoneView.setText(user.getPhoneNumber());
         if (birthdayView!= null) {} // TODO
-        if (userImage != null && withImage) Utility.setImageById(userImage, user.getImageId(), R.drawable.image_user);
         if (customerSupplierSpinner != null) customerSupplierSpinner.setSelection(user.getUserType() == UserType.CUSTOMER ? 0 : 1);
-    }
-
-    /**
-     * default call for apply(View, User, boolean).
-     * @param view
-     * @param user
-     */
-    public static void apply(View view, User user){
-        apply(view, user, true);
     }
 
     public static void result(View view, User user) {

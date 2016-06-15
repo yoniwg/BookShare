@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import com.annimon.stream.Optional;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookReview;
 import com.hgyw.bookshare.entities.BookSupplier;
@@ -109,7 +110,7 @@ public interface CustomerAccess extends GeneralAccess {
      * @param book the book
      * @return null if not fount
      */
-    BookReview retrieveMyReview(Book book);
+    Optional<BookReview> retrieveMyReview(Book book);
 
     /**
      * returns the cart of the customer

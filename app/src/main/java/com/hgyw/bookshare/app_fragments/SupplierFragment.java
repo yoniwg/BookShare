@@ -6,12 +6,14 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.util.Pair;
 import android.view.View;
 import android.widget.Toast;
 
 import com.hgyw.bookshare.app_drivers.CancelableLoadingDialogAsyncTask;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
 import com.hgyw.bookshare.R;
+import com.hgyw.bookshare.entities.ImageEntity;
 import com.hgyw.bookshare.app_drivers.ObjectToViewUpdates;
 import com.hgyw.bookshare.app_drivers.Utility;
 import com.hgyw.bookshare.entities.Entity;
@@ -34,18 +36,19 @@ public class SupplierFragment extends EntityFragment {
         activity = getActivity();
         super.onViewCreated(view, savedInstanceState);
         if (savedInstanceState == null) {
-            new CancelableLoadingDialogAsyncTask<Void, Void, User>(activity) {
+            new CancelableLoadingDialogAsyncTask<Void, Void, Pair<User,ImageEntity>>(activity) {
                 @Override
-                protected User retrieveDataAsync(Void... params) {
+                protected Pair<User,ImageEntity> retrieveDataAsync(Void... params) {
                     GeneralAccess access = AccessManagerFactory.getInstance().getGeneralAccess();
-                    supplier = access.retrieve(User.class, entityId);
-                    return supplier;
+                    User supplier = access.retrieve(User.class, entityId);
+                    ImageEntity userImage = access.retrieveOptional(ImageEntity.class, supplier.getImageId()).orElse(null);
+                    return new Pair<>(supplier, userImage);
                 }
-
                 @Override
-                protected void doByData(User supplier) {
-                    ObjectToViewAppliers.apply(view, supplier);
-                    ObjectToViewUpdates.setListenerToUser(view, supplier);
+                protected void doByData(Pair<User,ImageEntity> supplier) {
+                    ObjectToViewAppliers.apply(view, supplier.first);
+                    ObjectToViewAppliers.apply(view, supplier.second);
+                    ObjectToViewUpdates.setListenerToUser(view, supplier.first);
                 }
 
                 @Override

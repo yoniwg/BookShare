@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.util.Pair;
 import android.view.Menu;
@@ -14,7 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.Toast;
@@ -102,26 +100,30 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
             ImageEntity bookImage;
             List<BookReview> bookReviews;
             List<BookSupplier> bookSuppliers;
+            Optional<BookReview> oUserBookReview;
 
             @Override
             protected Void retrieveDataAsync(Void... params) {
                 // get book and user-review data
                 book = access.retrieve(Book.class, entityId);
+                bookImage = access.retrieveOptional(ImageEntity.class, book.getImageId()).orElse(null);
                 bookSummary = access.getBookSummary(book);
-                if (userType == UserType.CUSTOMER) userBookReview = ((CustomerAccess) access).retrieveMyReview(book);
-                if (userType == UserType.SUPPLIER)  oCurrentBookSupplier = ((SupplierAccess) access).retrieveMyBookSupplier(book);
+                if (userType == UserType.CUSTOMER)
+                    oUserBookReview = ((CustomerAccess) access).retrieveMyReview(book);
+                if (userType == UserType.SUPPLIER)
+                    oCurrentBookSupplier = ((SupplierAccess) access).retrieveMyBookSupplier(book);
                 // get lists
                 bookReviews = access.findBookReviews(book);
                 bookSuppliers = access.findBookSuppliers(book);
 
                 Stream.of(bookReviews).forEach(br->{
                         User u = access.retrieve(User.class, br.getCustomerId());
-                        ImageEntity i = (u.getImageId() == 0) ? new ImageEntity() : access.retrieve(ImageEntity.class, u.getImageId());
+                        ImageEntity i = access.retrieveOptional(ImageEntity.class, u.getImageId()).orElse(null);
                         bookReviewsUserMap.put(br, new Pair<>(u,i));
                         });
                 Stream.of(bookSuppliers).forEach(bs->{
                         User u = access.retrieve(User.class, bs.getSupplierId());
-                        ImageEntity i = (u.getImageId() == 0) ? new ImageEntity() : access.retrieve(ImageEntity.class, u.getImageId());
+                        ImageEntity i = access.retrieveOptional(ImageEntity.class, u.getImageId()).orElse(null);
                         bookSuppliersUserMap.put(bs, new Pair<>(u,i));
                         });
 
@@ -133,13 +135,15 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
                 // set book details
                 ObjectToViewAppliers.apply(bookContainer, book);
                 ObjectToViewAppliers.apply(bookContainer, bookSummary);
+                ObjectToViewAppliers.apply(bookContainer, bookImage);
 
                 // set user review
                 if (userType == UserType.CUSTOMER) {
-                    if (userBookReview == null) {
-                        userBookReview = new BookReview();
-                        userBookReview.setBookId(book.getId());
-                    }
+                    userBookReview = oUserBookReview.orElseGet(()->{
+                        BookReview br = new BookReview();
+                        br.setBookId(book.getId());
+                        return br;
+                    });
                     userRatingBar.setRating(userBookReview.getRating().getStars());
                     userRatingBar.setOnRatingBarChangeListener((RatingBar ratingBar, float rating, boolean fromUser) -> {
                         if (fromUser) {
@@ -155,7 +159,7 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
                 // set reviews list to max-size
                 final int MAX_REVIEWS = 2;
                 if (userType == UserType.CUSTOMER) {
-                    bookReviews.remove(userBookReview);
+                    bookReviews.remove(oUserBookReview);
                 }
                 boolean thereIsMoreReviews = bookReviews.size() > MAX_REVIEWS;
                 bookReviews = bookReviews.subList(0, Math.min(bookReviews.size(), MAX_REVIEWS));
@@ -182,15 +186,13 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
     private void updateBookReviewView(View reviewView, BookReview bookReview) {
         User customer = bookReviewsUserMap.get(bookReview).first;
         ImageEntity image = bookReviewsUserMap.get(bookReview).second;
-        ObjectToViewUpdates.updateBookReviewView(reviewView, bookReview, customer, false);
-        Utility.setImageByBytes((ImageView) reviewView.findViewById(R.id.userThumbnail), image.getBytes(), R.drawable.image_user);
+        ObjectToViewUpdates.updateBookReviewView(reviewView, bookReview, customer, image);
     }
 
     private void updateBookSupplierView(View supplierView, BookSupplier bookSupplier) {
         User supplier = bookSuppliersUserMap.get(bookSupplier).first;
         ImageEntity image = bookSuppliersUserMap.get(bookSupplier).second;
-        ObjectToViewUpdates.updateBookSupplierBuyView(supplierView, bookSupplier, supplier, false);
-        Utility.setImageByBytes((ImageView) supplierView.findViewById(R.id.userThumbnail), image.getBytes(), R.drawable.image_user);
+        ObjectToViewUpdates.updateBookSupplierBuyView(supplierView, bookSupplier, supplier, image);
         Button buyButton = (Button) supplierView.findViewById(R.id.buy_button);
         //by default - invisible
         buyButton.setVisibility(View.GONE);
