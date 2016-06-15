@@ -9,8 +9,8 @@
     android:id="@+id/orderContainer">
 
     <ImageView
-        android:layout_width="65dp"
-        android:layout_height="65dp"
+        android:layout_width="@dimen/small_circle_image"
+        android:layout_height="@dimen/small_circle_image"
         android:id="@+id/bookImage"
         android:src="@drawable/image_book"
         android:layout_alignParentTop="true"

@@ -1,39 +1,68 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="@dimen/frame_margin"
-    tools:context=".app_fragments.SupplierFragment">
-
-    <ImageView
-        android:layout_width="160dp"
-        android:layout_height="160dp"
-        android:id="@+id/userThumbnail"
-        android:layout_gravity="center_horizontal|top"
-        android:src="@drawable/image_user"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:scaleType="centerCrop" />
-
-    <TextView
-        android:layout_width="wrap_content"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/scrollView">
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Supplier Name"
-        android:id="@+id/userFullName"
-        android:layout_gravity="center"
-        android:layout_below="@+id/userThumbnail"
-        android:layout_centerHorizontal="true"
-        android:paddingTop="15dp" />
+        android:padding="@dimen/frame_margin"
+        tools:context=".app_fragments.SupplierFragment">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Supplier Address"
-        android:id="@+id/userAddress"
-        android:layout_below="@+id/userFullName"
-        android:layout_centerHorizontal="true"
-        android:paddingTop="15dp"/>
 
-</RelativeLayout>
+        <ImageView
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:id="@+id/userThumbnail"
+            android:layout_gravity="center_horizontal|top"
+            android:src="@drawable/image_user"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:scaleType="centerCrop"
+            android:contentDescription="supplier profile image" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Supplier Name"
+            android:id="@+id/userFullName"
+            android:layout_gravity="center"
+            android:layout_below="@+id/userThumbnail"
+            android:layout_centerHorizontal="true"
+            android:paddingTop="15dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Supplier Address"
+            android:id="@+id/userAddress"
+            android:layout_below="@+id/userFullName"
+            android:layout_centerHorizontal="true"
+            android:paddingTop="15dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Medium Text"
+            android:id="@+id/userEmail"
+            android:layout_below="@+id/userAddress"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="28dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Medium Text"
+            android:id="@+id/userPhone"
+            android:layout_below="@+id/userEmail"
+            android:layout_alignStart="@+id/userEmail"
+            android:layout_marginTop="28dp" />
+
+    </RelativeLayout>
+</ScrollView>

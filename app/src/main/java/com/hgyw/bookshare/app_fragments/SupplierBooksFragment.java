@@ -4,17 +4,15 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ListFragment;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.hgyw.bookshare.R;
-import com.hgyw.bookshare.app_drivers.ListApplyObjectAdapter;
+import com.hgyw.bookshare.app_drivers.GoodAsyncListAdapter;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
 import com.hgyw.bookshare.app_drivers.ProgressDialogAsyncTask;
 import com.hgyw.bookshare.entities.Book;
@@ -31,7 +29,7 @@ import java.util.List;
 public class SupplierBooksFragment extends ListFragment implements TitleFragment, BookSupplierDialogFragment.ResultListener {
 
 
-    private ArrayAdapter<BookSupplier> adapter;
+    private GoodAsyncListAdapter<BookSupplier> adapter;
 
     private Activity activity;
     private final SupplierAccess sAccess = AccessManagerFactory.getInstance().getSupplierAccess();
@@ -45,34 +43,29 @@ public class SupplierBooksFragment extends ListFragment implements TitleFragment
 
         registerForContextMenu(getListView());
 
-        new AsyncTask<Void, Void, List<BookSupplier>>() {
+        adapter = new GoodAsyncListAdapter<BookSupplier>(activity, R.layout.supplier_book_list_item, this) {
             SupplierAccess sAccess = AccessManagerFactory.getInstance().getSupplierAccess();
 
             @Override
-            protected List<BookSupplier> doInBackground(Void... params) {
+            public List<BookSupplier> retrieveList() {
                 return sAccess.retrieveMyBooks();
             }
 
             @Override
-            protected void onPostExecute(List<BookSupplier> bookSuppliers) {
-                setListAdapter(adapter = new ListApplyObjectAdapter<BookSupplier>(activity, R.layout.supplier_book_list_item, bookSuppliers){
-                    @Override
-                    protected Object[] retrieveDataForView(BookSupplier bs) {
-                        Book book = sAccess.retrieve(Book.class, bs.getBookId());
-                        ImageEntity bookImage = (book.getImageId() == 0) ?
-                                null : sAccess.retrieve(ImageEntity.class,book.getImageId());
-                        return new Object[] {book, bookImage };
-                    }
-
-                    @Override
-                    protected void applyDataOnView(View view, BookSupplier bs, Object[] data) {
-                        ObjectToViewAppliers.apply(view, bs);
-                        ObjectToViewAppliers.apply(view, (Book) data[0], false);
-                        ObjectToViewAppliers.apply(view, (ImageEntity) data[1]);
-                    }
-                });
+            public Object[] retrieveData(BookSupplier bs) {
+                Book book = sAccess.retrieve(Book.class, bs.getBookId());
+                ImageEntity bookImage = (book.getImageId() == 0) ?
+                        null : sAccess.retrieve(ImageEntity.class,book.getImageId());
+                return new Object[] {book, bookImage };
             }
-        }.execute();
+
+            @Override
+            public void applyDataOnView(BookSupplier bs, Object[] data, View view) {
+                ObjectToViewAppliers.apply(view, bs);
+                ObjectToViewAppliers.apply(view, (Book) data[0], false);
+                ObjectToViewAppliers.apply(view, (ImageEntity) data[1]);
+            }
+        };
 
         setEmptyText(getString(R.string.no_items_list_view));
     }
@@ -120,6 +113,12 @@ public class SupplierBooksFragment extends ListFragment implements TitleFragment
     }
 
     @Override
+    public void onDestroy() {
+        if (adapter != null) adapter.cancel();
+        super.onDestroy();
+    }
+
+    @Override
     public void onBookSupplierResult(ResultCode result, BookSupplier bookSupplier) {
         switch (result) {
             case OK:
@@ -128,7 +127,7 @@ public class SupplierBooksFragment extends ListFragment implements TitleFragment
                         sAccess.updateBookSupplier(bookSupplier); return null;
                     }
                     @Override protected void doByData(Void aVoid) {
-                        adapter.notifyDataSetChanged();
+                        adapter.update(bookSupplier);
                     }
                 }.execute(); break;
             case CANCEL: break;

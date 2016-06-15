@@ -15,6 +15,7 @@ import com.hgyw.bookshare.app_activities.UserRegistrationActivity;
 import com.hgyw.bookshare.app_fragments.BookFragment;
 import com.hgyw.bookshare.app_fragments.BooksFragment;
 import com.hgyw.bookshare.app_fragments.CartFragment;
+import com.hgyw.bookshare.app_fragments.CustomerOrderFragment;
 import com.hgyw.bookshare.app_fragments.EntityFragment;
 import com.hgyw.bookshare.app_fragments.OldOrdersFragment;
 import com.hgyw.bookshare.app_fragments.SupplierBooksFragment;
@@ -26,6 +27,7 @@ import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookQuery;
 import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.entities.IdReference;
+import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.Transaction;
 import com.hgyw.bookshare.entities.User;
 
@@ -52,6 +54,7 @@ public class IntentsFactory {
         entityFragmentMap.put(Book.class, BookFragment.class);
         entityFragmentMap.put(User.class, SupplierFragment.class);
         entityFragmentMap.put(Transaction.class, TransactionFragment.class);
+        entityFragmentMap.put(Order.class, CustomerOrderFragment.class);
     }
 
     public static Class<? extends EntityFragment> getEntityFragment(Class<? extends Entity> entityType) {

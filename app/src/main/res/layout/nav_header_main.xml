@@ -13,8 +13,8 @@
 
     <ImageView
         android:id="@+id/drwer_user_image"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_width="@dimen/drawer_profile_image"
+        android:layout_height="@dimen/drawer_profile_image"
         android:src="@drawable/image_user"
         android:textAlignment="viewStart"
         android:scaleType="fitCenter" />

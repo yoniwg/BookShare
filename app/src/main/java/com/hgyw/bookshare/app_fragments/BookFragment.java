@@ -50,7 +50,7 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
     private UserType userType;
     private Book book;
     private BookReview userBookReview;
-    private Optional<BookSupplier> oCurrentBookSupplier;
+    private Optional<BookSupplier> oCurrentBookSupplier = Optional.empty();
     private Map<BookReview, Pair<User,ImageEntity>> bookReviewsUserMap = new HashMap<>();
     private Map<BookSupplier, Pair<User,ImageEntity>> bookSuppliersUserMap = new HashMap<>();
     private BookSummary bookSummary;
@@ -109,7 +109,7 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
                 book = access.retrieve(Book.class, entityId);
                 bookSummary = access.getBookSummary(book);
                 if (userType == UserType.CUSTOMER) userBookReview = ((CustomerAccess) access).retrieveMyReview(book);
-                else oCurrentBookSupplier = ((SupplierAccess) access).retrieveMyBookSupplier(book);
+                if (userType == UserType.SUPPLIER)  oCurrentBookSupplier = ((SupplierAccess) access).retrieveMyBookSupplier(book);
                 // get lists
                 bookReviews = access.findBookReviews(book);
                 bookSuppliers = access.findBookSuppliers(book);
@@ -161,7 +161,7 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
                 bookReviews = bookReviews.subList(0, Math.min(bookReviews.size(), MAX_REVIEWS));
 
                 // set reviews list view
-                Utility.addViewsByList(reviewListView, bookReviews, activity.getLayoutInflater(), R.layout.book_review_component, fragment::updateBookReviewView);
+                Utility.addViewsByList(reviewListView, bookReviews, R.layout.book_review_component, fragment::updateBookReviewView);
                 if (!thereIsMoreReviews) {
                     allReviewsButton.setVisibility(View.GONE);
                 } else {
@@ -169,7 +169,7 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
                 }
 
                 // set views of suppliers
-                suppliersViewsMap = Utility.addViewsByList(suppliersListView, bookSuppliers, activity.getLayoutInflater(), R.layout.book_supplier_list_item, fragment::updateBookSupplierView);
+                suppliersViewsMap = Utility.addViewsByList(suppliersListView, bookSuppliers, R.layout.book_supplier_list_item, fragment::updateBookSupplierView);
             }
 
             @Override
@@ -227,7 +227,7 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
         menu.findItem(R.id.action_cart).setVisible(access.getUserType() == UserType.CUSTOMER);
         menu.findItem(R.id.action_edit_book).setVisible(access.getUserType() == UserType.SUPPLIER);
         menu.findItem(R.id.action_supply_book).setVisible(access.getUserType() == UserType.SUPPLIER);
-        menu.findItem(R.id.action_remove_book).setVisible(access.getUserType() == UserType.SUPPLIER);
+        menu.findItem(R.id.action_unsupply_book).setVisible(access.getUserType() == UserType.SUPPLIER);
     }
 
     @Override
@@ -239,7 +239,7 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
             case R.id.action_edit_book:
                 startActivity(IntentsFactory.editBookIntent(activity, book.getId()));
                 return true;
-            case R.id.action_remove_book:
+            case R.id.action_unsupply_book:
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setMessage(R.string.remove_from_my_books_message)
                         .setPositiveButton(R.string.yes, (dialog, which) -> onDeleteBook())

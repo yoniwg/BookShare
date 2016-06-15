@@ -34,6 +34,9 @@ public interface SupplierAccess extends GeneralAccess {
      */
     void updateBook(Book book);
 
+    void removeBook(Book book);
+
+
     /**
      * retrieve all orders from current supplier in a provided period
      * @param fromDate begin of period

@@ -12,14 +12,16 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.Toast;
 
-import com.hgyw.bookshare.app_drivers.ApplyObjectAdapter;
-import com.hgyw.bookshare.app_drivers.ListApplyObjectAdapter;
-import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
 import com.hgyw.bookshare.R;
+import com.hgyw.bookshare.app_drivers.GoodAsyncListAdapter;
+import com.hgyw.bookshare.app_drivers.IntentsFactory;
+import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookSupplier;
+import com.hgyw.bookshare.entities.IdReference;
 import com.hgyw.bookshare.entities.ImageEntity;
 import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.OrderStatus;
@@ -38,7 +40,7 @@ import java.util.List;
 public class OldOrdersFragment extends ListFragment implements TitleFragment {
 
 
-    ApplyObjectAdapter<Order> adapter;
+    GoodAsyncListAdapter<Order> adapter;
     public CustomerAccess cAccess;
 
     private Activity activity;
@@ -61,40 +63,42 @@ public class OldOrdersFragment extends ListFragment implements TitleFragment {
         Date yearBefore = new Date();
         yearBefore.setYear(yearBefore.getYear() - 1);
 
-        new AsyncTask<Void, Void, List<Order>>() {
+        adapter = new GoodAsyncListAdapter<Order>(activity, R.layout.old_order_list_item, this) {
 
             @Override
-            protected List<Order> doInBackground(Void... params) {
+            public List<Order> retrieveList() {
                 return cAccess.retrieveOrders(yearBefore, new Date());
             }
 
             @Override
-            protected void onPostExecute(List<Order> orders) {
-                adapter = new ListApplyObjectAdapter<Order>(activity, R.layout.old_order_list_item, orders) {
-                    @Override
-                    protected Object[] retrieveDataForView(Order order) {
-                        BookSupplier bookSupplier = cAccess.retrieve(BookSupplier.class, order.getBookSupplierId());
-                        Book book = cAccess.retrieve(Book.class, bookSupplier.getBookId());
-                        User supplier = cAccess.retrieve(User.class, bookSupplier.getSupplierId());
-                        Transaction transaction= cAccess.retrieve(Transaction.class, order.getTransactionId());
-                        ImageEntity bookImage = (book.getImageId() == 0) ?
-                                null : cAccess.retrieve(ImageEntity.class,book.getImageId());
-                        return new Object[]{bookSupplier,book,supplier,transaction,bookImage};
-                    }
-                    @Override
-                    protected void applyDataOnView(View view, Order order, Object[] data) {
-                        ObjectToViewAppliers.apply(view, order);
-                        ObjectToViewAppliers.apply(view, (BookSupplier) data[0]);
-                        ObjectToViewAppliers.apply(view, (Book) data[1], false);
-                        ObjectToViewAppliers.apply(view, (User) data[2]);
-                        ObjectToViewAppliers.apply(view,(Transaction) data[3]);
-                        ObjectToViewAppliers.apply(view, (ImageEntity) data[4]);
-                    }
-                };
-                setListAdapter(adapter);
+            public Object[] retrieveData(Order order) {
+                BookSupplier bookSupplier = cAccess.retrieve(BookSupplier.class, order.getBookSupplierId());
+                Book book = cAccess.retrieve(Book.class, bookSupplier.getBookId());
+                User supplier = cAccess.retrieve(User.class, bookSupplier.getSupplierId());
+                Transaction transaction= cAccess.retrieve(Transaction.class, order.getTransactionId());
+                ImageEntity bookImage = (book.getImageId() == 0) ?
+                        null : cAccess.retrieve(ImageEntity.class,book.getImageId());
+                return new Object[]{bookSupplier,book,supplier,transaction,bookImage};
             }
-        }.execute();
+
+            @Override
+            public void applyDataOnView(Order order, Object[] data, View view) {
+                ObjectToViewAppliers.apply(view, order);
+                ObjectToViewAppliers.apply(view, (BookSupplier) data[0]);
+                ObjectToViewAppliers.apply(view, (Book) data[1], false);
+                ObjectToViewAppliers.apply(view, (User) data[2]);
+                ObjectToViewAppliers.apply(view,(Transaction) data[3]);
+                ObjectToViewAppliers.apply(view, (ImageEntity) data[4]);
+            }
+
+        };
+
         setEmptyText(getString(R.string.no_items_list_view));
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_old_orders, menu);
     }
 
     @Override
@@ -141,7 +145,7 @@ public class OldOrdersFragment extends ListFragment implements TitleFragment {
 
                             @Override
                             protected void onPostExecute(Void aVoid) {
-                                adapter.notifyDataSetChanged();
+                                adapter.update(order);
                                 Toast.makeText(v.getContext(), toastMessageId,
                                         Toast.LENGTH_SHORT).show();
                             }
@@ -157,12 +161,20 @@ public class OldOrdersFragment extends ListFragment implements TitleFragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_old_orders, menu);
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        Order order = adapter.getItem(position);
+        startActivity(IntentsFactory.newEntityIntent(activity, order));
+    }
+
+    @Override
+    public void onDestroy() {
+        if (adapter != null) adapter.cancel();
+        super.onDestroy();
     }
 
     @Override
     public int getFragmentTitle() {
         return R.string.old_orders_fragment_title;
     }
+
 }

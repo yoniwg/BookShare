@@ -5,8 +5,8 @@
     android:padding="@dimen/default_activity_padding">
 
     <ImageView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="@dimen/medium_circle_image"
+        android:layout_height="@dimen/medium_circle_image"
         android:id="@+id/bookImage"
         android:layout_gravity="center_horizontal"
         android:src="@drawable/image_book"
@@ -61,7 +61,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/ok"
-        android:id="@+id/button"
+        android:id="@+id/button_ok"
         android:layout_gravity="center_horizontal"
         android:onClick="onActionOk" />
 

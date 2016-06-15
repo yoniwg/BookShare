@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:clickable="false"
+    android:descendantFocusability="blocksDescendants"
+    android:id="@+id/orderContainer">
+
+    <ImageView
+        android:layout_width="@dimen/small_circle_image"
+        android:layout_height="@dimen/small_circle_image"
+        android:id="@+id/bookImage"
+        android:src="@drawable/image_book"
+        android:scaleType="centerCrop"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="This can be a long title of a book"
+        android:id="@+id/bookTitle"
+        android:singleLine="false"
+        android:textAlignment="viewStart"
+        android:layout_marginStart="@dimen/defaultHoriozintalNextSpace"
+        android:layout_alignTop="@+id/bookImage"
+        android:layout_toEndOf="@+id/bookImage" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Order Status"
+        android:id="@+id/orderStatus"
+        android:textColor="@color/design_textinput_error_color_dark"
+        android:layout_below="@+id/orderAmount"
+        android:layout_alignStart="@+id/orderAmount" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/details_line"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="author"
+        android:id="@+id/bookAuthor"
+        android:paddingStart="10dp"
+        android:background="@drawable/abc_ab_share_pack_mtrl_alpha"
+        android:nestedScrollingEnabled="false"
+        android:layout_toEndOf="@+id/bookAuthorIcon"
+        android:layout_alignTop="@+id/bookAuthorIcon" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/details_line"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="price"
+        android:id="@+id/orderUnitPrice"
+        android:paddingStart="10dp"
+        android:background="@drawable/abc_ab_share_pack_mtrl_alpha"
+        android:layout_toEndOf="@+id/userFullNameIcon"
+        android:layout_alignBottom="@+id/orderUnitPriceIcon" />
+
+    <TextView
+        android:id="@+id/userFullName"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/details_line"
+        android:text="Supplier name"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:paddingStart="10dp"
+        android:background="@drawable/abc_ab_share_pack_mtrl_alpha"
+        android:layout_toEndOf="@+id/orderAmountIcon"
+        android:layout_alignBottom="@+id/userFullNameIcon"
+        android:layout_alignStart="@+id/orderUnitPrice" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/details_line"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="0"
+        android:id="@+id/orderAmount"
+        android:paddingStart="10dp"
+        android:background="@drawable/abc_ab_share_pack_mtrl_alpha"
+        android:layout_toEndOf="@+id/orderAmountIcon"
+        android:layout_alignBottom="@+id/orderAmountIcon"
+        android:layout_alignStart="@+id/orderUnitPrice" />
+
+    <ImageView
+        android:layout_width="@dimen/details_line"
+        android:layout_height="@dimen/details_line"
+        android:id="@+id/bookAuthorIcon"
+        android:src="@drawable/side_icon_autor"
+        android:background="@drawable/abc_ab_share_pack_mtrl_alpha"
+        android:nestedScrollingEnabled="false"
+        android:layout_alignStart="@+id/bookTitle"
+        android:layout_below="@+id/bookTitle" />
+
+    <ImageView
+        android:layout_width="@dimen/details_line"
+        android:layout_height="@dimen/details_line"
+        android:id="@+id/userFullNameIcon"
+        android:src="@drawable/side_icon_suppliers"
+        android:background="@drawable/abc_ab_share_pack_mtrl_alpha"
+        android:layout_below="@+id/bookAuthorIcon"
+        android:layout_alignStart="@+id/bookAuthorIcon" />
+
+    <ImageView
+        android:layout_width="@dimen/details_line"
+        android:layout_height="@dimen/details_line"
+        android:id="@+id/orderUnitPriceIcon"
+        android:src="@drawable/side_icon_price"
+        android:background="@drawable/abc_ab_share_pack_mtrl_alpha"
+        android:layout_below="@+id/userFullNameIcon"
+        android:layout_alignStart="@+id/userFullNameIcon" />
+
+    <ImageView
+        android:layout_width="@dimen/details_line"
+        android:layout_height="@dimen/details_line"
+        android:id="@+id/orderAmountIcon"
+        android:src="@drawable/side_icon_amount"
+        android:background="@drawable/abc_ab_share_pack_mtrl_alpha"
+        android:layout_below="@+id/orderUnitPriceIcon"
+        android:layout_alignStart="@+id/orderUnitPriceIcon" />
+
+</RelativeLayout>

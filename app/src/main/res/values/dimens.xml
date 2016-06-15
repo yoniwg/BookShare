@@ -12,4 +12,9 @@
     <dimen name="defaultHoriozintalNextSpace">10dp</dimen>
     <dimen name="default_activity_padding">15dp</dimen>
     <dimen name="default_external_padding">10dp</dimen>
+    <dimen name="small_circle_image">65dp</dimen>
+    <dimen name="drawer_profile_image">70dp</dimen>
+    <dimen name="large_circle_image">140dp</dimen>
+    <dimen name="medium_circle_image">100dp</dimen>
+    <dimen name="details_line">23dp</dimen>
 </resources>

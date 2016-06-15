@@ -81,6 +81,7 @@ class GeneralAccessImpl implements GeneralAccess {
 
     @Override
     public List<User> getSuppliersOfTransaction(Transaction transaction) {
+        // TODO: more efficiency, direct sql-query. in calcTotalPriceOfTransaction() it's less important
         List<Order> orderOfTransaction = dataAccess.findEntityReferTo(Order.class, transaction);
         return Stream.of(orderOfTransaction)
                 .map(o -> retrieve(BookSupplier.class, o.getBookSupplierId()))

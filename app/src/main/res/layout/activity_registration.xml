@@ -13,8 +13,8 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="@dimen/medium_circle_image"
+                android:layout_height="@dimen/medium_circle_image"
                 android:id="@+id/userThumbnail"
                 android:src="@drawable/image_user"
                 android:layout_gravity="center_horizontal"

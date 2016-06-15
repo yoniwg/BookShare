@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.app_drivers.DateRangeBar;
-import com.hgyw.bookshare.app_drivers.ListApplyObjectAdapter;
+import com.hgyw.bookshare.app_drivers.GoodAsyncListAdapter;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookSupplier;
@@ -35,12 +35,14 @@ import java.util.List;
 /**
  * Created by haim7 on 19/05/2016.
  */
-public class SupplierOrdersFragment extends ListFragment implements TitleFragment {
+public class SupplierOrdersFragment extends ListFragment implements TitleFragment, DateRangeBar.DateRangeListener {
 
     private SupplierAccess sAccess;
 
+    private GoodAsyncListAdapter<Order> adapter;
+
     private Activity activity;
-    private ListApplyObjectAdapter<Order> adapter;
+    private Date[] dateRange;
 
     @Override public void onAttach(Context context) {super.onAttach(context);activity = (Activity) context;}
     @Override public void onAttach(Activity activity) {super.onAttach(activity);this.activity = activity;}
@@ -50,54 +52,55 @@ public class SupplierOrdersFragment extends ListFragment implements TitleFragmen
         return inflater.inflate(R.layout.list_content_with_date_range, container, false);
     }
 
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         sAccess = AccessManagerFactory.getInstance().getSupplierAccess();
         registerForContextMenu(getListView());
 
-        DateRangeBar dateRangeBar = (DateRangeBar) view.findViewById(R.id.dateRangeBar);
-        dateRangeBar.setDateRangeListener(this::updateListAdapter);
-
-        updateListAdapter(dateRangeBar);
-    }
-
-    private void updateListAdapter(DateRangeBar dateRangeBar) {
-        new AsyncTask<Date, Void, List<Order>>() {
-            @Override
-            protected List<Order> doInBackground(Date... dates) {
-                return sAccess.retrieveOrders(dates[0], dates[1], false);
-            }
-
-            @Override
-            protected void onPostExecute(List<Order> orders) {
-                adapter = new ListApplyObjectAdapter<Order>(activity, R.layout.old_order_list_item, orders) {
-                    @Override
-                    protected Object[] retrieveDataForView(Order order) {
-                        BookSupplier bookSupplier = sAccess.retrieve(BookSupplier.class, order.getBookSupplierId());
-                        Book book = sAccess.retrieve(Book.class, bookSupplier.getBookId());
-                        Transaction transaction = sAccess.retrieve(Transaction.class, order.getTransactionId());
-                        User customer = sAccess.retrieve(User.class, transaction.getCustomerId());
-                        ImageEntity bookImage = (book.getImageId() == 0) ?
-                                null : sAccess.retrieve(ImageEntity.class,book.getImageId());
-                        return new Object[] {bookSupplier, book, transaction, customer, bookImage};
-                    }
-
-                    @Override
-                    protected void applyDataOnView(View view, Order order, Object[] data) {
-                        ObjectToViewAppliers.apply(view, order);
-                        ObjectToViewAppliers.apply(view, (BookSupplier) data[0]);
-                        ObjectToViewAppliers.apply(view, (Book) data[1], false);
-                        ObjectToViewAppliers.apply(view, (Transaction) data[2]);
-                        ObjectToViewAppliers.apply(view, (User) data[3]);
-                        ObjectToViewAppliers.apply(view, (ImageEntity) data[4]);
-                    }
-                };
-                setListAdapter(adapter);
-            }
-        }.execute(dateRangeBar.getDateFrom(), dateRangeBar.getDateTo());
         setEmptyText(getString(R.string.no_items_list_view));
+
+        DateRangeBar dateRangeBar = (DateRangeBar) view.findViewById(R.id.dateRangeBar);
+        dateRangeBar.setDateRangeListener(this);
+        onRangeChange(dateRangeBar); // initial values (the 'dateRange' field)
+
+
+        adapter = new GoodAsyncListAdapter<Order>(activity, R.layout.old_order_list_item, this) {
+            @Override
+            public List<Order> retrieveList() {
+                return sAccess.retrieveOrders(dateRange[0], dateRange[1], false);
+            }
+
+            @Override
+            public Object[] retrieveData(Order order) {
+                    BookSupplier bookSupplier = sAccess.retrieve(BookSupplier.class, order.getBookSupplierId());
+                    Book book = sAccess.retrieve(Book.class, bookSupplier.getBookId());
+                    Transaction transaction = sAccess.retrieve(Transaction.class, order.getTransactionId());
+                    User customer = sAccess.retrieve(User.class, transaction.getCustomerId());
+                    ImageEntity bookImage = (book.getImageId() == 0) ?
+                            null : sAccess.retrieve(ImageEntity.class,book.getImageId());
+                    return new Object[] {bookSupplier, book, transaction, customer, bookImage};
+            }
+
+            @Override
+            public void applyDataOnView(Order order, Object[] data, View view) {
+                    ObjectToViewAppliers.apply(view, order);
+                    ObjectToViewAppliers.apply(view, (BookSupplier) data[0]);
+                    ObjectToViewAppliers.apply(view, (Book) data[1], false);
+                    ObjectToViewAppliers.apply(view, (Transaction) data[2]);
+                    ObjectToViewAppliers.apply(view, (User) data[3]);
+                    ObjectToViewAppliers.apply(view, (ImageEntity) data[4]);
+            }
+        };
     }
+
+    @Override
+    public void onRangeChange(DateRangeBar dateRangeBar) {
+        dateRange = new Date[]{dateRangeBar.getDateFrom(), dateRangeBar.getDateTo()};
+        if (adapter != null) adapter.refreshRetrieveList();
+    }
+
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
@@ -157,9 +160,8 @@ public class SupplierOrdersFragment extends ListFragment implements TitleFragmen
 
                             @Override
                             protected void onPostExecute(Void aVoid) {
-                                adapter.notifyDataSetChanged();
-                                Toast.makeText(v.getContext(), toastMessageId,
-                                        Toast.LENGTH_SHORT).show();
+                                adapter.update(order);
+                                Toast.makeText(v.getContext(), toastMessageId, Toast.LENGTH_SHORT).show();
                             }
                         }.execute();
                     })
@@ -176,4 +178,11 @@ public class SupplierOrdersFragment extends ListFragment implements TitleFragmen
     public @StringRes int getFragmentTitle() {
         return R.string.supplier_orders_title;
     }
+
+    @Override
+    public void onDestroy() {
+        if (adapter != null) adapter.cancel();
+        super.onDestroy();
+    }
+
 }

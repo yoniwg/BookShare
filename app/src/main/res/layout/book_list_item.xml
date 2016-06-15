@@ -7,8 +7,8 @@
     android:id="@+id/bookContainer">
 
     <ImageView
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="@dimen/drawer_profile_image"
+        android:layout_height="@dimen/drawer_profile_image"
         android:id="@+id/bookImage"
         android:src="@drawable/image_book"
         android:paddingEnd="10dp"

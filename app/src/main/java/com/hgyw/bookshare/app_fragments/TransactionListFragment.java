@@ -4,27 +4,26 @@ import android.app.Activity;
 import android.app.ListFragment;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.annimon.stream.Collectors;
+import com.annimon.stream.Stream;
 import com.hgyw.bookshare.R;
-import com.hgyw.bookshare.app_drivers.ApplyObjectAdapter;
 import com.hgyw.bookshare.app_drivers.DateRangeBar;
+import com.hgyw.bookshare.app_drivers.GoodAsyncListAdapter;
 import com.hgyw.bookshare.app_drivers.IntentsFactory;
-import com.hgyw.bookshare.app_drivers.ListApplyObjectAdapter;
-import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
 import com.hgyw.bookshare.app_drivers.ObjectToViewUpdates;
 import com.hgyw.bookshare.entities.Transaction;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.CustomerAccess;
-import com.hgyw.bookshare.logicAccess.GeneralAccess;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -34,7 +33,7 @@ import java.util.List;
 public class TransactionListFragment extends ListFragment implements TitleFragment {
 
     private Activity activity;
-    ApplyObjectAdapter<Transaction> adapter;
+    GoodAsyncListAdapter<Transaction> adapter;
 
     @Override public void onAttach(Context context) {super.onAttach(context);activity = (Activity) context;}
     @Override public void onAttach(Activity activity) {super.onAttach(activity);this.activity = activity;}
@@ -50,45 +49,41 @@ public class TransactionListFragment extends ListFragment implements TitleFragme
         DateRangeBar dateRangeBar = (DateRangeBar) view.findViewById(R.id.dateRangeBar);
         dateRangeBar.setDateRangeListener(this::updateListAdapter);
         updateListAdapter(dateRangeBar);
+        setEmptyText(getString(R.string.no_items_list_view));
     }
 
     private void updateListAdapter(DateRangeBar dateRangeBar) {
+        CustomerAccess cAccess = AccessManagerFactory.getInstance().getCustomerAccess();
+
         Date dateFrom = dateRangeBar.getDateFrom();
         Date dateTo = dateRangeBar.getDateTo();
-        new AsyncTask<Void, Void, List<Transaction>>() {
+
+        adapter = new GoodAsyncListAdapter<Transaction>(activity, R.layout.transaction_list_item, this) {
             @Override
-            protected List<Transaction> doInBackground(Void... params) {
-                CustomerAccess cAccess = AccessManagerFactory.getInstance().getCustomerAccess();
+            public List<Transaction> retrieveList() {
                 return cAccess.retrieveTransactions(dateFrom, dateTo);
             }
 
             @Override
-            protected void onPostExecute(List<Transaction> transactions) {
-                adapter = new ListApplyObjectAdapter<Transaction>(activity, R.layout.transaction_list_item, transactions) {
-                    GeneralAccess access = AccessManagerFactory.getInstance().getGeneralAccess();
-                    @Override
-                    protected Object[] retrieveDataForView(Transaction item) {
-                        Object[] data = new Object[2];
-                        data[0] = access.calcTotalPriceOfTransaction(item);
-                        data[1] = access.getSuppliersOfTransaction(item);
-                        return data;
-                    }
-
-                    @Override
-                    protected void applyDataOnView(View view, Transaction item, Object[] data) {
-                        ObjectToViewUpdates.updateTransactionListItem(view, item, (BigDecimal) data[0], (List<User>) data[1]);
-                    }
+            public Object[] retrieveData(Transaction transaction) {
+                return new Object[] {
+                    cAccess.calcTotalPriceOfTransaction(transaction),
+                    cAccess.getSuppliersOfTransaction(transaction)
                 };
-                setListAdapter(adapter);
             }
-        }.execute();
-        setEmptyText(getString(R.string.no_items_list_view));
 
+            @Override
+            public void applyDataOnView(Transaction transaction, Object[] data, View view) {
+                List<User> transactionSuppliers = Stream.of((List<User>) data[1]).distinct().collect(Collectors.toList());
+                ObjectToViewUpdates.updateTransactionListItem(view, transaction, (BigDecimal) data[0], transactionSuppliers);
+            }
+
+        };
     }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        Transaction transaction = (Transaction) l.getItemAtPosition(position);
+        Transaction transaction = adapter.getItem(position);
         Intent intent = IntentsFactory.newEntityIntent(activity, transaction);
         startActivity(intent);
     }
@@ -97,4 +92,11 @@ public class TransactionListFragment extends ListFragment implements TitleFragme
     public int getFragmentTitle() {
         return R.string.transactions;
     }
+
+    @Override
+    public void onDestroy() {
+        if (adapter != null) adapter.cancel();
+        super.onDestroy();
+    }
+
 }

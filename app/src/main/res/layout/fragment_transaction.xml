@@ -2,7 +2,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
      android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/mainListView"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="@dimen/default_external_padding">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/orders_in_this_transactions"
+        android:id="@+id/textView12"
+        android:background="@color/colorBackground2" />
+
+    <LinearLayout
+        android:id="@+id/mainListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal" />
 
 </LinearLayout>

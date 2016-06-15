@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.app_drivers.CancelableLoadingDialogAsyncTask;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
-import com.hgyw.bookshare.app_drivers.ProgressDialogAsyncTask;
 import com.hgyw.bookshare.app_drivers.Utility;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookSupplier;
@@ -55,7 +54,7 @@ public class TransactionFragment extends EntityFragment {
 
             @Override
             protected void doByData(Void aVoid) {
-                Utility.addViewsByList(linearLayout, orders, activity.getLayoutInflater(), R.layout.old_order_list_item, TransactionFragment.this::updateOrder);
+                Utility.addViewsByList(linearLayout, orders, R.layout.order_for_transaction_list_item, TransactionFragment.this::updateOrder);
             }
 
             @Override

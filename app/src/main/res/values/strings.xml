@@ -183,4 +183,10 @@
     <string name="book_update_dialog">Update Yours Book</string>
     <string name="remove_from_my_books">remove from my books</string>
     <string name="remove_from_my_books_message">Are you sure you want to remove this book from your book list?</string>
+    <string name="book_was_deleted">The book has been deleted.</string>
+    <string name="edit_book">Edit book</string>
+    <string name="delete_book">Delete book</string>
+    <string name="supplier">Supplier</string>
+    <string name="mail_from_app">Mail from app</string>
+    <string name="orders_in_this_transactions">Orders in this transactions</string>
 </resources>

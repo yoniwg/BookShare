@@ -8,12 +8,15 @@
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_edit_book"
-        android:title="@string/edit" />
+        android:title="@string/edit_book" />
+    <item
+        android:id="@+id/action_remove_book"
+        android:title="@string/delete_book" />
     <item
         android:id="@+id/action_supply_book"
         android:title="@string/supply_the_book" />
     <item
-        android:id="@+id/action_remove_book"
+        android:id="@+id/action_unsupply_book"
         android:title="@string/remove_from_my_books" />
 
 </menu>

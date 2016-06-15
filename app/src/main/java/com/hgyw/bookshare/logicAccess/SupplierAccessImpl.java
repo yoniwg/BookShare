@@ -40,6 +40,11 @@ public class SupplierAccessImpl extends GeneralAccessImpl implements SupplierAcc
     }
 
     @Override
+    public void removeBook(Book book) {
+        dataAccess.delete(book);
+    }
+
+    @Override
     public List<Order> retrieveOrders(Date fromDate, Date toDate, boolean onlyActive) {
         return dataAccess.retrieveOrders(null, currentUser, fromDate, toDate, onlyActive);
     }

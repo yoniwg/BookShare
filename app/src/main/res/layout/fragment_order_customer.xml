@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    <RelativeLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:padding="@dimen/default_external_padding">
+
+        <ImageView
+            android:layout_width="@dimen/medium_circle_image"
+            android:layout_height="@dimen/medium_circle_image"
+            android:id="@+id/bookImage"
+            android:src="@drawable/image_book"
+            android:scaleType="centerCrop"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="This can be a long title of a book"
+            android:id="@+id/bookTitle"
+            android:singleLine="false"
+            android:layout_below="@+id/bookImage"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="19dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/details_line"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="author"
+            android:id="@+id/bookAuthor"
+            android:layout_alignBottom="@+id/bookAuthorIcon"
+            android:layout_toEndOf="@+id/bookAuthorIcon"
+            android:paddingStart="10dp"
+            android:background="@drawable/abc_ab_share_pack_mtrl_alpha"
+            android:nestedScrollingEnabled="false" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/details_line"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="price"
+            android:id="@+id/orderUnitPrice"
+            android:layout_alignBottom="@+id/orderUnitPriceIcon"
+            android:layout_toEndOf="@+id/orderUnitPriceIcon"
+            android:paddingStart="10dp"
+            android:background="@drawable/abc_ab_share_pack_mtrl_alpha" />
+
+        <TextView
+            android:id="@+id/userFullName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Supplier name"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_alignBottom="@+id/orderUnitPriceIcon"
+            android:layout_toEndOf="@+id/orderUnitPriceIcon"
+            android:paddingStart="10dp"
+            android:background="@drawable/abc_ab_share_pack_mtrl_alpha" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/details_line"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="0"
+            android:id="@+id/orderAmountFinal"
+            android:layout_alignTop="@+id/orderAmountFinalIcon"
+            android:layout_alignStart="@+id/orderUnitPrice"
+            android:paddingStart="10dp"
+            android:background="@drawable/abc_ab_share_pack_mtrl_alpha" />
+
+        <ImageView
+            android:layout_width="@dimen/details_line"
+            android:layout_height="@dimen/details_line"
+            android:id="@+id/bookAuthorIcon"
+            android:src="@drawable/side_icon_autor"
+            android:background="@drawable/abc_ab_share_pack_mtrl_alpha"
+            android:layout_below="@+id/bookTitle"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="20dp"
+            android:nestedScrollingEnabled="false" />
+
+        <ImageView
+            android:layout_width="@dimen/details_line"
+            android:layout_height="@dimen/details_line"
+            android:id="@+id/orderUnitPriceIcon"
+            android:layout_below="@+id/bookAuthorIcon"
+            android:layout_alignParentStart="true"
+            android:src="@drawable/side_icon_suppliers"
+            android:background="@drawable/abc_ab_share_pack_mtrl_alpha" />
+
+        <ImageView
+            android:layout_width="@dimen/details_line"
+            android:layout_height="@dimen/details_line"
+            android:id="@+id/orderUnitPriceIcon"
+            android:src="@drawable/side_icon_price"
+            android:layout_below="@+id/userFullName"
+            android:layout_alignParentStart="true"
+            android:background="@drawable/abc_ab_share_pack_mtrl_alpha" />
+
+        <ImageView
+            android:layout_width="@dimen/details_line"
+            android:layout_height="@dimen/details_line"
+            android:id="@+id/orderAmountFinalIcon"
+            android:src="@drawable/side_icon_amount"
+            android:layout_below="@+id/orderUnitPriceIcon"
+            android:layout_alignStart="@+id/orderUnitPriceIcon"
+            android:background="@drawable/abc_ab_share_pack_mtrl_alpha" />
+
+    </RelativeLayout>
+</ScrollView>

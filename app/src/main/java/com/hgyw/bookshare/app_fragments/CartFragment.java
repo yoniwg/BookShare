@@ -5,32 +5,28 @@ import android.app.ListFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.Toast;
 
-import com.hgyw.bookshare.app_drivers.ApplyObjectAdapter;
+import com.hgyw.bookshare.R;
+import com.hgyw.bookshare.app_drivers.GoodAsyncListAdapter;
 import com.hgyw.bookshare.app_drivers.IntentsFactory;
 import com.hgyw.bookshare.app_drivers.ListApplyObjectAdapter;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
-import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookSupplier;
 import com.hgyw.bookshare.entities.ImageEntity;
+import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.Cart;
-import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.logicAccess.CustomerAccess;
 
-import java.util.AbstractMap;
 import java.util.List;
 
 /**
@@ -41,7 +37,7 @@ public class CartFragment extends ListFragment implements TitleFragment {
 
     public static final String IS_MAIN_FRAGMENT = "is_amount_can_modify";
 
-    ApplyObjectAdapter<Order> adapter;
+    ListApplyObjectAdapter<Order> adapter;
     private Cart cart = AccessManagerFactory.getInstance().getCustomerAccess().getCart();
 
 
@@ -62,9 +58,8 @@ public class CartFragment extends ListFragment implements TitleFragment {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
         registerForContextMenu(getListView());
-        List<Order> ordersList = cart.retrieveCartContent();
 
-        adapter = new ListApplyObjectAdapter<Order>(getActivity(), R.layout.order_list_item, ordersList) {
+        adapter = new ListApplyObjectAdapter<Order>(getActivity(), R.layout.order_list_item, cart.retrieveCartContent()) {
             @Override
             protected Object[] retrieveDataForView(Order order) {
                 CustomerAccess cAccess = AccessManagerFactory.getInstance().getCustomerAccess();
@@ -96,8 +91,8 @@ public class CartFragment extends ListFragment implements TitleFragment {
             }
         };
         setListAdapter(adapter);
-        setEmptyText(getString(R.string.no_items_list_view));
 
+        setEmptyText(getString(R.string.no_items_list_view));
     }
 
     @Override

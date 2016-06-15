@@ -2,6 +2,8 @@ package com.hgyw.bookshare.app_drivers;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.SearchManager;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,12 +15,13 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
-import android.media.Image;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.MainThread;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,16 +30,17 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.annimon.stream.Collectors;
-import com.annimon.stream.Stream;
 import com.annimon.stream.function.BiConsumer;
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.entities.Book;
+import com.hgyw.bookshare.entities.BookSupplier;
 import com.hgyw.bookshare.entities.Credentials;
 import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.entities.ImageEntity;
+import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
+import com.hgyw.bookshare.logicAccess.GeneralAccess;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -48,6 +52,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by haim7 on 11/05/2016.
@@ -266,7 +271,7 @@ public class Utility {
         return output;
     }
 
-    public static SharedPreferences getSharedPreferences(Context context) {
+    private static SharedPreferences getSharedPreferences(Context context) {
         return context.getSharedPreferences(context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
     }
 
@@ -276,10 +281,6 @@ public class Utility {
 
     public static String dateToString(Date date) {
         return DateFormat.getDateInstance().format(date);
-    }
-
-    public static String usersListToFlatString(List<User> list){
-        return Stream.of(list).map(User::getLastName).collect(Collectors.joining(", "));
     }
 
     public static <T> void setSpinnerToEnum(Context context, Spinner genreSpinner, T[] values) {
@@ -311,7 +312,9 @@ public class Utility {
                 .putString(PREFERENCE_PASSWORD, credentials.getPassword()).commit();
     }
 
-    public static <T> Map<T,View> addViewsByList(ViewGroup viewGroup, List<T> list, LayoutInflater inflater, @LayoutRes int layout , BiConsumer<View, T> viewConsumer) {
+    public static <T> Map<T,View> addViewsByList(ViewGroup viewGroup, List<T> list, @LayoutRes int layout , BiConsumer<View, T> viewConsumer) {
+        LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
+
         Map<T,View> viewsMap = new HashMap<>();
         if (list.isEmpty()) {
             View emptyView = inflater.inflate(R.layout.simple_empty_listview, viewGroup, false);
@@ -328,12 +331,39 @@ public class Utility {
         return viewsMap;
     }
 
-
-    public static <T extends Entity> void replaceById(ArrayAdapter<T> adapter, T item) {
-        int itemPosition = adapter.getCount();
-        while (--itemPosition >= 0 && adapter.getItemId(itemPosition) == item.getId());
-        if (itemPosition >= 0) adapter.insert(item, itemPosition);
+    @MainThread
+    public static BookSupplier getBookSupplier(Order order) {
+        try {
+            return new AsyncTask<Void, Void, BookSupplier>() {
+                @Override
+                protected BookSupplier doInBackground(Void... params) {
+                    GeneralAccess access = AccessManagerFactory.getInstance().getGeneralAccess();
+                    BookSupplier bs = access.retrieve(BookSupplier.class, order.getBookSupplierId());
+                    return bs;
+                }
+            }.execute().get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
     }
 
+    public static void setListenerForAll(View parentView, View.OnClickListener listener, @IdRes int... viewIds) {
+        for (int id : viewIds) {
+            View view = parentView.findViewById(id);
+            if (view != null) view.setOnClickListener(listener);
+        }
+    }
 
+    // start google search
+    public static void startSearchActivity(Context context, String query) {
+        try {
+            Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
+            intent.putExtra(SearchManager.QUERY, query);
+            context.startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse("https://www.google.com/q=" + Uri.encode(query, "UTF-8")));
+            context.startActivity(i);
+        }
+    }
 }

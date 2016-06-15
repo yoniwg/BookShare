@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,51 +56,47 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // connect by credentials if it's needed and possible
-        accessManager = AccessManagerFactory.getInstance();
-        Credentials savedCredentials = Utility.loadCredentials(this);
-        if (accessManager.getCurrentUserType() == UserType.GUEST && !savedCredentials.getPassword().isEmpty()) {
-            new ProgressDialogAsyncTask<Void, Void, Boolean>(this, R.string.trying_to_connect) {
-                @Override
-                protected Boolean retrieveDataAsync(Void... params) {
-                    try {
-                        accessManager.signIn(savedCredentials);
-                        return true;
-                    } catch (WrongLoginException ignored) {
-                        return false;
-                    }
-                }
-
-                @Override
-                protected void doByData(Boolean Succeeded) {
-                    if (Succeeded) updateDrawerOnLogin();
-                }
-            }.execute();
-        }
-
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        accessManager = AccessManagerFactory.getInstance();
+
+        if (savedInstanceState == null) {
+            // connect by credentials if it's needed and possible
+            Credentials savedCredentials = Utility.loadCredentials(this);
+            if (accessManager.getCurrentUserType() == UserType.GUEST && !savedCredentials.equals(Credentials.empty())/*&& !savedCredentials.getPassword().isEmpty()*/) {
+                new ProgressDialogAsyncTask<Void, Void, Boolean>(this, R.string.trying_to_connect) {
+                    @Override
+                    protected Boolean retrieveDataAsync(Void... params) {
+                        try {
+                            accessManager.signIn(savedCredentials);
+                            return true;
+                        } catch (WrongLoginException ignored) {
+                            return false;
+                        }
+                    }
+
+                    @Override
+                    protected void doByData(Boolean Succeeded) {
+                        updateDrawerOnLogin();
+                    }
+                }.execute();
+            }
+        }
+
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                    this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        //if (savedInstanceState == null)
-        {
+        if(savedInstanceState == null) {
             onNewIntent(getIntent());
         }
-    }
-
-    @Override
-    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        updateDrawerOnLogin();
     }
 
     public void updateDrawerOnLogin(){

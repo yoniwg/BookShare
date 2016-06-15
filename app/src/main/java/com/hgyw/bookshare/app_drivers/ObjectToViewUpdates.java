@@ -8,6 +8,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.annimon.stream.Collectors;
+import com.annimon.stream.Stream;
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.entities.BookReview;
 import com.hgyw.bookshare.entities.BookSupplier;
@@ -44,11 +46,14 @@ public class ObjectToViewUpdates {
         ObjectToViewAppliers.apply(view, transaction);
         TextView transactionTotalPrice = (TextView) view.findViewById(R.id.total_price);
         TextView transactionSuppliers = (TextView) view.findViewById(R.id.supplier_names_list);
+
         if (transactionTotalPrice != null){
             transactionTotalPrice.setText(Utility.moneyToNumberString(totalPrice));
         }
         if (transactionSuppliers != null){
-            transactionSuppliers.setText(Utility.usersListToFlatString(suppliersList));
+            String transactionSuppliersText;
+            transactionSuppliersText = Stream.of(suppliersList).map(User::getLastName).collect(Collectors.joining(", "));
+            transactionSuppliers.setText(transactionSuppliersText);
         }
     }
 
