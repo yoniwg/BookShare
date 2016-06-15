@@ -226,6 +226,7 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
         this.menu = menu;
         menu.findItem(R.id.action_cart).setVisible(access.getUserType() == UserType.CUSTOMER);
         menu.findItem(R.id.action_edit_book).setVisible(access.getUserType() == UserType.SUPPLIER);
+        menu.findItem(R.id.action_remove_book).setVisible(access.getUserType() == UserType.SUPPLIER);
         menu.findItem(R.id.action_supply_book).setVisible(access.getUserType() == UserType.SUPPLIER);
         menu.findItem(R.id.action_unsupply_book).setVisible(access.getUserType() == UserType.SUPPLIER);
     }
