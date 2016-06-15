@@ -189,4 +189,6 @@
     <string name="supplier">Supplier</string>
     <string name="mail_from_app">Mail from app</string>
     <string name="orders_in_this_transactions">Orders in this transactions</string>
+    <string name="connection_error">Connection error</string>
+    <string name="all">All</string>
 </resources>

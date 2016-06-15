@@ -38,13 +38,10 @@
             android:text="@string/category"
             android:layout_gravity="center_vertical" />
 
-        <Spinner
-            android:layout_width="match_parent"
+        <com.hgyw.bookshare.app_drivers.MultiSpinner
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/genre_spinner"
-            android:spinnerMode="dropdown"
-            android:touchscreenBlocksFocus="false"
-            android:transitionGroup="false" />
+            android:id="@+id/genre_spinner" />
 
     </LinearLayout>
 

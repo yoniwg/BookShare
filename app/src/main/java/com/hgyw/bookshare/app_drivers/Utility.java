@@ -30,6 +30,8 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.annimon.stream.Collectors;
+import com.annimon.stream.Stream;
 import com.annimon.stream.function.BiConsumer;
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.entities.Book;
@@ -41,6 +43,7 @@ import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.GeneralAccess;
+import com.hgyw.bookshare.logicAccess.SupplierAccess;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -285,10 +288,17 @@ public class Utility {
         return DateFormat.getDateInstance().format(date);
     }
 
-    public static <T> void setSpinnerToEnum(Context context, Spinner genreSpinner, T[] values) {
-        ArrayAdapter arrayAdapter = new EnumAdapter<>(context, android.R.layout.simple_spinner_item, Book.Genre.values());
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        genreSpinner.setAdapter(arrayAdapter);
+    public static <T extends Enum<T>> void setSpinnerToEnum(Context context, Spinner genreSpinner, T[] values) {
+        if (genreSpinner instanceof MultiSpinner) {
+            MultiSpinner multiSpinner = (MultiSpinner) genreSpinner;
+            List<String> stringItems = Stream.of(values).map(e -> findStringResourceOfEnum(context, e)).collect(Collectors.toList());
+            multiSpinner.setItems(stringItems, context.getString(R.string.all));
+
+        } else {
+            ArrayAdapter arrayAdapter = new EnumAdapter<>(context, android.R.layout.simple_spinner_item, Book.Genre.values());
+            arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            genreSpinner.setAdapter(arrayAdapter);
+        }
 
     }
 
@@ -396,4 +406,42 @@ public class Utility {
             context.startActivity(i);
         }
     }
+
+    public static void updateBookAsync(Context context, BookSupplier bookSupplier) {
+        SupplierAccess sAccess = AccessManagerFactory.getInstance().getSupplierAccess();
+        boolean isNewBook = bookSupplier == null || bookSupplier.getId() == 0;
+
+        new ProgressDialogAsyncTask<Void,Void,Void>(context, R.string.updating_book_supplying) {
+            @Override
+            protected Void retrieveDataAsync(Void... params) {
+                if (isNewBook) {
+                    sAccess.addBookSupplier(bookSupplier);
+                } else {
+                    sAccess.updateBookSupplier(bookSupplier);
+                }
+                return null;
+            }
+
+            @Override
+            protected void doByData(Void aVoid) {
+                int messageRedId = isNewBook ? R.string.book_was_added_to_supplier : R.string.book_was_updated_to_supplier;
+                Toast.makeText(context, messageRedId, Toast.LENGTH_SHORT).show();
+                context.startActivity(IntentsFactory.supplierBooksIntent(context));
+            }
+        }.execute();
+    }
+
+    public static void deleteBookAsync(Context context, BookSupplier bookSupplier) {
+        SupplierAccess sAccess = AccessManagerFactory.getInstance().getSupplierAccess();
+        new ProgressDialogAsyncTask<Void, Void, Void>(context, R.string.updating_book_supplying) {
+            @Override protected Void retrieveDataAsync(Void... params) {
+                sAccess.removeBookSupplier(bookSupplier);
+                return null;
+            }
+            @Override protected void doByData(Void aVoid) {
+                Toast.makeText(context,R.string.book_was_removed_from_supplier, Toast.LENGTH_SHORT).show();
+            }
+        }.execute();
+    }
+
 }

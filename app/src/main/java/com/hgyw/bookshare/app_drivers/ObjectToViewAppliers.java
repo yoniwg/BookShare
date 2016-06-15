@@ -9,6 +9,7 @@ import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.annimon.stream.Stream;
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookQuery;
@@ -28,6 +29,7 @@ import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by haim7 on 13/05/2016.
@@ -207,7 +209,7 @@ public class ObjectToViewAppliers {
     public static void apply(View view, BookQuery bookQuery) {
         TextView titleView = (TextView) view.findViewById(R.id.title_query);
         TextView authorView = (TextView) view.findViewById(R.id.author_query);
-        Spinner genreSpinner = (Spinner) view.findViewById(R.id.genre_spinner); // TODO spinner can select only one category
+        Spinner genreSpinner = (Spinner) view.findViewById(R.id.genre_spinner);
         TextView fromPriceView = (TextView) view.findViewById(R.id.from_price);
         TextView toPriceView = (TextView) view.findViewById(R.id.to_price);
 
@@ -215,9 +217,18 @@ public class ObjectToViewAppliers {
         if (authorView != null) authorView.setText(bookQuery.getAuthorQuery());
         if (fromPriceView != null) fromPriceView.setText(bookQuery.getBeginPrice().setScale(0).toString());
         if (toPriceView != null) toPriceView.setText(bookQuery.getEndPrice().setScale(0).toString());
-        if (genreSpinner != null){
-            Book.Genre genreSelection = bookQuery.getGenreSet().isEmpty() ? Book.Genre.GENERAL : bookQuery.getGenreSet().iterator().next();
-            genreSpinner.setSelection(genreSelection.ordinal());
+        if (genreSpinner != null) {
+            if (genreSpinner instanceof MultiSpinner) {
+                MultiSpinner multiSpinner = (MultiSpinner) genreSpinner;
+                Book.Genre[] genres = Book.Genre.values();
+                boolean[] selected = new boolean[genres.length];
+                Set<Book.Genre> genresSet = bookQuery.getGenreSet();
+                for (int i = 0; i < genres.length; i++) if (genresSet.contains(genres[i])) selected[i] = true;
+                multiSpinner.setSelected(selected);
+            } else {
+                Book.Genre genreSelection = bookQuery.getGenreSet().isEmpty() ? Book.Genre.GENERAL : bookQuery.getGenreSet().iterator().next();
+                genreSpinner.setSelection(genreSelection.ordinal());
+            }
         }
     }
 
@@ -231,7 +242,7 @@ public class ObjectToViewAppliers {
 
         if (titleView != null) bookQuery.setTitleQuery(titleView.getText().toString());
         if (authorView != null) bookQuery.setAuthorQuery(authorView.getText().toString());
-        if (genreSpinner != null) {
+        if (genreSpinner != null && !(genreSpinner instanceof MultiSpinner)) {
             bookQuery.getGenreSet().clear();
             bookQuery.getGenreSet().add((Book.Genre) genreSpinner.getSelectedItem());
         }
@@ -248,7 +259,6 @@ public class ObjectToViewAppliers {
         // TODO
         TextView transactionAddressView = (TextView) view.findViewById(R.id.transactionAddress);
         TextView transactionDateText = (TextView) view.findViewById(R.id.transactionDate);
-
 
         if (transactionAddressView != null) transactionAddressView.setText(transaction.getShippingAddress());
         if (transactionDateText != null) transactionDateText.setText(Utility.datetimeToString(transaction.getDate()));

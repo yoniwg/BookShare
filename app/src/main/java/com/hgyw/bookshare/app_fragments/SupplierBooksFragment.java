@@ -9,14 +9,17 @@ import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.app_drivers.GoodAsyncListAdapter;
+import com.hgyw.bookshare.app_drivers.IntentsFactory;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
 import com.hgyw.bookshare.app_drivers.ProgressDialogAsyncTask;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookSupplier;
+import com.hgyw.bookshare.entities.IdReference;
 import com.hgyw.bookshare.entities.ImageEntity;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.SupplierAccess;
@@ -109,6 +112,13 @@ public class SupplierBooksFragment extends ListFragment implements TitleFragment
             builder.create().show();
             return true;
         });
+    }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        BookSupplier bookSupplier = adapter.getItem(position);
+        IdReference bookReference = IdReference.of(Book.class, bookSupplier.getBookId());
+        startActivity(IntentsFactory.newEntityIntent(activity, bookReference));
     }
 
     @Override

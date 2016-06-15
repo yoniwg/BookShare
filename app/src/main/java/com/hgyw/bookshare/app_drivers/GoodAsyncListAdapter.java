@@ -126,7 +126,7 @@ public abstract class GoodAsyncListAdapter<T> extends BaseAdapter {
     }
 
     public synchronized void update(T item, T newItem) {
-        int position = retrieveList().indexOf(item);
+        int position = retievingItems.indexOf(item);
 
         AsyncTask asyncTask = new AsyncTask<Void, Void, Object[]>() {
             @Override
@@ -148,7 +148,7 @@ public abstract class GoodAsyncListAdapter<T> extends BaseAdapter {
     }
 
     public synchronized void remove(T item) {
-        int position = retrieveList().indexOf(item);
+        int position = retievingItems.indexOf(item);
         items.remove(position);
         datas.remove(position);
         notifyDataSetChanged();

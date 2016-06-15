@@ -97,7 +97,6 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
         userRatingBar = (RatingBar) userReviewContainer.findViewById(R.id.userRatingBar);
 
         new CancelableLoadingDialogAsyncTask<Void,Void,Void>(activity) {
-            ImageEntity bookImage;
             List<BookReview> bookReviews;
             List<BookSupplier> bookSuppliers;
             Optional<BookReview> oUserBookReview;
@@ -152,7 +151,6 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
                         }
                     });
                 } else {
-                    menu.findItem(R.id.action_remove_book).setVisible(oCurrentBookSupplier.isPresent());
                     userReviewContainer.setVisibility(View.GONE);
                 }
 
@@ -183,6 +181,20 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
         }.execute();
     }
 
+    private void updateBookView() {
+        new ProgressDialogAsyncTask<View, View, Book>(activity) {
+            @Override
+            protected Book retrieveDataAsync(View... params) {
+                return book = access.retrieve(Book.class, book.getId());
+            }
+
+            @Override
+            protected void doByData(Book book) {
+                ObjectToViewAppliers.apply(bookContainer, book);
+            }
+        }.execute();
+    }
+
     private void updateBookReviewView(View reviewView, BookReview bookReview) {
         User customer = bookReviewsUserMap.get(bookReview).first;
         ImageEntity image = bookReviewsUserMap.get(bookReview).second;
@@ -203,7 +215,7 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
         }
 
         Intent intent = IntentsFactory.newEntityIntent(activity, supplier);
-        supplierView.setOnClickListener(v -> startActivityForResult(intent, IntentsFactory.CODE_ENTITY_UPDATED));
+        supplierView.setOnClickListener(v -> startActivity(intent));
     }
 
     private void setBuyButtonOnClick(Button buyButton,BookSupplier bookSupplier) {
@@ -230,7 +242,8 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
         menu.findItem(R.id.action_edit_book).setVisible(access.getUserType() == UserType.SUPPLIER);
         menu.findItem(R.id.action_remove_book).setVisible(access.getUserType() == UserType.SUPPLIER);
         menu.findItem(R.id.action_supply_book).setVisible(access.getUserType() == UserType.SUPPLIER);
-        menu.findItem(R.id.action_unsupply_book).setVisible(access.getUserType() == UserType.SUPPLIER);
+        menu.findItem(R.id.action_unsupply_book).setVisible(access.getUserType() == UserType.SUPPLIER && oCurrentBookSupplier.isPresent());
+
     }
 
     @Override
@@ -240,12 +253,15 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
                 startActivity(IntentsFactory.newCartIntent(activity));
                 return true;
             case R.id.action_edit_book:
-                startActivity(IntentsFactory.editBookIntent(activity, book.getId()));
+                startActivityForResult(IntentsFactory.editBookIntent(activity, book.getId()), IntentsFactory.CODE_ENTITY_UPDATED);
                 return true;
             case R.id.action_unsupply_book:
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setMessage(R.string.remove_from_my_books_message)
-                        .setPositiveButton(R.string.yes, (dialog, which) -> onDeleteBook())
+                        .setPositiveButton(R.string.yes, (dialog, which) -> {
+                            BookSupplier bookSupplier = oCurrentBookSupplier.get();
+                            deleteBookSupplier(bookSupplier);
+                        })
                         .setNeutralButton(R.string.no, (d,w)->{});
                 builder.create().show();
                 return true;
@@ -257,28 +273,11 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
         }
     }
 
-    private void onDeleteBook() {
-        SupplierAccess sAccess = (SupplierAccess) access;
-        new ProgressDialogAsyncTask<Void, Void, Void>(activity, R.string.updating_book_supplying) {
-            @Override protected Void retrieveDataAsync(Void... params) {
-                    sAccess.removeBookSupplier(oCurrentBookSupplier.get());
-                    return null;
-            }
-            @Override protected void doByData(Void aVoid) {
-                    Toast.makeText(activity,R.string.book_was_removed_from_supplier, Toast.LENGTH_SHORT).show();
-                    suppliersListView.removeView(suppliersViewsMap.get(oCurrentBookSupplier.get()));
-                    menu.findItem(R.id.action_remove_book).setVisible(false);
-            }
-        }.execute();
-    }
-
     private void startBookSupplierDialogAsync() {
         new CancelableLoadingDialogAsyncTask<Void,Void,BookSupplier>(activity) {
             @Override
             protected BookSupplier retrieveDataAsync(Void... params) {
-                return AccessManagerFactory.getInstance().getSupplierAccess()
-                        .retrieveMyBookSupplier(book)
-                        .orElseGet(() -> {
+                return oCurrentBookSupplier.orElseGet(() -> {
                             BookSupplier bs = new BookSupplier();
                             bs.setBookId(entityId);
                             return bs;
@@ -323,35 +322,60 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == IntentsFactory.CODE_ENTITY_UPDATED && resultCode == Activity.RESULT_OK) {
-           // updateBookDeatilsView(); //?????????????????? //TODO
+           updateBookView();
         }
     }
 
     @Override
     public void onBookSupplierResult(ResultCode result, BookSupplier bookSupplier) {
-        SupplierAccess sAccess = (SupplierAccess) access;
-        boolean isNewBook = bookSupplier == null || bookSupplier.getId() == 0;
         switch (result) {
             case OK:
-                new ProgressDialogAsyncTask<Void,Void,Void>(activity, R.string.updating_book_supplying) {
-                    @Override
-                    protected Void retrieveDataAsync(Void... params) {
-                        if (isNewBook) {
-                            sAccess.addBookSupplier(bookSupplier);
-                        } else {
-                            sAccess.updateBookSupplier(bookSupplier);
-                        }
-                        return null;
-                    }
-
-                    @Override
-                    protected void doByData(Void aVoid) {
-                        int messageRedId = isNewBook ? R.string.book_was_added_to_supplier : R.string.book_was_updated_to_supplier;
-                        Toast.makeText(activity, messageRedId, Toast.LENGTH_SHORT).show();
-                        startActivity(IntentsFactory.supplierBooksIntent(activity));
-                    }
-                }.execute(); break;
+                updateBookSupplier(bookSupplier); break;
             case CANCEL: break;
         }
     }
+
+    private void updateBookSupplier(BookSupplier bookSupplier) {
+        SupplierAccess sAccess = AccessManagerFactory.getInstance().getSupplierAccess();
+        boolean isNewBook = bookSupplier == null || bookSupplier.getId() == 0;
+
+        new ProgressDialogAsyncTask<Void,Void,Void>(activity, R.string.updating_book_supplying) {
+            @Override
+            protected Void retrieveDataAsync(Void... params) {
+                if (isNewBook) {
+                    sAccess.addBookSupplier(bookSupplier);
+                } else {
+                    sAccess.updateBookSupplier(bookSupplier);
+                }
+                return null;
+            }
+
+            @Override
+            protected void doByData(Void aVoid) {
+                int messageRedId = isNewBook ? R.string.book_was_added_to_supplier : R.string.book_was_updated_to_supplier;
+                Toast.makeText(context, messageRedId, Toast.LENGTH_SHORT).show();
+                context.startActivity(IntentsFactory.supplierBooksIntent(context));activity.finish();
+                oCurrentBookSupplier = Optional.of(bookSupplier);
+            }
+        }.execute();
+    }
+
+    private void deleteBookSupplier(BookSupplier bookSupplier) {
+        SupplierAccess sAccess = AccessManagerFactory.getInstance().getSupplierAccess();
+        new ProgressDialogAsyncTask<Void, Void, Void>(activity, R.string.updating_book_supplying) {
+            @Override protected Void retrieveDataAsync(Void... params) {
+                sAccess.removeBookSupplier(bookSupplier);
+                return null;
+            }
+            @Override protected void doByData(Void aVoid) {
+                Toast.makeText(context,R.string.book_was_removed_from_supplier, Toast.LENGTH_SHORT).show();
+                suppliersListView.removeView(suppliersViewsMap.get(oCurrentBookSupplier.get()));
+                menu.findItem(R.id.action_remove_book).setVisible(false);
+                oCurrentBookSupplier = Optional.empty();
+            }
+        }.execute();
+    }
+
+
+
 }

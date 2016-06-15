@@ -71,8 +71,8 @@ public abstract class CancelableLoadingDialogAsyncTask<Params,Progress, Result> 
 
     @MainThread
     protected void onDataAccessIoException(DataAccessIoException e) {
-        String message = "Connection Error: \n" + e.getMessage();
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+        String message = context.getString(R.string.connection_error) + ": \n" + e.getMessage();
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
         onCancel();
     }
 

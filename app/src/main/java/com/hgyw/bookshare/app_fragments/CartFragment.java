@@ -149,7 +149,7 @@ public class CartFragment extends ListFragment implements TitleFragment {
         builder.setMessage(R.string.transaction_message)
                 .setPositiveButton(R.string.yes, (dialog, which) -> {
                     Intent transactionIntent = IntentsFactory.newTransactionIntent(getActivity());
-                    startActivity(transactionIntent);
+                    getActivity().finish(); startActivity(transactionIntent);
                 })
                 .setNeutralButton(R.string.no, (dialog, which) -> {
                 });
