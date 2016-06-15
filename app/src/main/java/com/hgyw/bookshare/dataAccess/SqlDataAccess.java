@@ -145,10 +145,15 @@ abstract class SqlDataAccess implements DataAccess {
         } else {
             return Stream.of(list).filter(b -> {
                 BookSummary summary = getBookSummary(b);
-                return query.getBeginPrice().compareTo(summary.getMaxPrice()) <= 0 || query.getEndPrice().compareTo(summary.getMinPrice()) >= 0;
+                return isChituchNotEmpty(query.getBeginPrice(), query.getEndPrice(), summary.getMinPrice(), summary.getMaxPrice());
             }).collect(Collectors.toList());
         }
     }
+
+    private static boolean isChituchNotEmpty(Number x1, Number x2, Number y1, Number y2) {
+        return Math.min(x2.intValue(), y2.intValue()) - Math.max(x1.intValue(), y1.intValue()) > 0;
+    }
+
 
     @Override
     public List<Book> findSpecialOffers(User user, int limit) {
