@@ -57,11 +57,12 @@ public abstract class CancelableLoadingDialogAsyncTask<Params,Progress, Result> 
 
     @Override
     protected final void onPostExecute(OptionalResult<Result,DataAccessIoException> result) {
-        System.out.println("dialog is showing:" + progressDialog.isShowing() + " Window is active: " + progressDialog.getWindow().isActive());        boolean dialogIsShowing = progressDialog.isShowing();
+        //System.out.println("dialog is showing:" + progressDialog.isShowing() + " Window is active: " + progressDialog.getWindow().isActive());
+        boolean dialogIsShowing = progressDialog.isShowing();
         if (result.hasResult()) {
             if (dialogIsShowing) progressDialog.setCancelable(false);
             doByData(result.getResult());
-            System.out.println("dialog is showing:" + progressDialog.isShowing() + " Window is active: " + progressDialog.getWindow().isActive());
+            //System.out.println("dialog is showing:" + progressDialog.isShowing() + " Window is active: " + progressDialog.getWindow().isActive());
             if (dialogIsShowing) progressDialog.dismiss();
         } else {
             if (dialogIsShowing) progressDialog.dismiss();

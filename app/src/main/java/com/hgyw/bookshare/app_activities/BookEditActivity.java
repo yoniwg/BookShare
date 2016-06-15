@@ -26,6 +26,7 @@ import com.hgyw.bookshare.logicAccess.SupplierAccess;
 
 /**
  * Throws ClassCastException if the activity cannot supply BookResultListener (by itself or by ListenerSupplier).
+ * Result is RESULT_OK if book was changed
  */
 public class BookEditActivity extends AppCompatActivity {
 

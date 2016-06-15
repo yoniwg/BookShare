@@ -35,6 +35,7 @@ import com.hgyw.bookshare.entities.Rating;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.entities.UserType;
 import com.hgyw.bookshare.exceptions.OrdersTransactionException;
+import com.hgyw.bookshare.logicAccess.AccessManager;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.CustomerAccess;
 import com.hgyw.bookshare.logicAccess.SupplierAccess;
@@ -256,6 +257,9 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
             case R.id.action_edit_book:
                 startActivityForResult(IntentsFactory.editBookIntent(activity, book.getId()), IntentsFactory.CODE_ENTITY_UPDATED);
                 return true;
+            case R.id.action_remove_book:
+                removeBook();
+                return true;
             case R.id.action_unsupply_book:
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setMessage(R.string.remove_from_my_books_message)
@@ -272,6 +276,22 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void removeBook() {
+        new ProgressDialogAsyncTask<Void, Void, Void>(activity) {
+            @Override
+            protected Void retrieveDataAsync(Void... params) {
+                AccessManagerFactory.getInstance().getSupplierAccess().removeBook(book);
+                return null;
+            }
+
+            @Override
+            protected void doByData(Void aVoid) {
+                Toast.makeText(activity, R.string.book_was_deleted, Toast.LENGTH_SHORT).show();
+                activity.finish();
+            }
+        }.execute();
     }
 
     private void startBookSupplierDialogAsync() {
@@ -338,7 +358,7 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
 
     private void updateBookSupplier(BookSupplier bookSupplier) {
         SupplierAccess sAccess = AccessManagerFactory.getInstance().getSupplierAccess();
-        boolean isNewBook = bookSupplier == null || bookSupplier.getId() == 0;
+        boolean isNewBook = bookSupplier.getId() == 0;
 
         new ProgressDialogAsyncTask<Void,Void,Void>(activity, R.string.updating_book_supplying) {
             @Override
@@ -356,6 +376,7 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
                 int messageRedId = isNewBook ? R.string.book_was_added_to_supplier : R.string.book_was_updated_to_supplier;
                 Toast.makeText(context, messageRedId, Toast.LENGTH_SHORT).show();
                 context.startActivity(IntentsFactory.supplierBooksIntent(context));activity.finish();
+                menu.findItem(R.id.action_unsupply_book).setVisible(true);
                 oCurrentBookSupplier = Optional.of(bookSupplier);
             }
         }.execute();
@@ -371,7 +392,7 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
             @Override protected void doByData(Void aVoid) {
                 Toast.makeText(context,R.string.book_was_removed_from_supplier, Toast.LENGTH_SHORT).show();
                 suppliersListView.removeView(suppliersViewsMap.get(oCurrentBookSupplier.get()));
-                menu.findItem(R.id.action_remove_book).setVisible(false);
+                menu.findItem(R.id.action_unsupply_book).setVisible(false);
                 oCurrentBookSupplier = Optional.empty();
             }
         }.execute();

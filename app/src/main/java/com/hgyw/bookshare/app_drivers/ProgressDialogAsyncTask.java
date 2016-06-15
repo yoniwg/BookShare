@@ -67,12 +67,12 @@ public abstract class ProgressDialogAsyncTask<Params, Progress, Result> extends 
 
     @Override
     protected final void onPostExecute(OptionalResult<Result,DataAccessIoException> result) {
-        if (progressDialog.isShowing()) progressDialog.dismiss();
         if (!result.hasResult()) {
             onDataAccessIoException(result.getException());
             return;
         }
         doByData(result.getResult());
+        if (progressDialog.isShowing()) progressDialog.dismiss();
     }
 
     protected void onDataAccessIoException(DataAccessIoException e) {
