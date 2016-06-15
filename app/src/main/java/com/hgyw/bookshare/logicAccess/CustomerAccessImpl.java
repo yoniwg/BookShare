@@ -83,7 +83,7 @@ class CustomerAccessImpl extends GeneralAccessImpl implements CustomerAccess {
     }
 
     @Override
-    public void performNewTransaction(Transaction transaction, Collection<Order> orders) throws OrdersTransactionException {
+    public Transaction performNewTransaction(Transaction transaction, Collection<Order> orders) throws OrdersTransactionException {
         // validations and check that transaction can be done
         validateOrdersTransaction(orders);
         // create transaction
@@ -93,22 +93,26 @@ class CustomerAccessImpl extends GeneralAccessImpl implements CustomerAccess {
         dataAccess.create(transaction);
         // create orders
         for (Order o : orders) {
+            BookSupplier bookSupplier = dataAccess.retrieve(BookSupplier.class, o.getBookSupplierId());
+
             o.setId(Entity.DEFAULT_ID);
             o.setOrderStatus(OrderStatus.NEW_ORDER);
             o.setTransactionId(transaction.getId());
-            dataAccess.create(o);
-            // decrease amount available
-            BookSupplier bookSupplier = dataAccess.retrieve(BookSupplier.class, o.getBookSupplierId());
             o.setUnitPrice(bookSupplier.getPrice());
+            dataAccess.create(o);
+
+            // decrease amount available
             bookSupplier.setAmountAvailable(bookSupplier.getAmountAvailable() - o.getAmount());
             dataAccess.update(bookSupplier);
         }
+        return transaction;
     }
 
     @Override
-    public void performNewTransaction() throws OrdersTransactionException {
-        performNewTransaction(getCart().getTransaction(),getCart().retrieveCartContent());
+    public Transaction performNewTransaction() throws OrdersTransactionException {
+        Transaction transaction = performNewTransaction(getCart().getTransaction(), getCart().retrieveCartContent());
         getCart().restartCart();
+        return transaction;
     }
 
     private void validateOrdersTransaction(Collection<Order> orders) throws OrdersTransactionException {

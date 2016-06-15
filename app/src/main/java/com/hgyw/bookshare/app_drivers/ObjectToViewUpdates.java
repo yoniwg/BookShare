@@ -1,21 +1,22 @@
 package com.hgyw.bookshare.app_drivers;
 
+import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
+import android.net.Uri;
 import android.view.View;
-import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
 import com.hgyw.bookshare.R;
+import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookReview;
 import com.hgyw.bookshare.entities.BookSupplier;
+import com.hgyw.bookshare.entities.IdReference;
+import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.Transaction;
 import com.hgyw.bookshare.entities.User;
-import com.hgyw.bookshare.entities.UserType;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.GeneralAccess;
 
@@ -58,4 +59,67 @@ public class ObjectToViewUpdates {
     }
 
 
+    public static void setListenerToOrder(View view, Order order) {
+        GeneralAccess access = AccessManagerFactory.getInstance().getGeneralAccess();
+        Context context = view.getContext();
+
+        Utility.setListenerForAll(view, v -> {
+            long bookId = Utility.getBookSupplier(order).getBookId();
+            new CancelableLoadingDialogAsyncTask<Void, View, String>(context) {
+                @Override
+                protected String retrieveDataAsync(Void... params) {
+                    Book book = access.retrieve(Book.class, bookId);
+                    return book.getAuthor();
+                }
+
+                @Override
+                protected void doByData(String query) {
+                    Utility.startSearchActivity(context, query);
+                }
+
+                @Override
+                protected void onCancel() {}
+            }.execute();
+        }, R.id.bookAuthor, R.id.bookAuthorIcon);
+
+        Utility.setListenerForAll(view, v -> {
+            IdReference supplier = IdReference.of(User.class, Utility.getBookSupplier(order).getSupplierId());
+            context.startActivity(IntentsFactory.newEntityIntent(context, supplier));
+        }, R.id.userFirstName, R.id.userLastName, R.id.userFullName, R.id.orderUnitPriceIcon);
+
+    }
+
+    public static void setListenerToUser(View view, User user) {
+        Context context = view.getContext();
+
+        Utility.setListenerForAll(view, v -> {
+            String phoneNumber = user.getPhoneNumber();
+
+            Intent intent = new Intent(Intent.ACTION_DIAL);
+            intent.setData(Uri.parse("tel:" + Uri.encode(phoneNumber)));
+            try {context.startActivity(intent);} catch (ActivityNotFoundException ignored) {}
+        }, R.id.userPhone);
+
+        Utility.setListenerForAll(view, v -> {
+            String email = user.getEmail();
+            String[] addresses = new String[]{email};
+            String subject = context.getString(R.string.mail_from_app) + " " + context.getString(R.string.app_name);
+
+            Intent intent = new Intent(Intent.ACTION_SENDTO);
+            intent.setData(Uri.parse("mailto:" + Uri.encode(email)));
+            intent.putExtra(Intent.EXTRA_EMAIL, addresses);
+            intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+            try {context.startActivity(intent);} catch (ActivityNotFoundException ignored) {}
+        }, R.id.userEmail);
+
+
+        Utility.setListenerForAll(view, v -> {
+            String address = user.getAddress();
+
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse("geo:0,0?q=" + Uri.encode(address)));
+            try {context.startActivity(intent);} catch (ActivityNotFoundException ignored) {}
+        }, R.id.userAddress);
+
+    }
 }

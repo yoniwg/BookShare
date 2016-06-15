@@ -180,4 +180,5 @@ public class IntentsFactory {
         intent.setData(new Uri.Builder().path(String.valueOf(book.getId())).build());
         return intent;
     }
+
 }

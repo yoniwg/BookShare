@@ -7,6 +7,7 @@ import java.util.List;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookReview;
 import com.hgyw.bookshare.entities.BookSupplier;
+import com.hgyw.bookshare.entities.IdReference;
 import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.OrderRating;
 import com.hgyw.bookshare.entities.OrderStatus;
@@ -61,12 +62,12 @@ public interface CustomerAccess extends GeneralAccess {
      * @throws java.util.NoSuchElementException if the entities reference within the parameters entities are not found.
      * @see OrdersTransactionException.Issue for the issues
      */
-    void performNewTransaction(Transaction transaction, Collection<Order> orders) throws OrdersTransactionException;
+    Transaction performNewTransaction(Transaction transaction, Collection<Order> orders) throws OrdersTransactionException;
 
     /**
      * default call using cart
      */
-    void performNewTransaction() throws OrdersTransactionException;
+    Transaction performNewTransaction() throws OrdersTransactionException;
 
     /**
      * request to cancel the order

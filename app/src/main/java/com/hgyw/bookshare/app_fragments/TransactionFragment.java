@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.app_drivers.CancelableLoadingDialogAsyncTask;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
+import com.hgyw.bookshare.app_drivers.ObjectToViewUpdates;
 import com.hgyw.bookshare.app_drivers.Utility;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookSupplier;
@@ -43,17 +44,15 @@ public class TransactionFragment extends EntityFragment {
         super.onViewCreated(view, savedInstanceState);
         ViewGroup linearLayout = (ViewGroup) view.findViewById(R.id.mainListView);
 
-        new CancelableLoadingDialogAsyncTask<Void, Void, Void>(activity) {
-            List<Order> orders;
+        new CancelableLoadingDialogAsyncTask<Void, Void, List<Order>>(activity) {
             @Override
-            protected Void retrieveDataAsync(Void... params) {
+            protected List<Order> retrieveDataAsync(Void... params) {
                 transaction = cAccess.retrieve(Transaction.class, entityId);
-                orders = cAccess.retrieveOrdersOfTransaction(transaction);
-                return null;
+                return cAccess.retrieveOrdersOfTransaction(transaction);
             }
 
             @Override
-            protected void doByData(Void aVoid) {
+            protected void doByData(List<Order> orders) {
                 Utility.addViewsByList(linearLayout, orders, R.layout.order_for_transaction_list_item, TransactionFragment.this::updateOrder);
             }
 
@@ -78,11 +77,13 @@ public class TransactionFragment extends EntityFragment {
 
             @Override
             protected void onPostExecute(Object[] data) {
-                ObjectToViewAppliers.apply(view, transaction);
                 ObjectToViewAppliers.apply(view, order);
+                ObjectToViewAppliers.apply(view, transaction);
                 ObjectToViewAppliers.apply(view, (BookSupplier) data[0]);
                 ObjectToViewAppliers.apply(view, (Book) data[1]);
                 ObjectToViewAppliers.apply(view, (User) data[2]);
+
+                ObjectToViewUpdates.setListenerToOrder(view, order);
             }
         }.execute();
     }

@@ -18,6 +18,7 @@ import com.hgyw.bookshare.app_drivers.SimpleTextWatcher;
 import com.hgyw.bookshare.app_drivers.Utility;
 import com.hgyw.bookshare.app_fragments.CartFragment;
 import com.hgyw.bookshare.app_drivers.IntentsFactory;
+import com.hgyw.bookshare.entities.IdReference;
 import com.hgyw.bookshare.entities.Transaction;
 import com.hgyw.bookshare.exceptions.OrdersTransactionException;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
@@ -121,9 +122,11 @@ public class NewTransactionActivity extends AppCompatActivity implements DialogI
         switch (which) {
             case DialogInterface.BUTTON_POSITIVE:
                 new ProgressDialogAsyncTask<Void, Void, OrdersTransactionException>(this) {
+                    public IdReference transaction;
+
                     @Override
                     protected OrdersTransactionException retrieveDataAsync(Void... params) {
-                        try { cAccess.performNewTransaction(); return null; }
+                        try { transaction = cAccess.performNewTransaction(); return null; }
                         catch (OrdersTransactionException e) { return e; }
                     }
 
@@ -131,7 +134,7 @@ public class NewTransactionActivity extends AppCompatActivity implements DialogI
                     protected void doByData(OrdersTransactionException e) {
                         if (e == null) {
                             Toast.makeText(context, R.string.toast_transaction_ok, Toast.LENGTH_SHORT).show();
-                            Intent transactionIntent = IntentsFactory.newBookListIntent(context, null);
+                            Intent transactionIntent = IntentsFactory.newEntityIntent(context, transaction);
                             startActivity(transactionIntent);
                         } else {
                             new AlertDialog.Builder(context)

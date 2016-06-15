@@ -62,29 +62,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         accessManager = AccessManagerFactory.getInstance();
 
-        if (savedInstanceState == null) {
-            // connect by credentials if it's needed and possible
-            Credentials savedCredentials = Utility.loadCredentials(this);
-            if (accessManager.getCurrentUserType() == UserType.GUEST && !savedCredentials.equals(Credentials.empty())/*&& !savedCredentials.getPassword().isEmpty()*/) {
-                new ProgressDialogAsyncTask<Void, Void, Boolean>(this, R.string.trying_to_connect) {
-                    @Override
-                    protected Boolean retrieveDataAsync(Void... params) {
-                        try {
-                            accessManager.signIn(savedCredentials);
-                            return true;
-                        } catch (WrongLoginException ignored) {
-                            return false;
-                        }
-                    }
-
-                    @Override
-                    protected void doByData(Boolean Succeeded) {
-                        updateDrawerOnLogin();
-                    }
-                }.execute();
-            }
-        }
-
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                     this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -93,6 +70,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        Credentials savedCredentials = Utility.loadCredentials(this);
+        if (savedInstanceState == null && accessManager.getCurrentUserType() == UserType.GUEST && !savedCredentials.equals(Credentials.empty())) {
+            // connect by credentials if it's needed and possible
+            new ProgressDialogAsyncTask<Void, Void, Boolean>(this, R.string.trying_to_connect) {
+                @Override
+                protected Boolean retrieveDataAsync(Void... params) {
+                    try {
+                        accessManager.signIn(savedCredentials);
+                        return true;
+                    } catch (WrongLoginException ignored) {
+                        return false;
+                    }
+                }
+
+                @Override
+                protected void doByData(Boolean Succeeded) {
+                    updateDrawerOnLogin();
+                }
+            }.execute();
+        } else {
+            updateDrawerOnLogin();
+        }
+
 
         if(savedInstanceState == null) {
             onNewIntent(getIntent());

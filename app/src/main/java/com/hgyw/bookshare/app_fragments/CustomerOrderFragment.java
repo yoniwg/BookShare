@@ -7,6 +7,7 @@ import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.app_drivers.CancelableLoadingDialogAsyncTask;
 import com.hgyw.bookshare.app_drivers.IntentsFactory;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
+import com.hgyw.bookshare.app_drivers.ObjectToViewUpdates;
 import com.hgyw.bookshare.app_drivers.Utility;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookSupplier;
@@ -44,17 +45,19 @@ public class CustomerOrderFragment extends EntityFragment {
                     Transaction transaction = cAccess.retrieve(Transaction.class, order.getTransactionId());
                     ImageEntity bookImage = (book.getImageId() == 0) ?
                             null : cAccess.retrieve(ImageEntity.class, book.getImageId());
-                    return new Object[]{bookSupplier, book, supplier, transaction, bookImage, order};
+                    return new Object[]{bookSupplier, book, supplier, transaction, bookImage};
                 }
 
                 @Override
                 protected void doByData(Object[] data) {
-                    ObjectToViewAppliers.apply(view, (Order) data[5]);
+                    ObjectToViewAppliers.apply(view, order);
                     ObjectToViewAppliers.apply(view, (BookSupplier) data[0]);
                     ObjectToViewAppliers.apply(view, (Book) data[1], false);
                     ObjectToViewAppliers.apply(view, (User) data[2]);
                     ObjectToViewAppliers.apply(view, (Transaction) data[3]);
                     ObjectToViewAppliers.apply(view, (ImageEntity) data[4]);
+
+                    ObjectToViewUpdates.setListenerToOrder(view, order);
                 }
 
                 @Override
@@ -65,30 +68,8 @@ public class CustomerOrderFragment extends EntityFragment {
             }.execute();
         }
 
-        // set listeners
-        Utility.setListenerForAll(view, v -> {
-            long bookId = Utility.getBookSupplier(order).getBookId();
-            new CancelableLoadingDialogAsyncTask<Void, View, String>(getActivity()) {
-                @Override
-                protected String retrieveDataAsync(Void... params) {
-                    Book book = access.retrieve(Book.class, bookId);
-                    return book.getAuthor();
-                }
-
-                @Override
-                protected void doByData(String query) {
-                    Utility.startSearchActivity(getActivity(), query);
-                }
-
-                @Override
-                protected void onCancel() {}
-            }.execute();
-        }, R.id.bookAuthor, R.id.bookAuthorIcon);
-
-        Utility.setListenerForAll(view, v -> {
-            IdReference supplier = IdReference.of(User.class, Utility.getBookSupplier(order).getSupplierId());
-            startActivity(IntentsFactory.newEntityIntent(getActivity(), supplier));
-        }, R.id.userFirstName, R.id.userLastName, R.id.userFullName, R.id.orderUnitPriceIcon);
+        View transactionButton = view.findViewById(R.id.transactionButton);
+        transactionButton.setOnClickListener(v -> startActivity(IntentsFactory.newEntityIntent(getActivity(), IdReference.of(Transaction.class, order.getTransactionId()))));
 
     }
 
