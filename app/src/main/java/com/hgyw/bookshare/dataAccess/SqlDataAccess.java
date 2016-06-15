@@ -108,7 +108,7 @@ abstract class SqlDataAccess implements DataAccess {
         return executeResultSql(Order.class, sql);
     }
 
-    @Override
+    /*@Override
     public List<Book> findBooks(BookQuery query) {
         List<String> conditions = new ArrayList<>(2);
 
@@ -125,6 +125,29 @@ abstract class SqlDataAccess implements DataAccess {
                 "INNER JOIN " + tableName(BookSupplier.class) + " bsp ON (bsp.bookId = bks." + ID_KEY + ") " +
                 "WHERE " + conditionsString;
         return executeResultSql(Book.class, sql);
+    }*/
+
+    @Override
+    public List<Book> findBooks(BookQuery query) {
+        List<String> conditions = new ArrayList<>(2);
+
+        if (!query.getTitleQuery().isEmpty()) conditions.add("title LIKE " + sqlStringContains(query.getTitleQuery()));
+        if (!query.getAuthorQuery().isEmpty()) conditions.add("author LIKE " + sqlStringContains(query.getAuthorQuery()));
+        String genreValues = Stream.of(query.getGenreSet()).map(this::sqlValue).collect(Collectors.joining(","));
+        conditions.add("genre IN (" + genreValues + ")");
+        conditions.add(NON_DELETED_CONDITION);
+
+        String conditionsString = Stream.of(conditions).collect(Collectors.joining(" AND "));
+        String sql = "SELECT * FROM " + tableName(Book.class) + " WHERE " + conditionsString;
+        List<Book> list = executeResultSql(Book.class, sql);
+        if (query.getBeginPrice().compareTo(BigDecimal.ZERO) <= 0 && query.getEndPrice().compareTo(BigDecimal.valueOf(1000)) >= 0){
+            return list;
+        } else {
+            return Stream.of(list).filter(b -> {
+                BookSummary summary = getBookSummary(b);
+                return query.getBeginPrice().compareTo(summary.getMaxPrice()) <= 0 || query.getEndPrice().compareTo(summary.getMinPrice()) >= 0;
+            }).collect(Collectors.toList());
+        }
     }
 
     @Override
