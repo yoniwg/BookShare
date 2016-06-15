@@ -64,7 +64,7 @@ public class ObjectToViewUpdates {
         Context context = view.getContext();
 
         Utility.setListenerForAll(view, v -> {
-            long bookId = Utility.getBookSupplier(order).getBookId();
+            long bookId = Utility.getBookId(order);
             new CancelableLoadingDialogAsyncTask<Void, View, String>(context) {
                 @Override
                 protected String retrieveDataAsync(Void... params) {
@@ -83,9 +83,9 @@ public class ObjectToViewUpdates {
         }, R.id.bookAuthor, R.id.bookAuthorIcon);
 
         Utility.setListenerForAll(view, v -> {
-            IdReference supplier = IdReference.of(User.class, Utility.getBookSupplier(order).getSupplierId());
+            IdReference supplier = IdReference.of(User.class, Utility.getSupplierId(order));
             context.startActivity(IntentsFactory.newEntityIntent(context, supplier));
-        }, R.id.userFirstName, R.id.userLastName, R.id.userFullName, R.id.orderUnitPriceIcon);
+        }, R.id.userFirstName, R.id.userLastName, R.id.userFullName, R.id.userFullNameIcon);
 
     }
 

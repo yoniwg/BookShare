@@ -331,8 +331,14 @@ public class Utility {
         return viewsMap;
     }
 
+    /**
+     * Because the order should not refer to book supplier, bur refer to supplier and book directly,
+     * use this method to get the supplierId of order.
+     * @param order
+     * @return
+     */
     @MainThread
-    public static BookSupplier getBookSupplier(Order order) {
+    public static long getSupplierId(Order order) {
         try {
             return new AsyncTask<Void, Void, BookSupplier>() {
                 @Override
@@ -341,7 +347,29 @@ public class Utility {
                     BookSupplier bs = access.retrieve(BookSupplier.class, order.getBookSupplierId());
                     return bs;
                 }
-            }.execute().get();
+            }.execute().get().getSupplierId();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Because the order should not refer to book supplier, bur refer to supplier and book directly,
+     * use this method to get the bookId of order.
+     * @param order
+     * @return
+     */
+    @MainThread
+    public static long getBookId(Order order) {
+        try {
+            return new AsyncTask<Void, Void, BookSupplier>() {
+                @Override
+                protected BookSupplier doInBackground(Void... params) {
+                    GeneralAccess access = AccessManagerFactory.getInstance().getGeneralAccess();
+                    BookSupplier bs = access.retrieve(BookSupplier.class, order.getBookSupplierId());
+                    return bs;
+                }
+            }.execute().get().getBookId();
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
         }

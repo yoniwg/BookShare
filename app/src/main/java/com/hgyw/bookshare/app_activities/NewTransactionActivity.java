@@ -135,7 +135,7 @@ public class NewTransactionActivity extends AppCompatActivity implements DialogI
                         if (e == null) {
                             Toast.makeText(context, R.string.toast_transaction_ok, Toast.LENGTH_SHORT).show();
                             Intent transactionIntent = IntentsFactory.newEntityIntent(context, transaction);
-                            startActivity(transactionIntent);
+                            startActivity(transactionIntent); // TODO: it's not working for any reason. I changed it and forgot debug
                         } else {
                             new AlertDialog.Builder(context)
                                     .setMessage(R.string.transaction_error_message)
