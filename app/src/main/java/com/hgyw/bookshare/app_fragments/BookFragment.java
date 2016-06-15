@@ -59,6 +59,7 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
     private Menu menu;
     private Map<BookSupplier, View> suppliersViewsMap;
     private LinearLayout suppliersListView;
+    private ImageEntity bookImage;
 
     public BookFragment() {
         super(R.layout.fragment_book, R.menu.menu_book, R.string.book_fragment_title);
