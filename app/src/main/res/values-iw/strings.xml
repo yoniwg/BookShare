@@ -175,5 +175,16 @@
     <string name="book_update_dialog">עדכן את פרטי הספר שלך</string>
     <string name="remove_from_my_books">הסר מרשימת הספרים</string>
     <string name="remove_from_my_books_message">האם אתה בטוח שברצונך להסיר ספר זה מרשימת הספרים שלך?</string>
+    <string name="all">הכל</string>
+    <string name="book_was_deleted">הספר נמחק</string>
+    <string name="connection_error">בעיית התחברות</string>
+    <string name="date">תאריך</string>
+    <string name="delete_book">מחיקת ספר</string>
+    <string name="edit_book">עריכת ספר</string>
+    <string name="mail_from_app">מייל מאפליקציה</string>
+    <string name="orders_in_this_transactions">הזמנות בעיסקה זו</string>
+    <string name="shipment_address">כתובת משלוח</string>
+    <string name="supplier">ספק</string>
+    <string name="total_price">מחיר כולל</string>
 
 </resources>

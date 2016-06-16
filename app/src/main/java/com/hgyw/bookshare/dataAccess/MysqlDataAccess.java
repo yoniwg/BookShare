@@ -4,7 +4,7 @@ import android.util.Base64;
 
 import com.hgyw.bookshare.entities.reflection.Converters;
 import com.hgyw.bookshare.entities.reflection.ConvertersCollection;
-import com.hgyw.bookshare.entities.reflection.Parser;
+import com.hgyw.bookshare.entities.reflection.FullConverter;
 import com.hgyw.bookshare.entities.reflection.Property;
 
 import org.json.JSONArray;
@@ -134,7 +134,7 @@ class MysqlDataAccess extends SqlDataAccess implements DataAccess {
             Object propertyValue;
             try {
                 Class<?> propertyType = p.getPropertyType();
-                Parser parser = sqlConverters.findParser(propertyType);
+                FullConverter parser = sqlConverters.findFullConverter(propertyType);
 
                 String stringValue = jsonObject.getString(p.getName());
                 // The null value is created by json, so we have to compare it with json's null:

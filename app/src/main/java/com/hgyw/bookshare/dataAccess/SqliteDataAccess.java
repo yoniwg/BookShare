@@ -10,7 +10,7 @@ import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.entities.reflection.Converters;
 import com.hgyw.bookshare.entities.reflection.ConvertersCollection;
 import com.hgyw.bookshare.entities.reflection.EntityReflection;
-import com.hgyw.bookshare.entities.reflection.Parser;
+import com.hgyw.bookshare.entities.reflection.FullConverter;
 import com.hgyw.bookshare.entities.reflection.Property;
 
 import java.math.BigDecimal;
@@ -37,8 +37,14 @@ public class SqliteDataAccess extends SqlDataAccess {
                 Converters.fullConverter(Boolean.class, Integer.class, b->b?1:0, i -> i!=0).withSqlName("INTEGER"),
                 Converters.fullConverter(byte[].class, String.class, arr -> Base64.encodeToString(arr, 0), str -> Base64.decode(str,0)).withSqlName("TEXT"),
                 Converters.fullConverter(BigDecimal.class, String.class, Object::toString, BigDecimal::new, BigDecimal.ZERO).withSqlName("TEXT"),
-                Converters.fullConverterInherit(Date.class, Long.class, Date::getTime, Converters::newInstance, type -> Converters.newInstance(type, 0)).withSqlName("INTEGER"),
-                Converters.fullConverterInherit(Enum.class, Integer.class, Enum::ordinal, (type, i) -> type.getEnumConstants()[i], type -> type.getEnumConstants()[0]).withSqlName("INTEGER")
+                Converters.fullConverterInherit(Date.class, Long.class, Date::getTime,
+                        Converters::newInstance,
+                        type -> Converters.newInstance(type, System.currentTimeMillis()))
+                        .withSqlName("INTEGER"),
+                Converters.fullConverterInherit(Enum.class, Integer.class, Enum::ordinal,
+                        (type, i) -> type.getEnumConstants()[i],
+                        type -> type.getEnumConstants()[0])
+                        .withSqlName("INTEGER")
         ), "primary key autoincrement");
 
         openHelper = new SQLiteOpenHelper(context, DATABASE_NAME , null, DATABASE_VERSION) {
@@ -118,7 +124,7 @@ public class SqliteDataAccess extends SqlDataAccess {
                 String message = String.format("No property of cursor column '%s' in properties of %s.", propertyName, type);
                 throw new RuntimeException(message);
             }
-            Parser parser = sqlConverters.findParser(p.getPropertyType());
+            FullConverter parser = sqlConverters.findFullConverter(p.getPropertyType());
 
             Object value;
             if (cursor.isNull(i)) { value = null; }

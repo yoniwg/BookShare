@@ -61,6 +61,7 @@ public class Converters {
         protected void requierCanParseTo(Class type) {
             if (!canConvertFrom(type)) throw new IllegalArgumentException("This converter cannot cast to " + type);
         }
+
         @Override
         public <T2> FullConverter<T2,ConvertT> subConverter(FullConverter<T2,T> subFullConverter) {
             return new AbstractFullConverter<T2, ConvertT>() {
@@ -191,38 +192,5 @@ public class Converters {
         return type;
     }
 
-
-    public static <T,ConvertT> OneSideConverter<T,ConvertT> simple(Class<T> type, Function<T, ConvertT> convertFunction, ConvertT defaultValue, String sqlTypeName) {
-        return new OneSideConverter<T, ConvertT>() {
-            @Override public Class<T> getType() {return type;}
-            @Override public ConvertT convert(T value) {return value == null ? defaultValue : convertFunction.apply(value);}
-            @Override public boolean canConvertFrom(Class<?> type) {return type.isAssignableFrom(type);}
-            @Override public String getSqlTypeName() {return sqlTypeName;}
-        };
-    }
-    public static <T,ConvertT> OneSideConverter<T,ConvertT> simple(Class<T> type, Function<T, ConvertT> convertFunction, String sqlTypeName) {
-        return simple(type, convertFunction, sqlTypeName);
-    }
-
-    public static <T,ConvertT> Parser<T,ConvertT> simple(Class<T> sourceType, Class<ConvertT> convertType, BiFunction<Class<? extends T>, ConvertT, T> convertFunction) {
-        return new Parser<T, ConvertT>() {
-            @Override public Class<ConvertT> getConvertType() {return convertType;}
-            @Override public <R extends T> R parse(Class<R> type, ConvertT value) {return (R) convertFunction.apply(type, value);}
-            @Override public boolean canConvertFrom(Class<?> type) {return sourceType.isAssignableFrom(type);}
-            @Override public String getSqlTypeName() {return "";}
-        };
-    }
-
-    public static <T,ConvertT> Parser<T,ConvertT> simple(Class<T> sourceType, Class<ConvertT> convertType, Function<ConvertT, T> convertFunction) {
-        return new Parser<T, ConvertT>() {
-            @Override public Class<ConvertT> getConvertType() {return convertType;}
-            @Override public <R extends T> R parse(Class<R> type, ConvertT value) {
-                if (type != sourceType) throw new IllegalArgumentException("This parser can parse only to " + type.getName());
-                return (R) convertFunction.apply(value);
-            }
-            @Override public boolean canConvertFrom(Class<?> type) {return sourceType.isAssignableFrom(type);}
-            @Override public String getSqlTypeName() {return "";}
-        };
-    }
 
 }

@@ -60,4 +60,5 @@ public final class Book extends Entity{
     public void setImageId(long imageId) {
         this.imageId = imageId;
     }
+
 }

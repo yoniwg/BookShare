@@ -6,7 +6,7 @@ import com.annimon.stream.Stream;
 import com.hgyw.bookshare.entities.*;
 import com.hgyw.bookshare.entities.reflection.ConvertersCollection;
 import com.hgyw.bookshare.entities.reflection.EntityReflection;
-import com.hgyw.bookshare.entities.reflection.OneSideConverter;
+import com.hgyw.bookshare.entities.reflection.FullConverter;
 import com.hgyw.bookshare.entities.reflection.Properties;
 import com.hgyw.bookshare.entities.reflection.Property;
 
@@ -54,7 +54,7 @@ abstract class SqlDataAccess implements DataAccess {
         String sqlColumnTypeList = Stream.of(getProperties(type).values())
                 .map(p -> {
                     String columnName = p.getName();
-                    String columnType = sqlConverters.findConverter(p.getPropertyType()).getSqlTypeName();
+                    String columnType = sqlConverters.findFullConverter(p.getPropertyType()).getSqlTypeName();
                     boolean isPrimaryKey = p.getName().equals(ID_KEY);
                     String primaryKey = isPrimaryKey ? idColumnAdditionalProperties : "";
                     return columnName + " " + columnType + " " + primaryKey;
@@ -97,14 +97,13 @@ abstract class SqlDataAccess implements DataAccess {
         String joining = "SELECT ord.* FROM " + tableName(Order.class) + " ord " +
                 "INNER JOIN " + tableName(Transaction.class) + " trn ON (trn." + ID_KEY + " = ord." + "transactionId" + ") " +
                 "INNER JOIN " + tableName(BookSupplier.class) + " bsp ON (bsp." + ID_KEY + " = ord." + "bookSupplierId" + ") ";
-
         List<String> conditions = new ArrayList<>(2);
         if (customer != null) conditions.add("trn.customerId = " + customer.getId());
         if (supplier != null) conditions.add("bsp.supplierId = " + supplier.getId());
         if (fromDate != null) conditions.add("trn.date >= " + sqlValue(fromDate));
         if (toDate != null) conditions.add("trn.date <= " + sqlValue(toDate));
 
-        String sql = joining + " WHERE " + Stream.of(conditions).collect(Collectors.joining(" AND "));
+        String sql = joining + " WHERE " + Stream.of(conditions).collect(Collectors.joining(" AND ")) + " ORDER BY trn.date DESC ";
         return executeResultSql(Order.class, sql);
     }
 
@@ -118,10 +117,10 @@ abstract class SqlDataAccess implements DataAccess {
         conditions.add("bks.genre IN (" + genreValues + ")");
         conditions.add("bks." + NON_DELETED_CONDITION);
         // TODO price
-        //if (query.getBeginPrice() != null) conditions.add("MIN(bsp.price) >= " + sqlValue(query.getBeginPrice()));
+        if (query.getBeginPrice() != null) conditions.add("MIN(bsp.price) >= " + sqlValue(query.getBeginPrice()));
 
         String conditionsString = Stream.of(conditions).collect(Collectors.joining(" AND "));
-        String sql = "SELECT * FROM " + tableName(Book.class) + " bks " +
+        String sql = "SELECT bks.* FROM " + tableName(Book.class) + " bks " +
                 "INNER JOIN " + tableName(BookSupplier.class) + " bsp ON (bsp.bookId = bks." + ID_KEY + ") " +
                 "WHERE " + conditionsString;
         return executeResultSql(Book.class, sql);
@@ -138,7 +137,7 @@ abstract class SqlDataAccess implements DataAccess {
         conditions.add(NON_DELETED_CONDITION);
 
         String conditionsString = Stream.of(conditions).collect(Collectors.joining(" AND "));
-        String sql = "SELECT * FROM " + tableName(Book.class) + " WHERE " + conditionsString;
+        String sql = "SELECT * FROM " + tableName(Book.class) + " WHERE " + conditionsString + " ORDER BY title ";
         List<Book> list = executeResultSql(Book.class, sql);
 
         // filter by price locally
@@ -159,7 +158,7 @@ abstract class SqlDataAccess implements DataAccess {
 
     @Override
     public List<Book> findSpecialOffers(User user, int limit) {
-        String sql = "SELECT * FROM " + tableName(Book.class) + " WHERE " + NON_DELETED_CONDITION; // TODO
+        String sql = "SELECT * FROM " + tableName(Book.class) + " WHERE " + NON_DELETED_CONDITION +  " ORDER BY title "; // TODO
         return executeResultSql(Book.class, sql);
     }
 
@@ -171,7 +170,9 @@ abstract class SqlDataAccess implements DataAccess {
                     return p.getName() + "=" + id.getId();
                 }).collect(Collectors.joining(" AND "));
         String sql = String.format("SELECT * FROM %s WHERE %s AND %s", tableName(referringClass), NON_DELETED_CONDITION, conditions);
-        return executeResultSql(referringClass, sql);
+        List<T> list = executeResultSql(referringClass, sql);
+        Collections.sort(list, Entity.defaultComparator(referringClass));
+        return list;
     }
 
     @Override
@@ -219,7 +220,7 @@ abstract class SqlDataAccess implements DataAccess {
     private String sqlValue(Object value){
         if (value == null) return "'null'";
 
-        OneSideConverter converter = sqlConverters.findConverter(value.getClass());
+        FullConverter converter = sqlConverters.findFullConverter(value.getClass());
         String sqlType = converter.getSqlTypeName();
 
         String sqlValue = converter.convert(value).toString();
