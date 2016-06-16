@@ -98,7 +98,7 @@
             android:layout_width="@dimen/details_line"
             android:layout_height="@dimen/details_line"
             android:id="@+id/orderUnitPriceIcon"
-            android:src="@drawable/side_icon_price"
+            android:src="@drawable/side_icon_unit_price"
             android:layout_below="@+id/userFullNameIcon"
             android:layout_alignParentStart="true"
             android:background="@drawable/abc_ab_share_pack_mtrl_alpha" />

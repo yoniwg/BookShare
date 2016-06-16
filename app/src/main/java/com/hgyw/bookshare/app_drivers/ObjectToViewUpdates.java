@@ -47,17 +47,22 @@ public class ObjectToViewUpdates {
     }
 
     public static void updateTransactionListItem(View view, Transaction transaction, BigDecimal totalPrice, List<User> suppliersList) {
-        ObjectToViewAppliers.apply(view, transaction);
-        TextView transactionTotalPrice = (TextView) view.findViewById(R.id.total_price);
+        updateTransaction(view, transaction, totalPrice);
         TextView transactionSuppliers = (TextView) view.findViewById(R.id.supplier_names_list);
 
-        if (transactionTotalPrice != null){
-            transactionTotalPrice.setText(Utility.moneyToNumberString(totalPrice));
-        }
         if (transactionSuppliers != null){
             String transactionSuppliersText;
             transactionSuppliersText = Stream.of(suppliersList).map(User::getLastName).collect(Collectors.joining(", "));
             transactionSuppliers.setText(transactionSuppliersText);
+        }
+    }
+
+    public static void updateTransaction(View view, Transaction transaction, BigDecimal totalPrice) {
+        ObjectToViewAppliers.apply(view, transaction);
+        TextView transactionTotalPrice = (TextView) view.findViewById(R.id.transactionTotalPrice);
+
+        if (transactionTotalPrice != null){
+            transactionTotalPrice.setText(Utility.moneyToNumberString(totalPrice));
         }
     }
 

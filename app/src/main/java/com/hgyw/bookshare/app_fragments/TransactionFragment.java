@@ -54,6 +54,7 @@ public class TransactionFragment extends EntityFragment {
 
             @Override
             protected void doByData(List<Order> orders) {
+                ObjectToViewUpdates.updateTransaction(view, transaction, access.calcTotalPriceOfTransaction(transaction));
                 Utility.addViewsByList(linearLayout, orders, R.layout.order_for_transaction_list_item, TransactionFragment.this::updateOrder);
             }
 

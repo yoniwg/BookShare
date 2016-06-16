@@ -140,6 +140,8 @@ abstract class SqlDataAccess implements DataAccess {
         String conditionsString = Stream.of(conditions).collect(Collectors.joining(" AND "));
         String sql = "SELECT * FROM " + tableName(Book.class) + " WHERE " + conditionsString;
         List<Book> list = executeResultSql(Book.class, sql);
+
+        // filter by price locally
         if (query.getBeginPrice().compareTo(BigDecimal.ZERO) <= 0 && query.getEndPrice().compareTo(BigDecimal.valueOf(1000)) >= 0){
             return list;
         } else {
