@@ -3,7 +3,9 @@ package com.hgyw.bookshare.app_fragments;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -24,14 +26,15 @@ import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.GeneralAccess;
 
 import java.util.List;
+import java.util.logging.Filter;
 
 
-public class BooksFragment extends SwipeRefreshListFragment implements TitleFragment, SwipeRefreshLayout.OnRefreshListener {
+public class BooksFragment extends SwipeRefreshListFragment implements SearchView.OnQueryTextListener, TitleFragment, SwipeRefreshLayout.OnRefreshListener {
 
     private BookQuery bookQuery;
     private final GeneralAccess access = AccessManagerFactory.getInstance().getGeneralAccess();
     GoodAsyncListAdapter<Book> adapter;
-
+    SearchView searchView;
     private Activity activity;
 
     @Override public void onAttach(Context context) {super.onAttach(context);this.activity = (Activity) context;}
@@ -66,7 +69,7 @@ public class BooksFragment extends SwipeRefreshListFragment implements TitleFrag
                 ObjectToViewAppliers.apply(view, (ImageEntity) data[1]);
             }
         };
-
+        adapter.setFilterConverterFunction(Book::getTitle);
         setOnRefreshListener(this);
     }
 
@@ -93,12 +96,15 @@ public class BooksFragment extends SwipeRefreshListFragment implements TitleFrag
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_book_list, menu);
         menu.findItem(R.id.action_add_book).setVisible(access.getUserType() == UserType.SUPPLIER);
+        searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
+        searchView.setOnQueryTextListener(this);
+
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_search:
+            case R.id.action_filter:
                 BookQueryDialogFragment.newInstance(bookQuery).show(getFragmentManager(), "BookQueryDialogFragment");
                 return true;
             case R.id.action_add_book:
@@ -116,5 +122,17 @@ public class BooksFragment extends SwipeRefreshListFragment implements TitleFrag
     @Override
     public int getFragmentTitle() {
         return R.string.book_list_fragment_title;
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        adapter.filter(newText);
+        adapter.notifyDataSetChanged();
+        return false;
     }
 }

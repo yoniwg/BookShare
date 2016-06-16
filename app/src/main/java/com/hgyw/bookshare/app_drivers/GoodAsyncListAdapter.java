@@ -9,20 +9,29 @@ import android.support.annotation.WorkerThread;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ListView;
 
+import com.annimon.stream.function.Function;
 import com.hgyw.bookshare.BuildConfig;
 import com.hgyw.bookshare.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 
 /**
  * Created by haim7 on 13/06/2016.
  */
-public abstract class GoodAsyncListAdapter<T> extends BaseAdapter {
+public abstract class GoodAsyncListAdapter<T> extends BaseAdapter implements Filterable{
+
+    Filter filter = new StringFilter();
+    Function<T, String> converterFunction;
 
     private static final boolean DEBUG = BuildConfig.DEBUG;
 
@@ -33,12 +42,15 @@ public abstract class GoodAsyncListAdapter<T> extends BaseAdapter {
     private int loadingAmount = 5;
     private static final int distanceFromLastForContinueLoading = 1;
 
-    private List<T> retievingItems;
+    private List<T> retrievingItems;
     private List<T> items = new ArrayList<>();
-    private final List<Object[]> datas = new ArrayList<>();
+    private List<T> originalItems = new ArrayList<>();
+    private final Map<T ,Object[]> data = new HashMap<>();
 
     private final List<AsyncTask> tasks = new ArrayList<>();
     private int loadingEndPosition;
+    private CharSequence filterPrefix;
+
 
     protected GoodAsyncListAdapter(Context context, @LayoutRes int itemLayoutId, ListLoadingCallbacks loadingCallbacks) {
         this.inflater = LayoutInflater.from(context);
@@ -62,7 +74,7 @@ public abstract class GoodAsyncListAdapter<T> extends BaseAdapter {
     }
 
     public Object[] getData(int position) {
-        return datas.get(position);
+        return data.get(items.get(position));
     }
 
     @Override
@@ -90,14 +102,14 @@ public abstract class GoodAsyncListAdapter<T> extends BaseAdapter {
 
     private synchronized void continueLoading() {
         int loadingStartPosition = this.loadingEndPosition;
-        int loadingEndPosition = Math.min(loadingStartPosition + loadingAmount, retievingItems.size());
+        int loadingEndPosition = Math.min(loadingStartPosition + loadingAmount, retrievingItems.size());
         if (loadingEndPosition <= this.loadingEndPosition) return;
         this.loadingEndPosition = loadingEndPosition;
 
         AsyncTask asyncTask = new AsyncTask<Void, Object[], List[]>() {
             @Override
             protected List[] doInBackground(Void... params) {
-                List<T> newItems = new ArrayList<>(retievingItems.subList(loadingStartPosition, loadingEndPosition));
+                List<T> newItems = new ArrayList<>(retrievingItems.subList(loadingStartPosition, loadingEndPosition));
                 List<Object[]> newDatas = new ArrayList<>(newItems.size());
                 if (DEBUG) System.out.println("GoodAsyncListAdapter: " + "Retrieve items of " + loadingStartPosition + " up to " + loadingEndPosition);
                 for (T item : newItems) newDatas.add(retrieveData(item));
@@ -108,12 +120,20 @@ public abstract class GoodAsyncListAdapter<T> extends BaseAdapter {
             protected void onPostExecute(List[] lists) {
                 synchronized (GoodAsyncListAdapter.this) {
                     if (DEBUG) System.out.println("GoodAsyncListAdapter: " + "Add items of " + loadingStartPosition + " up to " + loadingEndPosition);
-                    items.addAll(lists[0]);
-                    datas.addAll(lists[1]);
+                    List<T> itemsList = ((List<T>) lists[0]);
+                    List<Object[]> dataList = ((List<Object[]>) lists[1]);
+                    items.addAll(itemsList);
+                    originalItems.addAll(itemsList);
+                    for (int i = 0; i < itemsList.size(); i++) {
+                        data.put(itemsList.get(i), dataList.get(i));
+                    }
                     notifyDataSetChanged();
                     if (loadingCallbacks != null) loadingCallbacks.onItemsLoaded(loadingStartPosition, loadingEndPosition);
-                    if (loadingEndPosition == retievingItems.size()) {
+                    if (loadingEndPosition == retrievingItems.size()) {
                         if (loadingCallbacks != null) loadingCallbacks.onAllItemsLoaded();
+                    }
+                    if (filterPrefix != null){
+                        filter.filter(filterPrefix);
                     }
                 }
             }
@@ -126,7 +146,7 @@ public abstract class GoodAsyncListAdapter<T> extends BaseAdapter {
     }
 
     public synchronized void update(T item, T newItem) {
-        int position = retievingItems.indexOf(item);
+        int position = retrievingItems.indexOf(item);
 
         AsyncTask asyncTask = new AsyncTask<Void, Void, Object[]>() {
             @Override
@@ -139,7 +159,8 @@ public abstract class GoodAsyncListAdapter<T> extends BaseAdapter {
             protected void onPostExecute(Object[] data) {
                 synchronized (GoodAsyncListAdapter.this) {
                     items.set(position, newItem);
-                    datas.set(position, data);
+                    originalItems.set(position, newItem);
+                    GoodAsyncListAdapter.this.data.put(newItem, data);
                     notifyDataSetChanged();
                 }
             }
@@ -148,9 +169,10 @@ public abstract class GoodAsyncListAdapter<T> extends BaseAdapter {
     }
 
     public synchronized void remove(T item) {
-        int position = retievingItems.indexOf(item);
+        int position = retrievingItems.indexOf(item);
         items.remove(position);
-        datas.remove(position);
+        originalItems.remove(position);
+        data.remove(item);
         notifyDataSetChanged();
     }
 
@@ -158,7 +180,8 @@ public abstract class GoodAsyncListAdapter<T> extends BaseAdapter {
         cancelTasks();
         if (DEBUG) System.out.println("GoodAsyncListAdapter: " + "Clear");
         items.clear();
-        datas.clear();
+        originalItems.clear();
+        data.clear();
         notifyDataSetChanged();
         loadingEndPosition = 0;
         if (loadingCallbacks != null) loadingCallbacks.onStartLoading();
@@ -170,8 +193,8 @@ public abstract class GoodAsyncListAdapter<T> extends BaseAdapter {
 
             @Override
             protected void onPostExecute(List<T> result) {
-                retievingItems = result;
-                if (!retievingItems.isEmpty()) {
+                retrievingItems = result;
+                if (!retrievingItems.isEmpty()) {
                     continueLoading();
                 } else {
                     if (loadingCallbacks != null) loadingCallbacks.onAllItemsLoaded();
@@ -284,4 +307,82 @@ public abstract class GoodAsyncListAdapter<T> extends BaseAdapter {
         };
     }
 
+    public void setFilterConverterFunction(Function<T, String> converterFunction){
+        this.converterFunction = converterFunction;
+    }
+
+    @Override
+    public Filter getFilter() {
+        throw new IllegalAccessError("use 'filter()' method instead");
+    }
+
+    public void filter(CharSequence filterPrefix){
+        this.filterPrefix = filterPrefix;
+        filter.filter(filterPrefix, (count ->{
+            if (count == originalItems.size())
+                this.filterPrefix = null;
+        }));
+    }
+
+    private class StringFilter extends Filter {
+
+        @Override
+        protected FilterResults performFiltering(CharSequence prefix) {
+            FilterResults results = new FilterResults();
+            if (prefix == null || prefix.length() == 0) {
+                List<T> list = new ArrayList<>(originalItems);
+                results.values = list;
+                results.count = list.size();
+            } else {
+                String prefixString = prefix.toString().toLowerCase();
+
+                ArrayList<T> values  = new ArrayList<T>(originalItems);
+
+                final int count = values.size();
+                final ArrayList<T> newValues = new ArrayList<T>();
+
+                for (int i = 0; i < count; i++) {
+                    final T value = values.get(i);
+                    String valueText;
+                    if (converterFunction != null) {
+                        valueText = converterFunction.apply(value).toLowerCase();
+                    }else{
+                        valueText = value.toString().toLowerCase();
+                    }
+
+                    // First match against the whole, non-splitted value
+                    if (valueText.startsWith(prefixString)) {
+                        newValues.add(value);
+                    } else {
+                        final String[] words = valueText.split(" ");
+                        final int wordCount = words.length;
+
+                        // Start at index 0, in case valueText starts with space(s)
+                        for (int k = 0; k < wordCount; k++) {
+                            if (words[k].startsWith(prefixString)) {
+                                newValues.add(value);
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                results.values = newValues;
+                results.count = newValues.size();
+            }
+
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            //noinspection unchecked
+            items = (List<T>) results.values;
+            if (results.count > 0) {
+                notifyDataSetChanged();
+            } else {
+                notifyDataSetInvalidated();
+            }
+        }
+    }
 }
