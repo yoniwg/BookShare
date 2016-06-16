@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
 
         Credentials savedCredentials = Utility.loadCredentials(this);
-        if (savedInstanceState == null && accessManager.getCurrentUserType() == UserType.GUEST && !savedCredentials.equals(Credentials.empty())) {
+        if (savedInstanceState == null && accessManager.getCurrentUserType() == UserType.GUEST && !savedCredentials.getPassword().isEmpty()) {
             // connect by credentials if it's needed and possible
             new ProgressDialogAsyncTask<Void, Void, Boolean>(this, R.string.trying_to_connect) {
                 @Override

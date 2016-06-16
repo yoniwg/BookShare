@@ -1,8 +1,10 @@
 package com.hgyw.bookshare.entities;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.List;
 
+import com.annimon.stream.function.Function;
 import com.hgyw.bookshare.entities.reflection.Property;
 import com.hgyw.bookshare.entities.reflection.Properties;
 
@@ -87,4 +89,13 @@ public abstract class Entity extends IdReference implements Cloneable, Serializa
         return getClass();
     }
 
+    public static <T extends Entity> Comparator<? super T> defaultComparator(Class<T> referringClass) {
+        if (referringClass == Transaction.class) {
+            return  (a,b) -> -((Transaction) a).getDate().compareTo(((Transaction) b).getDate());
+        } else if (referringClass == Book.class) {
+            return  (a,b) -> ((Book) a).getTitle().compareTo(((Book) b).getTitle());
+        } else {
+            return  (a,b) -> a.getId() < b.getId() ? 1 : a.getId() == b.getId() ? 0 : -1;
+        }
+    }
 }

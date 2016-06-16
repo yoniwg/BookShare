@@ -9,6 +9,7 @@ import com.annimon.stream.function.Predicate;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -155,8 +156,10 @@ class StreamCrudDataAccess implements DataAccess {
 
     @Override
     public <T extends Entity> List<T> findEntityReferTo(Class<T> referringClass, IdReference ... referredItems) {
-        Predicate<T> predicate = EntityReflection.predicateEntityReferTo(referringClass, referredItems);
-        return streamAllNonDeleted(referringClass).filter(predicate).collect(Collectors.toList());
+        return streamAllNonDeleted(referringClass)
+                .filter(EntityReflection.predicateEntityReferTo(referringClass, referredItems))
+                .sorted(Entity.defaultComparator(referringClass))
+                .collect(Collectors.toList());
     }
 
     @Override

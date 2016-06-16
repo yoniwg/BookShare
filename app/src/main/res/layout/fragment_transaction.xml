@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Date:"
+            android:text="@string/date"
             android:id="@+id/textView14" />
 
         <TextView
@@ -34,7 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Transaction address:"
+            android:text="@string/shipment_address"
             android:id="@+id/textView13" />
 
         <TextView
@@ -43,6 +43,20 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="transaction address"
             android:id="@+id/transactionAddress" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/total_price"
+            android:id="@+id/textView16" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="total price"
+            android:id="@+id/transactionTotalPrice" />
 
         <TextView
             android:layout_width="match_parent"

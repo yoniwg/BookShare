@@ -61,8 +61,4 @@ public final class Book extends Entity{
         this.imageId = imageId;
     }
 
-    @Override
-    public String toString() {
-        return title;
-    }
 }

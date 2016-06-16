@@ -21,6 +21,7 @@ import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.CustomerAccess;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -46,14 +47,18 @@ public class TransactionFragment extends EntityFragment {
         ViewGroup linearLayout = (ViewGroup) view.findViewById(R.id.mainListView);
 
         new CancelableLoadingDialogAsyncTask<Void, Void, List<Order>>(activity) {
+            public BigDecimal transactionTotalPrice;
+
             @Override
             protected List<Order> retrieveDataAsync(Void... params) {
                 transaction = cAccess.retrieve(Transaction.class, entityId);
+                transactionTotalPrice = access.calcTotalPriceOfTransaction(transaction);
                 return cAccess.retrieveOrdersOfTransaction(transaction);
             }
 
             @Override
             protected void doByData(List<Order> orders) {
+                ObjectToViewUpdates.updateTransaction(view, transaction, transactionTotalPrice);
                 Utility.addViewsByList(linearLayout, orders, R.layout.order_for_transaction_list_item, TransactionFragment.this::updateOrder);
             }
 

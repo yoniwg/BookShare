@@ -36,8 +36,8 @@
         android:text="Order Status"
         android:id="@+id/orderStatus"
         android:textColor="@color/design_textinput_error_color_dark"
-        android:layout_below="@+id/orderAmountFinal"
-        android:layout_alignStart="@+id/orderAmountFinal" />
+        android:layout_below="@+id/orderTotalPriceIcon"
+        android:layout_toEndOf="@+id/orderTotalPriceIcon" />
 
     <TextView
         android:layout_width="match_parent"
@@ -109,10 +109,10 @@
         android:layout_width="@dimen/details_line"
         android:layout_height="@dimen/details_line"
         android:id="@+id/orderUnitPriceIcon"
-        android:src="@drawable/side_icon_price"
         android:background="@drawable/abc_ab_share_pack_mtrl_alpha"
         android:layout_below="@+id/userFullNameIcon"
-        android:layout_alignStart="@+id/userFullNameIcon" />
+        android:layout_alignStart="@+id/userFullNameIcon"
+        android:src="@drawable/side_icon_unit_price" />
 
     <ImageView
         android:layout_width="@dimen/details_line"
@@ -120,7 +120,27 @@
         android:id="@+id/orderAmountIcon"
         android:src="@drawable/side_icon_amount"
         android:background="@drawable/abc_ab_share_pack_mtrl_alpha"
-        android:layout_below="@+id/orderUnitPriceIcon"
+        android:layout_below="@+id/orderUnitPrice"
         android:layout_alignStart="@+id/orderUnitPriceIcon" />
+
+    <ImageView
+        android:layout_width="@dimen/details_line"
+        android:layout_height="@dimen/details_line"
+        android:id="@+id/orderTotalPriceIcon"
+        android:src="@drawable/side_icon_total_price"
+        android:background="@drawable/abc_ab_share_pack_mtrl_alpha"
+        android:layout_below="@+id/orderAmountIcon"
+        android:layout_alignStart="@+id/orderAmountIcon" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/details_line"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="price"
+        android:id="@+id/orderTotalPrice"
+        android:paddingStart="10dp"
+        android:background="@drawable/abc_ab_share_pack_mtrl_alpha"
+        android:layout_below="@+id/orderAmountFinal"
+        android:layout_toEndOf="@+id/orderTotalPriceIcon" />
 
 </RelativeLayout>

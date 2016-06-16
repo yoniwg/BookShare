@@ -191,4 +191,7 @@
     <string name="orders_in_this_transactions">Orders in this transactions</string>
     <string name="connection_error">Connection error</string>
     <string name="all">All</string>
+    <string name="date">Date</string>
+    <string name="shipment_address">Shipment address</string>
+    <string name="total_price">Total price</string>
 </resources>
