@@ -31,11 +31,31 @@ import java.util.logging.Filter;
 
 public class BooksFragment extends SwipeRefreshListFragment implements SearchView.OnQueryTextListener, TitleFragment, SwipeRefreshLayout.OnRefreshListener {
 
-    private BookQuery bookQuery;
-    private final GeneralAccess access = AccessManagerFactory.getInstance().getGeneralAccess();
-    GoodAsyncListAdapter<Book> adapter;
-    SearchView searchView;
+    /**
+     * Variable to store parent activity
+     */
     private Activity activity;
+
+    /**
+     * Book Query which uses to filter the books list from data base.
+     * Should be passed to data access.
+     */
+    private BookQuery bookQuery;
+
+    /**
+     * General logic access (pointer to singleton)
+     */
+    private final GeneralAccess access = AccessManagerFactory.getInstance().getGeneralAccess();
+
+    /**
+     * adapter of type {@link GoodAsyncListAdapter} for the books list
+     */
+    GoodAsyncListAdapter<Book> adapter;
+
+    /**
+     * Variable to store {@code SearchView MenuItem}
+     */
+    SearchView searchView;
 
     @Override public void onAttach(Context context) {super.onAttach(context);this.activity = (Activity) context;}
     @Override public void onAttach(Activity activity) {super.onAttach(activity);this.activity = activity;}
@@ -47,7 +67,10 @@ public class BooksFragment extends SwipeRefreshListFragment implements SearchVie
 
         setEmptyText(getString(R.string.no_items_list_view));
 
-        bookQuery = getArguments() == null ? null : (BookQuery) getArguments().getSerializable(IntentsFactory.ARG_BOOK_QUERY);
+        //Retrieve arguments from intent
+        bookQuery = getArguments() == null
+                ? null
+                : (BookQuery) getArguments().getSerializable(IntentsFactory.ARG_BOOK_QUERY);
 
         adapter = new GoodAsyncListAdapter<Book>(activity, R.layout.book_list_item, this) {
             @Override
@@ -69,7 +92,11 @@ public class BooksFragment extends SwipeRefreshListFragment implements SearchVie
                 ObjectToViewAppliers.apply(view, (ImageEntity) data[1]);
             }
         };
+
+        //set the adapter filter converter
         adapter.setFilterConverterFunction(Book::getTitle);
+
+        //set refresh listener for swipe refresh
         setOnRefreshListener(this);
     }
 
@@ -124,14 +151,25 @@ public class BooksFragment extends SwipeRefreshListFragment implements SearchVie
         return R.string.book_list_fragment_title;
     }
 
+    /**
+     * Not in use method
+     * @param query
+     * @return
+     */
     @Override
     public boolean onQueryTextSubmit(String query) {
         return false;
     }
 
+    /**
+     * On query changed listener for the {@code SearchView MenuItem}.
+     * Passes the arguments to the adapter filter, and notify adapter for the changes.
+     * @param newText
+     * @return
+     */
     @Override
     public boolean onQueryTextChange(String newText) {
-        adapter.filter(newText);
+        adapter.getFilter().filter(newText);
         adapter.notifyDataSetChanged();
         return false;
     }

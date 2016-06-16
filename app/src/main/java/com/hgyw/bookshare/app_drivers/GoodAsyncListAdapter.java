@@ -30,10 +30,20 @@ import java.util.Map;
  */
 public abstract class GoodAsyncListAdapter<T> extends BaseAdapter implements Filterable{
 
-    Filter filter = new StringFilter();
+    private static final boolean DEBUG = BuildConfig.DEBUG;
+
+    Filter filter;
+
+    /**
+     * Delegate to converter function from {@code <T>} to {@code String}
+     * uses for the filter
+     */
     Function<T, String> converterFunction;
 
-    private static final boolean DEBUG = BuildConfig.DEBUG;
+    /**
+     * Variable of the filter prefix in order to use in {@link #continueLoading()} method.
+     */
+    private CharSequence filterPrefix;
 
     private final LayoutInflater inflater;
     private final int itemLayoutId;
@@ -49,8 +59,7 @@ public abstract class GoodAsyncListAdapter<T> extends BaseAdapter implements Fil
 
     private final List<AsyncTask> tasks = new ArrayList<>();
     private int loadingEndPosition;
-    private CharSequence filterPrefix;
-
+    private boolean isAllItemsLoaded = false;
 
     protected GoodAsyncListAdapter(Context context, @LayoutRes int itemLayoutId, ListLoadingCallbacks loadingCallbacks) {
         this.inflater = LayoutInflater.from(context);
@@ -110,10 +119,10 @@ public abstract class GoodAsyncListAdapter<T> extends BaseAdapter implements Fil
             @Override
             protected List[] doInBackground(Void... params) {
                 List<T> newItems = new ArrayList<>(retrievingItems.subList(loadingStartPosition, loadingEndPosition));
-                List<Object[]> newDatas = new ArrayList<>(newItems.size());
+                List<Object[]> newData = new ArrayList<>(newItems.size());
                 if (DEBUG) System.out.println("GoodAsyncListAdapter: " + "Retrieve items of " + loadingStartPosition + " up to " + loadingEndPosition);
-                for (T item : newItems) newDatas.add(retrieveData(item));
-                return new List[] {newItems, newDatas};
+                for (T item : newItems) newData.add(retrieveData(item));
+                return new List[] {newItems, newData};
             }
 
             @Override
@@ -130,6 +139,7 @@ public abstract class GoodAsyncListAdapter<T> extends BaseAdapter implements Fil
                     notifyDataSetChanged();
                     if (loadingCallbacks != null) loadingCallbacks.onItemsLoaded(loadingStartPosition, loadingEndPosition);
                     if (loadingEndPosition == retrievingItems.size()) {
+                        isAllItemsLoaded = true;
                         if (loadingCallbacks != null) loadingCallbacks.onAllItemsLoaded();
                     }
                     if (filterPrefix != null){
@@ -182,6 +192,7 @@ public abstract class GoodAsyncListAdapter<T> extends BaseAdapter implements Fil
         items.clear();
         originalItems.clear();
         data.clear();
+        isAllItemsLoaded = false;
         notifyDataSetChanged();
         loadingEndPosition = 0;
         if (loadingCallbacks != null) loadingCallbacks.onStartLoading();
@@ -288,7 +299,7 @@ public abstract class GoodAsyncListAdapter<T> extends BaseAdapter implements Fil
             public void onStartLoading() {
                 if (listFragment.isDetached()) return;
                 listFragment.setListShown(false);
-                listView.addFooterView(footerProgressView);
+                listView.addFooterView(footerProgressView, null, false);
             }
 
             @Override
@@ -313,21 +324,21 @@ public abstract class GoodAsyncListAdapter<T> extends BaseAdapter implements Fil
 
     @Override
     public Filter getFilter() {
-        throw new IllegalAccessError("use 'filter()' method instead");
+        if (filter == null){
+            filter = new StringFilter();
+        }
+        return filter;
     }
 
-    public void filter(CharSequence filterPrefix){
-        this.filterPrefix = filterPrefix;
-        filter.filter(filterPrefix, (count ->{
-            if (count == originalItems.size())
-                this.filterPrefix = null;
-        }));
-    }
-
+    /**
+     * Simple filter using {@link #converterFunction} to convert Item to string.
+     * If converterFunction is null it uses toString method.
+     */
     private class StringFilter extends Filter {
 
         @Override
         protected FilterResults performFiltering(CharSequence prefix) {
+            GoodAsyncListAdapter.this.filterPrefix = prefix;
             FilterResults results = new FilterResults();
             if (prefix == null || prefix.length() == 0) {
                 List<T> list = new ArrayList<>(originalItems);
@@ -378,10 +389,17 @@ public abstract class GoodAsyncListAdapter<T> extends BaseAdapter implements Fil
         protected void publishResults(CharSequence constraint, FilterResults results) {
             //noinspection unchecked
             items = (List<T>) results.values;
-            if (results.count > 0) {
+            if (results.count > 0 || !isAllItemsLoaded) {
+                if (DEBUG) System.out.println("StringFilter, count: "
+                        + results.count + "iaAllItemsLoaded: " + isAllItemsLoaded);
                 notifyDataSetChanged();
             } else {
                 notifyDataSetInvalidated();
+            }
+
+            //Dump stored filter prefix in case of no filter.
+            if (results.count == originalItems.size()){
+                filterPrefix = null;
             }
         }
     }
