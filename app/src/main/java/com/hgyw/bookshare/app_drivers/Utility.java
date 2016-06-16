@@ -402,7 +402,7 @@ public class Utility {
             context.startActivity(intent);
         } catch (ActivityNotFoundException e) {
             Intent i = new Intent(Intent.ACTION_VIEW);
-            i.setData(Uri.parse("https://www.google.com?q=" + Uri.encode(query, "UTF-8")));
+            i.setData(Uri.parse("https://www.google.com/search?q=" + Uri.encode(query, "UTF-8")));
             context.startActivity(i);
         }
     }
