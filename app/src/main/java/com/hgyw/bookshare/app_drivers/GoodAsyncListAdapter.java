@@ -136,8 +136,6 @@ public abstract class GoodAsyncListAdapter<T> extends BaseAdapter implements Fil
                     for (int i = 0; i < itemsList.size(); i++) {
                         data.put(itemsList.get(i), dataList.get(i));
                     }
-                    notifyDataSetChanged();
-                    if (loadingCallbacks != null) loadingCallbacks.onItemsLoaded(loadingStartPosition, loadingEndPosition);
                     if (loadingEndPosition == retrievingItems.size()) {
                         isAllItemsLoaded = true;
                         if (loadingCallbacks != null) loadingCallbacks.onAllItemsLoaded();
@@ -145,6 +143,9 @@ public abstract class GoodAsyncListAdapter<T> extends BaseAdapter implements Fil
                     if (filterPrefix != null){
                         filter.filter(filterPrefix);
                     }
+                    if (loadingCallbacks != null) loadingCallbacks.onItemsLoaded(loadingStartPosition, loadingEndPosition);
+                    notifyDataSetChanged();
+
                 }
             }
         }.execute();
@@ -389,11 +390,11 @@ public abstract class GoodAsyncListAdapter<T> extends BaseAdapter implements Fil
         protected void publishResults(CharSequence constraint, FilterResults results) {
             //noinspection unchecked
             items = (List<T>) results.values;
-            if (results.count > 0 || !isAllItemsLoaded) {
-                if (DEBUG) System.out.println("StringFilter, count: "
-                        + results.count + "iaAllItemsLoaded: " + isAllItemsLoaded);
+            if (results.count > 0) {
                 notifyDataSetChanged();
-            } else {
+            } else if (!isAllItemsLoaded) {
+                continueLoading();
+            } else{
                 notifyDataSetInvalidated();
             }
 

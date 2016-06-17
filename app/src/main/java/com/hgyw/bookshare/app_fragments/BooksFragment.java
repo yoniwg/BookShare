@@ -125,7 +125,6 @@ public class BooksFragment extends SwipeRefreshListFragment implements SearchVie
         menu.findItem(R.id.action_add_book).setVisible(access.getUserType() == UserType.SUPPLIER);
         searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
         searchView.setOnQueryTextListener(this);
-
     }
 
     @Override
@@ -173,4 +172,5 @@ public class BooksFragment extends SwipeRefreshListFragment implements SearchVie
         adapter.notifyDataSetChanged();
         return false;
     }
+
 }
