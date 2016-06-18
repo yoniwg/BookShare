@@ -46,7 +46,19 @@ abstract class SqlDataAccess implements DataAccess {
 
 
     protected String tableName(Class<? extends Entity> userClass) {
-        return userClass.getSimpleName().toLowerCase() + "_" + "table";
+        return userClass.getSimpleName().toLowerCase() + "_table";
+    }
+
+    private String phpArray() {
+        return "array(\n"
+                + Stream.of(EntityReflection.getEntityTypes())
+                    .map(type -> " '" + type.getSimpleName() + "' => array("
+                        + Stream.of(getProperties(type).values())
+                            .map(p -> "'" + p.getName() + "'=>'" + sqlConverters.findFullConverter(p.getPropertyType()).getSqlTypeName() + "'")
+                            .collect(Collectors.joining(", "))
+                        + ")"
+                    ).collect(Collectors.joining(",\n"))
+                + "\n)";
     }
 
     public void createTableIfNotExists(Class<? extends Entity> type) {
@@ -116,7 +128,7 @@ abstract class SqlDataAccess implements DataAccess {
         String genreValues = Stream.of(query.getGenreSet()).map(this::sqlValue).collect(Collectors.joining(","));
         conditions.add("bks.genre IN (" + genreValues + ")");
         conditions.add("bks." + NON_DELETED_CONDITION);
-        // TODO price
+        // price???
         if (query.getBeginPrice() != null) conditions.add("MIN(bsp.price) >= " + sqlValue(query.getBeginPrice()));
 
         String conditionsString = Stream.of(conditions).collect(Collectors.joining(" AND "));
@@ -130,17 +142,19 @@ abstract class SqlDataAccess implements DataAccess {
     public List<Book> findBooks(BookQuery query) {
         List<String> conditions = new ArrayList<>(2);
 
+        // collect properties
         if (!query.getTitleQuery().isEmpty()) conditions.add("title LIKE " + sqlStringContains(query.getTitleQuery()));
         if (!query.getAuthorQuery().isEmpty()) conditions.add("author LIKE " + sqlStringContains(query.getAuthorQuery()));
         String genreValues = Stream.of(query.getGenreSet()).map(this::sqlValue).collect(Collectors.joining(","));
         conditions.add("genre IN (" + genreValues + ")");
         conditions.add(NON_DELETED_CONDITION);
 
+        // ask sql
         String conditionsString = Stream.of(conditions).collect(Collectors.joining(" AND "));
         String sql = "SELECT * FROM " + tableName(Book.class) + " WHERE " + conditionsString + " ORDER BY title ";
         List<Book> list = executeResultSql(Book.class, sql);
 
-        // filter by price locally
+        // filter by price locally : TODO
         if (query.getBeginPrice().compareTo(BigDecimal.ZERO) <= 0 && query.getEndPrice().compareTo(BigDecimal.valueOf(1000)) >= 0){
             return list;
         } else {

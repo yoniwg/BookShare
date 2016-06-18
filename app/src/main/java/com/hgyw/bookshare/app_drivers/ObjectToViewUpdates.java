@@ -72,11 +72,10 @@ public class ObjectToViewUpdates {
         Context context = view.getContext();
 
         Utility.setListenerForAll(view, v -> {
-            long bookId = Utility.getBookId(order);
             new CancelableLoadingDialogAsyncTask<Void, View, String>(context) {
                 @Override
                 protected String retrieveDataAsync(Void... params) {
-                    Book book = access.retrieve(Book.class, bookId);
+                    Book book = access.retrieve(Book.class, Utility.getBookId(order));
                     return book.getAuthor();
                 }
 
@@ -118,7 +117,7 @@ public class ObjectToViewUpdates {
             intent.putExtra(Intent.EXTRA_EMAIL, addresses);
             intent.putExtra(Intent.EXTRA_SUBJECT, subject);
             try {context.startActivity(intent);} catch (ActivityNotFoundException ignored) {}
-        }, R.id.userEmail);
+        }, R.id.userEmail, R.id.userEmailIcon);
 
 
         Utility.setListenerForAll(view, v -> {
@@ -128,6 +127,18 @@ public class ObjectToViewUpdates {
             intent.setData(Uri.parse("geo:0,0?q=" + Uri.encode(address)));
             try {context.startActivity(intent);} catch (ActivityNotFoundException ignored) {}
         }, R.id.userAddress);
+
+    }
+    public static void setListenerToTransaction(View view, Transaction transaction) {
+        Context context = view.getContext();
+
+        Utility.setListenerForAll(view, v -> {
+            String address = transaction.getShippingAddress();
+
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse("geo:0,0?q=" + Uri.encode(address)));
+            try {context.startActivity(intent);} catch (ActivityNotFoundException ignored) {}
+        }, R.id.transactionAddress, R.id.transactionAddressIcon);
 
     }
 }

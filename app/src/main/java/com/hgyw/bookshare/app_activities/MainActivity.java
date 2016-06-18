@@ -74,7 +74,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Credentials savedCredentials = Utility.loadCredentials(this);
         if (savedInstanceState == null && accessManager.getCurrentUserType() == UserType.GUEST && !savedCredentials.getPassword().isEmpty()) {
             // connect by credentials if it's needed and possible
-            new ProgressDialogAsyncTask<Void, Void, Boolean>(this, R.string.trying_to_connect) {
+            new CancelableLoadingDialogAsyncTask<Void, Void, Boolean>(this, R.string.trying_to_connect) {
+
                 @Override
                 protected Boolean retrieveDataAsync(Void... params) {
                     try {
@@ -88,6 +89,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 @Override
                 protected void doByData(Boolean Succeeded) {
                     updateDrawerOnLogin();
+                }
+
+                @Override
+                protected void onCancel() {
                 }
             }.execute();
         } else {

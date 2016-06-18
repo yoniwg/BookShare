@@ -32,7 +32,7 @@ public class BookEditActivity extends AppCompatActivity {
 
     private static final String SAVE_KEY_NEW_IMAGE = "newImage";
     private static final String SAVE_KEY_BOOK = "book";
-    public static final GeneralAccess access = AccessManagerFactory.getInstance().getGeneralAccess();
+    public final GeneralAccess access = AccessManagerFactory.getInstance().getGeneralAccess();
     private Book book;
     private Bitmap newImage;
     private ImageView imageView;

@@ -57,7 +57,7 @@
             android:id="@+id/userFullName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Supplier name"
+            android:text="Customer name"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:paddingStart="10dp"
             android:background="@drawable/abc_ab_share_pack_mtrl_alpha"
@@ -92,7 +92,7 @@
             android:id="@+id/userFullNameIcon"
             android:layout_below="@+id/bookAuthorIcon"
             android:layout_alignParentStart="true"
-            android:src="@drawable/side_icon_suppliers"
+            android:src="@drawable/side_icon_customer"
             android:background="@drawable/abc_ab_share_pack_mtrl_alpha" />
 
         <ImageView
@@ -101,8 +101,8 @@
             android:id="@+id/orderUnitPriceIcon"
             android:src="@drawable/side_icon_unit_price"
             android:background="@drawable/abc_ab_share_pack_mtrl_alpha"
-            android:layout_below="@+id/transactionAddress"
-            android:layout_toStartOf="@+id/transactionAddress" />
+            android:layout_below="@+id/userEmailIcon"
+            android:layout_toStartOf="@+id/orderTotalPrice" />
 
         <ImageView
             android:layout_width="@dimen/details_line"
@@ -154,16 +154,25 @@
             android:layout_below="@+id/userFullName"
             android:layout_toStartOf="@+id/userFullName" />
 
-        <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/transaction_details"
-            android:id="@+id/transactionButton"
-            android:layout_below="@+id/orderTotalPrice"
-            android:layout_alignEnd="@+id/orderTotalPrice" />
+        <ImageView
+            android:layout_width="@dimen/details_line"
+            android:layout_height="@dimen/details_line"
+            android:id="@+id/userEmailIcon"
+            android:src="@drawable/side_icon_email"
+            android:background="@drawable/abc_ab_share_pack_mtrl_alpha"
+            android:layout_below="@+id/transactionAddress"
+            android:layout_toStartOf="@+id/transactionAddress" />
 
-
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/details_line"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="email@mail.com"
+            android:id="@+id/userEmail"
+            android:paddingStart="10dp"
+            android:background="@drawable/abc_ab_share_pack_mtrl_alpha"
+            android:layout_below="@+id/transactionAddress"
+            android:layout_alignStart="@+id/transactionAddress" />
 
     </RelativeLayout>
 </ScrollView>

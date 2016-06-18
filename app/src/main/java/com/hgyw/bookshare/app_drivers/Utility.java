@@ -17,11 +17,11 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
-import android.support.annotation.MainThread;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -343,26 +343,34 @@ public class Utility {
         return viewsMap;
     }
 
+    // field for caching bookSupplier
+    private static BookSupplier bs = new BookSupplier();
+
+    public static BookSupplier getBsOfOrder(Order order) {
+        if (bs.getId() == order.getBookSupplierId()) return bs;
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            try {
+                return new AsyncTask<Void, Void, BookSupplier>() {
+                    @Override
+                    protected BookSupplier doInBackground(Void... params) {
+                        return getBsOfOrder(order);
+                    }
+                }.execute().get();
+            } catch (InterruptedException | ExecutionException ignored) {}
+        }
+        GeneralAccess access = AccessManagerFactory.getInstance().getGeneralAccess();
+        bs = access.retrieve(BookSupplier.class, order.getBookSupplierId());
+        return bs;
+    }
+
     /**
      * Because the order should not refer to book supplier, bur refer to supplier and book directly,
      * use this method to get the supplierId of order.
      * @param order
      * @return
      */
-    @MainThread
-    public static long getSupplierId(Order order) {
-        try {
-            return new AsyncTask<Void, Void, BookSupplier>() {
-                @Override
-                protected BookSupplier doInBackground(Void... params) {
-                    GeneralAccess access = AccessManagerFactory.getInstance().getGeneralAccess();
-                    BookSupplier bs = access.retrieve(BookSupplier.class, order.getBookSupplierId());
-                    return bs;
-                }
-            }.execute().get().getSupplierId();
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
-        }
+    public synchronized static long getSupplierId(Order order) {
+        return getBsOfOrder(order).getSupplierId();
     }
 
     /**
@@ -371,20 +379,8 @@ public class Utility {
      * @param order
      * @return
      */
-    @MainThread
-    public static long getBookId(Order order) {
-        try {
-            return new AsyncTask<Void, Void, BookSupplier>() {
-                @Override
-                protected BookSupplier doInBackground(Void... params) {
-                    GeneralAccess access = AccessManagerFactory.getInstance().getGeneralAccess();
-                    BookSupplier bs = access.retrieve(BookSupplier.class, order.getBookSupplierId());
-                    return bs;
-                }
-            }.execute().get().getBookId();
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
-        }
+    public synchronized static long getBookId(Order order) {
+        return getBsOfOrder(order).getBookId();
     }
 
     public static void setListenerForAll(View parentView, View.OnClickListener listener, @IdRes int... viewIds) {

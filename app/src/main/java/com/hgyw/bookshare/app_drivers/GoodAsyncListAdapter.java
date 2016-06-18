@@ -9,7 +9,6 @@ import android.support.annotation.WorkerThread;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
@@ -18,6 +17,7 @@ import android.widget.ListView;
 import com.annimon.stream.function.Function;
 import com.hgyw.bookshare.BuildConfig;
 import com.hgyw.bookshare.R;
+import com.hgyw.bookshare.dataAccess.DataAccessIoException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,6 +45,7 @@ public abstract class GoodAsyncListAdapter<T> extends BaseAdapter implements Fil
      */
     private CharSequence filterPrefix;
 
+    private final Context context;
     private final LayoutInflater inflater;
     private final int itemLayoutId;
     private ListLoadingCallbacks loadingCallbacks;
@@ -62,6 +63,7 @@ public abstract class GoodAsyncListAdapter<T> extends BaseAdapter implements Fil
     private boolean isAllItemsLoaded = false;
 
     protected GoodAsyncListAdapter(Context context, @LayoutRes int itemLayoutId, ListLoadingCallbacks loadingCallbacks) {
+        this.context = context;
         this.inflater = LayoutInflater.from(context);
         this.itemLayoutId = itemLayoutId;
         setLoadingCallbacks(loadingCallbacks);
@@ -198,13 +200,23 @@ public abstract class GoodAsyncListAdapter<T> extends BaseAdapter implements Fil
         loadingEndPosition = 0;
         if (loadingCallbacks != null) loadingCallbacks.onStartLoading();
         AsyncTask asyncTask = new AsyncTask<Void, Void, List<T>>() {
+            DataAccessIoException exception;
             @Override
             protected List<T> doInBackground(Void... params) {
-                return retrieveList();
+                try {
+                    return retrieveList();
+                } catch (DataAccessIoException e) {
+                    exception = e;
+                    return null;
+                }
             }
 
             @Override
             protected void onPostExecute(List<T> result) {
+                if (result == null) {
+                    if (loadingCallbacks != null) loadingCallbacks.onConnectionError(GoodAsyncListAdapter.this, exception);
+                    return;
+                }
                 retrievingItems = result;
                 if (!retrievingItems.isEmpty()) {
                     continueLoading();
@@ -275,6 +287,8 @@ public abstract class GoodAsyncListAdapter<T> extends BaseAdapter implements Fil
         void onItemsLoaded(int startPosition, int endPosition);
 
         void onAllItemsLoaded();
+
+        void onConnectionError(GoodAsyncListAdapter<?> asyncTask, DataAccessIoException exception);
     }
 
 
@@ -298,21 +312,29 @@ public abstract class GoodAsyncListAdapter<T> extends BaseAdapter implements Fil
 
             @Override
             public void onStartLoading() {
-                if (listFragment.isDetached()) return;
+                //if (listFragment.isDetached()) return;
                 listFragment.setListShown(false);
                 listView.addFooterView(footerProgressView, null, false);
             }
 
             @Override
             public void onItemsLoaded(int startPosition, int endPosition) {
-                if (listFragment.isDetached()) return;
+                //if (listFragment.isDetached()) return;
                 if (startPosition == 0) listFragment.setListShown(true);
             }
 
             @Override
             public void onAllItemsLoaded() {
-                if (listFragment.isDetached()) return;
+                //if (listFragment.isDetached()) return;
                 listFragment.setListShown(true);
+                listView.removeFooterView(footerProgressView);
+            }
+
+            @Override
+            public void onConnectionError(GoodAsyncListAdapter<?> asyncTask, DataAccessIoException exception) {
+                //if (listFragment.isDetached()) return;
+                listFragment.setListShown(true);
+                listFragment.setEmptyText(context.getString(R.string.connection_error));
                 listView.removeFooterView(footerProgressView);
             }
 
