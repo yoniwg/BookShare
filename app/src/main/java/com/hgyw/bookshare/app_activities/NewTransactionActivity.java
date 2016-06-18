@@ -27,10 +27,9 @@ import com.hgyw.bookshare.logicAccess.CustomerAccess;
 
 
 /**
- *
+ * A class represents new transaction activity.
  */
 public class NewTransactionActivity extends AppCompatActivity implements DialogInterface.OnClickListener {
-
 
     private Cart cart;
     private CustomerAccess cAccess;
@@ -43,7 +42,10 @@ public class NewTransactionActivity extends AppCompatActivity implements DialogI
         setContentView(R.layout.activity_transaction);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        //set title of activity
         setTitle(R.string.new_transaction_title);
+
+        //Instantiate new cart fragment to show at the bottom of the screen
         Fragment cartFragment = CartFragment.newInstance(false);
         getFragmentManager().beginTransaction()
                 .replace(R.id.cart_container, cartFragment)
@@ -79,6 +81,7 @@ public class NewTransactionActivity extends AppCompatActivity implements DialogI
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        //on back pressed go back to cart fragment
         IntentsFactory.newCartIntent(this);
     }
 
@@ -100,6 +103,7 @@ public class NewTransactionActivity extends AppCompatActivity implements DialogI
 
     private boolean confirmTransaction() {
         Transaction transaction = cart.getTransaction();
+        //fictive rules for credit number and address
         boolean wrongCreditCard = transaction.getCreditCard().trim().length() < 8;
         boolean wrongAddress = transaction.getShippingAddress().trim().isEmpty();
         if (wrongCreditCard || wrongAddress){
@@ -109,6 +113,8 @@ public class NewTransactionActivity extends AppCompatActivity implements DialogI
                     .create().show();
             return true;
         }
+
+        //ensure the confirmation
         AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
         builder2.setMessage(R.string.confirm_order_message)
                 .setPositiveButton(R.string.yes, this)
@@ -121,6 +127,10 @@ public class NewTransactionActivity extends AppCompatActivity implements DialogI
     public void onClick(DialogInterface dialog, int which) {
         switch (which) {
             case DialogInterface.BUTTON_POSITIVE:
+                /**
+                 * This async-task try to perform new transaction.
+                 * If OrdersTransactionException is thrown it returns it to the main thread
+                 */
                 new ProgressDialogAsyncTask<Void, Void, OrdersTransactionException>(this) {
                     public IdReference transaction;
 
@@ -132,12 +142,13 @@ public class NewTransactionActivity extends AppCompatActivity implements DialogI
 
                     @Override
                     protected void doByData(OrdersTransactionException e) {
-                        if (e == null) {
+                        if (e == null) { //means all is OK
                             Toast.makeText(context, R.string.toast_transaction_ok, Toast.LENGTH_SHORT).show();
                             Intent transactionIntent = IntentsFactory.newEntityIntent(context, transaction);
                             finish();
                             startActivity(transactionIntent);
                         } else {
+                            //if something got wrong return to the activity
                             new AlertDialog.Builder(context)
                                     .setMessage(R.string.transaction_error_message)
                                     .setNeutralButton(R.string.ok, (d,w)->{})

@@ -15,6 +15,11 @@ import com.hgyw.bookshare.app_drivers.ListenerSupplierHelper;
 import com.hgyw.bookshare.app_fragments.EntityFragment;
 import com.hgyw.bookshare.entities.IdReference;
 
+/**
+ * A generic class for any entity activity.
+ * The class gets the properly fragment by Entity object which was passed
+ * by the Intent.
+ */
 public class EntityActivity extends AppCompatActivity implements ListenerSupplier{
 
 
