@@ -1,8 +1,12 @@
 package com.hgyw.bookshare.app_drivers;
 
 import android.content.Context;
+import android.telephony.PhoneNumberUtils;
+import android.text.Editable;
+import android.text.SpannableStringBuilder;
 import android.view.View;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.RatingBar;
@@ -177,7 +181,11 @@ public class ObjectToViewAppliers {
         if (fullNameView != null) fullNameView.setText(Utility.userNameToString(user));
         if (emailView!= null) emailView.setText(user.getEmail());
         if (addressView!= null) addressView.setText(user.getAddress());
-        if (phoneView!= null) phoneView.setText(user.getPhoneNumber());
+        if (phoneView!= null){
+            Editable phoneFormat = new SpannableStringBuilder(user.getPhoneNumber());
+            PhoneNumberUtils.formatNanpNumber(phoneFormat);
+            phoneView.setText(phoneFormat.toString());
+        }
         if (birthdayView!= null) {} // TODO
         if (customerSupplierSpinner != null) customerSupplierSpinner.setSelection(user.getUserType() == UserType.CUSTOMER ? 0 : 1);
     }

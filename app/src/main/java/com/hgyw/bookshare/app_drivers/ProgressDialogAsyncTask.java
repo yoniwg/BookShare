@@ -18,6 +18,8 @@ public abstract class ProgressDialogAsyncTask<Params, Progress, Result> extends 
     private final int message;
     protected ProgressDialog progressDialog ;
 
+
+
     public void setOnCancelListener(DialogInterface.OnCancelListener onCancelListener) {
         this.onCancelListener = onCancelListener;
     }

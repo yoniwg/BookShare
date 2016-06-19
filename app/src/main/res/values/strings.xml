@@ -194,4 +194,5 @@
     <string name="date">Date</string>
     <string name="shipment_address">Shipment address</string>
     <string name="total_price">Total price</string>
+    <string name="loading_information">Loading Information</string>
 </resources>
