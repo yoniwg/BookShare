@@ -52,6 +52,7 @@ public class SqliteDataAccess extends SqlDataAccess {
             @Override
             public void onCreate(SQLiteDatabase db) {
                 for (Class<? extends Entity> type : EntityReflection.getEntityTypes()) {
+                    database = db; // for avoiding recurcive call to getWritableDatabase()
                     createTableIfNotExists(type);
                 }
             }
@@ -81,9 +82,17 @@ public class SqliteDataAccess extends SqlDataAccess {
         };
     }
 
+    private SQLiteDatabase database;
+    private synchronized SQLiteDatabase getDatabase() {
+        if (database == null || !database.isOpen()) {
+            database = openHelper.getWritableDatabase();
+        }
+        return database;
+    }
+
     public long getLastID() {
         final String LAST_ID_QUERY = "SELECT last_insert_rowid()";
-        Cursor cur = openHelper.getReadableDatabase().rawQuery(LAST_ID_QUERY, null);
+        Cursor cur = getDatabase().rawQuery(LAST_ID_QUERY, null);
         cur.moveToFirst();
         long ID = cur.getLong(0);
         cur.close();
@@ -93,13 +102,13 @@ public class SqliteDataAccess extends SqlDataAccess {
 
     @Override
     protected synchronized long executeCreateSql(String sql) {
-        openHelper.getWritableDatabase().execSQL(sql);
+        getDatabase().execSQL(sql);
         return getLastID();
     }
 
     @Override
     protected void executeSql(String sql) {
-        openHelper.getWritableDatabase().execSQL(sql);
+        getDatabase().execSQL(sql);
     }
 
     private static <T> T genericGet(Cursor cursor, int column, Class<T> type) {
@@ -140,7 +149,7 @@ public class SqliteDataAccess extends SqlDataAccess {
     @Override
     protected <T> List<T> executeResultSql(Class<T> type, String sql) {
         List<T> items = new ArrayList<>();
-        Cursor result = openHelper.getReadableDatabase().rawQuery(sql, null);
+        Cursor result = getDatabase().rawQuery(sql, null);
 
         if (result.moveToFirst()) do {
             T item = readObject(result, type);
@@ -150,7 +159,5 @@ public class SqliteDataAccess extends SqlDataAccess {
 
         return items;
     }
-
-
 
 }

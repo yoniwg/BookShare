@@ -28,7 +28,7 @@ public abstract class UserAbstractActivity extends AppCompatActivity {
 
     private static final String SAVE_KEY_NEW_IMAGE = "newImage";
     private static final String SAVE_KEY_USER = "user";
-    public static final GeneralAccess access = AccessManagerFactory.getInstance().getGeneralAccess();
+    public final GeneralAccess access = AccessManagerFactory.getInstance().getGeneralAccess();
     private ImageView imageView;
     private User user;
     private final @StringRes int buttonStringId;

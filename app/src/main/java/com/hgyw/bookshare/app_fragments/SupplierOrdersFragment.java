@@ -13,14 +13,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.app_drivers.DateRangeBar;
 import com.hgyw.bookshare.app_drivers.GoodAsyncListAdapter;
+import com.hgyw.bookshare.app_drivers.IntentsFactory;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookSupplier;
+import com.hgyw.bookshare.entities.IdReference;
 import com.hgyw.bookshare.entities.ImageEntity;
 import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.OrderStatus;
@@ -147,7 +150,7 @@ public class SupplierOrdersFragment extends ListFragment implements TitleFragmen
             Order order = adapter.getItem(info.position);
 
             //show yes/no alert dialog
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
             builder.setMessage(messageId)
                     .setPositiveButton(R.string.yes, (dialog, which) -> {
                         new AsyncTask<Void, Void, Void>() {
@@ -171,6 +174,13 @@ public class SupplierOrdersFragment extends ListFragment implements TitleFragmen
             builder.create().show();
             return true;
         });
+    }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        long orderId = ((Order) l.getAdapter().getItem(position)).getId();
+        IdReference orderRef = IdReference.of(Order.class, orderId);
+        startActivity(IntentsFactory.newEntityIntent(activity, orderRef));
     }
 
     @Override
