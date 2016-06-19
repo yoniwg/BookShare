@@ -194,4 +194,7 @@
     <string name="date">Date</string>
     <string name="shipment_address">Shipment address</string>
     <string name="total_price">Total price</string>
+    <string name="do_you_want_to_change_order_status">Do you really want to change the order status to %s?</string>
+    <string name="change_order_status">Change order status</string>
+    <string name="order_status_changed">The order status has changed</string>
 </resources>

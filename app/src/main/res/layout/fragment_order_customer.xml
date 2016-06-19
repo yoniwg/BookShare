@@ -160,9 +160,27 @@
             android:layout_height="wrap_content"
             android:text="@string/transaction_details"
             android:id="@+id/transactionButton"
-            android:layout_below="@+id/orderTotalPrice"
-            android:layout_alignEnd="@+id/orderTotalPrice" />
+            android:layout_below="@+id/orderStatus"
+            android:layout_alignParentEnd="true" />
 
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/change_order_status"
+            android:id="@+id/changeStatusButton"
+            android:layout_alignTop="@+id/transactionButton"
+            android:layout_toStartOf="@+id/transactionButton" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Order Status"
+            android:id="@+id/orderStatus"
+            android:textColor="@color/design_textinput_error_color_dark"
+            android:layout_below="@+id/orderTotalPrice"
+            android:layout_alignStart="@+id/orderTotalPrice" />
 
 
     </RelativeLayout>

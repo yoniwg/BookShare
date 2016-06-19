@@ -1,8 +1,16 @@
 package com.hgyw.bookshare.app_fragments;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
+import android.view.ContextMenu;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Toast;
 
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.app_drivers.CancelableLoadingDialogAsyncTask;
@@ -15,6 +23,7 @@ import com.hgyw.bookshare.entities.BookSupplier;
 import com.hgyw.bookshare.entities.IdReference;
 import com.hgyw.bookshare.entities.ImageEntity;
 import com.hgyw.bookshare.entities.Order;
+import com.hgyw.bookshare.entities.OrderStatus;
 import com.hgyw.bookshare.entities.Transaction;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.entities.UserType;
@@ -74,6 +83,8 @@ public class OrderFragment extends EntityFragment {
                     IdReference transactionRef = IdReference.of(Transaction.class, order.getTransactionId());
                     transactionButton.setOnClickListener(v -> startActivity(IntentsFactory.newEntityIntent(getActivity(), transactionRef)));
                 }
+                View changeStatusButton = view.findViewById(R.id.changeStatusButton);
+                if (changeStatusButton != null) updateChangeStatusButton(changeStatusButton, view, order);
             }
 
             @Override
@@ -85,5 +96,42 @@ public class OrderFragment extends EntityFragment {
 
     }
 
+    private void updateChangeStatusButton(View changeStatusButton, View viewOfStatus, Order order) {
+        // TODO unify with SupplierOrdersFragment.onCreateContextMenu()
+        OrderStatus nextOrderStatus;
+        switch (order.getOrderStatus()) {
+            case NEW_ORDER:
+                nextOrderStatus = OrderStatus.CANCELED;
+                break;
+            case SENT:
+                nextOrderStatus = OrderStatus.CLOSED;
+                break;
+            default:
+                changeStatusButton.setVisibility(View.GONE);
+                return;
+        }
+        CustomerAccess cAccess = AccessManagerFactory.getInstance().getCustomerAccess();
+        Context context = getActivity();
+        changeStatusButton.setOnClickListener(v -> new AlertDialog.Builder(context)
+                .setMessage(String.format(context.getString(R.string.do_you_want_to_change_order_status), Utility.findStringResourceOfEnum(context, nextOrderStatus)))
+                .setPositiveButton(R.string.yes, (dialog, which) -> {
+                    new AsyncTask<Void, Void, Void>() {
+                        @Override
+                        protected Void doInBackground(Void... params) {
+                            cAccess.updateOrderStatus(order, nextOrderStatus);
+                            return null;
+                        }
+
+                        @Override
+                        protected void onPostExecute(Void aVoid) {
+                            ObjectToViewAppliers.apply(viewOfStatus, order);
+                            updateChangeStatusButton(changeStatusButton, viewOfStatus, order);
+                            Toast.makeText(v.getContext(), R.string.order_status_changed, Toast.LENGTH_SHORT).show();
+                        }
+                    }.execute();
+                }).setNeutralButton(R.string.no, null)
+                .create().show()
+        );
+    }
 
 }

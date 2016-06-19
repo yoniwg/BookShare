@@ -186,5 +186,8 @@
     <string name="shipment_address">כתובת משלוח</string>
     <string name="supplier">ספק</string>
     <string name="total_price">מחיר כולל</string>
+    <string name="do_you_want_to_change_order_status">האם באמת אתה רוצה לשנות את מצב ההזמנה ל%s</string>
+    <string name="change_order_status">שנה מצב הזמנה</string>
+    <string name="order_status_changed">מצב ההזמנה השתנה</string>
 
 </resources>

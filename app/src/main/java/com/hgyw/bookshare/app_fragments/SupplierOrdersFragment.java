@@ -150,7 +150,7 @@ public class SupplierOrdersFragment extends ListFragment implements TitleFragmen
             Order order = adapter.getItem(info.position);
 
             //show yes/no alert dialog
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
             builder.setMessage(messageId)
                     .setPositiveButton(R.string.yes, (dialog, which) -> {
                         new AsyncTask<Void, Void, Void>() {
