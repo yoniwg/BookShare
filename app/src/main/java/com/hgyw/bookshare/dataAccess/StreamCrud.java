@@ -4,7 +4,7 @@ import com.annimon.stream.Stream;
 import com.hgyw.bookshare.entities.Entity;
 
 /**
- * Crud interface,  with method {@link StreamCrud#streamAll(Class)}, to stream whole
+ * Crud interface, with method {@link StreamCrud#streamAll(Class)}, to stream whole
  * database table.
  */
  interface StreamCrud extends Crud {

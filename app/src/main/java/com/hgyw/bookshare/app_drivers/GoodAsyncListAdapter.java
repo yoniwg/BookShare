@@ -30,7 +30,7 @@ import java.util.Map;
  */
 public abstract class GoodAsyncListAdapter<T> extends BaseAdapter implements Filterable{
 
-    private static final boolean DEBUG = BuildConfig.DEBUG;
+    private static final boolean DEBUG = false && BuildConfig.DEBUG;
 
     Filter filter;
 

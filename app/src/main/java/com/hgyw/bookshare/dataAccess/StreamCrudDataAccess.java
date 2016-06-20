@@ -173,12 +173,10 @@ class StreamCrudDataAccess implements DataAccess {
             bookSummary.setMinPrice(Collections.min(prices));
             bookSummary.setMaxPrice(Collections.max(prices));
         }
-        Map<Rating, Integer> ratingMap = streamAllNonDeleted(BookReview.class)
+        streamAllNonDeleted(BookReview.class)
                 .filter(review -> review.getBookId() == book.getId())
-                .collect(Collectors.groupingBy(BookReview::getRating,
-                        Collectors.collectingAndThen(Collectors.counting(), Long::intValue)
-                ));
-        bookSummary.setRatingMap(ratingMap);
+                .groupBy(BookReview::getRating)
+                .forEach(entry -> bookSummary.setRating(entry.getKey(), entry.getValue().size()));
         return bookSummary;
     }
 

@@ -111,9 +111,16 @@ class MysqlDataAccess extends SqlDataAccess implements DataAccess {
 
     @Override
     protected  <T> List<T> executeResultSql(Class<T> type, String statement) {
+        boolean test = true;
         try {
+            long startMillis = 0; // for test
+            if (test) startMillis = System.currentTimeMillis();
             System.out.println("Starting ask sql: " + statement);
             String result = sendStatementHttpPost(statement);
+            if (test) {
+                System.out.println("ask sql millis: " + (System.currentTimeMillis() - startMillis));
+                startMillis = System.currentTimeMillis();
+            }
             JSONArray jsonItems = new JSONArray(result);
             int itemsCount = jsonItems.length();
             List<T> items = new ArrayList<>(itemsCount);
@@ -121,6 +128,7 @@ class MysqlDataAccess extends SqlDataAccess implements DataAccess {
                 T item = readObject(type, jsonItems.getJSONObject(i));
                 items.add(item);
             }
+            if (test) System.out.println("parse sql millis: " + (System.currentTimeMillis()-startMillis));
             return items;
         }
         catch (JSONException e) {

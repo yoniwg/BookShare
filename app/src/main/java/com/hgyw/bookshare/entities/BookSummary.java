@@ -1,13 +1,16 @@
 package com.hgyw.bookshare.entities;
 
+import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
 import com.hgyw.bookshare.entities.reflection.EntityProperty;
-import com.hgyw.bookshare.entities.reflection.EntityReference;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by haim7 on 10/05/2016.
@@ -16,8 +19,9 @@ public class BookSummary {
 
     private BigDecimal minPrice = BigDecimal.ZERO;
     private BigDecimal maxPrice = BigDecimal.ZERO;
+
     @EntityProperty(disable = true)
-    private Map<Rating, Integer> ratingMap = Collections.emptyMap();
+    private final Map<Rating, Integer> ratingMap = new EnumMap<>(Rating.class);
 
     public BigDecimal getMinPrice() {
         return minPrice;
@@ -35,21 +39,26 @@ public class BookSummary {
         this.maxPrice = maxPrice;
     }
 
+    /**
+     * @return Immutable rating map backed by this object.
+     */
     public Map<Rating, Integer> getRatingMap() {
         return Collections.unmodifiableMap(ratingMap);
     }
 
-    public void setRatingMap(Map<Rating, Integer> ratingMap) {
-        this.ratingMap = new HashMap<>(ratingMap);
-        this.ratingMap.remove(Rating.EMPTY);
+    public void setRating(Rating rating, int count) {
+        Objects.requireNonNull(rating);
+        if (rating == Rating.EMPTY) throw new IllegalArgumentException("The rating should not EMPTY.");
+        if (count < 0) throw new IllegalArgumentException("The count should not be small than 0.");
+        ratingMap.put(rating, count);
     }
 
-    public float clacMeanRating() {
-        if (ratingMap.isEmpty()) return 0.0f;
-        int startsSum =  Stream.of(ratingMap.entrySet())
+    public float calcMeanRating() {
+        if (ratingMap.isEmpty()) return 0f;
+        return Stream.of(ratingMap.entrySet())
                 .map(kv -> kv.getKey().getStars() * kv.getValue())
-                .reduce(0, (i,j) -> i+j);
-        return (float) startsSum / getRatingMap().size();
+                .collect(Collectors.averaging(Number::doubleValue))
+                .floatValue();
     }
 
     public int sumOfRates() {

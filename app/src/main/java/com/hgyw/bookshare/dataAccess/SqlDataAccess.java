@@ -129,7 +129,7 @@ abstract class SqlDataAccess implements DataAccess {
         conditions.add("bks.genre IN (" + genreValues + ")");
         conditions.add("bks." + NON_DELETED_CONDITION);
         // price???
-        if (query.getBeginPrice() != null) conditions.add("MIN(bsp.price) >= " + sqlValue(query.getBeginPrice()));
+        if (query.getBeginPrice() != null) conditions.add("MIN(bsp.price) <= " + sqlValue(query.getEndPrice()));
 
         String conditionsString = Stream.of(conditions).collect(Collectors.joining(" AND "));
         String sql = "SELECT bks.* FROM " + tableName(Book.class) + " bks " +
@@ -308,11 +308,21 @@ abstract class SqlDataAccess implements DataAccess {
         executeSql(sql);
     }
 
+    // rating-count entry for getBookSummary(Book) method.
+    public static class RatingCountEntry {
+        Rating rating;
+        int count;
+        public Rating getRating() {return rating;}
+        public void setRating(Rating rating) {this.rating = rating;}
+        public int getCount() {return count;}
+        public void setCount(int count) {this.count = count;}
+    }
 
     @Override
     public BookSummary getBookSummary(Book book) {
-        String sqlFormat = "SELECT COALESCE(MIN({0}),{1}) AS minPrice, COALESCE(MAX({0}),{1}) AS maxPrice " + "FROM {2} " + "WHERE {3} AND {4}={5}";
-        String sql = MessageFormat.format(sqlFormat,
+        // create BookSummary object with min and max price values
+        String sqlMinMax = "SELECT COALESCE(MIN({0}),{1}) AS minPrice, COALESCE(MAX({0}),{1}) AS maxPrice " + "FROM {2} " + "WHERE {3} AND {4}={5}";
+        String sql = MessageFormat.format(sqlMinMax,
                 "price",
                 sqlValue(BigDecimal.ZERO),
                 tableName(BookSupplier.class),
@@ -321,7 +331,17 @@ abstract class SqlDataAccess implements DataAccess {
         );
         List<BookSummary> results = executeResultSql(BookSummary.class, sql);
         if (results.isEmpty()) throw new NoSuchElementException("No book with id " + book.getId());
-        return results.get(0);
+        BookSummary bookSummary = results.get(0);
+
+        // set the rating map of bookSummary
+        String sqlCountRating = "SELECT rating, COUNT(*) AS count FROM " + tableName(BookReview.class)
+                + " WHERE " + "bookId=" + book.getId()
+                + " AND " + NON_DELETED_CONDITION
+                + " GROUP BY rating";
+        List<RatingCountEntry> ratingCounts = executeResultSql(RatingCountEntry.class, sqlCountRating);
+        for (RatingCountEntry entry : ratingCounts) bookSummary.setRating(entry.getRating(), entry.getCount());
+
+        return bookSummary;
     }
 
 

@@ -103,11 +103,7 @@ public class SupplierAccessImpl extends GeneralAccessImpl implements SupplierAcc
     @Override
     public Optional<BookSupplier> retrieveMyBookSupplier(Book book) {
         List<BookSupplier> result = dataAccess.findEntityReferTo(BookSupplier.class, currentUser, book);
-        if (!result.isEmpty()) {
-            return Optional.of(result.get(0));
-        } else {
-            return Optional.empty();
-        }
+        return result.isEmpty() ? Optional.empty() : Optional.of(result.get(0));
     }
 
 }

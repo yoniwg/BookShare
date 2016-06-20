@@ -115,6 +115,7 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
                     oCurrentBookSupplier = ((SupplierAccess) access).retrieveMyBookSupplier(book);
                 // get lists
                 bookReviews = access.findBookReviews(book);
+                oUserBookReview.ifPresent(bookReviews::remove);
                 bookSuppliers = access.findBookSuppliers(book);
 
                 Stream.of(bookReviews).forEach(br->{

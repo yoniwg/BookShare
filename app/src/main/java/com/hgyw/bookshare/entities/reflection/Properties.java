@@ -7,6 +7,7 @@ import com.annimon.stream.function.Predicate;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +34,7 @@ public class Properties {
                 String getterName = getter.getName();
                 String prefix;
                 String nameUppercase;
-                if (getter.getParameterTypes().length == 0
+                if (getter.getParameterTypes().length == 0 && getter.getReturnType() == field.getType()
                         && (getterName.startsWith(prefix = "get") || getter.getReturnType() == boolean.class && getterName.startsWith(prefix = "is"))
                         && !Character.isLowerCase(getterName.charAt(prefix.length()))
                         && field.getName().equalsIgnoreCase(nameUppercase = getter.getName().substring(prefix.length())))

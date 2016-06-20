@@ -22,18 +22,19 @@ class ReflectedProperty implements Property {
     private final Field field;
 
     public ReflectedProperty(String name, Method getter, Method setter, Field field) {
+        Objects.requireNonNull(getter);
         if (!Modifier.isPublic(getter.getModifiers()) || setter != null && !Modifier.isPublic(setter.getModifiers())) {
-            throw new IllegalArgumentException("The getter and setter should be public.");
+            throw new IllegalArgumentException("The getter and setter should be public. field: " + field);
         }
         if (getter.getParameterTypes().length != 0) {
-            throw new IllegalArgumentException("The getter should not have parameters.");
+            throw new IllegalArgumentException("The getter should not have parameters. field: " + field);
         }
         if (setter != null) {
             if (setter.getParameterTypes().length != 1 || setter.getParameterTypes()[0] != getter.getReturnType()) {
-                throw new IllegalArgumentException("The setter should have only one parameter with type equals to returned type of getter.");
+                throw new IllegalArgumentException("The setter should have only one parameter with type equals to returned type of getter. field: " + field);
             }
         }
-        if (field != null && field.getType() != getter.getReturnType()) throw new IllegalArgumentException("The getter and field should be the same type.");
+        if (field != null && field.getType() != getter.getReturnType()) throw new IllegalArgumentException("The getter and field should be the same type. field: " + field);
         this.name = Objects.requireNonNull(name); this.setter = setter; this.getter = getter; this.field = field;
     }
 

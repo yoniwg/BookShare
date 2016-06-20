@@ -9,7 +9,6 @@ import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.annimon.stream.Stream;
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookQuery;
@@ -23,12 +22,10 @@ import com.hgyw.bookshare.entities.Rating;
 import com.hgyw.bookshare.entities.Transaction;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.entities.UserType;
-import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 
 import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -70,7 +67,7 @@ public class ObjectToViewAppliers {
         TextView priceView = (TextView) view.findViewById(R.id.priceRange);
         TextView ratingTextView = (TextView) view.findViewById(R.id.ratingText);
 
-        if (ratingBar != null) ratingBar.setRating(summary.clacMeanRating());
+        if (ratingBar != null) ratingBar.setRating(summary.calcMeanRating());
         if (priceView != null) priceView.setText(Utility.moneyRangeToString(summary.getMinPrice(), summary.getMaxPrice()));
         if (ratingTextView != null) ratingTextView.setText(MessageFormat.format(context.getString(R.string.num_rates), summary.sumOfRates()));
     }
