@@ -60,9 +60,10 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Medium Text"
             android:id="@+id/userPhone"
-            android:layout_below="@+id/userEmail"
-            android:layout_alignStart="@+id/userEmail"
-            android:layout_marginTop="28dp" />
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:paddingTop="20dp"
+            android:layout_below="@+id/userEmail" />
 
     </RelativeLayout>
 </ScrollView>

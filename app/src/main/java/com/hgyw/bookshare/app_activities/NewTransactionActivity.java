@@ -1,13 +1,16 @@
 package com.hgyw.bookshare.app_activities;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.AttributeSet;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,13 +53,16 @@ public class NewTransactionActivity extends AppCompatActivity implements DialogI
         getFragmentManager().beginTransaction()
                 .replace(R.id.cart_container, cartFragment)
                 .commit();
+
         //set total sum
         String totalSum = Utility.moneyToNumberString(cart.calculateTotalSum());
         ((TextView)findViewById(R.id.total_sum)).setText(totalSum);
+        //set default address as customer address
+        EditText shippingAddress = ((EditText)(findViewById(R.id.shipping_address)));
+        retrieveCustomerAccess(shippingAddress);
 
         //set listeners to address and credit number
-        ((EditText)(findViewById(R.id.shipping_address)))
-                .addTextChangedListener(new SimpleTextWatcher() {
+        shippingAddress.addTextChangedListener(new SimpleTextWatcher() {
                     @Override
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
                         cart.getTransaction().setShippingAddress(s.toString());
@@ -70,6 +76,22 @@ public class NewTransactionActivity extends AppCompatActivity implements DialogI
                         cart.getTransaction().setCreditCard(s.toString());
                     }
                 });
+    }
+
+    private void retrieveCustomerAccess(EditText shippingAddress){
+            new ProgressDialogAsyncTask<Void, Void, String>(this, R.string.loading_information) {
+                @Override
+                protected String retrieveDataAsync(Void... params) {
+                    String s = cAccess.retrieveUserDetails().getAddress();
+                    System.out.println("Customer Address: " + s);
+                    return s;
+                }
+
+                @Override
+                protected void doByData(String s) {
+                    shippingAddress.setText(s);
+                }
+            }.execute();
     }
 
     @Override

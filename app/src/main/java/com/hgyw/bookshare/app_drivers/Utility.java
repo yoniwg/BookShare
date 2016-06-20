@@ -7,6 +7,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -22,12 +23,16 @@ import android.provider.MediaStore;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.MainThread;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.annimon.stream.Collectors;
@@ -387,6 +392,9 @@ public class Utility {
         for (int id : viewIds) {
             View view = parentView.findViewById(id);
             if (view != null) view.setOnClickListener(listener);
+            if (view instanceof TextView) {
+                ((TextView)view).setTextColor(Color.BLUE);
+            }
         }
     }
 
