@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.hgyw.bookshare.R;
@@ -84,7 +85,7 @@ public class OrderFragment extends EntityFragment {
                     transactionButton.setOnClickListener(v -> startActivity(IntentsFactory.newEntityIntent(getActivity(), transactionRef)));
                 }
                 View changeStatusButton = view.findViewById(R.id.changeStatusButton);
-                if (changeStatusButton != null) updateChangeStatusButton(changeStatusButton, view, order);
+                if (changeStatusButton != null) updateChangeStatusButton((Button) changeStatusButton, view, order);
             }
 
             @Override
@@ -96,15 +97,21 @@ public class OrderFragment extends EntityFragment {
 
     }
 
-    private void updateChangeStatusButton(View changeStatusButton, View viewOfStatus, Order order) {
+    private void updateChangeStatusButton(Button changeStatusButton, View viewOfStatus, Order order) {
         // TODO unify with SupplierOrdersFragment.onCreateContextMenu()
         OrderStatus nextOrderStatus;
+        int buttonLabelId;
+        int messageId;
         switch (order.getOrderStatus()) {
             case NEW_ORDER:
                 nextOrderStatus = OrderStatus.CANCELED;
+                buttonLabelId = R.string.cancel_order;
+                messageId = R.string.cancel_order_massage;
                 break;
             case SENT:
                 nextOrderStatus = OrderStatus.CLOSED;
+                buttonLabelId = R.string.confirm_receive;
+                messageId = R.string.confirm_order_message;
                 break;
             default:
                 changeStatusButton.setVisibility(View.GONE);
@@ -112,8 +119,9 @@ public class OrderFragment extends EntityFragment {
         }
         CustomerAccess cAccess = AccessManagerFactory.getInstance().getCustomerAccess();
         Context context = getActivity();
+        changeStatusButton.setText(buttonLabelId);
         changeStatusButton.setOnClickListener(v -> new AlertDialog.Builder(context)
-                .setMessage(String.format(context.getString(R.string.do_you_want_to_change_order_status), Utility.findStringResourceOfEnum(context, nextOrderStatus)))
+                .setMessage(messageId)
                 .setPositiveButton(R.string.yes, (dialog, which) -> {
                     new AsyncTask<Void, Void, Void>() {
                         @Override

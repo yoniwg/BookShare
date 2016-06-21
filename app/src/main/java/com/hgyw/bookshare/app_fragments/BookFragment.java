@@ -333,8 +333,10 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
                 protected void doByData(Void aVoid) {
                     userBookReview = bookReview;
                     userRatingBar.setRating(userBookReview.getRating().getStars());
+                    bookSummary.changeRating(oldUserRating, userBookReview.getRating());
+                    ObjectToViewAppliers.apply(bookContainer, bookSummary);
                     // message
-                    Toast.makeText(activity, "The review was updated.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(activity, R.string.toast_review_updated, Toast.LENGTH_LONG).show();
                 }
             }.execute();
         }

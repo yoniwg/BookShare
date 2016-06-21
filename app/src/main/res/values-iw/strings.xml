@@ -28,7 +28,7 @@
     <string name="genre_general">כללי</string>
     <string name="num_rates">{0} דירוגים</string>
     <string name="order_added_to_cart">ההזמנה נוספה לעגלה</string>
-    <string name="reviews_colon">סקירות:</string>
+    <string name="reviews_colon">מה אחרים חושבים:</string>
     <string name="delete_order_message">למחוק הזמנה?</string>
     <string name="deselect_all">בטל כל הבחירה</string>
     <string name="hello">שלום</string>
@@ -189,5 +189,7 @@
     <string name="do_you_want_to_change_order_status">האם באמת אתה רוצה לשנות את מצב ההזמנה ל%s</string>
     <string name="change_order_status">שנה מצב הזמנה</string>
     <string name="order_status_changed">מצב ההזמנה השתנה</string>
+    <string name="loading_information">טוען אינפורמציה</string>
+    <string name="toast_review_updated">הסקירה עודכנה</string>
 
 </resources>

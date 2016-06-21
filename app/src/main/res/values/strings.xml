@@ -37,7 +37,7 @@
     <string name="order_added_to_cart">The order have been added to cart.</string>
     <string name="do_order">Order</string>
     <string name="num_rates">{0} Rates</string>
-    <string name="reviews_colon">Reviews:</string>
+    <string name="reviews_colon">What other pepole think:</string>
     <string name="remove">Remove</string>
     <string name="select_all">Select All</string>
     <string name="deselect_all">Deselect All</string>
@@ -198,4 +198,5 @@
     <string name="change_order_status">Change order status</string>
     <string name="order_status_changed">The order status has changed</string>
     <string name="loading_information">Loading Information</string>
+    <string name="toast_review_updated">The review was updated.</string>
 </resources>

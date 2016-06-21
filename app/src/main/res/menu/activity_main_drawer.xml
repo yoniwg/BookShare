@@ -16,6 +16,7 @@
             android:title="@string/cart"/>
         <item
             android:id="@+id/nav_transactions"
+            android:icon="@drawable/transaction"
             android:title="@string/transactions"/>
         <item
             android:id="@+id/nav_customer_orders"

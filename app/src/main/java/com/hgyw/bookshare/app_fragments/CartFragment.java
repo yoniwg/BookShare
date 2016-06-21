@@ -14,7 +14,6 @@ import android.widget.NumberPicker;
 import android.widget.Toast;
 
 import com.hgyw.bookshare.R;
-import com.hgyw.bookshare.app_drivers.GoodAsyncListAdapter;
 import com.hgyw.bookshare.app_drivers.IntentsFactory;
 import com.hgyw.bookshare.app_drivers.ListApplyObjectAdapter;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
@@ -26,8 +25,6 @@ import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.Cart;
 import com.hgyw.bookshare.logicAccess.CustomerAccess;
-
-import java.util.List;
 
 /**
  * A fragment representing the cart.
@@ -59,7 +56,7 @@ public class CartFragment extends ListFragment implements TitleFragment {
         setHasOptionsMenu(true);
         registerForContextMenu(getListView());
 
-        adapter = new ListApplyObjectAdapter<Order>(getActivity(), R.layout.order_list_item, cart.retrieveCartContent()) {
+        adapter = new ListApplyObjectAdapter<Order>(getActivity(), R.layout.order_list_item, cart.retrieveCartContent(), Order::getBookSupplierId) {
             @Override
             protected Object[] retrieveDataForView(Order order) {
                 CustomerAccess cAccess = AccessManagerFactory.getInstance().getCustomerAccess();

@@ -7,6 +7,8 @@ import android.support.annotation.MainThread;
 import android.support.annotation.WorkerThread;
 import android.view.View;
 
+import com.annimon.stream.function.Function;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,6 +20,7 @@ import java.util.Queue;
  */
 public abstract class ListApplyObjectAdapter<T> extends ApplyObjectAdapter<T> {
 
+    private final Function<T, Object> mapper;
     private class SimpleBuffer<K, V>{
 
         private final int maxBufferSize;
@@ -56,22 +59,23 @@ public abstract class ListApplyObjectAdapter<T> extends ApplyObjectAdapter<T> {
 
 
     final Map<View,AsyncTask<Void, Void, Object[]>> asyncTasks = new HashMap<>();
-    final SimpleBuffer<T,Object[]> buffer = new SimpleBuffer<>(20);
+    final SimpleBuffer<Object ,Object[]> buffer = new SimpleBuffer<>(20);
 
-    protected ListApplyObjectAdapter(Context context, @LayoutRes int itemLayoutId, List<T> itemsList) {
+    protected ListApplyObjectAdapter(Context context, @LayoutRes int itemLayoutId, List<T> itemsList, Function<T, Object> mapper) {
         super(context, itemLayoutId, itemsList);
+        this.mapper = mapper;
     }
 
     @Override
     protected final void applyOnView(View view, int position) {
         T item = getItem(position);
-        buffer.promoteKey(item);
+        buffer.promoteKey(mapper.apply(item));
         view.setVisibility(View.INVISIBLE);
         AsyncTask<Void, Void, Object[]> asyncTask;
         asyncTask = asyncTasks.get(view);
         if (asyncTask != null) asyncTask.cancel(false);
-        if (buffer.containsKey(item)){
-            ListApplyObjectAdapter.this.applyDataOnView(view, item, buffer.get(item));
+        if (buffer.containsKey(mapper.apply(item))){
+            ListApplyObjectAdapter.this.applyDataOnView(view, item, buffer.get(mapper.apply(item)));
             view.setVisibility(View.VISIBLE);
             return;
         }
@@ -83,7 +87,7 @@ public abstract class ListApplyObjectAdapter<T> extends ApplyObjectAdapter<T> {
 
             @Override
             protected void onPostExecute(Object[] items) {
-                buffer.insert(item, items);
+                buffer.insert(mapper.apply(item), items);
                 if (isCancelled()) return;
                 ListApplyObjectAdapter.this.applyDataOnView(view, item, items);
                 view.setVisibility(View.VISIBLE);
