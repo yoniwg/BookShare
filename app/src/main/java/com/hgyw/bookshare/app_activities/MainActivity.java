@@ -5,7 +5,6 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -14,7 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -74,10 +72,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Credentials savedCredentials = Utility.loadCredentials(this);
         if (savedInstanceState == null && accessManager.getCurrentUserType() == UserType.GUEST && !savedCredentials.getPassword().isEmpty()) {
             // connect by credentials if it's needed and possible
-            new CancelableLoadingDialogAsyncTask<Void, Void, Boolean>(this, R.string.trying_to_connect) {
+            new CancelableLoadingDialogAsyncTask<Boolean>(this, R.string.trying_to_connect) {
 
                 @Override
-                protected Boolean retrieveDataAsync(Void... params) {
+                protected Boolean retrieveDataAsync() {
                     try {
                         accessManager.signIn(savedCredentials);
                         return true;

@@ -70,8 +70,8 @@ public class BookEditActivity extends AppCompatActivity {
         view = findViewById(android.R.id.content);
         if (savedInstanceState == null) {
             long id = idReference.getId();
-            new ProgressDialogAsyncTask<Void, Void, Pair<Book, ImageEntity>>(this) {
-                @Override protected Pair<Book, ImageEntity> retrieveDataAsync(Void... params) {
+            new ProgressDialogAsyncTask<Pair<Book, ImageEntity>>(this) {
+                @Override protected Pair<Book, ImageEntity> retrieveDataAsync() {
                     book = id == Entity.DEFAULT_ID ? new Book() : access.retrieve(Book.class, id);
                     ImageEntity imageEntity = access.retrieveOptional(ImageEntity.class, book.getImageId()).orElse(null);
                     return new Pair<Book, ImageEntity>(book, imageEntity);
@@ -133,9 +133,9 @@ public class BookEditActivity extends AppCompatActivity {
 
     private void saveBook() {
         ObjectToViewAppliers.result(view, book);
-        new ProgressDialogAsyncTask<Void, Void, Void>(this) {
+        new ProgressDialogAsyncTask<Void>(this) {
             @Override
-            protected Void retrieveDataAsync(Void... params) {
+            protected Void retrieveDataAsync() {
                 SupplierAccess sAccess = AccessManagerFactory.getInstance().getSupplierAccess();
                 if (newImage != null) {
                     long imageId = sAccess.upload(Utility.compress(newImage));

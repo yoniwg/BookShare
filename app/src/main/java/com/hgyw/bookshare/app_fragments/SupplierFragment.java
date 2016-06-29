@@ -2,21 +2,15 @@ package com.hgyw.bookshare.app_fragments;
 
 
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.util.Pair;
 import android.view.View;
-import android.widget.Toast;
 
 import com.hgyw.bookshare.app_drivers.CancelableLoadingDialogAsyncTask;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.entities.ImageEntity;
 import com.hgyw.bookshare.app_drivers.ObjectToViewUpdates;
-import com.hgyw.bookshare.app_drivers.Utility;
-import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.GeneralAccess;
@@ -36,9 +30,9 @@ public class SupplierFragment extends EntityFragment {
         activity = getActivity();
         super.onViewCreated(view, savedInstanceState);
         if (savedInstanceState == null) {
-            new CancelableLoadingDialogAsyncTask<Void, Void, Pair<User,ImageEntity>>(activity) {
+            new CancelableLoadingDialogAsyncTask<Pair<User,ImageEntity>>(activity) {
                 @Override
-                protected Pair<User,ImageEntity> retrieveDataAsync(Void... params) {
+                protected Pair<User,ImageEntity> retrieveDataAsync() {
                     GeneralAccess access = AccessManagerFactory.getInstance().getGeneralAccess();
                     User supplier = access.retrieve(User.class, entityId);
                     ImageEntity userImage = access.retrieveOptional(ImageEntity.class, supplier.getImageId()).orElse(null);

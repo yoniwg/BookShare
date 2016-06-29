@@ -5,11 +5,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
-import android.view.ContextMenu;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -18,9 +14,9 @@ import com.hgyw.bookshare.app_drivers.CancelableLoadingDialogAsyncTask;
 import com.hgyw.bookshare.app_drivers.IntentsFactory;
 import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
 import com.hgyw.bookshare.app_drivers.ObjectToViewUpdates;
+import com.hgyw.bookshare.app_drivers.OrderUtility;
 import com.hgyw.bookshare.app_drivers.Utility;
 import com.hgyw.bookshare.entities.Book;
-import com.hgyw.bookshare.entities.BookSupplier;
 import com.hgyw.bookshare.entities.IdReference;
 import com.hgyw.bookshare.entities.ImageEntity;
 import com.hgyw.bookshare.entities.Order;
@@ -28,7 +24,6 @@ import com.hgyw.bookshare.entities.OrderStatus;
 import com.hgyw.bookshare.entities.Transaction;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.entities.UserType;
-import com.hgyw.bookshare.logicAccess.AccessManager;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.CustomerAccess;
 import com.hgyw.bookshare.logicAccess.GeneralAccess;
@@ -52,16 +47,16 @@ public class OrderFragment extends EntityFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        new CancelableLoadingDialogAsyncTask<Void, Void, Object[]>(getActivity()) {
+        new CancelableLoadingDialogAsyncTask<Object[]>(getActivity()) {
 
             @Override
-            protected Object[] retrieveDataAsync(Void... params) {
+            protected Object[] retrieveDataAsync() {
                 GeneralAccess access = AccessManagerFactory.getInstance().getGeneralAccess();
                 Order order = access.retrieve(Order.class, entityId);
-                Book book = access.retrieve(Book.class, Utility.getBookId(order));
+                Book book = access.retrieve(Book.class, OrderUtility.getBookId(order));
                 Transaction transaction = access.retrieve(Transaction.class, order.getTransactionId());
                 ImageEntity bookImage = access.retrieveOptional(ImageEntity.class, book.getImageId()).orElse(null);
-                User user = access.retrieve(User.class, access.getUserType() == UserType.CUSTOMER ? Utility.getSupplierId(order) : transaction.getCustomerId());
+                User user = access.retrieve(User.class, access.getUserType() == UserType.CUSTOMER ? OrderUtility.getSupplierId(order) : transaction.getCustomerId());
                 return new Object[]{order, book, user, transaction, bookImage};
             }
 

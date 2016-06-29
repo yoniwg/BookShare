@@ -56,8 +56,8 @@ public abstract class UserAbstractActivity extends AppCompatActivity {
         imageView.setOnClickListener(v -> Utility.startGetImage(this));
 
         if (savedInstanceState == null) {
-            new CancelableLoadingDialogAsyncTask<Void,Void,Pair<User,ImageEntity>>(this) {
-                @Override protected Pair<User,ImageEntity> retrieveDataAsync(Void... params) {
+            new CancelableLoadingDialogAsyncTask<Pair<User,ImageEntity>>(this) {
+                @Override protected Pair<User,ImageEntity> retrieveDataAsync() {
                     User u = isRegistration ? new User() : access.retrieveUserDetails();
                     ImageEntity i = access.retrieveOptional(ImageEntity.class, u.getImageId()).orElse(null);
                     return new Pair<>(u, i);
@@ -109,9 +109,9 @@ public abstract class UserAbstractActivity extends AppCompatActivity {
     }
 
     private void onOkButton() {
-        new ProgressDialogAsyncTask<Void, Void, Void>(this) {
+        new ProgressDialogAsyncTask<Void>(this) {
             @Override
-            protected Void retrieveDataAsync(Void... params) {
+            protected Void retrieveDataAsync() {
                 if (newImage != null) {
                     long imageId = AccessManagerFactory.getInstance().getGeneralAccess().upload(Utility.compress(newImage));
                     if (imageId != 0) {

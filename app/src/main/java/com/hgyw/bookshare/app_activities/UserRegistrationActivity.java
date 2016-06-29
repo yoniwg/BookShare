@@ -22,9 +22,9 @@ public class UserRegistrationActivity extends UserAbstractActivity {
     // register new user
     public void onOkButton(User user) {
         AccessManager accessManager = AccessManagerFactory.getInstance();
-        new ProgressDialogAsyncTask<Void,Void,WrongLoginException>(this, R.string.registering) {
+        new ProgressDialogAsyncTask<WrongLoginException>(this, R.string.registering) {
             @Override
-            protected WrongLoginException retrieveDataAsync(Void... params) {
+            protected WrongLoginException retrieveDataAsync() {
                 try {
                     accessManager.signUp(user);
                     return null;

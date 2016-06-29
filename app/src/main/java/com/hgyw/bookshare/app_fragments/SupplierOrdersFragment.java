@@ -66,7 +66,7 @@ public class SupplierOrdersFragment extends ListFragment implements TitleFragmen
 
         DateRangeBar dateRangeBar = (DateRangeBar) view.findViewById(R.id.dateRangeBar);
         dateRangeBar.setDateRangeListener(this);
-        onRangeChange(dateRangeBar); // initial values (the 'dateRange' field)
+        onRangeChange(dateRangeBar); // initial values (this.dateRange field)
 
 
         adapter = new GoodAsyncListAdapter<Order>(activity, R.layout.old_order_list_item, this) {

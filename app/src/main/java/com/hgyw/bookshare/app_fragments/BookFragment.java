@@ -35,7 +35,6 @@ import com.hgyw.bookshare.entities.Rating;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.entities.UserType;
 import com.hgyw.bookshare.exceptions.OrdersTransactionException;
-import com.hgyw.bookshare.logicAccess.AccessManager;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.CustomerAccess;
 import com.hgyw.bookshare.logicAccess.SupplierAccess;
@@ -98,13 +97,13 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
         Button allReviewsButton = (Button) view.findViewById(R.id.all_reviews_button);
         userRatingBar = (RatingBar) userReviewContainer.findViewById(R.id.userRatingBar);
 
-        new CancelableLoadingDialogAsyncTask<Void,Void,Void>(activity) {
+        new CancelableLoadingDialogAsyncTask<Void>(activity) {
             List<BookReview> bookReviews;
             List<BookSupplier> bookSuppliers;
-            Optional<BookReview> oUserBookReview;
+            Optional<BookReview> oUserBookReview = Optional.empty();
 
             @Override
-            protected Void retrieveDataAsync(Void... params) {
+            protected Void retrieveDataAsync() {
                 // get book and user-review data
                 book = access.retrieve(Book.class, entityId);
                 bookImage = access.retrieveOptional(ImageEntity.class, book.getImageId()).orElse(null);
@@ -185,9 +184,9 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
     }
 
     private void updateBookView() {
-        new ProgressDialogAsyncTask<View, View, Book>(activity) {
+        new ProgressDialogAsyncTask<Book>(activity) {
             @Override
-            protected Book retrieveDataAsync(View... params) {
+            protected Book retrieveDataAsync() {
                 return book = access.retrieve(Book.class, book.getId());
             }
 
@@ -280,9 +279,9 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
     }
 
     private void removeBook() {
-        new ProgressDialogAsyncTask<Void, Void, Void>(activity) {
+        new ProgressDialogAsyncTask<Void>(activity) {
             @Override
-            protected Void retrieveDataAsync(Void... params) {
+            protected Void retrieveDataAsync() {
                 AccessManagerFactory.getInstance().getSupplierAccess().removeBook(book);
                 return null;
             }
@@ -296,9 +295,9 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
     }
 
     private void startBookSupplierDialogAsync() {
-        new CancelableLoadingDialogAsyncTask<Void,Void,BookSupplier>(activity) {
+        new CancelableLoadingDialogAsyncTask<BookSupplier>(activity) {
             @Override
-            protected BookSupplier retrieveDataAsync(Void... params) {
+            protected BookSupplier retrieveDataAsync() {
                 return oCurrentBookSupplier.orElseGet(() -> {
                             BookSupplier bs = new BookSupplier();
                             bs.setBookId(entityId);
@@ -321,9 +320,9 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
         if (canceled) {
             userRatingBar.setRating(oldUserRating.getStars());
         } else {
-            new ProgressDialogAsyncTask<Void, Void, Void>(activity) {
+            new ProgressDialogAsyncTask<Void>(activity) {
                 @Override
-                protected Void retrieveDataAsync(Void... params) {
+                protected Void retrieveDataAsync() {
                     // apply the customer details
                     CustomerAccess cAccess = (CustomerAccess) access;
                     cAccess.writeBookReview(bookReview);
@@ -363,9 +362,9 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
         SupplierAccess sAccess = AccessManagerFactory.getInstance().getSupplierAccess();
         boolean isNewBook = bookSupplier.getId() == 0;
 
-        new ProgressDialogAsyncTask<Void,Void,Void>(activity, R.string.updating_book_supplying) {
+        new ProgressDialogAsyncTask<Void>(activity, R.string.updating_book_supplying) {
             @Override
-            protected Void retrieveDataAsync(Void... params) {
+            protected Void retrieveDataAsync() {
                 if (isNewBook) {
                     sAccess.addBookSupplier(bookSupplier);
                 } else {
@@ -387,8 +386,8 @@ public class BookFragment extends EntityFragment implements BookReviewDialogFrag
 
     private void deleteBookSupplier(BookSupplier bookSupplier) {
         SupplierAccess sAccess = AccessManagerFactory.getInstance().getSupplierAccess();
-        new ProgressDialogAsyncTask<Void, Void, Void>(activity, R.string.updating_book_supplying) {
-            @Override protected Void retrieveDataAsync(Void... params) {
+        new ProgressDialogAsyncTask<Void>(activity, R.string.updating_book_supplying) {
+            @Override protected Void retrieveDataAsync() {
                 sAccess.removeBookSupplier(bookSupplier);
                 return null;
             }

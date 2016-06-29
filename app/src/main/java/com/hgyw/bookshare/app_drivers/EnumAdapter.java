@@ -1,13 +1,15 @@
 package com.hgyw.bookshare.app_drivers;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 /**
- * Created by haim7 on 11/05/2016.
+ * Adapter that gets enum values, and show them in list as ArrayAdapter.
+ * The string of enums value get by {@link Utility#findStringResourceOfEnum}() method.
  */
 public class EnumAdapter<E extends Enum<E>> extends ArrayAdapter<E> {
     String[] strings;
@@ -19,7 +21,12 @@ public class EnumAdapter<E extends Enum<E>> extends ArrayAdapter<E> {
         }
     }
 
-    public EnumAdapter(Context context, int resource, E[] objects) {
+    /**
+     * @param context the context
+     * @param resource layout resource
+     * @param objects enum values
+     */
+    public EnumAdapter(Context context, @LayoutRes int resource, E[] objects) {
         super(context, resource, objects);
     }
 

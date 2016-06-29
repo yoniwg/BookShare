@@ -7,7 +7,6 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -23,9 +22,6 @@ import android.provider.MediaStore;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
-import android.support.annotation.MainThread;
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,12 +59,9 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 /**
- * Created by haim7 on 11/05/2016.
+ * Utilities
  */
 public class Utility {
-
-    private static final String PREFERENCE_USERNAME = "preference_username";
-    private static final String PREFERENCE_PASSWORD = "preference_password";
 
     /**
      * @param idsClass
@@ -139,6 +132,11 @@ public class Utility {
     // String Utility
     ///////////////////////
 
+    /**
+     * Get string from string resources to enum value. <br>
+     * The string resources id should be: 'enumName_valueName' where all are lowercase.
+     * If string resource is not found, then it returns the original name of the enum.
+     */
     public static String findStringResourceOfEnum(Context context, Enum<?> enumValue) {
         String idName = enumValue.getClass().getSimpleName().toLowerCase() + "_" + enumValue.name().toLowerCase();
         int id = findIdByString(R.string.class, idName);
@@ -149,16 +147,25 @@ public class Utility {
         return string;
     }
 
-
-    public static String moneyToNumberString(BigDecimal beginPrice) {
-        return beginPrice.setScale(2, BigDecimal.ROUND_CEILING).toString();
-    }
-
+    /**
+     * returns formatted string of money
+     */
     public static String moneyToString(BigDecimal minPrice) {
         final char newShekelSign = '\u20AA';
         return moneyToNumberString(minPrice) + newShekelSign;
     }
 
+    /**
+     * returns formatted string of money, that contains only decimal number (no currency sign).
+     */
+    public static String moneyToNumberString(BigDecimal beginPrice) {
+        return beginPrice.setScale(2, BigDecimal.ROUND_CEILING).toString();
+    }
+
+    /**
+     * returns formatted string for rang of string. <br>
+     * if both two calue are zeros, then it will return string "---".
+     */
     public static String moneyRangeToString(BigDecimal minPrice, BigDecimal maxPrice) {
         if (minPrice.compareTo(maxPrice) == 0) {
             if (minPrice.compareTo(BigDecimal.ZERO) == 0) return "---";
@@ -167,11 +174,27 @@ public class Utility {
         return moneyToString(minPrice) + " \u2014 " + moneyToString(maxPrice);
     }
 
+    /**
+     * return formatted string of user name (first and second).
+     * @param user the user
+     */
     public static String userNameToString(User user) {
         String firstName = user.getFirstName() == null ? "" : user.getFirstName();
         String lastName = user.getLastName() == null ? "" : user.getLastName();
         return firstName + " " + lastName;
     }
+
+    public static String datetimeToString(Date date) {
+        return DateFormat.getDateTimeInstance().format(date);
+    }
+
+    public static String dateToString(Date date) {
+        return DateFormat.getDateInstance().format(date);
+    }
+
+    ///////////////////////////////
+    // Images methods
+    ///////////////////////////////
 
     private static byte[] readBytesFromURI(Context context, Uri uri) throws IOException {
         // this dynamically extends to take the bytes you read
@@ -281,31 +304,6 @@ public class Utility {
         return output;
     }
 
-    private static SharedPreferences getSharedPreferences(Context context) {
-        return context.getSharedPreferences(context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-    }
-
-    public static String datetimeToString(Date date) {
-        return DateFormat.getDateTimeInstance().format(date);
-    }
-
-    public static String dateToString(Date date) {
-        return DateFormat.getDateInstance().format(date);
-    }
-
-    public static <T extends Enum<T>> void setSpinnerToEnum(Context context, Spinner genreSpinner, T[] values) {
-        if (genreSpinner instanceof MultiSpinner) {
-            MultiSpinner multiSpinner = (MultiSpinner) genreSpinner;
-            List<String> stringItems = Stream.of(values).map(e -> findStringResourceOfEnum(context, e)).collect(Collectors.toList());
-            multiSpinner.setItems(stringItems, context.getString(R.string.all));
-
-        } else {
-            ArrayAdapter arrayAdapter = new EnumAdapter<>(context, android.R.layout.simple_spinner_item, Book.Genre.values());
-            arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            genreSpinner.setAdapter(arrayAdapter);
-        }
-
-    }
 
     /**
      * Compress image for upload to data-base
@@ -314,6 +312,17 @@ public class Utility {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         newImage.compress(Bitmap.CompressFormat.JPEG, 50, out);
         return out.toByteArray();
+    }
+
+    ///////////////////////
+    // SharedPreferences methods
+    ///////////////////////
+
+    private static final String PREFERENCE_USERNAME = "preference_username";
+    private static final String PREFERENCE_PASSWORD = "preference_password";
+
+    private static SharedPreferences getSharedPreferences(Context context) {
+        return context.getSharedPreferences(context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
     }
 
     public static Credentials loadCredentials(Context context){
@@ -329,6 +338,19 @@ public class Utility {
                 .putString(PREFERENCE_PASSWORD, credentials.getPassword()).commit();
     }
 
+    /////////////////////////
+    // Others
+    /////////////////////////
+
+    /**
+     * add view to viewGroup, that its content is of the layout, and set according to list by viewConsumer.
+     * @param viewGroup the viewGroup to which will add
+     * @param list the list of data
+     * @param layout layout for view
+     * @param viewConsumer consumer gets view and item from list and set the view according to list.
+     * @param <T> type of list items.
+     * @return map of items to view is associated with.
+     */
     public static <T> Map<T,View> addViewsByList(ViewGroup viewGroup, List<T> list, @LayoutRes int layout , BiConsumer<View, T> viewConsumer) {
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
 
@@ -348,46 +370,26 @@ public class Utility {
         return viewsMap;
     }
 
-    // field for caching bookSupplier
-    private static BookSupplier bs = new BookSupplier();
-
-    public static BookSupplier getBsOfOrder(Order order) {
-        if (bs.getId() == order.getBookSupplierId()) return bs;
-        if (Looper.myLooper() == Looper.getMainLooper()) {
-            try {
-                return new AsyncTask<Void, Void, BookSupplier>() {
-                    @Override
-                    protected BookSupplier doInBackground(Void... params) {
-                        return getBsOfOrder(order);
-                    }
-                }.execute().get();
-            } catch (InterruptedException | ExecutionException ignored) {}
+    /**
+     * set spinner to unum values.
+     */
+    public static <T extends Enum<T>> void setSpinnerToEnum(Context context, Spinner spinner, T[] values) {
+        if (spinner instanceof MultiSpinner) {
+            MultiSpinner multiSpinner = (MultiSpinner) spinner;
+            List<String> stringItems = Stream.of(values).map(e -> findStringResourceOfEnum(context, e)).collect(Collectors.toList());
+            multiSpinner.setItems(stringItems, context.getString(R.string.all));
+        } else {
+            ArrayAdapter arrayAdapter = new EnumAdapter<>(context, android.R.layout.simple_spinner_item, Book.Genre.values());
+            arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinner.setAdapter(arrayAdapter);
         }
-        GeneralAccess access = AccessManagerFactory.getInstance().getGeneralAccess();
-        bs = access.retrieve(BookSupplier.class, order.getBookSupplierId());
-        return bs;
+
     }
 
     /**
-     * Because the order should not refer to book supplier, bur refer to supplier and book directly,
-     * use this method to get the supplierId of order.
-     * @param order
-     * @return
+    *  set listener to views with viewIds that they are children of parentView
+     *  . if view with such id is not found, then this id will be ignored.
      */
-    public synchronized static long getSupplierId(Order order) {
-        return getBsOfOrder(order).getSupplierId();
-    }
-
-    /**
-     * Because the order should not refer to book supplier, bur refer to supplier and book directly,
-     * use this method to get the bookId of order.
-     * @param order
-     * @return
-     */
-    public synchronized static long getBookId(Order order) {
-        return getBsOfOrder(order).getBookId();
-    }
-
     public static void setListenerForAll(View parentView, View.OnClickListener listener, @IdRes int... viewIds) {
         for (int id : viewIds) {
             View view = parentView.findViewById(id);
@@ -398,7 +400,9 @@ public class Utility {
         }
     }
 
-    // start google search
+    /*
+     * start web search by default web searcher or by google.com if not found
+      */
     public static void startSearchActivity(Context context, String query) {
         try {
             Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
@@ -409,43 +413,6 @@ public class Utility {
             i.setData(Uri.parse("https://www.google.com/search?q=" + Uri.encode(query, "UTF-8")));
             context.startActivity(i);
         }
-    }
-
-    public static void updateBookAsync(Context context, BookSupplier bookSupplier) {
-        SupplierAccess sAccess = AccessManagerFactory.getInstance().getSupplierAccess();
-        boolean isNewBook = bookSupplier == null || bookSupplier.getId() == 0;
-
-        new ProgressDialogAsyncTask<Void,Void,Void>(context, R.string.updating_book_supplying) {
-            @Override
-            protected Void retrieveDataAsync(Void... params) {
-                if (isNewBook) {
-                    sAccess.addBookSupplier(bookSupplier);
-                } else {
-                    sAccess.updateBookSupplier(bookSupplier);
-                }
-                return null;
-            }
-
-            @Override
-            protected void doByData(Void aVoid) {
-                int messageRedId = isNewBook ? R.string.book_was_added_to_supplier : R.string.book_was_updated_to_supplier;
-                Toast.makeText(context, messageRedId, Toast.LENGTH_SHORT).show();
-                context.startActivity(IntentsFactory.supplierBooksIntent(context));
-            }
-        }.execute();
-    }
-
-    public static void deleteBookAsync(Context context, BookSupplier bookSupplier) {
-        SupplierAccess sAccess = AccessManagerFactory.getInstance().getSupplierAccess();
-        new ProgressDialogAsyncTask<Void, Void, Void>(context, R.string.updating_book_supplying) {
-            @Override protected Void retrieveDataAsync(Void... params) {
-                sAccess.removeBookSupplier(bookSupplier);
-                return null;
-            }
-            @Override protected void doByData(Void aVoid) {
-                Toast.makeText(context,R.string.book_was_removed_from_supplier, Toast.LENGTH_SHORT).show();
-            }
-        }.execute();
     }
 
 }

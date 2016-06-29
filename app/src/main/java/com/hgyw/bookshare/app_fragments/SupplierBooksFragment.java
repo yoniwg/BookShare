@@ -97,8 +97,8 @@ public class SupplierBooksFragment extends ListFragment implements TitleFragment
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setMessage(R.string.remove_from_my_books_message)
                     .setPositiveButton(R.string.yes, (dialog, which) -> {
-                        new ProgressDialogAsyncTask<Void, Void, Void>(activity) {
-                            @Override protected Void retrieveDataAsync(Void... params) {
+                        new ProgressDialogAsyncTask<Void>(activity) {
+                            @Override protected Void retrieveDataAsync() {
                                 sAccess.removeBookSupplier(bookSupplier); return null;
                             }
                             @Override protected void doByData(Void aVoid) {
@@ -131,8 +131,8 @@ public class SupplierBooksFragment extends ListFragment implements TitleFragment
     public void onBookSupplierResult(ResultCode result, BookSupplier bookSupplier) {
         switch (result) {
             case OK:
-                new ProgressDialogAsyncTask<Void, Void, Void>(activity) {
-                    @Override protected Void retrieveDataAsync(Void... params) {
+                new ProgressDialogAsyncTask<Void>(activity) {
+                    @Override protected Void retrieveDataAsync() {
                         sAccess.updateBookSupplier(bookSupplier); return null;
                     }
                     @Override protected void doByData(Void aVoid) {

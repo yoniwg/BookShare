@@ -17,9 +17,9 @@ public class UserEditActivity extends UserAbstractActivity {
 
     @Override
     public void onOkButton(User user) {
-        new ProgressDialogAsyncTask<Void, Void, Void>(this) {
+        new ProgressDialogAsyncTask<Void>(this) {
             @Override
-            protected Void retrieveDataAsync(Void... params) {
+            protected Void retrieveDataAsync() {
                 AccessManagerFactory.getInstance().getGeneralAccess().updateUserDetails(user); return null;
             }
 

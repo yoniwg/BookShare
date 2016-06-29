@@ -1,16 +1,13 @@
 package com.hgyw.bookshare.app_activities;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.util.AttributeSet;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -79,9 +76,9 @@ public class NewTransactionActivity extends AppCompatActivity implements DialogI
     }
 
     private void retrieveCustomerAccess(EditText shippingAddress){
-            new ProgressDialogAsyncTask<Void, Void, String>(this, R.string.loading_information) {
+            new ProgressDialogAsyncTask<String>(this, R.string.loading_information) {
                 @Override
-                protected String retrieveDataAsync(Void... params) {
+                protected String retrieveDataAsync() {
                     String s = cAccess.retrieveUserDetails().getAddress();
                     System.out.println("Customer Address: " + s);
                     return s;
@@ -153,11 +150,11 @@ public class NewTransactionActivity extends AppCompatActivity implements DialogI
                  * This async-task try to perform new transaction.
                  * If OrdersTransactionException is thrown it returns it to the main thread
                  */
-                new ProgressDialogAsyncTask<Void, Void, OrdersTransactionException>(this) {
+                new ProgressDialogAsyncTask<OrdersTransactionException>(this) {
                     public IdReference transaction;
 
                     @Override
-                    protected OrdersTransactionException retrieveDataAsync(Void... params) {
+                    protected OrdersTransactionException retrieveDataAsync() {
                         try { transaction = cAccess.performNewTransaction(); return null; }
                         catch (OrdersTransactionException e) { return e; }
                     }

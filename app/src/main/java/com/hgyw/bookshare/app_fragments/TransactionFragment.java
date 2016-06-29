@@ -46,11 +46,11 @@ public class TransactionFragment extends EntityFragment {
         super.onViewCreated(view, savedInstanceState);
         ViewGroup linearLayout = (ViewGroup) view.findViewById(R.id.mainListView);
 
-        new CancelableLoadingDialogAsyncTask<Void, Void, List<Order>>(activity) {
+        new CancelableLoadingDialogAsyncTask<List<Order>>(activity) {
             public BigDecimal transactionTotalPrice;
 
             @Override
-            protected List<Order> retrieveDataAsync(Void... params) {
+            protected List<Order> retrieveDataAsync() {
                 transaction = cAccess.retrieve(Transaction.class, entityId);
                 transactionTotalPrice = access.calcTotalPriceOfTransaction(transaction);
                 return cAccess.retrieveOrdersOfTransaction(transaction);

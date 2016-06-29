@@ -199,4 +199,5 @@
     <string name="order_status_changed">The order status has changed</string>
     <string name="loading_information">Loading Information</string>
     <string name="toast_review_updated">The review was updated.</string>
+    <string name="canceling">canceling</string>
 </resources>
