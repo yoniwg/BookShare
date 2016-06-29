@@ -16,14 +16,16 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 /**
- * Created by haim7 on 27/05/2016.
+ * Simple http requests return String contains the result of request.
  */
-public class Http {
+class Http {
 
     private static final String UTF_8 = StandardCharsets.UTF_8.name();
 
     /**
      * Get http
+     * @param urlString The full http url, include request's parameters
+     * @return the result of request
      */
     public static String get(String urlString) throws IOException {
         URL url = new URL(urlString);
@@ -32,6 +34,12 @@ public class Http {
         return readAllOfHttpUrlConnection(con);
     }
 
+    /**
+     * Get http with parameters provided
+     * @param urlString The full http url, without request's parameters
+     * @param params parameters of HTTP request
+     * @return the result of request
+     */
     public static String get(String urlString, Map<String,?> params) throws IOException {
         String parametersString = Stream.of(params.entrySet())
                 .map(kv -> encodeUrl(kv.getKey()) + '=' + encodeUrl(kv.getValue().toString()))
@@ -41,6 +49,9 @@ public class Http {
 
     /**
      * Post http
+     * @param urlString The full http url
+     * @param params parameters of HTTP request
+     * @return the result of request
      */
     public static String post(String urlString, Map<String,?> params) throws IOException {
         String parametersString = Stream.of(params.entrySet())
@@ -83,13 +94,13 @@ public class Http {
     }
 
     /**
-     * Encode text to uri string for post http
+     * Encode text to uri string for http request parameters
      */
     private static String encodeUrl(String text) {
         try {
             return URLEncoder.encode(text, UTF_8);
         } catch (UnsupportedEncodingException e) {
-            throw new InternalError("Should not occurs because the charset is legal");
+            throw new Error("Should not occurs because the charset is legal");
         }
     }
 }

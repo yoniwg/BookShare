@@ -3,6 +3,9 @@ package com.hgyw.bookshare.entities;
 import java.io.Serializable;
 import java.util.Objects;
 
+/**
+ * Class for username and password
+ */
 public final class Credentials implements Serializable {
 
     public static final Credentials empty() { return  new Credentials("", ""); }

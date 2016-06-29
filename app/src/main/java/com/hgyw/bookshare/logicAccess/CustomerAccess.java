@@ -122,10 +122,18 @@ public interface CustomerAccess extends GeneralAccess {
      * add book to cart by book supplier
      * @param bookSupplier
      * @param amount
+     * @throws OrdersTransactionException if there is not enough amount
      */
     void addBookSupplierToCart(BookSupplier bookSupplier, int amount) throws OrdersTransactionException;
 
+    /**
+     * Retrieve transactions of current user
+     */
     List<Transaction> retrieveTransactions(Date fromDate, Date toDate);
 
+    /**
+     * Retrieve orders of transaction
+     * @throws IllegalArgumentException if transaction is not of current user
+     */
     List<Order> retrieveOrdersOfTransaction(Transaction transaction);
 }

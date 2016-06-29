@@ -13,12 +13,12 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Created by haim7 on 09/05/2016.
+ * Test logic access
  */
 public class Test {
 
     public static void test(AccessManager accessManager) {
-           // testInternal(accessManager);
+           testInternal(accessManager);
     }
 
     private static void testInternal(AccessManager accessManager) {

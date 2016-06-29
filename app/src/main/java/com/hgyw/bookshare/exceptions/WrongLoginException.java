@@ -15,7 +15,6 @@ public class WrongLoginException extends Exception {
     public enum Issue{
         WRONG_USERNAME_OR_PASSWORD("Wrong username and password"),
         USERNAME_TAKEN("Username is taken."),
-        //ACCESS_ILLEGAL_CUSTOMER_OR_SUPPLIER("The access is not legal. (current user is not customer/supplier)"),
         USERNAME_EMPTY("Username is empty"),
         SOMEBODY_IS_ALREADY_SIGNED_IN("There is a user that has already been signed in."),
         ;

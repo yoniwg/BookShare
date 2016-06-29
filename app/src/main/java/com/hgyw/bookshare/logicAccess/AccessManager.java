@@ -22,7 +22,7 @@ public interface AccessManager {
      * Sign up new user. Auto sign in if the registration has succeed
      * @param user The user to sign up.
      * @throws IllegalArgumentException if user is not instance of Customer or Supplier. or user id is not 0.
-     * @throws WrongLoginException if the username is taken.
+     * @throws WrongLoginException if the username is taken or empty.
      */
     void signUp(User user) throws WrongLoginException;
 

@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Created by haim7 on 10/05/2016.
+ * Summary details for book
  */
 public class BookSummary {
 

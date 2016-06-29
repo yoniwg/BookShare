@@ -5,11 +5,9 @@ import android.content.Context;
 import com.hgyw.bookshare.MyApplication;
 
 /**
- * Created by Yoni on 3/17/2016.
+ * Static factory for {@link DataAccess} interface.
  */
 public class DataAccessFactory {
-
-    private static final boolean PSEUDO_DELAY_TEST = false;
 
     private enum DatabaseType {
         LISTS {
@@ -37,7 +35,7 @@ public class DataAccessFactory {
 
     private static DataAccess dataAccess;
 
-    private DataAccessFactory() {}
+    private DataAccessFactory() {}  // restrict instantiation
 
     /**
      * @return
@@ -45,7 +43,6 @@ public class DataAccessFactory {
     static synchronized public DataAccess getInstance(){
         if (dataAccess == null) {
             dataAccess = currentDB.createDataAccess();
-            if (PSEUDO_DELAY_TEST) dataAccess = new DelayDataAccess(dataAccess);
         }
         return dataAccess;
 

@@ -38,7 +38,6 @@ public class Order extends Entity {
         return getUnitPrice().multiply(BigDecimal.valueOf(getAmount()));
     }
 
-    @Deprecated
     public long getBookSupplierId() {
         return bookSupplierId;
     }

@@ -3,12 +3,10 @@ package com.hgyw.bookshare.app_activities;
 import android.app.ListActivity;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.util.Pair;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListAdapter;
-import android.widget.TextView;
 
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.app_drivers.ApplyObjectAdapter;
@@ -16,9 +14,7 @@ import com.hgyw.bookshare.app_drivers.ObjectToViewUpdates;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookReview;
 import com.hgyw.bookshare.entities.ImageEntity;
-import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.entities.User;
-import com.hgyw.bookshare.logicAccess.AccessManager;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.GeneralAccess;
 

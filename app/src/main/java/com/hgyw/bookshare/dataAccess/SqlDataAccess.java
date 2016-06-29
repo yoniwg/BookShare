@@ -54,7 +54,7 @@ abstract class SqlDataAccess implements DataAccess {
                 + Stream.of(EntityReflection.getEntityTypes())
                     .map(type -> " '" + type.getSimpleName() + "' => array("
                         + Stream.of(getProperties(type).values())
-                            .map(p -> "'" + p.getName() + "'=>'" + sqlConverters.findFullConverter(p.getPropertyType()).getSqlTypeName() + "'")
+                            .map(p -> "'" + p.getName() + "'=>'" + sqlConverters.findFullConverter(p.getPropertyType()).getSqlType() + "'")
                             .collect(Collectors.joining(", "))
                         + ")"
                     ).collect(Collectors.joining(",\n"))
@@ -66,7 +66,7 @@ abstract class SqlDataAccess implements DataAccess {
         String sqlColumnTypeList = Stream.of(getProperties(type).values())
                 .map(p -> {
                     String columnName = p.getName();
-                    String columnType = sqlConverters.findFullConverter(p.getPropertyType()).getSqlTypeName();
+                    String columnType = sqlConverters.findFullConverter(p.getPropertyType()).getSqlType();
                     boolean isPrimaryKey = p.getName().equals(ID_KEY);
                     String primaryKey = isPrimaryKey ? idColumnAdditionalProperties : "";
                     return columnName + " " + columnType + " " + primaryKey;
@@ -235,7 +235,7 @@ abstract class SqlDataAccess implements DataAccess {
         if (value == null) return "'null'";
 
         FullConverter converter = sqlConverters.findFullConverter(value.getClass());
-        String sqlType = converter.getSqlTypeName();
+        String sqlType = converter.getSqlType();
 
         String sqlValue = converter.convert(value).toString();
         if (sqlType.isEmpty() && value instanceof String || !sqlType.isEmpty() && (sqlType.contains("CHAR") || sqlType.contains("TEXT"))){
@@ -291,7 +291,7 @@ abstract class SqlDataAccess implements DataAccess {
     protected Map<String,Property> getProperties(Class<?> aClass) {
         Map<String,Property> properties = propertiesMaps.get(aClass);
         if (properties == null) {
-            Collection<Property> propertyCollection = Properties.getFlatProperties(aClass, SUB, sqlConverters::canConvertFrom);
+            Collection<Property> propertyCollection = Properties.getFlatProperties(aClass, SUB, sqlConverters::hasConverterFrom);
             properties = Stream.of(propertyCollection).collect(Collectors.toMap(Property::getName, o->o));
             propertiesMaps.put(aClass, properties);
         }

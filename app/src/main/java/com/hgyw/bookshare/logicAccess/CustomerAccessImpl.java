@@ -60,6 +60,7 @@ class CustomerAccessImpl extends GeneralAccessImpl implements CustomerAccess {
 
     @Override
     public List<Order> retrieveOrdersOfTransaction(Transaction transaction) {
+        requireItsMeForAccess(UserType.CUSTOMER, transaction.getCustomerId());
         return dataAccess.findEntityReferTo(Order.class, transaction);
     }
 

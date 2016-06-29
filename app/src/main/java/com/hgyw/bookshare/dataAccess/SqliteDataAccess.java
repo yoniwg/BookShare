@@ -31,20 +31,20 @@ public class SqliteDataAccess extends SqlDataAccess {
 
     protected SqliteDataAccess(Context context) {
         super(new ConvertersCollection(
-                Converters.ofIdentity(String.class).withSqlName("TEXT"),
-                Converters.ofIdentity(Long.class).withSqlName("INTEGER"),
-                Converters.ofIdentity(Integer.class).withSqlName("INTEGER"),
-                Converters.fullConverter(Boolean.class, Integer.class, b->b?1:0, i -> i!=0).withSqlName("INTEGER"),
-                Converters.fullConverter(byte[].class, String.class, arr -> Base64.encodeToString(arr, 0), str -> Base64.decode(str,0)).withSqlName("TEXT"),
-                Converters.fullConverter(BigDecimal.class, String.class, Object::toString, BigDecimal::new, BigDecimal.ZERO).withSqlName("TEXT"),
+                Converters.ofIdentity(String.class).withSqlType("TEXT"),
+                Converters.ofIdentity(Long.class).withSqlType("INTEGER"),
+                Converters.ofIdentity(Integer.class).withSqlType("INTEGER"),
+                Converters.fullConverter(Boolean.class, Integer.class, b->b?1:0, i -> i!=0).withSqlType("INTEGER"),
+                Converters.fullConverter(byte[].class, String.class, arr -> Base64.encodeToString(arr, 0), str -> Base64.decode(str,0)).withSqlType("TEXT"),
+                Converters.fullConverter(BigDecimal.class, String.class, Object::toString, BigDecimal::new, BigDecimal.ZERO).withSqlType("TEXT"),
                 Converters.fullConverterInherit(Date.class, Long.class, Date::getTime,
                         Converters::newInstance,
                         type -> Converters.newInstance(type, System.currentTimeMillis()))
-                        .withSqlName("INTEGER"),
+                        .withSqlType("INTEGER"),
                 Converters.fullConverterInherit(Enum.class, Integer.class, Enum::ordinal,
                         (type, i) -> type.getEnumConstants()[i],
                         type -> type.getEnumConstants()[0])
-                        .withSqlName("INTEGER")
+                        .withSqlType("INTEGER")
         ), "primary key autoincrement");
 
         openHelper = new SQLiteOpenHelper(context, DATABASE_NAME , null, DATABASE_VERSION) {

@@ -8,15 +8,19 @@ import com.hgyw.bookshare.entities.UserType;
 import com.hgyw.bookshare.exceptions.WrongLoginException;
 
 /**
- * Created by Yoni on 3/13/2016.
+ * Singleton class, implements the AccessManager.
  */
 enum AccessManagerImpl implements AccessManager {
     INSTANCE;
 
-    private final User guest = new User(); {
+    // the guest user
+    private final User guest = new User();
+    {
         guest.setUserType(UserType.GUEST);
     }
+
     private final DataAccess dataAccess = DataAccessFactory.getInstance();
+
     private GeneralAccess currentAccess;
     private User currentUser;
 
@@ -57,6 +61,9 @@ enum AccessManagerImpl implements AccessManager {
         switchAccess(newUser);
     }
 
+    /**
+     * sets the user and the new access
+     */
     private synchronized void switchAccess(User newUser) {
         switch (newUser.getUserType()) {
             case GUEST:

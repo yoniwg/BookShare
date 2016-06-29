@@ -3,7 +3,9 @@ package com.hgyw.bookshare.entities;
 import java.util.Objects;
 
 /**
- * Created by haim7 on 04/05/2016.
+ * class that provides getId() and getEntityType() methods.
+ * This class has final {@link IdReference#equals(Object)} method, guaranty that every sub-class
+ * equals by the same conditions.
  */
 public abstract class IdReference {
 
@@ -12,7 +14,8 @@ public abstract class IdReference {
     public abstract Class<? extends Entity> getEntityType();
 
     /**
-     * @param entityClass not null class of <? extends Entity>
+     * Factory method for simple immutable IdReference.
+     * @param entityClass not null instance of Entity
      * @param id entityId
      * @return IdReference
      */
@@ -43,10 +46,6 @@ public abstract class IdReference {
         return this.getEntityType() == other.getEntityType() && this.getId() == other.getId();
     }
 
-    /**
-     * Hash code method.
-     * @return hash code.
-     */
     @Override
     public final int hashCode() {
         return Long.valueOf(getId()).hashCode();
@@ -57,7 +56,10 @@ public abstract class IdReference {
         return "{" + "id=" + getId() + ", entityType=" + getEntityType() +"}";
     }
 
-
+    /**
+     * @return IdReference refer to type and id of this object, by {@link IdReference#of(Class, long)}
+     * method. if this object created by that method, it will returns itself.
+     */
     public final IdReference toIdReference() {
         if (this.getClass() == IdReference.class) return this;
         return IdReference.of(getEntityType(), getId());

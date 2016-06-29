@@ -8,7 +8,7 @@ public enum  OrderStatus {
     NEW_ORDER, WAITING_FOR_PAYING, SENT, CLOSED, WAITING_FOR_CANCEL, CANCELED;
 
     /**
-     * check if an instance is active one
+     * check if on this status of order the order is active
      * @return - whether it is active order
      */
     public boolean isActive(){

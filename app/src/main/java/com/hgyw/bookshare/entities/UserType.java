@@ -1,7 +1,5 @@
 package com.hgyw.bookshare.entities;
 
-import java.util.NoSuchElementException;
-
 /**
  * Created by Yoni on 3/15/2016.
  */

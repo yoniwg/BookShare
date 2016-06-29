@@ -12,8 +12,9 @@ import java.lang.reflect.Modifier;
 import java.util.Objects;
 
 /**
- * Class represents property, that accepts getter and setter of reflection, and property name.
+ * Class represents property, that accepts getter and setter of java.reflection, and property name.
  * The setter can be null and then the property will be read-only.
+ * It can also get field for getting annotation.
  */
 class ReflectedProperty implements Property {
     private final String name;

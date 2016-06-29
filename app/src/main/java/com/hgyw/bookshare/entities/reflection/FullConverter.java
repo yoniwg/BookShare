@@ -2,8 +2,9 @@ package com.hgyw.bookshare.entities.reflection;
 
 /**
  * An interface for converter, an object that convert type to other type (the 'convert-type'), and
- * parse the type from the convert-type to the source type. <br/>
- * that it's a name that describe the type, for example 'BIGINT' for long for some databases.
+ * parse the type from the convert-type to the source type. <br>
+ * that it's a name that describe the type, for example 'BIGINT' for long for some databases. <br>
+ * ('Full converter' because it can both convert and parse).
  */
 public interface FullConverter<T,ConvertT> {
 
@@ -18,6 +19,9 @@ public interface FullConverter<T,ConvertT> {
      */
     Class<ConvertT> getConvertType();
 
+    /**
+     * CHeck whether this converter can convert from type.
+     */
     boolean canConvertFrom(Class<?> type);
 
     /**
@@ -33,9 +37,15 @@ public interface FullConverter<T,ConvertT> {
      */
     <R extends T> R parse(Class<R> type, ConvertT value);
 
-    String getSqlTypeName();
+    /**
+     * @return string of sql-type ("BIGINT" "TEXT" "DATE" etc.)
+     */
+    String getSqlType();
 
-    FullConverter<T,ConvertT> withSqlName(String sqlTypeName);
+    /**
+     * @return same object with new sqlTypeName. can be this object depend on implementation.
+     */
+    FullConverter<T,ConvertT> withSqlType(String sqlTypeName);
 
     /**
      * Returns a converter for same convert-type as this converter, but the source-type R is differ,

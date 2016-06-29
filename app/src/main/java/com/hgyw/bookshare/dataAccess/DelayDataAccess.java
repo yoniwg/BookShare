@@ -16,7 +16,8 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by haim7 on 23/05/2016.
+ * Wrapper class for DataAccess that makes delay on each access to database.
+ * (for development and debugging)
  */
 class DelayDataAccess implements DataAccess {
 

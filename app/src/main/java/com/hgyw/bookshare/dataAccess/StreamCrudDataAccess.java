@@ -30,7 +30,10 @@ import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.entities.reflection.EntityReflection;
 
 /**
- * Created by haim7 on 23/03/2016.
+ * An implementation to {@link DataAccess} that wrapped {@link StreamCrud} object and
+ * provide all DataAccess functionality.
+ * For remote database it might be unofficially, becouse the in queries it retrieves the whole
+ * table from the database.
  */
 class StreamCrudDataAccess implements DataAccess {
 
@@ -135,6 +138,7 @@ class StreamCrudDataAccess implements DataAccess {
                 .collect(Collectors.toList());
     }
 
+    // TODO documentation
     private Stream<BookSupplier> getDistinctBooksOfUser(User currentUser) {
         return streamAllNonDeleted(Order.class)
                 .filter(o -> retrieve(Transaction.class, o.getTransactionId()).getCustomerId() == currentUser.getId())
@@ -142,6 +146,7 @@ class StreamCrudDataAccess implements DataAccess {
                 .distinct();
     }
 
+    // TODO documentation
     private <T> List<T> getTopInstances(Stream<T> stream, int amount){
         Map<T, Integer> map = new HashMap<>();
         for (T t: stream.collect(Collectors.toList())) {
@@ -180,10 +185,16 @@ class StreamCrudDataAccess implements DataAccess {
         return bookSummary;
     }
 
+    /**
+     * Stream all items of specific entity, where item.deleted==false.
+     */
     public <T extends Entity> Stream<T> streamAllNonDeleted(Class<T> entityType) {
         return crud.streamAll(entityType).filter(e -> !e.isDeleted());
     }
 
+    /**
+     * Return whether the book match the bookQuery.
+     */
     private boolean performFilterQuery(Book book, BookQuery bookQuery) {
         BigDecimal price = streamAllNonDeleted(BookSupplier.class)
                 .filter(bs -> bs.getBookId() == book.getId())
@@ -197,6 +208,9 @@ class StreamCrudDataAccess implements DataAccess {
                 && isBetween(price, bookQuery.getBeginPrice(), bookQuery.getEndPrice());
     }
 
+    /**
+     * Returns whether the value is between the two values.
+     */
     private static <T extends Comparable<T>> boolean isBetween(T value, T fromValue, T toValue) {
         return (fromValue==null || value.compareTo(fromValue) >= 0)
                 && (toValue==null || value.compareTo(toValue) < 0);
@@ -207,7 +221,13 @@ class StreamCrudDataAccess implements DataAccess {
         return retrieve(idReference.getEntityType(), idReference.getId());
     }
 
-    public <T extends Entity, R extends Entity> Function<T, R> retrieving(Class<R> referredClass, Function<T, Long> referenceFunction) {
+    /**
+     * Returns {@link Function}, that gets item of entity T, and returns item of entity R
+     * ({@code referredClass}), by the {@code referenceFunction}.<br>
+     * For example: {@code retrieving(Book.class, BookSupplier::bookId)} will return function that
+     * gets BookSupplier and returns its Book.
+     */
+    private <T extends Entity, R extends Entity> Function<T, R> retrieving(Class<R> referredClass, Function<T, Long> referenceFunction) {
         return t -> retrieve(referredClass, referenceFunction.apply(t));
     }
 

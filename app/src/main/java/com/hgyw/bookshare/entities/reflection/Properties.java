@@ -17,8 +17,6 @@ import java.util.List;
  */
 public class Properties {
 
-    private static final boolean DEBUG = true;
-
     /**
      * Creates of all properties of class clazz, where key is the property name.
      * @param clazz
@@ -54,7 +52,10 @@ public class Properties {
     }
 
     /***
-     * returns stream of properties of aClass to sql
+     * Returns stream of properties of aClass to sql.
+     * Nested properties will be with subPropertySeparator, that is, 'p.name + subPropertySeparator + nestedP.name'.
+     * @throws IllegalArgumentException if there is property p that baseTypePredicate(p) is false,
+     * and it has not sub-properties.
      */
     public static List<Property> getFlatProperties(Class<?> aClass, String subPropertySeparator, Predicate<Class> baseTypePredicate) {
         return Stream.of(Properties.getProperties(aClass))
@@ -75,10 +76,9 @@ public class Properties {
                 }).collect(Collectors.toList());
     }
 
-    /*public static List<Property> getFlatProperties(Class<?> aClass, String subPropertySeparator, ConvertersCollection converters) {
-        return getFlatProperties(aClass, subPropertySeparator, converters::canConvertFrom);
-    }*/
-
+    /**
+     * return new property backed by property p, but with new name.
+     */
     public static Property renameProperty(Property p, String newName) {
         return new Property() {
             @Override public void set(Object o, Object value) {p.set(o, value);}
@@ -91,6 +91,15 @@ public class Properties {
         };
     }
 
+    /**
+     * Concave Properties class, gets two properties that p.type == p2.declaredClass, that is,
+     * p2 is nested property of p. <br>
+     * this property (the property of this class), will be with declaredClass of p and type of p2.
+     * so it will get/set by object of p.declaredClass, and the value of p2.type. The value will
+     * set to the nested object.<br>
+     * If the p.get(o) is null, then this.set(o, value) will try to create new instance of p.type
+     * and set it by p.set(o, newInstance). IllegalStateException will be thrown if it failed.
+     */
     private static class ConcaveProperties implements Property {
         private final Property p;
         private final Property p2;
@@ -109,7 +118,7 @@ public class Properties {
                 } catch (InstantiationException | IllegalAccessException e) {
                     String message = "Cannot set property '{0}.{1}', because the property '{1}' is null and has not public default constructor";
                     message = MessageFormat.format(message, p.getName(), p2.getName());
-                    throw new IllegalArgumentException(message);
+                    throw new IllegalStateException(message);
                 }
             }
             p2.set(pObject, value);
@@ -133,25 +142,6 @@ public class Properties {
             return "Nested-Property{'" + getName() + "'}";
         }
     }
-
-
-    public static Property convertProperty(Property p, FullConverter fullConverter) {
-        if (!fullConverter.canConvertFrom(p.getPropertyType())) {
-            String message = String.format("The converter (%s) cannot convert from property '%s' (of type %s)", fullConverter, p.getName(), p.getPropertyType());
-            throw new IllegalArgumentException(message);
-        }
-        return new Property() {
-            @Override public void set(Object o, Object value) {p.set(o, fullConverter.parse(p.getPropertyType(), value));}
-            @Override public Object get(Object o) {return fullConverter.convert(p.get(o));}
-            @Override public <T extends Annotation> T getFieldAnnotation(Class<T> annotationClass) {return null;}
-            @Override public String getName() {return p.getName();}
-            @Override public boolean canWrite() {return p.canWrite();}
-            @Override public Class<?> getPropertyType() { return fullConverter.getConvertType();}
-            @Override public Class<?> getReflectedClass() {return p.getReflectedClass();}
-        };
-    }
-
-
 
 
 }

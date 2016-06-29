@@ -14,7 +14,10 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Created by haim7 on 12/05/2016.
+ * Abstract adapter that gets list and layout-id, and when item appears, it inflates layout to view,
+ * and call to method {@link ApplyObjectAdapter#applyOnView} for set the view by the item. <br>
+ * it extends {@link ArrayAdapter} as you see.
+ *
  */
 public abstract class ApplyObjectAdapter<T> extends ArrayAdapter<T> {
 
@@ -30,26 +33,19 @@ public abstract class ApplyObjectAdapter<T> extends ArrayAdapter<T> {
     }
 
     @Override
-    public long getItemId(int position) {
-        T item = getItem(position);
-        if (item instanceof Entity) {
-            long itemId = ((Entity) item).getId();
-            return itemId > 0 ? itemId : -position;
-        }
-        return position;
-    }
-
-    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = convertView;
         if (view == null) {
             view = inflater.inflate(itemLayoutId, parent, false);
         }
-        final View finalView = view;
-        applyOnView(finalView, position);
+        applyOnView(view, position);
         return view;
     }
 
+    /**
+     * sets view by position of item. <br>
+     * you should get the item by method {@link ApplyObjectAdapter#getItem(int)}.
+     */
     protected abstract void applyOnView(View view, int position);
 
 }

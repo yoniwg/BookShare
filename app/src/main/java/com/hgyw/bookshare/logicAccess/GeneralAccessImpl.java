@@ -30,7 +30,10 @@ class GeneralAccessImpl implements GeneralAccess {
     final protected DataAccess dataAccess;
     final protected User currentUser;
 
-
+    /**
+     * throws IllegalArgumentException if userType is not the type of current user, or userId is
+     * not the id of current user.
+     */
     protected void requireItsMeForAccess(UserType userType, long userId) {
         if (currentUser.getUserType() != userType || currentUser.getId() != userId) {
             String messageText = "The current user ({0} {1}) has not access to manipulate other users ({2} {3}).";

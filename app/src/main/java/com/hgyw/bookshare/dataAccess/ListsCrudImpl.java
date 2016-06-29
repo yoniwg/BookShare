@@ -10,18 +10,22 @@ import java.util.NoSuchElementException;
 
 import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.entities.IdReference;
+import com.hgyw.bookshare.entities.ImageEntity;
 import com.hgyw.bookshare.entities.reflection.EntityReflection;
 import com.hgyw.bookshare.entities.reflection.Property;
 
 /**
- * Created by Yoni on 3/17/2016.
+ * A {@link StreamCrud} implementation by lists.
  */
 class ListsCrudImpl implements StreamCrud {
 
     protected ListsCrudImpl() {}
 
-    private Map<Class<? extends Entity>, Long> entitiesIdMap = new HashMap<>();
+    // map from entity to its list
     private Map<Class<? extends Entity>, List<Entity>> entitiesMap = new HashMap<>();
+    // map from entity to max id in the list (the next generated id will increase with 1)
+    private Map<Class<? extends Entity>, Long> entitiesIdMap = new HashMap<>();
+
 
     @Override
     public void create(Entity item) {
@@ -36,32 +40,48 @@ class ListsCrudImpl implements StreamCrud {
         entityList.add(item.clone());
     }
 
+    /**
+     * Checks are item's references exist in database
+     * @param item the entity item
+     * @throws NoSuchElementException if {@code item} refer to another item that is not exists in database
+     */
     private void checkAreReferencesLegal(Entity item) {
         try {
             Stream.of(EntityReflection.getReferringProperties(item.getClass()).entrySet())
                     .forEach(keyValue -> {
                         Class<? extends Entity> referredClass = keyValue.getKey();
                         Property referredIdProperty = keyValue.getValue();
-                        retrieve(referredClass, (Long) referredIdProperty.get(item)); // Just to throw exception when referred is not found
+                        long referredId = (long) referredIdProperty.get(item);
+                        // Allow no image
+                        if (referredId == 0 && referredClass == ImageEntity.class) return;
+                        // Just to throw exception when referred is not found
+                        retrieve(referredClass, referredId);
                     });
         } catch (NoSuchElementException e) {
             throw new NoSuchElementException("Id reference in " + item.getEntityType().getSimpleName() + " isn't exists: " + e.getMessage());
         }
     }
 
+    /**
+     * Get the list of the entity. The list will be created if it has not been yet.
+     */
     private List<Entity> getListOrCreate(Class<? extends Entity> clazz) {
         List<Entity> entityList = entitiesMap.get(clazz);
         if (entityList == null) {
-            entitiesMap.put(clazz, entityList = new ArrayList<Entity>());
+            entitiesMap.put(clazz, entityList = new ArrayList<>());
             entitiesIdMap.put(clazz, 0L);
         }
         return entityList;
     }
 
-    private void generateNewId(Entity entity) {
-        long entityId = entitiesIdMap.get(entity.getClass()) + 1;
-        entity.setId(entityId);
-        entitiesIdMap.put(entity.getClass(), entityId);
+    /**
+     * Generates new id for entity
+     * Sets the item.id to the new id.
+     */
+    private void generateNewId(Entity item) {
+        long newId = entitiesIdMap.get(item.getClass()) + 1;
+        item.setId(newId);
+        entitiesIdMap.put(item.getClass(), newId);
     }
 
     @Override
@@ -76,22 +96,14 @@ class ListsCrudImpl implements StreamCrud {
 
     @Override
     public void delete(IdReference idReference) {
-        Entity retrievedItem = retrieveNonDeletedOriginalEntity(idReference);
+        Entity retrievedItem = retrieveOriginal(idReference.getEntityType(), idReference.getId());
+        // cannot be deleted twice
+        if (retrievedItem.isDeleted()) throw createNoSuchEntityException(idReference.getEntityType(), idReference.getId());
         retrievedItem.setDeleted(true);
     }
 
-    private Entity retrieveNonDeletedOriginalEntity(IdReference idReference) {
-        Entity retrievedItem = retrieveOriginalEntity(idReference.getEntityType(), idReference.getId());
-        if (retrievedItem.isDeleted()) throw createNoSuchEntityException(idReference.getEntityType(), idReference.getId());
-        return retrievedItem;
-    }
-
-    /**
-     * Stream all items of specified entity.
-     * @param <T> The type of entity
-     * @return Stream of all entities.
-     */
     @Override
+    @SuppressWarnings("unchecked")
     public <T extends Entity> Stream<T> streamAll(Class<T> entityType) {
         List<Entity> entityList = entitiesMap.get(entityType);
         if (entityList != null) return Stream.of(entityList).map(e ->  (T) e.clone());
@@ -99,21 +111,27 @@ class ListsCrudImpl implements StreamCrud {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T extends Entity> T retrieve(Class<T> entityClass, long entityId) {
-        return (T) retrieveOriginalEntity(entityClass, entityId).clone();
+        return (T) retrieveOriginal(entityClass, entityId).clone(); // clone for retrieve DB change
     }
 
-
-    private <T extends Entity> T retrieveOriginalEntity(Class<? extends T> entityClass, long id) {
+    /**
+     * retrieve the original item that is in database.
+     */
+    @SuppressWarnings("unchecked")
+    private <T extends Entity> T retrieveOriginal(Class<? extends T> entityClass, long id) {
         List<Entity> entityList = entitiesMap.get(entityClass);
         if (entityList == null) throw createNoSuchEntityException(entityClass, id);
         Entity item =  Stream.of(entityList)
                 .filter(e -> e.getId() == id)
                 .findFirst().orElseThrow(() -> createNoSuchEntityException(entityClass, id));
         return (T) item;
-
     }
 
+    /**
+     * Creates a NoSuchEntityException
+     */
     private static NoSuchElementException createNoSuchEntityException(Class<?> entityClass, long id) {
         return new NoSuchElementException("No entity " + entityClass.getSimpleName() + " with ID " + id);
     }

@@ -1,7 +1,7 @@
 package com.hgyw.bookshare.dataAccess;
 
 /**
- * Created by haim7 on 24/03/2016.
+ * Test crud
  */
 class ListsCrudImplTest {
 /*

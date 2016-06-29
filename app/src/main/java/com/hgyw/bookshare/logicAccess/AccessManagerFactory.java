@@ -1,14 +1,14 @@
 package com.hgyw.bookshare.logicAccess;
 
 /**
- * Created by haim7 on 24/03/2016.
+ * Static factory fot
  */
-public class AccessManagerFactory {
+public final class AccessManagerFactory {
 
     private static final AccessManager instance = AccessManagerImpl.INSTANCE;
-    static {Test.test(instance);}
+    //static {Test.test(instance);}
 
-    private AccessManagerFactory() {}
+    private AccessManagerFactory() {} // restrict instantiate
 
     public static AccessManager getInstance() {
         return instance;

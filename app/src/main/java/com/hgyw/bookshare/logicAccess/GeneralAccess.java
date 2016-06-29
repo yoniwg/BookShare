@@ -68,13 +68,14 @@ public interface GeneralAccess {
 
     /**
      * Calaculate total price of transaction
-     * @param entityClass
-     * @param entityId
-     * @param <T>
+
      * @return
      */
     BigDecimal calcTotalPriceOfTransaction(Transaction transaction);
 
+    /**
+     * get all suppliers of a transaction
+     */
     List<User> getSuppliersOfTransaction(Transaction transaction);
 
     /**
@@ -99,10 +100,21 @@ public interface GeneralAccess {
      */
     User retrieveUserDetails();
 
+    /**
+     * Add new image to database
+     * @return the id of image (the new ImageEntity item)
+     */
     long upload(byte[] bytes);
 
+    /**
+     * update details of user
+     * @param user the user
+     */
     void updateUserDetails(User user);
 
+    /**
+     * @return the UserType of current user.
+     */
     UserType getUserType();
 
 

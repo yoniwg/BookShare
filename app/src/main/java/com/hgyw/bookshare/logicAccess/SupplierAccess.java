@@ -79,5 +79,9 @@ public interface SupplierAccess extends GeneralAccess {
      */
     void removeBookSupplier(BookSupplier bookSupplier);
 
+    /**
+     * retrieve the bookSupplier of the book and current supplier.
+     * @return optional for case that there is not BookSupplier for the book and current supplier.
+     */
     Optional<BookSupplier> retrieveMyBookSupplier(Book book);
 }
