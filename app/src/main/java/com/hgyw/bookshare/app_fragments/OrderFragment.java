@@ -98,7 +98,7 @@ public class OrderFragment extends EntityFragment {
     }
 
     private void updateChangeStatusButton(Button changeStatusButton, View viewOfStatus, Order order) {
-        // TODO unify with SupplierOrdersFragment.onCreateContextMenu()
+        // TODO unify with OrdersFragment.onCreateContextMenu()
         OrderStatus nextOrderStatus;
         int buttonLabelId;
         int messageId;

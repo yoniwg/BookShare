@@ -229,7 +229,7 @@ public class Utility {
             }
             return bmp;
         } catch (IOException e) {
-            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show(); // TODO
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show(); // TODO normal message
             return null;
         }
     }

@@ -189,7 +189,7 @@ public abstract class GoodAsyncListAdapter<T> extends BaseAdapter implements Fil
         notifyDataSetChanged();
     }
 
-    public synchronized void refreshRetrieveList() { // TODO: doesn't work properly on second call
+    public synchronized void refreshRetrieveList() {
         cancelTasks();
         if (DEBUG) System.out.println("GoodAsyncListAdapter: " + "Clear");
         items.clear();

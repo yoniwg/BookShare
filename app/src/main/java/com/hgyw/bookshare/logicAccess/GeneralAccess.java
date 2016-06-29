@@ -30,9 +30,9 @@ public interface GeneralAccess {
     List<Book> findBooks(BookQuery query);
 
     /**
-     * TODO documentation
-     * @param book
-     * @return
+     * Get {@link BookSummary} object for the book.
+     * @param book the book
+     * @return BookSummary contains data on the book.
      */
     BookSummary getBookSummary(Book book);
 

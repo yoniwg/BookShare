@@ -69,7 +69,7 @@ public interface SupplierAccess extends GeneralAccess {
      * @throws IllegalArgumentException if this BookSupplier is not belong to current user.
      * @throws java.util.NoSuchElementException if BookSupplier is not found.
      */
-    void updateBookSupplier(BookSupplier bookSupplier);  // TODO: Problem with changing the referenced entity
+    void updateBookSupplier(BookSupplier bookSupplier);
 
     /**
      * remove a BookSupplier
