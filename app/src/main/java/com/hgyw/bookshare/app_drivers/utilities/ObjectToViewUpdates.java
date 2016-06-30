@@ -1,4 +1,4 @@
-package com.hgyw.bookshare.app_drivers;
+package com.hgyw.bookshare.app_drivers.utilities;
 
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
 import com.hgyw.bookshare.R;
+import com.hgyw.bookshare.app_drivers.extensions.CancelableLoadingDialogAsyncTask;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookReview;
 import com.hgyw.bookshare.entities.BookSupplier;
@@ -25,7 +26,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 /**
- * Update views by full data of items.
+ * Update views by various entities or other items.
  */
 public class ObjectToViewUpdates {
 

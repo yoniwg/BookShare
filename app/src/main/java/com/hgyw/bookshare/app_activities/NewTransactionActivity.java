@@ -13,11 +13,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hgyw.bookshare.R;
-import com.hgyw.bookshare.app_drivers.ProgressDialogAsyncTask;
-import com.hgyw.bookshare.app_drivers.SimpleTextWatcher;
-import com.hgyw.bookshare.app_drivers.Utility;
+import com.hgyw.bookshare.app_drivers.extensions.ProgressDialogAsyncTask;
+import com.hgyw.bookshare.app_drivers.extensions.SimpleTextWatcher;
+import com.hgyw.bookshare.app_drivers.utilities.Utility;
 import com.hgyw.bookshare.app_fragments.CartFragment;
-import com.hgyw.bookshare.app_drivers.IntentsFactory;
+import com.hgyw.bookshare.app_drivers.utilities.IntentsFactory;
 import com.hgyw.bookshare.entities.IdReference;
 import com.hgyw.bookshare.entities.Transaction;
 import com.hgyw.bookshare.exceptions.OrdersTransactionException;

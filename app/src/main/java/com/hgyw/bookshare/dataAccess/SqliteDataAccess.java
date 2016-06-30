@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by haim7 on 09/06/2016.
+ * Implementation of SqlDataAccess using SQLite
  */
 public class SqliteDataAccess extends SqlDataAccess {
 

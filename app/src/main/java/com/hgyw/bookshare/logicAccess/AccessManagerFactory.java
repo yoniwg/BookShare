@@ -1,7 +1,7 @@
 package com.hgyw.bookshare.logicAccess;
 
 /**
- * Static factory fot
+ * Static factory for AccessManager
  */
 public final class AccessManagerFactory {
 

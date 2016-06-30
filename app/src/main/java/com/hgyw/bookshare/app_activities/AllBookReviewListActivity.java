@@ -9,8 +9,8 @@ import android.view.View;
 import android.widget.ListAdapter;
 
 import com.hgyw.bookshare.R;
-import com.hgyw.bookshare.app_drivers.ApplyObjectAdapter;
-import com.hgyw.bookshare.app_drivers.ObjectToViewUpdates;
+import com.hgyw.bookshare.app_drivers.adapters.ApplyObjectAdapter;
+import com.hgyw.bookshare.app_drivers.utilities.ObjectToViewUpdates;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookReview;
 import com.hgyw.bookshare.entities.ImageEntity;

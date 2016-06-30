@@ -1,4 +1,4 @@
-package com.hgyw.bookshare.app_drivers;
+package com.hgyw.bookshare.app_drivers.utilities;
 
 import android.content.Context;
 import android.telephony.PhoneNumberUtils;
@@ -6,7 +6,6 @@ import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.view.View;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.RatingBar;
@@ -14,6 +13,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.hgyw.bookshare.R;
+import com.hgyw.bookshare.app_drivers.extensions.MultiSpinner;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookQuery;
 import com.hgyw.bookshare.entities.BookReview;
@@ -33,6 +33,10 @@ import java.util.Date;
 import java.util.Set;
 
 /**
+ * Class which contains appliers from Objects (in general they are entities),
+ * to their compatible Views.
+ * part of objects has also result() method which take the result from view to the Object.
+ *
  * Created by haim7 on 13/05/2016.
  */
 public class ObjectToViewAppliers {

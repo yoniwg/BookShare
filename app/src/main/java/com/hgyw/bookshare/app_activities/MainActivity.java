@@ -17,10 +17,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hgyw.bookshare.app_drivers.*;
+import com.hgyw.bookshare.app_drivers.extensions.CancelableLoadingDialogAsyncTask;
+import com.hgyw.bookshare.app_drivers.utilities.ListenerSupplier;
+import com.hgyw.bookshare.app_drivers.utilities.ListenerSupplierHelper;
+import com.hgyw.bookshare.app_drivers.utilities.Utility;
 import com.hgyw.bookshare.app_fragments.BooksFragment;
 import com.hgyw.bookshare.app_fragments.CartFragment;
-import com.hgyw.bookshare.app_drivers.IntentsFactory;
+import com.hgyw.bookshare.app_drivers.utilities.IntentsFactory;
 import com.hgyw.bookshare.app_fragments.LoginDialogFragment;
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.app_fragments.TitleFragment;

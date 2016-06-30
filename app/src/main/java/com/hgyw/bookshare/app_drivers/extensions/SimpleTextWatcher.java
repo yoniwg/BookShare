@@ -1,9 +1,11 @@
-package com.hgyw.bookshare.app_drivers;
+package com.hgyw.bookshare.app_drivers.extensions;
 
 import android.text.Editable;
 import android.text.TextWatcher;
 
 /**
+ * Simple implementation of TextWatcher in order to handle text changing
+ * (in EditText fields, etc.)
  * Created by Yoni on 5/15/2016.
  */
 public abstract class SimpleTextWatcher implements TextWatcher {

@@ -1,4 +1,4 @@
-package com.hgyw.bookshare.app_drivers;
+package com.hgyw.bookshare.app_drivers.adapters;
 
 import android.app.ListFragment;
 import android.content.Context;
@@ -26,6 +26,8 @@ import java.util.ListIterator;
 import java.util.Map;
 
 /**
+ * Adapter which loads the data according to user location,
+ * and stores the previous data, in order to avoid unnecessary fetching of data from net.
  * Created by haim7 on 13/06/2016.
  */
 public abstract class GoodAsyncListAdapter<T> extends BaseAdapter implements Filterable{

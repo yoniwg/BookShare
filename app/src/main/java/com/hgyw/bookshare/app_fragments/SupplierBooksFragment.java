@@ -13,10 +13,10 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.hgyw.bookshare.R;
-import com.hgyw.bookshare.app_drivers.GoodAsyncListAdapter;
-import com.hgyw.bookshare.app_drivers.IntentsFactory;
-import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
-import com.hgyw.bookshare.app_drivers.ProgressDialogAsyncTask;
+import com.hgyw.bookshare.app_drivers.adapters.GoodAsyncListAdapter;
+import com.hgyw.bookshare.app_drivers.utilities.IntentsFactory;
+import com.hgyw.bookshare.app_drivers.utilities.ObjectToViewAppliers;
+import com.hgyw.bookshare.app_drivers.extensions.ProgressDialogAsyncTask;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookSupplier;
 import com.hgyw.bookshare.entities.IdReference;
@@ -27,7 +27,7 @@ import com.hgyw.bookshare.logicAccess.SupplierAccess;
 import java.util.List;
 
 /**
- * Created by haim7 on 22/05/2016.
+ * A fragment representing list of a supplier's books
  */
 public class SupplierBooksFragment extends ListFragment implements TitleFragment, BookSupplierDialogFragment.ResultListener {
 

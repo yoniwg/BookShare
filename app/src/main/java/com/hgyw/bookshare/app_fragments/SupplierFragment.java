@@ -6,16 +6,18 @@ import android.os.Bundle;
 import android.support.v4.util.Pair;
 import android.view.View;
 
-import com.hgyw.bookshare.app_drivers.CancelableLoadingDialogAsyncTask;
-import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
+import com.hgyw.bookshare.app_drivers.extensions.CancelableLoadingDialogAsyncTask;
+import com.hgyw.bookshare.app_drivers.utilities.ObjectToViewAppliers;
 import com.hgyw.bookshare.R;
 import com.hgyw.bookshare.entities.ImageEntity;
-import com.hgyw.bookshare.app_drivers.ObjectToViewUpdates;
+import com.hgyw.bookshare.app_drivers.utilities.ObjectToViewUpdates;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.GeneralAccess;
 
-
+/**
+ * A fragment representing suppliers details
+ */
 public class SupplierFragment extends EntityFragment {
 
     private Activity activity;

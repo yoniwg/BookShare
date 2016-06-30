@@ -1,4 +1,4 @@
-package com.hgyw.bookshare.app_drivers;
+package com.hgyw.bookshare.app_drivers.utilities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -36,6 +36,7 @@ import java.util.IllegalFormatException;
 import java.util.Map;
 
 /**
+ * Factory of intents which contains its Extras keys.
  * Created by haim7 on 12/05/2016.
  */
 public class IntentsFactory {

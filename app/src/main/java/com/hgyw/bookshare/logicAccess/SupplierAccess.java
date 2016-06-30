@@ -10,7 +10,7 @@ import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.OrderStatus;
 
 /**
- * Created by Yoni on 3/13/2016.
+ * Logic access to suppliers actions
  */
 public interface SupplierAccess extends GeneralAccess {
 

@@ -19,7 +19,7 @@ import com.hgyw.bookshare.logicAccess.GeneralAccess;
 
 
 /**
- *
+ * Abstract fragment class performing basic method of fragment creating
  * @param <T> unchecked cast of the access.
  */
 @SuppressWarnings("unchecked")
@@ -51,13 +51,6 @@ public abstract class AbstractFragment<T extends GeneralAccess> extends Fragment
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(fragmentLayoutId, container, false);
-        // set empty-view to mainListView
-        /*ListView listView = (ListView) view.findViewById(R.id.mainListView);
-        if (listView != null) {
-            View emptyView = getActivity().getLayoutInflater().inflate(R.layout.simple_empty_view, null);
-            //((ViewGroup)listView.getParent()).addView(emptyView);
-            listView.setEmptyView(emptyView);
-        }*/
         return view;
     }
 

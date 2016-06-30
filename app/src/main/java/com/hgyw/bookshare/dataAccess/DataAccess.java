@@ -15,7 +15,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by haim7 on 24/03/2016.
+ * Interface representing contract of basic access to data.
  */
 public interface DataAccess {
 

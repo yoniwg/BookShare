@@ -8,24 +8,20 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 
-import com.hgyw.bookshare.app_drivers.EnumAdapter;
-import com.hgyw.bookshare.app_drivers.IntentsFactory;
-import com.hgyw.bookshare.app_drivers.MultiSpinner;
-import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
+import com.hgyw.bookshare.app_drivers.utilities.IntentsFactory;
+import com.hgyw.bookshare.app_drivers.extensions.MultiSpinner;
+import com.hgyw.bookshare.app_drivers.utilities.ObjectToViewAppliers;
 import com.hgyw.bookshare.R;
-import com.hgyw.bookshare.app_drivers.Utility;
+import com.hgyw.bookshare.app_drivers.utilities.Utility;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookQuery;
 
-import java.util.Arrays;
-import java.util.EnumSet;
 import java.util.Set;
 
 /**
- * Created by haim7 on 12/05/2016.
+ * A dialog fragment to handle changes query of books<br>
+ * Main layout - R.layout.dialog_book_query.<br>
  */
 public class BookQueryDialogFragment extends DialogFragment  {
 

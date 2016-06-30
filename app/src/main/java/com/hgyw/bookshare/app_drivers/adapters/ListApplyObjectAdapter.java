@@ -1,4 +1,4 @@
-package com.hgyw.bookshare.app_drivers;
+package com.hgyw.bookshare.app_drivers.adapters;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Queue;
 
 /**
+ * Simple list adapter using buffer to store data.
  * Created by haim7 on 31/05/2016.
  */
 public abstract class ListApplyObjectAdapter<T> extends ApplyObjectAdapter<T> {

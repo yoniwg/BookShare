@@ -18,7 +18,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 /**
- * Created by Yoni on 3/13/2016.
+ *  * Logic access to general actions
  */
 public interface GeneralAccess {
 

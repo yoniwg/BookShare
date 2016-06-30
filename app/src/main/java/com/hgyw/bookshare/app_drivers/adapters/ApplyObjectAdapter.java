@@ -1,4 +1,4 @@
-package com.hgyw.bookshare.app_drivers;
+package com.hgyw.bookshare.app_drivers.adapters;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
@@ -6,11 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 
-import com.hgyw.bookshare.entities.Entity;
-
-import java.util.Collection;
 import java.util.List;
 
 /**

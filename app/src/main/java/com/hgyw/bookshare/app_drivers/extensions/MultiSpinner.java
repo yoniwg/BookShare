@@ -1,4 +1,4 @@
-package com.hgyw.bookshare.app_drivers;
+package com.hgyw.bookshare.app_drivers.extensions;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Class of spinner with multiply choices (check-boxes)
  * From: http://stackoverflow.com/questions/5015686/android-spinner-with-multiple-choice
  */
 public class MultiSpinner extends Spinner implements DialogInterface.OnMultiChoiceClickListener, DialogInterface.OnCancelListener {

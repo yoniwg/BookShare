@@ -1,22 +1,6 @@
 package com.hgyw.bookshare.app_activities;
 
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.os.Bundle;
-import android.support.annotation.IdRes;
-import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.Toast;
-
-import com.annimon.stream.function.BiConsumer;
-import com.hgyw.bookshare.R;
-import com.hgyw.bookshare.app_drivers.Utility;
-import com.hgyw.bookshare.app_drivers.IntentsFactory;
-import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 
 import java.io.Serializable;
 

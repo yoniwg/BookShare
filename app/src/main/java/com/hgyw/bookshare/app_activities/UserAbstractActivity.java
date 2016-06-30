@@ -13,11 +13,11 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.hgyw.bookshare.R;
-import com.hgyw.bookshare.app_drivers.CancelableLoadingDialogAsyncTask;
-import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
-import com.hgyw.bookshare.app_drivers.ProgressDialogAsyncTask;
-import com.hgyw.bookshare.app_drivers.Utility;
-import com.hgyw.bookshare.app_drivers.IntentsFactory;
+import com.hgyw.bookshare.app_drivers.extensions.CancelableLoadingDialogAsyncTask;
+import com.hgyw.bookshare.app_drivers.utilities.ObjectToViewAppliers;
+import com.hgyw.bookshare.app_drivers.extensions.ProgressDialogAsyncTask;
+import com.hgyw.bookshare.app_drivers.utilities.Utility;
+import com.hgyw.bookshare.app_drivers.utilities.IntentsFactory;
 import com.hgyw.bookshare.entities.ImageEntity;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;

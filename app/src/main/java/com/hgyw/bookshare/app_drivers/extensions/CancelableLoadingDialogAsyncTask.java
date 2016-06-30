@@ -1,16 +1,10 @@
-package com.hgyw.bookshare.app_drivers;
+package com.hgyw.bookshare.app_drivers.extensions;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.os.AsyncTask;
-import android.support.annotation.MainThread;
 import android.support.annotation.StringRes;
-import android.support.annotation.WorkerThread;
-import android.widget.Toast;
 
 import com.hgyw.bookshare.R;
-import com.hgyw.bookshare.dataAccess.DataAccessIoException;
 
 /**
  * <p>Async task that shows dialog as class {@link ProgressDialogAsyncTask}, but with cancel button on the dialog. </p>

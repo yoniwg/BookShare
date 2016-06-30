@@ -17,10 +17,10 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.hgyw.bookshare.R;
-import com.hgyw.bookshare.app_drivers.DateRangeBar;
-import com.hgyw.bookshare.app_drivers.GoodAsyncListAdapter;
-import com.hgyw.bookshare.app_drivers.IntentsFactory;
-import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
+import com.hgyw.bookshare.app_drivers.extensions.DateRangeBar;
+import com.hgyw.bookshare.app_drivers.adapters.GoodAsyncListAdapter;
+import com.hgyw.bookshare.app_drivers.utilities.IntentsFactory;
+import com.hgyw.bookshare.app_drivers.utilities.ObjectToViewAppliers;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookSupplier;
 import com.hgyw.bookshare.entities.IdReference;
@@ -36,7 +36,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by haim7 on 19/05/2016.
+ * A fragment representing list of a supplier's orders
  */
 public class SupplierOrdersFragment extends ListFragment implements TitleFragment, DateRangeBar.DateRangeListener {
 

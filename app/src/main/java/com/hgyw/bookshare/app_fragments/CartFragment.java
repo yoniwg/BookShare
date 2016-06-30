@@ -14,9 +14,9 @@ import android.widget.NumberPicker;
 import android.widget.Toast;
 
 import com.hgyw.bookshare.R;
-import com.hgyw.bookshare.app_drivers.IntentsFactory;
-import com.hgyw.bookshare.app_drivers.ListApplyObjectAdapter;
-import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
+import com.hgyw.bookshare.app_drivers.utilities.IntentsFactory;
+import com.hgyw.bookshare.app_drivers.adapters.ListApplyObjectAdapter;
+import com.hgyw.bookshare.app_drivers.utilities.ObjectToViewAppliers;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookSupplier;
 import com.hgyw.bookshare.entities.ImageEntity;
@@ -27,8 +27,10 @@ import com.hgyw.bookshare.logicAccess.Cart;
 import com.hgyw.bookshare.logicAccess.CustomerAccess;
 
 /**
- * A fragment representing the cart.
- * <p>
+ * A fragment representing the cart.<br>
+ * Main layout - none (list view).<br>
+ * Menu - R.menu.menu_cart.<br>
+ * Title - R.string.cart_fragment_title.<br>
  */
 public class CartFragment extends ListFragment implements TitleFragment {
 

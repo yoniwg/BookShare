@@ -1,10 +1,9 @@
-package com.hgyw.bookshare.app_drivers;
+package com.hgyw.bookshare.app_drivers.extensions;
 
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
-import android.os.Message;
 import android.support.annotation.MainThread;
 import android.support.annotation.StringRes;
 import android.support.annotation.WorkerThread;

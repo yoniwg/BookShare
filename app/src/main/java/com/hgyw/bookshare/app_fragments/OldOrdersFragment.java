@@ -16,12 +16,11 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.hgyw.bookshare.R;
-import com.hgyw.bookshare.app_drivers.GoodAsyncListAdapter;
-import com.hgyw.bookshare.app_drivers.IntentsFactory;
-import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
+import com.hgyw.bookshare.app_drivers.adapters.GoodAsyncListAdapter;
+import com.hgyw.bookshare.app_drivers.utilities.IntentsFactory;
+import com.hgyw.bookshare.app_drivers.utilities.ObjectToViewAppliers;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookSupplier;
-import com.hgyw.bookshare.entities.IdReference;
 import com.hgyw.bookshare.entities.ImageEntity;
 import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.OrderStatus;
@@ -34,7 +33,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * A fragment representing the cart.
+ * A fragment representing orders which are already invited.
  * <p>
  */
 public class OldOrdersFragment extends ListFragment implements TitleFragment {

@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 /**
- * Created by haim7 on 26/05/2016.
+ * Abstract implementation of DataAccess to use by any SQL queries
  */
 abstract class SqlDataAccess implements DataAccess {
 

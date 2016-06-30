@@ -8,10 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.hgyw.bookshare.R;
-import com.hgyw.bookshare.app_drivers.CancelableLoadingDialogAsyncTask;
-import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
-import com.hgyw.bookshare.app_drivers.ObjectToViewUpdates;
-import com.hgyw.bookshare.app_drivers.Utility;
+import com.hgyw.bookshare.app_drivers.extensions.CancelableLoadingDialogAsyncTask;
+import com.hgyw.bookshare.app_drivers.utilities.ObjectToViewAppliers;
+import com.hgyw.bookshare.app_drivers.utilities.ObjectToViewUpdates;
+import com.hgyw.bookshare.app_drivers.utilities.Utility;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookSupplier;
 import com.hgyw.bookshare.entities.ImageEntity;
@@ -25,7 +25,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 /**
- * Created by haim7 on 23/05/2016.
+ * A fragment representing transaction details
  */
 public class TransactionFragment extends EntityFragment {
 

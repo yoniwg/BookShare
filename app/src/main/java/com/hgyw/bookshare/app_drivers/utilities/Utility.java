@@ -1,4 +1,4 @@
-package com.hgyw.bookshare.app_drivers;
+package com.hgyw.bookshare.app_drivers.utilities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -17,7 +17,6 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IdRes;
@@ -35,16 +34,14 @@ import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
 import com.annimon.stream.function.BiConsumer;
 import com.hgyw.bookshare.R;
+import com.hgyw.bookshare.app_drivers.adapters.EnumAdapter;
+import com.hgyw.bookshare.app_drivers.extensions.MultiSpinner;
 import com.hgyw.bookshare.entities.Book;
-import com.hgyw.bookshare.entities.BookSupplier;
 import com.hgyw.bookshare.entities.Credentials;
 import com.hgyw.bookshare.entities.Entity;
 import com.hgyw.bookshare.entities.ImageEntity;
-import com.hgyw.bookshare.entities.Order;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
-import com.hgyw.bookshare.logicAccess.GeneralAccess;
-import com.hgyw.bookshare.logicAccess.SupplierAccess;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -56,10 +53,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 /**
- * Utilities
+ * Variety of static methods utilities
  */
 public class Utility {
 
@@ -272,6 +268,12 @@ public class Utility {
                 .create().show();
     }
 
+    /**
+     * convert bitmap to rounded bitmap according to provided radius.
+     * @param bmp
+     * @param radius
+     * @return
+     */
     public static Bitmap getCroppedBitmap(Bitmap bmp, int radius) {
         Bitmap sbmp;
 

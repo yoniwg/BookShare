@@ -1,4 +1,4 @@
-package com.hgyw.bookshare.app_drivers;
+package com.hgyw.bookshare.app_drivers.adapters;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import com.hgyw.bookshare.app_drivers.utilities.Utility;
 
 /**
  * Adapter that gets enum values, and show them in list as ArrayAdapter.

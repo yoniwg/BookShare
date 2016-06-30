@@ -17,7 +17,7 @@ import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.exceptions.OrdersTransactionException;
 
 /**
- * Created by Yoni on 3/13/2016.
+ * Logic access to customer actions
  */
 public interface CustomerAccess extends GeneralAccess {
 

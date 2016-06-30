@@ -9,9 +9,9 @@ import android.view.MenuItem;
 import android.view.Window;
 
 import com.hgyw.bookshare.R;
-import com.hgyw.bookshare.app_drivers.IntentsFactory;
-import com.hgyw.bookshare.app_drivers.ListenerSupplier;
-import com.hgyw.bookshare.app_drivers.ListenerSupplierHelper;
+import com.hgyw.bookshare.app_drivers.utilities.IntentsFactory;
+import com.hgyw.bookshare.app_drivers.utilities.ListenerSupplier;
+import com.hgyw.bookshare.app_drivers.utilities.ListenerSupplierHelper;
 import com.hgyw.bookshare.app_fragments.EntityFragment;
 import com.hgyw.bookshare.entities.IdReference;
 

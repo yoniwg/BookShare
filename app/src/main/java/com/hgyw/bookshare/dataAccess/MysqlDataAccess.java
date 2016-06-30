@@ -19,7 +19,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by haim7 on 26/05/2016.
+ * Implementation of SqlDataAccess using MySQL
  */
 class MysqlDataAccess extends SqlDataAccess implements DataAccess {
 

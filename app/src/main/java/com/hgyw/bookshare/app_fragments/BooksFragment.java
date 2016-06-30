@@ -13,10 +13,10 @@ import android.view.View;
 import android.widget.ListView;
 
 import com.hgyw.bookshare.R;
-import com.hgyw.bookshare.app_drivers.GoodAsyncListAdapter;
-import com.hgyw.bookshare.app_drivers.IntentsFactory;
-import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
-import com.hgyw.bookshare.app_drivers.SwipeRefreshListFragment;
+import com.hgyw.bookshare.app_drivers.adapters.GoodAsyncListAdapter;
+import com.hgyw.bookshare.app_drivers.utilities.IntentsFactory;
+import com.hgyw.bookshare.app_drivers.utilities.ObjectToViewAppliers;
+import com.hgyw.bookshare.app_drivers.extensions.SwipeRefreshListFragment;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookQuery;
 import com.hgyw.bookshare.entities.BookSummary;
@@ -26,9 +26,14 @@ import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.GeneralAccess;
 
 import java.util.List;
-import java.util.logging.Filter;
 
-
+/**
+ * A fragment to show the lists of books.
+ * Using swipe down refreshing, and search view.
+ * Main layout - none (list view).<br>
+ * Menu - R.menu.menu_book_list.<br>
+ * Title - R.string.book_list_fragment_title.<br>
+ */
 public class BooksFragment extends SwipeRefreshListFragment implements SearchView.OnQueryTextListener, TitleFragment, SwipeRefreshLayout.OnRefreshListener {
 
     /**

@@ -7,15 +7,15 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.view.View;
-import android.widget.TextView;
 
 import com.hgyw.bookshare.R;
-import com.hgyw.bookshare.app_drivers.ListenerSupplierHelper;
-import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
+import com.hgyw.bookshare.app_drivers.utilities.ListenerSupplierHelper;
+import com.hgyw.bookshare.app_drivers.utilities.ObjectToViewAppliers;
 import com.hgyw.bookshare.entities.BookSupplier;
 
 /**
- * Created by haim7 on 23/05/2016.
+ * A dialog fragment to handle changes details of supplied books<br>
+ * Main layout - R.layout.dialog_booksupplier.<br>
  */
 public class BookSupplierDialogFragment extends DialogFragment implements DialogInterface.OnClickListener {
 

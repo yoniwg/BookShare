@@ -5,21 +5,17 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.StringRes;
 import android.view.View;
-import android.widget.TextView;
 
-import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
+import com.hgyw.bookshare.app_drivers.utilities.ObjectToViewAppliers;
 import com.hgyw.bookshare.R;
-import com.hgyw.bookshare.app_drivers.ListenerSupplierHelper;
+import com.hgyw.bookshare.app_drivers.utilities.ListenerSupplierHelper;
 import com.hgyw.bookshare.entities.BookReview;
 import com.hgyw.bookshare.entities.Rating;
 
 /**
- * Created by haim7 on 13/05/2016.
- */
-
-/**
+ * A dialog fragment to handle changes reviews of books<br>
+ * Main layout - R.layout.dialog_book_review.<br>
  * Throws ClassCastException if the activity cannot supply BookResultListener (by itself or by ListenerSupplier).
  */
 public class BookReviewDialogFragment extends DialogFragment {

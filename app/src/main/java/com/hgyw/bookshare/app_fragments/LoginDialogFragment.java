@@ -11,11 +11,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
 
-import com.hgyw.bookshare.app_drivers.IntentsFactory;
-import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
+import com.hgyw.bookshare.app_drivers.utilities.IntentsFactory;
+import com.hgyw.bookshare.app_drivers.utilities.ObjectToViewAppliers;
 import com.hgyw.bookshare.R;
-import com.hgyw.bookshare.app_drivers.ProgressDialogAsyncTask;
-import com.hgyw.bookshare.app_drivers.Utility;
+import com.hgyw.bookshare.app_drivers.extensions.ProgressDialogAsyncTask;
+import com.hgyw.bookshare.app_drivers.utilities.Utility;
 import com.hgyw.bookshare.entities.Credentials;
 import com.hgyw.bookshare.exceptions.WrongLoginException;
 import com.hgyw.bookshare.logicAccess.AccessManager;

@@ -10,12 +10,11 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.hgyw.bookshare.R;
-import com.hgyw.bookshare.app_drivers.CancelableLoadingDialogAsyncTask;
-import com.hgyw.bookshare.app_drivers.IntentsFactory;
-import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
-import com.hgyw.bookshare.app_drivers.ObjectToViewUpdates;
-import com.hgyw.bookshare.app_drivers.OrderUtility;
-import com.hgyw.bookshare.app_drivers.Utility;
+import com.hgyw.bookshare.app_drivers.extensions.CancelableLoadingDialogAsyncTask;
+import com.hgyw.bookshare.app_drivers.utilities.IntentsFactory;
+import com.hgyw.bookshare.app_drivers.utilities.ObjectToViewAppliers;
+import com.hgyw.bookshare.app_drivers.utilities.ObjectToViewUpdates;
+import com.hgyw.bookshare.app_drivers.utilities.OrderUtility;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.IdReference;
 import com.hgyw.bookshare.entities.ImageEntity;
@@ -29,7 +28,7 @@ import com.hgyw.bookshare.logicAccess.CustomerAccess;
 import com.hgyw.bookshare.logicAccess.GeneralAccess;
 
 /**
- * Created by haim7 on 15/06/2016.
+ * A fragment representing order details fragment
  */
 public class OrderFragment extends EntityFragment {
 

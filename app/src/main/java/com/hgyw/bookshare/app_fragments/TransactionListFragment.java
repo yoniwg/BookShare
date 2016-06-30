@@ -13,22 +13,21 @@ import android.widget.ListView;
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
 import com.hgyw.bookshare.R;
-import com.hgyw.bookshare.app_drivers.DateRangeBar;
-import com.hgyw.bookshare.app_drivers.GoodAsyncListAdapter;
-import com.hgyw.bookshare.app_drivers.IntentsFactory;
-import com.hgyw.bookshare.app_drivers.ObjectToViewUpdates;
+import com.hgyw.bookshare.app_drivers.extensions.DateRangeBar;
+import com.hgyw.bookshare.app_drivers.adapters.GoodAsyncListAdapter;
+import com.hgyw.bookshare.app_drivers.utilities.IntentsFactory;
+import com.hgyw.bookshare.app_drivers.utilities.ObjectToViewUpdates;
 import com.hgyw.bookshare.entities.Transaction;
 import com.hgyw.bookshare.entities.User;
 import com.hgyw.bookshare.logicAccess.AccessManagerFactory;
 import com.hgyw.bookshare.logicAccess.CustomerAccess;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 /**
- * Created by haim7 on 23/05/2016.
+ * A fragment representing list of existing transactions
  */
 public class TransactionListFragment extends ListFragment implements TitleFragment {
 

@@ -19,13 +19,13 @@ import android.widget.Toast;
 
 import com.annimon.stream.Optional;
 import com.annimon.stream.Stream;
-import com.hgyw.bookshare.app_drivers.IntentsFactory;
-import com.hgyw.bookshare.app_drivers.CancelableLoadingDialogAsyncTask;
-import com.hgyw.bookshare.app_drivers.ObjectToViewAppliers;
+import com.hgyw.bookshare.app_drivers.utilities.IntentsFactory;
+import com.hgyw.bookshare.app_drivers.extensions.CancelableLoadingDialogAsyncTask;
+import com.hgyw.bookshare.app_drivers.utilities.ObjectToViewAppliers;
 import com.hgyw.bookshare.R;
-import com.hgyw.bookshare.app_drivers.ObjectToViewUpdates;
-import com.hgyw.bookshare.app_drivers.ProgressDialogAsyncTask;
-import com.hgyw.bookshare.app_drivers.Utility;
+import com.hgyw.bookshare.app_drivers.utilities.ObjectToViewUpdates;
+import com.hgyw.bookshare.app_drivers.extensions.ProgressDialogAsyncTask;
+import com.hgyw.bookshare.app_drivers.utilities.Utility;
 import com.hgyw.bookshare.entities.Book;
 import com.hgyw.bookshare.entities.BookReview;
 import com.hgyw.bookshare.entities.BookSummary;
@@ -43,6 +43,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A fragment to show details of books<br>
+ * Main layout - R.layout.fragment_book.<br>
+ * Menu - R.menu.menu_book.<br>
+ * Title - R.string.book_fragment_title.<br>
+ */
 public class BookFragment extends EntityFragment implements BookReviewDialogFragment.BookReviewResultListener, BookSupplierDialogFragment.ResultListener {
 
     private UserType userType;
