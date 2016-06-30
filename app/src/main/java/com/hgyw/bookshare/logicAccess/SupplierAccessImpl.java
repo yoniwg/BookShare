@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Created by haim7 on 26/03/2016.
  */
-public class SupplierAccessImpl extends GeneralAccessImpl implements SupplierAccess {
+class SupplierAccessImpl extends GeneralAccessImpl implements SupplierAccess {
 
     public SupplierAccessImpl(DataAccess crud, User currentUser) {
         super(crud, currentUser);

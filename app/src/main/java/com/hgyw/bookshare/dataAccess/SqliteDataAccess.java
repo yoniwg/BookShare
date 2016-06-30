@@ -22,7 +22,7 @@ import java.util.Map;
 /**
  * Implementation of SqlDataAccess using SQLite
  */
-public class SqliteDataAccess extends SqlDataAccess {
+class SqliteDataAccess extends SqlDataAccess {
 
     private static final String DATABASE_NAME = "booksAppDataBase";
     private static final int DATABASE_VERSION = 1;

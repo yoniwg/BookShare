@@ -1,18 +1,24 @@
 package com.hgyw.bookshare.app_drivers.utilities;
 
 /**
- * Created by haim7 on 22/05/2016.
+ * Help methods for interface  {@link ListenerSupplier}
  */
 public class ListenerSupplierHelper {
     private ListenerSupplierHelper(){}
 
     /**
-     * Try cast activity to T, or to ListenerSupplier and call tryGetListener(T.class).
-     * Returns not-null instance of T, or throw ClassCastException.
-     * Don't try call it before the activity has been fully instantiated. on fragment call it in
-     * {@code onActivityCreate()} or something like that.
+     * <p> Try casting activity to T, or to {@link ListenerSupplier} and call
+     * {@link ListenerSupplier#tryGetListener(Class))} .</p>
+     * <p>Returns not-null instance of T, or throw ClassCastException if listener don't fount.<br>
+     *     (in contract to {@code ListenerSupplier.tryGetListener(Class)} that return null if not fount.)</p>
+     * <p>Don't try call it before the activity has been fully instantiated. on fragment call it in
+     * {@code onActivityCreate()} or something like that.</p>
+     * @param listenerClass the class object of listener
+     * @param activity an object by which we get the listener
+     * @param <T> Type of listener
      * @throws NullPointerException if activity == null
      */
+
     public static <T> T getListenerFromActivity(Class<T> listenerClass, Object activity) {
         String internalExceptionMessage = "";
         if (listenerClass.isInstance(activity)) {

@@ -5,12 +5,17 @@ import com.annimon.stream.Stream;
 import java.util.Objects;
 
 /**
- * Created by haim7 on 22/05/2016.
+ * <p>Interface with method that gets listener class and try to return listener instance of the
+ * listener class.
+ * <P>The purpose of this listener is allowing activities to find a listener in all its fragments.</P>
  */
 public interface ListenerSupplier {
     /**
-     * returns null if not found
+     * @param listenerClass The class object of listener
+     * @param <T> The type of listener
+     * @return an instance of listenerClass, or null if not found.
      */
+
     <T> T tryGetListener(Class<T> listenerClass);
 
 }

@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Test logic access
  */
-public class Test {
+class Test {
 
     public static void test(AccessManager accessManager) {
            testInternal(accessManager);
